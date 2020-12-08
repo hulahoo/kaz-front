@@ -23,10 +23,16 @@ import {
   WrappedComponentProps
 } from "react-intl";
 import Home, {SvgProps} from '../resources/icons/menu/home';
+import rootStore from "./store";
 
 @injectMainStore
 @observer
 class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps> {
+
+  constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
+    super(props, context);
+  }
+
   render() {
     const mainStore = this.props.mainStore!;
     const {initialized, locale, loginRequired} = mainStore;
@@ -44,7 +50,6 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
     }
 
     const menuIdx = 1;
-
     return (
       <Layout className="main-layout">
         <Layout.Header>

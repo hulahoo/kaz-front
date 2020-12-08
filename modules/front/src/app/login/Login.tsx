@@ -1,17 +1,18 @@
 import * as React from "react";
-import { ChangeEvent, FormEvent } from "react";
-import { Button, Form, Icon, Input, message } from "antd";
-import { observer } from "mobx-react";
-import { action, observable } from "mobx";
-import { injectMainStore, MainStoreInjected } from "@cuba-platform/react";
+import {ChangeEvent, FormEvent} from "react";
+import {Button, Form, Icon, Input, message} from "antd";
+import {observer} from "mobx-react";
+import {action, observable} from "mobx";
+import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import "./Login.css";
 import logo from "./logo.png";
-import { LanguageSwitcher } from "../../i18n/LanguageSwitcher";
+import {LanguageSwitcher} from "../../i18n/LanguageSwitcher";
 import {
   FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
+import rootStore from "../store";
 
 @injectMainStore
 @observer
@@ -39,12 +40,13 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
       .then(
         action(() => {
           this.performingLoginRequest = false;
+          rootStore.menu.loadUserMenuList();
         })
       )
       .catch(
         action(() => {
           this.performingLoginRequest = false;
-          message.error(this.props.intl.formatMessage({ id: "login.failed" }));
+          message.error(this.props.intl.formatMessage({id: "login.failed"}));
         })
       );
   };
@@ -54,7 +56,7 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
       <div className="login-form">
         <img
           src={logo}
-          alt={this.props.intl.formatMessage({ id: "common.alt.logo" })}
+          alt={this.props.intl.formatMessage({id: "common.alt.logo"})}
           className="logo"
         />
         <div className="title">kazmineral</div>
@@ -67,7 +69,7 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
               })}
               onChange={this.changeLogin}
               value={this.login}
-              prefix={<Icon type="user" style={{ color: "rgba(0,0,0,.25)" }} />}
+              prefix={<Icon type="user" style={{color: "rgba(0,0,0,.25)"}}/>}
               size="large"
             />
           </Form.Item>
@@ -80,13 +82,13 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
               onChange={this.changePassword}
               value={this.password}
               type="password"
-              prefix={<Icon type="lock" style={{ color: "rgba(0,0,0,.25)" }} />}
+              prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.25)"}}/>}
               size="large"
             />
           </Form.Item>
           <Form.Item>
-            <div style={{ float: "right" }}>
-              <LanguageSwitcher className="language-switcher" />
+            <div style={{float: "right"}}>
+              <LanguageSwitcher className="language-switcher"/>
             </div>
           </Form.Item>
           <Form.Item>
@@ -97,7 +99,7 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
               block={true}
               loading={this.performingLoginRequest}
             >
-              <FormattedMessage id="login.loginBtn" />
+              <FormattedMessage id="login.loginBtn"/>
             </Button>
           </Form.Item>
         </Form>
