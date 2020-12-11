@@ -62,7 +62,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
             collapsedWidth={0}
             style={{background: "#fff"}}
           >
-            <Menu mode="inline" style={{height: "100%", borderRight: 0}}>
+            <Menu mode="inline" style={{height: "100%", borderRight: 0}} className={"side-menu"}>
               <Menu.Item key={menuIdx}>
                 <NavLink to={"/"}>
                   <Icon component={Home as React.ComponentType<SvgProps>}/>

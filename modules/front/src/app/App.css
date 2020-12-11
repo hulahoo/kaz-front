@@ -1,5 +1,6 @@
 .main-layout {
   height: 100%;
+  font-family: Helvetica sans-serif;
 }
 
 .narrow-layout {
@@ -10,4 +11,27 @@
 .narrow-layout.ant-card {
   max-width: 1024px;
   margin: auto;
+}
+
+.side-menu {
+  font-family: Montserrat, serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 16px;
+  line-height: 150%;
+}
+
+.ant-menu-item.ant-menu-item-selected, .ant-menu-item.ant-menu-item-selected > a, .ant-menu-item.ant-menu-item-selected > a:hover {
+  color: #1E1E1E !important;
+}
+
+.ant-menu-item.ant-menu-item-selected .anticon, .ant-menu-item.ant-menu-item-selected > a .anticon, .ant-menu-item.ant-menu-item-selected > a:hover .anticon {
+  color: #005487 !important;
+}
+
+.ant-menu-item>a {
+  color: #8C8C8C !important;
+}
+.ant-menu-item>a .anticon {
+  color: #8C8C8C !important;
 }
