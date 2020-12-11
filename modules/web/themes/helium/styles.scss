@@ -1,0 +1,22 @@
+@import "helium-defaults";
+@import "kz.uco.tsadv/helium-ext-defaults";
+@import "app-components";
+@import "kz.uco.tsadv/helium-ext";
+
+@import "timeline";
+@import "uactivity";
+@import "tsadv";
+@import "recognition";
+@import "kz.uco.tsadv/bpm-message-style";
+
+.helium {
+  // include auto-generated app components SCSS
+  @include app_components;
+
+  @include kz_uco_tsadv-helium-ext;
+  @include timeline;
+  @include uactivity;
+  @include tsadv;
+  @include recognition;
+  @include bpm-message-style;
+}
