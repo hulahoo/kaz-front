@@ -17,13 +17,14 @@ import {
 } from "@cuba-platform/react";
 import {CenteredLoader} from "./CenteredLoader";
 import {
-  FormattedMessage,
   injectIntl,
   IntlFormatters,
   WrappedComponentProps
 } from "react-intl";
-import Home, {SvgProps} from '../resources/icons/menu/home';
-import rootStore from "./store";
+import IconRender, {SvgProps} from '../resources/icons/menu/index';
+import {CustomIconComponentProps} from "antd/es/icon";
+import {ComponentClass} from "react";
+import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 
 @injectMainStore
 @observer
@@ -63,12 +64,6 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
             style={{background: "#fff"}}
           >
             <Menu mode="inline" style={{height: "100%", borderRight: 0}} className={"side-menu"}>
-              <Menu.Item key={menuIdx}>
-                <NavLink to={"/"}>
-                  <Icon component={Home as React.ComponentType<SvgProps>}/>
-                  <FormattedMessage id="router.home"/>
-                </NavLink>
-              </Menu.Item>
               {menuItems.map((item, idx) =>
                 menuItem(item, "" + (idx + 1 + menuIdx), this.props.intl)
               )}
@@ -99,17 +94,20 @@ function menuItem(
   keyString: string,
   intl: IntlFormatters
 ) {
-  // Sub Menu
-
+  // Sub Menu  const
   if ((item as any).items != null) {
     //recursively walk through sub menus
+    const menuSubMenu: MenuSubMenu = item as MenuSubMenu;
+    const MenuIcon = IconRender.get(menuSubMenu.id);
     return (
       <Menu.SubMenu
         key={keyString}
-        title={intl.formatMessage({
-          id: "router." + item.caption
-        })}
-      >
+        title={
+          <span>
+            <Icon component={MenuIcon}/>
+            <span>{item.caption}</span>
+          </span>
+        }>
         {(item as SubMenu).items.map((ri, index) =>
           menuItem(ri, keyString + "-" + (index + 1), intl)
         )}
@@ -118,14 +116,13 @@ function menuItem(
   }
 
   // Route Item
-
-  const {menuLink} = item as RouteItem;
-
+  const menuRouteItem: MenuRouteItem = item as MenuRouteItem;
+  const MenuIcon = IconRender.get(menuRouteItem.id);
   return (
     <Menu.Item key={keyString}>
-      <NavLink to={menuLink}>
-        <Icon type="bars"/>
-        <FormattedMessage id={"router." + item.caption}/>
+      <NavLink to={menuRouteItem.menuLink}>
+        <Icon component={MenuIcon}/>
+        {item.caption}
       </NavLink>
     </Menu.Item>
   );

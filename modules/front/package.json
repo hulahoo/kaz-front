@@ -16,10 +16,10 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-app-rewired eject",
     "update-model": "gen-cuba-front sdk:all --dest src/cuba"
   },
   "devDependencies": {
@@ -29,7 +29,14 @@
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/react-router-dom": "^4.3.1",
-    "typescript": "3.4.5"
+    "babel-plugin-import": "^1.13.3",
+    "customize-cra": "^1.0.0",
+    "less": "^3.12.2",
+    "less-loader": "^7.1.0",
+    "react-app-rewired": "^2.1.7",
+    "resolve-url-loader": "^3.1.2",
+    "typescript": "3.4.5",
+    "url-loader": "^4.1.1"
   },
   "cubaPlatform": {
     "generator": "react-typescript"
