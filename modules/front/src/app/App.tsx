@@ -25,6 +25,8 @@ import IconRender, {SvgProps} from '../resources/icons/menu/index';
 import {CustomIconComponentProps} from "antd/es/icon";
 import {ComponentClass} from "react";
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
+import Content from "./components/Content/Content";
+import UserSettings from "./pages/user-settings/UserSettings";
 
 @injectMainStore
 @observer
@@ -69,16 +71,17 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
               )}
             </Menu>
           </Layout.Sider>
-          <Layout style={{padding: "24px 24px 24px"}}>
+          <Layout style={{padding: "40px"}}>
             <Layout.Content>
               <Switch>
                 <Route exact={true} path="/" component={HomePage}/>
-                {collectRouteItems(menuItems).map(route => (
-                  <Route
-                    key={route.pathPattern}
-                    path={route.pathPattern}
-                    component={route.component}
-                  />
+                <Route exact={true} path="/user/settings" component={UserSettings}/>
+                {/*{collectRouteItems(menuItems).map(route => (*/}
+                {/*  <Route*/}
+                {/*    key={route.pathPattern}*/}
+                {/*    path={route.pathPattern}*/}
+                {/*    component={route.component}*/}
+                {/*  />*/}
                 ))}
               </Switch>
             </Layout.Content>

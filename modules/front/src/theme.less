@@ -1,15 +1,25 @@
 @import "resources/fonts/Montserrat/stylesheet.css";
+@import "src/app/hoc/CommonComponent/style.less";
+@import "src/app/components/Button/style.less";
+@import "src/app/components/Content/style.less";
+@import "src/app/components/Input/style.less";
+@import "src/app/components/Dropdown/style.less";
 
 @font-family: Montserrat !important;
 
 @primary-1: #005487;
-@primary-2: #8C8C8C;
-@primary-3: #1E1E1E;
+@primary-2: #1E1E1E;
+@primary-3: #8C8C8C;
 @primary-4: #4EC1E0;
 @primary-5: #F8F8FA;
 
+@default-font-size: 11px !important;
+@default-font-size-header: 12px !important;
+@default-element-property-width: 244px !important;
+
 //HEADER
 @layout-header-padding: 0 !important;
+
 .additional-panel {
   display: flex;
   justify-content: space-between;
@@ -36,7 +46,7 @@
   color: #FFF !important;
 }
 
-.ant-layout-header .app-header .user-panel .noications {
+.ant-layout-header .app-header .user-panel .notifications {
   height: 24px;
   width: 24px;
 }
@@ -72,7 +82,7 @@
 //SIDE-MENU
 @menu-item-active-bg: #DCF3F9 !important;
 @menu-item-active-border-width: 0 !important;
-@menu-item-color: @primary-2 !important;
+@menu-item-color: @primary-3 !important;
 @menu-item-vertical-margin: 0 !important;
 
 @menu-inline-toplevel-item-height: 0;
@@ -99,7 +109,7 @@
 .ant-menu .ant-menu-item.ant-menu-item-active a,
 .ant-menu .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-active .ant-menu-submenu-title,
 .ant-menu .ant-menu-submenu.ant-menu-submenu-inline.ant-menu-submenu-selected .ant-menu-submenu-title {
-  color: @primary-3 !important;
+  color: @primary-2 !important;
 }
 
 .ant-menu .ant-menu-submenu-title {
@@ -112,15 +122,3 @@
 
 //INPUT
 //@input-placeholder-color: @primary-2 !important;
-@input-color: @primary-3 !important;
-@icon-color: @primary-1 !important;
-
-.ant-input {
-  font-weight: 500;
-  font-size: 11px !important;
-}
-
-.ant-input:focus {
-  box-shadow: none !important;
-  border-color: @primary-4 !important;
-}

@@ -82,5 +82,15 @@
   "antd.form.validation.array.min": "%s shall have no less than %s elements.",
   "antd.form.validation.array.max":  "%s shall have no more than %s elements.",
   "antd.form.validation.array.range": "%s shall have from %s to %s elements.",
-  "antd.form.validation.pattern.mismatch":  "%s has value %s that doesn't match pattern %s."
+  "antd.form.validation.pattern.mismatch":  "%s has value %s that doesn't match pattern %s.",
+  "settings": "Settings",
+  "logout": "Logout",
+  "search": "Search",
+  "old-password": "Old password",
+  "placeholder.old-password": "Input old password",
+  "new-password": "New password",
+  "placeholder.new-password": "Input new password",
+  "placeholder.retry-password": "Retry new password",
+  "time-zone": "Time zone",
+  "placeholder.time-zone": "Select time zone"
 }

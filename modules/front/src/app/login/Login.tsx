@@ -1,34 +1,32 @@
 import * as React from "react";
 import {ChangeEvent, FormEvent} from "react";
 import {Button, Form, Icon, Input, message} from "antd";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {action, observable} from "mobx";
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import "./Login.css";
-import logo from "./logo.png";
+import logo from "../header/logo.png";
 import {LanguageSwitcher} from "../../i18n/LanguageSwitcher";
 import {
   FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
-import rootStore from "../store";
+import {RootStoreProp} from "../store";
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
-  @observable login: string;
-  @observable password: string;
+class Login extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+
   @observable performingLoginRequest = false;
 
-  @action
   changeLogin = (e: ChangeEvent<HTMLInputElement>) => {
-    this.login = e.target.value;
+    this.props.rootStore!.login.setLogin(e.target.value);
   };
 
-  @action
   changePassword = (e: ChangeEvent<HTMLInputElement>) => {
-    this.password = e.target.value;
+    this.props.rootStore!.login.setPassword(e.target.value);
   };
 
   @action
@@ -36,11 +34,11 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
     e.preventDefault();
     this.performingLoginRequest = true;
     this.props
-      .mainStore!.login(this.login, this.password)
+      .mainStore!.login(this.props.rootStore!.login.login, this.props.rootStore!.login.password)
       .then(
         action(() => {
           this.performingLoginRequest = false;
-          rootStore.menu.loadUserMenuList();
+          // this.props.rootStore!.menu.loadUserMenuList();
         })
       )
       .catch(
@@ -59,7 +57,6 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
           alt={this.props.intl.formatMessage({id: "common.alt.logo"})}
           className="logo"
         />
-        <div className="title">kazmineral</div>
         <Form layout="vertical" onSubmit={this.doLogin}>
           <Form.Item>
             <Input
@@ -68,7 +65,7 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
                 id: "login.placeholder.login"
               })}
               onChange={this.changeLogin}
-              value={this.login}
+              value={this.props.rootStore!.login.login}
               prefix={<Icon type="user" style={{color: "rgba(0,0,0,.25)"}}/>}
               size="large"
             />
@@ -80,7 +77,7 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps> {
                 id: "login.placeholder.password"
               })}
               onChange={this.changePassword}
-              value={this.password}
+              value={this.props.rootStore!.login.password}
               type="password"
               prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.25)"}}/>}
               size="large"

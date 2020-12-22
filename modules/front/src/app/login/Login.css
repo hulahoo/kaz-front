@@ -14,5 +14,6 @@
 
 .login-form > .logo {
   display: block;
-  margin: 0 auto 12px;
+  margin: 0 auto 20px;
+  height: 50px;
 }

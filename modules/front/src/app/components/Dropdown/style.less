@@ -1,0 +1,23 @@
+@import '/src/theme';
+
+.ant-dropdown-trigger {
+  margin: 0 !important;
+  width: @default-element-property-width;
+}
+
+.ant-dropdown-trigger.default-type {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: @primary-3;
+}
+
+.ant-dropdown-trigger.default-type > span {
+  font-size: @default-font-size;
+}
+
+.ant-dropdown-menu {
+  max-height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

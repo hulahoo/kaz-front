@@ -8,11 +8,19 @@ import {LanguageSwitcher} from "../../i18n/LanguageSwitcher";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Input from "../components/Input/Input";
 import UserPanel from "../UserPanel/UserPanel";
+import CommonComponentHoc from "../hoc/CommonComponent/CommonComponentHoc";
+import {ChangeEvent} from "react";
 
 @injectMainStore
 @observer
 class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProps> {
   render() {
+    const SearchComponent = CommonComponentHoc(
+      <Input
+        placeholder={this.props.intl.formatMessage({id: "search"}) + " ..."}
+        prefix={<Icon type="search"/>}
+        autoComplete={'off'}/>, {wrapperStyles: {style: {"margin": "16px 0"}}});
+
     return (
       <div className="app-header">
         <div className={"logo"}>
@@ -23,9 +31,9 @@ class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProp
         </div>
         <div className={"additional-panel"}>
           <div className={"search-container"}>
-            <Input placeholder={"Найти ..."} style={{'height': '32px'}} prefix={<Icon type="search"/>}/>
+            <SearchComponent/>
           </div>
-          <UserPanel />
+          <UserPanel/>
         </div>
       </div>
     );

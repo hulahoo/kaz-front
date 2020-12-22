@@ -4,10 +4,10 @@ import {getCubaREST} from "@cuba-platform/react";
 
 export const restServices = {
   userMenuService: {
-    userMenuList: (params?: {}, fetchOpts?: FetchOptions) => {
+    getTimeZones: (params?: {}, fetchOpts?: FetchOptions) => {
       return getCubaREST()!.invokeService(
-        "tsadv_UserMenuService",
-        "userMenuList",
+        "krj_UserSettingService",
+        "getTimeZones",
         {...params},
         fetchOpts
       );

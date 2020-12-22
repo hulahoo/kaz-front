@@ -26,7 +26,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "strict": false
+    "strict": false,
+    "downlevelIteration": true
   },
   "exclude": [
     "node_modules",

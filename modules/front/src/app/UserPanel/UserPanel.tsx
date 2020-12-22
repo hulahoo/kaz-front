@@ -4,6 +4,7 @@ import {observer} from "mobx-react";
 import {Button, Dropdown, Icon, Menu, Modal} from "antd";
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
+import {NavLink} from "react-router-dom";
 
 @observer
 @injectMainStore
@@ -15,11 +16,11 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
     const menu = (
       <Menu className={"header-user-dropdown"}>
         <Menu.Item key="0">
-          <a><Icon type={"setting"}/>Настройки</a>
+          <NavLink to={"/user/settings"}><Icon type={"setting"}/>{this.props.intl.formatMessage({id: "settings"})}</NavLink>
         </Menu.Item>
         <Menu.Divider/>
         <Menu.Item key="2">
-          <a onClick={this.showLogoutConfirm}><Icon type={"logout"}/>Выйти</a>
+          <a onClick={this.showLogoutConfirm}><Icon type={"logout"}/>{this.props.intl.formatMessage({id: "logout"})}</a>
         </Menu.Item>
       </Menu>
     );
