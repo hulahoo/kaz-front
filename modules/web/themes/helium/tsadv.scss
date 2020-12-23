@@ -1,0 +1,511 @@
+@mixin tsadv {
+
+  .v-slot-border-top {
+    border-top: 1px solid #c5c5c5;
+  }
+
+  .add-course-empty {
+    background: aliceblue;
+    border: 1px solid #eee;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+
+    > .add-course-label {
+      font-family: Arial, sans-serif;
+      margin-top: 50%;
+      text-align: center;
+    }
+  }
+
+  .image-dotted-border {
+    border: 1px dotted darkgray;
+    border-radius: 4px;
+  }
+
+  .start-fill-feedback-w {
+
+    .start-fill-feedback-name {
+      padding: 10px 15px;
+      background: #226bb3 !important;
+      color: white;
+      font-family: Arial, sans-serif;
+      border: 1px solid #dfdfdf;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+    }
+
+    .start-fill-feedback-item {
+      border: 1px solid #dfdfdf;
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+      overflow: hidden;
+
+      .start-fill-feedback-qw {
+        background: #fafafa;
+        padding: 10px 15px;
+        border-bottom: 1px solid #dfdfdf;
+        overflow: hidden;
+
+        .start-fill-feedback-qo {
+          border: 1px solid #dfdfdf;
+          background: white;
+          border-radius: 4px;
+          padding: 3px 10px;
+          font-size: 12px;
+          font-family: Arial, sans-serif;
+        }
+
+        .start-fill-feedback-qt {
+
+        }
+      }
+
+      .start-fill-feedback-aw {
+        padding: 10px 15px;
+      }
+    }
+  }
+
+  .org-tree-search-fi {
+    /*&:after {
+      opacity: 1;
+      border: 1px dotted blue;
+    }*/
+    span {
+      font-weight: bold;
+    }
+  }
+
+  .non-bold {
+    span {
+      font-weight: normal;
+    }
+  }
+
+  .org-tree-search-w {
+    position: relative;
+
+    input.v-textfield-inline-icon {
+      padding-right: 30px;
+    }
+
+    .org-tree-remove-text {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      color: lightgray;
+      border: none !important;
+
+      &:hover, &:focus {
+        color: gray;
+      }
+    }
+  }
+
+  .c-card-record-hs, .c-card-record-q {
+    text-decoration: none !important;
+    border: none !important;
+  }
+
+  .c-card-record-hs.red {
+    color: red;
+  }
+
+  .c-card-record-comment {
+    word-wrap: normal;
+    white-space: normal;
+    line-height: 15px;
+  }
+
+  .c-card-record-icon.yellow {
+    color: darksalmon !important;
+  }
+
+  .c-card-record-icon.green {
+    color: green !important;
+  }
+
+  .c-card-record-icon.red {
+    color: red !important;
+  }
+
+  .v-slot-fast-interview-wrapper {
+    border: 1px solid rgb(197, 197, 197);
+    border-radius: 5px;
+    overflow: hidden;
+
+    .v-slot-fast-interview-header {
+      border-bottom: 1px solid rgb(197, 197, 197);
+      background: #fafafa;
+
+      .fast-interview-header {
+        height: 40px;
+        line-height: 40px;
+        padding: 0 10px;
+      }
+
+      .fast-interview-sl {
+        font-family: Arial, sans-serif;
+        outline: none;
+        text-decoration: none;
+        border: none;
+      }
+    }
+  }
+
+  .v-slot-int-q-test-result {
+    border: 1px solid #dfdfdf;
+    border-radius: 4px;
+    background: aliceblue;
+
+    .int-q-test-result {
+      padding: 10px;
+    }
+  }
+
+  .v-richtextarea .gwt-RichTextArea {
+    height: 80% !important;
+  }
+
+  .c-context-help-button {
+    color: red !important;
+  }
+
+  .v-slot-ob-wrapper {
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .v-slot-ob-header {
+    background: #474e5d !important;
+  }
+
+  .v-slot-ob-header .ob-header {
+    padding: 10px;
+  }
+
+  .v-slot-ob-header .ob-header-name {
+    color: white;
+  }
+
+  .v-slot-ob-header .ob-header-page {
+    border: 1px solid white;
+    border-radius: 3px;
+    color: white;
+    font-size: 12px;
+    padding: 2px 10px;
+    font-family: Arial, sans-serif;
+  }
+
+  .v-slot-ob-body {
+    border-left: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+  }
+
+  .v-slot-ob-body .ob-body {
+    padding: 10px;
+  }
+  .v-slot-ob-footer {
+    background: #474e5d !important;
+  }
+  .v-slot-ob-footer .ob-footer {
+    padding: 10px;
+  }
+
+  .v-slot-custom-accordion-w {
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .custom-accordion-header {
+    background: #fafafa;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+
+  .v-slot-custom-accordion-content {
+    padding: 10px;
+    border-top: 1px solid #e5e5e5;
+  }
+
+  .custom-accordion-header-title {
+    color: #197de1;
+  }
+  .timesheet-drag-block {
+    background: #e5ebf8;
+    padding: 3px;
+    border-radius: 5px;
+    margin: 0 !important;
+    border: 1px solid #c3d1f8;
+    color: #464646 !important;
+  }
+
+  .timesheet-disable-block {
+    background: #eeeeee;
+    padding: 3px;
+    border-radius: 5px;
+    margin: 0 !important;
+    border: 1px solid #c3d1f8;
+    color: #464646 !important;
+  }
+
+  .timesheet-trash-block {
+    border-radius: 5px;
+    border: 1px solid #c3d1f8;
+    color: #464646 !important;
+    background-color: #e5ebf8;
+    background-image: url("images/trash.png");
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: 20px;
+  }
+
+  .timecard-table .v-table-body {
+    font-size: 12px !important;
+    font-family: Arial, sans-serif;
+  }
+
+  .timecard-datagrid .v-grid-cell {
+    font-size: 12px !important;
+    font-family: Arial, sans-serif;
+    padding: 0px 7px 0px 7px;
+  }
+
+  .timecard-tree .v-tree-node-caption {
+    font-family: Arial, sans-serif;
+
+    span {
+      font-size: 12px !important;
+    }
+  }
+
+  .green-day {
+    color: limegreen;
+    font-weight: bold;
+  }
+
+  .red-day {
+    color: red;
+    font-weight: bold;
+  }
+
+  .lightCoral-day {
+    color: LightCoral;
+    font-weight: bold;
+  }
+
+  .orange-day {
+    color: darkorange;
+    font-weight: bold;
+  }
+
+  .blue-day {
+    color: #0300e0;
+    font-weight: bold;
+  }
+
+  .person-in-timesheets {
+    text-indent: 11px;
+  }
+
+  .datagrid-offsets .v-grid-body .v-grid-cell {
+    height: 42px;
+  }
+
+  .datagrid-offsets .v-grid-column-default-header-content {
+    text-align: center;
+  }
+
+  .datagrid-offsets .v-grid-cell {
+    padding: 4px;
+  }
+
+  .datagrid-offsets .frozen {
+    padding: 8px;
+  }
+
+  .check-color-red > div {
+    color: red !important;
+  }
+
+  .check-background-red {
+    background: red !important;
+  }
+  .premium-grade {
+    background-color: yellow;
+    font-weight: bold;
+    color: red;
+  }
+
+  .v-slot-ca-progress-bar {
+    overflow: hidden !important;
+    border: 1px solid #ddd;
+    background: #f5f5f5;
+    border-radius: 3px;
+  }
+
+  .ca-progress-bar .progress-step:first-child {
+    padding-left: 15px;
+  }
+
+  .progress-step-label {
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+    -webkit-touch-callout: none !important; /* iOS Safari */
+    -webkit-user-select: none !important; /* Safari */
+    -khtml-user-select: none !important; /* Konqueror HTML */
+    -moz-user-select: none !important; /* Firefox */
+    -ms-user-select: none !important; /* Internet Explorer/Edge */
+    user-select: none !important;
+  }
+
+  .progress-step {
+    float: left !important;
+    color: #bbb;
+    text-decoration: none;
+    padding: 12px 0 10px 35px;
+    position: relative;
+    display: block;
+    border: 0 !important;
+    border-radius: 0;
+    outline-style: none;
+    background: #f5f5f5;
+    cursor: pointer;
+
+    &:before {
+      content: " ";
+      display: block;
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 20px solid #ddd;
+      position: absolute;
+      top: 50%;
+      margin-top: -20px;
+      margin-left: 1px;
+      left: 100%;
+      z-index: 1;
+    }
+
+    &:after {
+      content: " ";
+      display: block;
+      width: 0;
+      height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 20px solid #f5f5f5;
+      position: absolute;
+      top: 50%;
+      margin-top: -20px;
+      left: 100%;
+      z-index: 2;
+    }
+  }
+
+  .progress-step.progress-step-done {
+    border-color: #5cb85c !important;
+    color: #fff !important;
+    background: #5cb85c !important;
+
+    &:after {
+      border-left: 20px solid #5cb85c;
+    }
+  }
+
+  .progress-step.progress-step-active,
+  .progress-step.ps-mb {
+    cursor: pointer;
+  }
+
+  .progress-step.progress-step-active-filter {
+    border-color: #BE87B2 !important;
+    color: #fff !important;
+    background: #BE87B2 !important;
+
+    &:after {
+      border-left: 20px solid #BE87B2 !important;
+    }
+  }
+
+  .progress-step.progress-step-uco {
+    border-color: #9a82b1;
+    color: #fff;
+    background: #9a82b1;
+    border-top: 2px solid #f5f5f5 !important;
+
+    &:after {
+      border-left: 20px solid #9a82b1;
+    }
+  }
+
+  .progress-step.progress-step-uco.progress-step-refused {
+    border-color: #df5640;
+    color: #fff;
+    background: #df5640;
+
+    &:after {
+      border-left: 20px solid #df5640;
+    }
+  }
+
+  .progress-step.progress-step-current {
+    border-color: #5bc0de !important;
+    color: #fff !important;
+    background: #5bc0de !important;
+
+    &:after {
+      border-left: 20px solid #5bc0de !important;
+    }
+  }
+
+  .pc-left-links-scroll {
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #dfdfdf;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #fefefe;
+    }
+  }
+
+  .display-block {
+    display: block;
+  }
+  .v-slot-float-right {
+    float: right;
+  }
+
+  .float-right {
+    float: right;
+  }
+
+  .span-count {
+    font-size: smaller;
+    border-radius: 50%;
+    background-color: #2f87e9;
+    height: 20px;
+    width: 20px;
+    padding: 5px 2px 0px 2px;
+    text-align: center;
+    color: white;
+  }
+
+  .label-color-red {
+    color: red;
+  }
+
+}
