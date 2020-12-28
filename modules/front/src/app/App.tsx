@@ -2,7 +2,7 @@ import * as React from "react";
 import "./App.css";
 
 import {Icon, Layout, Menu} from "antd";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import Login from "./login/Login";
 import Centered from "./common/Centered";
 import AppHeader from "./header/AppHeader";
@@ -27,10 +27,12 @@ import {ComponentClass} from "react";
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import Content from "./components/Content/Content";
 import UserSettings from "./pages/user-settings/UserSettings";
+import {RootStoreProp} from "./store";
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps> {
+class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
     super(props, context);

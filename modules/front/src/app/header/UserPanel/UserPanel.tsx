@@ -1,14 +1,22 @@
 import React from "react";
-import {observable} from "mobx";
-import {observer} from "mobx-react";
-import {Button, Dropdown, Icon, Menu, Modal} from "antd";
+import {inject, observer} from "mobx-react";
+import {Dropdown, Icon, Menu, Modal} from "antd";
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {NavLink} from "react-router-dom";
+import Notification from "./Notification/Notification";
+import {RootStoreProp} from "../../store";
 
-@observer
 @injectMainStore
-class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps> {
+@inject("rootStore")
+@observer
+class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+
+  constructor(props: MainStoreInjected & WrappedComponentProps & RootStoreProp, context: any) {
+    super(props, context);
+
+    this.props.rootStore!.bellNotification.loadBellNotificationsAndTasks();
+  }
 
   render() {
     const appState = this.props.mainStore!;
@@ -16,7 +24,8 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
     const menu = (
       <Menu className={"header-user-dropdown"}>
         <Menu.Item key="0">
-          <NavLink to={"/user/settings"}><Icon type={"setting"}/>{this.props.intl.formatMessage({id: "settings"})}</NavLink>
+          <NavLink to={"/user/settings"}><Icon type={"setting"}/>{this.props.intl.formatMessage({id: "settings"})}
+          </NavLink>
         </Menu.Item>
         <Menu.Divider/>
         <Menu.Item key="2">
@@ -26,8 +35,8 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
     );
 
     return <div className="user-panel">
-      <img src={require('../../resources/img/bell.svg')} className={"panel-element"}/>
-      <img src={require('../../resources/img/default-avatar.svg')} className={"panel-element user-img"}/>
+      <Notification/>
+      <img src={require('../../../resources/img/default-avatar.svg')} className={"panel-element user-img"}/>
       <Dropdown overlay={menu} trigger={['click']}>
         <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
           <span className="panelelement">{appState.userName}</span>

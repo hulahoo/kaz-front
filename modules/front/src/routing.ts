@@ -1,6 +1,6 @@
 import {getMenuItems, RouteItem, SubMenu} from "@cuba-platform/react";
-import rootStore from "./app/store";
 import {MenuSubMenu, MenuRouteItem} from "./app/store/MenuStore";
+import {rootStore} from "./app/store";
 
 export const menuItems = getMenuItems();
 

@@ -1,11 +1,42 @@
-@import "/src/theme";
+@import "/src/theme-vars";
 
-.btn {
-//  margin: 16px;
-//  width: 256px;
-  font-weight: 600 !important;
+.button {
   font-size: 12px !important;
+  color: white;
+  border: 0;
+  padding: 12px 0;
+  width: 256px;
+  border-radius: 4px;
+  font-weight: 600 !important;
+  cursor: pointer;
+  outline: none;
 }
+
+.button > *,
+.btn,
+.btn > * {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary {
+  background-color: @primary-1 !important;
+}
+
+.btn-follow {
+  background-color: transparent;
+  border: 2px solid @follow-button-color;
+  color: @primary-2;
+}
+
+.btn-follow:hover {
+  background-color: @follow-button-hover-color;
+}
+
+.btn-follow:active {
+  border-color: @follow-button-hover-color;
+}
+
 
 .ant-btn-primary {
   background-color: @primary-1 !important;

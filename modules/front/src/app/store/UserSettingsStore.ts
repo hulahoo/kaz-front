@@ -1,14 +1,15 @@
 import {action, observable} from "mobx";
 import RootStore from "./RootStore";
 import {restServices} from "../../cuba/services";
+import EntityCrudRestService from "../util/EntityCrudRestService";
+import {User} from "../../cuba/entities/base/sec$User";
+import {notification} from "antd";
 
 export default class UserSettingsStore {
   root: RootStore
 
-  @observable oldPassword: string;
-  @observable newPassword: string;
-  @observable retryPassword: string;
   @observable timeZone: string;
+  @observable timeZoneText?: string;
   @observable timeZones: Map<string, string>;
 
   constructor(root: RootStore) {
@@ -30,33 +31,31 @@ export default class UserSettingsStore {
           map.set(v, jsonObject.timeZones[v]);
         }
       }
-      this.setTimeZone(jsonObject.timeZone);
       this.setTimeZones(map);
+      this.setTimeZone(jsonObject.timeZone);
     });
   }
 
   @action
-  setOldPassword(value: string) {
-    this.oldPassword = value;
-  }
-
-  @action
-  setNewPassword(value: string) {
-    this.newPassword = value;
-  }
-
-  @action
-  setRetryPassword(value: string) {
-    this.retryPassword = value;
-  }
-
-  @action
-  setTimeZone(value: string) {
+  setTimeZone = (value: string) => {
     this.timeZone = value;
+    this.setTimeZoneText(value);
   }
 
   @action
-  setTimeZones(value: Map<string, string>) {
+  setTimeZoneText = (value: string) => {
+    if (this.timeZones) {
+      this.timeZoneText = this.timeZones.get(value);
+    }
+  };
+
+  @action
+  setTimeZones = (value: Map<string, string>) => {
     this.timeZones = value;
+  }
+
+  @action
+  saveUserTimeZone = () => {
+    return EntityCrudRestService.updateEntity(User.NAME, this.root.userInfo.id, {timeZone: this.timeZone})
   }
 }

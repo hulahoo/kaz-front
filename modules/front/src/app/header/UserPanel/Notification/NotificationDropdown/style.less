@@ -1,0 +1,44 @@
+@import "/src/theme-vars";
+
+@tabs-active-color: @primary-1 !important;
+@tabs-highlight-color: @primary-1 !important;
+@tabs-hover-color: @primary-1 !important;
+@tabs-ink-bar-color: @primary-1 !important;
+
+.notifications-menu {
+  padding: 0 16px 16px 16px;
+  width: 452px;
+  background-color: #FFF !important;
+  border-radius: 4px 0 4px 4px;
+  filter: drop-shadow(0px 3px 24px rgba(0, 0, 0, 0.1));
+}
+
+.ant-tabs-nav .ant-tabs-tab-active {
+  font-weight: 600 !important;
+}
+
+.notifications-tab-content {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notifications-tab-content > li:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.notifications-tab-content .bell-notification-name {
+  font-weight: 500;
+  color: black;
+}
+
+.notifications-tab-content .bell-notification-date {
+  color: @primary-3;
+  font-size: @default-font-size;
+}
+
+.notifications-button-container {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+}

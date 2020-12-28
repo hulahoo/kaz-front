@@ -1,28 +1,64 @@
-import React, {ChangeEvent} from "react";
-import Input from "../../components/Input/Input";
+import React from "react";
 import {inject, observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import Button from "../../components/Button/Button";
+import Button, {ButtonType} from "../../components/Button/Button";
 import {RootStoreProp} from "../../store";
-import {Icon, Menu} from "antd";
 import CommonComponentHoc from "../../hoc/CommonComponent/CommonComponentHoc";
 import UserSettingsStore from "../../store/UserSettingsStore";
 import DefaultDropdown, {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
-import {action} from "mobx";
-import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
-import {UserInfo} from "@cuba-platform/rest/dist-node/model";
+import Notification from "../../util/notification/Notification";
+import {Icon, Modal} from "antd";
+import ChangePassword from "./ChangePassword/ChangePassword";
+import {action, observable} from "mobx";
+
+type ChangePasswordResponse = {
+  status: string,
+  message: string
+}
 
 @inject("rootStore")
 @observer
 class UserSettingsMainSection extends React.Component<WrappedComponentProps & RootStoreProp> {
 
+  @observable visibleModalChangePassword = false;
+
+  @action
+  changeVisibleModalChangePassword = () => {
+    this.visibleModalChangePassword = !this.visibleModalChangePassword;
+  }
+
   constructor(props: WrappedComponentProps & RootStoreProp, context: any) {
     super(props, context);
     this.props.rootStore!.userSettings.loadTimeZones();
+    this.props.rootStore!.createChangePasswordStore();
   }
 
-  handleMenuClick(k: string) {
+  handleSubmitSaveButton = () => {
+    this.props.rootStore!.userSettings.saveUserTimeZone().then(() => {
+      Notification.success({
+        message: "Настройки пользователя успешно сохранены"
+      });
+    }).catch(() => {
+      Notification.error({
+        message: "Не удалось сохранить настройки пользователя"
+      });
+    });
+  }
 
+  handleClickChanePassword = () => {
+    this.props.rootStore!.changePassword.changePassword().then((r: string) => {
+      const response: ChangePasswordResponse = JSON.parse(r);
+      if (response.status === 'ERROR') {
+        Notification.error({
+          message: 'Не удалось изменить пароль',
+          description: response.message
+        })
+      } else {
+        Notification.success({
+          message: 'Пароль успешно изменен!',
+        })
+      }
+    })
   }
 
   render() {
@@ -35,39 +71,32 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
       }
     }
 
-    const OldPasswordComponent = CommonComponentHoc(
-      <Input type={"password"}
-             onChange={(e: ChangeEvent<HTMLInputElement>) => userSettingsStore.setOldPassword(e.target.value)}
-             autoComplete={"off"} placeholder={this.props.intl.formatMessage({id: 'placeholder.old-password'})}
-      />, {name: this.props.intl.formatMessage({id: 'old-password'})});
-
-    const NewPasswordComponent = CommonComponentHoc(
-      <Input type={"password"}
-             onChange={(e: ChangeEvent<HTMLInputElement>) => userSettingsStore.setNewPassword(e.target.value)}
-             autoComplete={"off"} placeholder={this.props.intl.formatMessage({id: 'placeholder.new-password'})}
-      />, {name: this.props.intl.formatMessage({id: 'new-password'})});
-
-    const RetryPasswordComponent = CommonComponentHoc(
-      <Input type={"password"}
-             onChange={(e: ChangeEvent<HTMLInputElement>) => userSettingsStore.setRetryPassword(e.target.value)}
-             autoComplete={"off"} placeholder={this.props.intl.formatMessage({id: 'placeholder.retry-password'})}
-      />, {});
-
-    const SubmitBtnPasswordComponent = CommonComponentHoc(
-      <Button children={<span>Сохранить</span>} type={"primary"} style={{"width": "244px"}}
-              onClick={() => console.log()}/>, {});
-
     const TimeZoneComponent = CommonComponentHoc(
-      <DefaultDropdown menu={timeZoneMenu} buttonName={userSettingsStore.timeZone ? userSettingsStore.timeZone : this.props.intl.formatMessage({id: 'placeholder.time-zone'})} handleMenuClick={this.handleMenuClick}/>,
+      <DefaultDropdown menu={timeZoneMenu}
+                       selected={userSettingsStore.timeZoneText ? userSettingsStore.timeZoneText : this.props.intl.formatMessage({id: 'placeholder.time-zone'})}
+                       handleMenuClick={userSettingsStore.setTimeZone}/>,
       {name: this.props.intl.formatMessage({id: 'time-zone'})});
 
+    const ChangePasswordBtnComponent = CommonComponentHoc(
+      <Button children={<><span>Изменить пароль</span></>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+              onClick={this.changeVisibleModalChangePassword}/>, {});
+
+    const SubmitBtnPasswordComponent = CommonComponentHoc(
+      <Button children={<span>Сохранить</span>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+              onClick={this.handleSubmitSaveButton}/>, {});
+
     return <form autoComplete={"off"}>
-      <div>
-        {<OldPasswordComponent/>}
-        {<NewPasswordComponent/>}
-        {<RetryPasswordComponent/>}
-        {<TimeZoneComponent/>}
-        {<SubmitBtnPasswordComponent/>}
+      <div className={"form-container form-container"}>
+        <ChangePasswordBtnComponent/>
+        <TimeZoneComponent/>
+        <SubmitBtnPasswordComponent/>
+        <Modal onOk={this.handleClickChanePassword} visible={this.visibleModalChangePassword}
+               title={"Смена пароля"}
+               width={350}
+               okText={"Изменить"} cancelText={"Закрыть"}
+               onCancel={this.changeVisibleModalChangePassword}>
+          <ChangePassword/>
+        </Modal>
       </div>
     </form>;
   }
