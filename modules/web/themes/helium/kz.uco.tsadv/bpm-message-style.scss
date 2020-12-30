@@ -1,0 +1,60 @@
+@mixin bpm-message-style {
+  .bpm-message-card-header {
+    display: flex;
+  }
+
+  .bpm-message-img {
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    margin-bottom: 5px;
+    margin-right: 10px;
+  }
+
+  .bpm-request-message-card-body {
+    display: contents;
+  }
+
+  .bpm-message-block.selected:hover {
+    background: antiquewhite;
+  }
+  .bpm-message-block.unselected:hover {
+    background: antiquewhite;
+  }
+
+  .bpm-message-block.unselected {
+    background: whitesmoke;
+  }
+
+  .bpm-message-block.selected {
+    background: aliceblue;
+  }
+
+  .bpm-message-delete-btn {
+    color: red;
+    margin-left: auto;
+  }
+
+  .bpm-message-answer-btn {
+    text-decoration: none;
+    color: #7f8fa4;
+  }
+
+  .bpm-message-card {
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+
+  .bpm-message {
+    font-family: Arial, sans-serif;
+  }
+
+  .white-space-normal {
+    white-space: normal;
+  }
+
+  .bpm-message-img.c-image-bpm-message-img {
+    object-fit: contain;
+  }
+}
+

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.cookie.js"></script>
+    <script src="config.js"></script>
+    <script src="bootstrap.bundle.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <link href="rcg-qrcode-style.css" rel="stylesheet" type="text/css">
+    <link href="bootstrap-grid.min.css" rel="stylesheet" type="text/css">
+    <link href="bootstrap-reboot.min.css" rel="stylesheet" type="text/css">
+    <link href="bootstrap.min.css" rel="stylesheet" type="text/css">
+    <title>QR CODE INFO</title>
+</head>
+<body class="main-body">
+<div class="info" id="info">
+    <div class="row m-0">
+        <div class="col-12 p-0">
+            <div class="full-name">
+                <h2 id="fullName">123</h2>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="row m-0">
+            <div class="col-11 m-auto text-left">
+                <div class="goodsName">
+                    <label class="goodsNameLbl" id="goodsNameLbl">Наименование:</label>
+                    <strong id="goodsName"></strong>
+                </div>
+            </div>
+        </div>
+        <div class="row m-0">
+            <div class="col-11 m-auto text-left">
+                <div class="voucherName">
+                    <label class="voucherNameLbl" id="voucherNameLbl">Код:</label>
+                    <strong id="voucherName"></strong>
+                </div>
+            </div>
+        </div>
+        <div class="row m-0">
+            <div class="col-11 m-auto">
+                <div class="qrCodeImageDiv" id="qrCodeImageDiv">
+                    <img id="qrCodeImg">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-11">
+                <div class="quantity row">
+                    <div class="col-6 text-right">
+                        <span id="quantityLbl">Количество</span>&nbsp;
+                    </div>
+                    <div class="col-6 p-0 align-self-center">
+                        <input class="float-right" id="quantity" readonly="" title="Количество" type="text"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row m-0 p-0">
+        <div class="col-12 p-0">
+            <div class="use-btn">
+                <input id="useBtn" onclick="useVoucher()" type="submit" value="Использовать">
+            </div>
+        </div>
+    </div>
+    <div class="result">
+        <label id="result"></label>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    var userLang = navigator.language || navigator.userLanguage;
+    if (userLang === "ru-RU") {
+        $('#useBtn').val("Использовать");
+        $('#quantity').prop('title', "Количество");
+        $('#quantityLbl').text("Количество:");
+        $('#goodsNameLbl').text("Наименование:");
+        $('#voucherNameLbl').text("Код:");
+    } else {
+        $('#useBtn').val("USE");
+        $('#quantity').prop('title', "Quantity");
+        $('#quantityLbl').text("Quantity:");
+        $('#goodsNameLbl').text("Name:");
+        $('#voucherNameLbl').text("Code:");
+    }
+    var appUrl = config.appUrl;
+    var access_token, qrCode;
+    $.ready(checkCookie());
+    function useBtnDisable() {
+        document.getElementById("useBtn").disabled = true;
+        if (userLang === "ru-RU") {
+            $('#useBtn').val("УЖЕ ИСПОЛЬЗОВАН");
+        }else {
+            $('#useBtn').val("ALREADY USED");
+        }
+    }
+
+    function checkCookie() {
+        qrCode = getCookie("qrCode");
+        access_token = getCookie("token");
+        console.log(access_token);
+        if (qrCode != "") {
+            loadInfoByQRCode(qrCode);
+        }
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function loadInfoByQRCode(qrCode) {
+        var url = appUrl + "/rest/v2/services/tsadv_RecognitionRestService/loadInfoByQRCode";
+        $.ajax(url,
+            {
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    qrCode: qrCode
+                }),
+                headers: {
+                    "Authorization": "Bearer " + access_token
+                }
+            })
+            .error(function (res) {
+                var str = JSON.stringify(res);
+                var incStr = str.includes("getAccessTokenByTokenValue", 10);
+
+                if (incStr) {
+                    window.location.replace(appUrl + "/VAADIN/themes/base/qrcode/login.html?fromMainPage=true");
+                }
+                $("#result").text(JSON.stringify(res));
+            })
+            .success(function (res) {
+                var object = JSON.parse(res);
+
+                $("#fullName").html(object.fullName);
+                $("#voucherName").html(object.qrCode);
+                $("#goodsName").html(object.goodsName);
+                $("#quantity").val(object.quantity);
+                if (object.image != "") {
+                    $("#qrCodeImg").prop('src', "data:image/png;base64, " + object.image);
+                }
+                if (object.voucherUsed === 'true') {
+                    useBtnDisable();
+                }
+            })
+    }
+
+    function useVoucher() {
+        var url = appUrl + "/rest/v2/services/tsadv_RecognitionRestService/useVoucher";
+        $.ajax(url,
+            {
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    qrCode: qrCode
+                }),
+                headers: {
+                    "Authorization": "Bearer " + access_token
+                }
+            })
+            .error(function (res) {
+                $("#result").text(res);
+            })
+            .success(function (res) {
+                useBtnDisable();
+                $("#result").text(res)
+            })
+    }
+
+
+</script>
+</html>
