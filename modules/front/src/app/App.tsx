@@ -21,13 +21,11 @@ import {
   IntlFormatters,
   WrappedComponentProps
 } from "react-intl";
-import IconRender, {SvgProps} from '../resources/icons/menu/index';
-import {CustomIconComponentProps} from "antd/es/icon";
-import {ComponentClass} from "react";
+import IconRender from '../resources/icons/menu/index';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
-import Content from "./components/Content/Content";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
+import MyKpiPage from "./pages/my-kpi/MyKpiPage";
 
 @injectMainStore
 @inject("rootStore")
@@ -78,13 +76,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
               <Switch>
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
-                {/*{collectRouteItems(menuItems).map(route => (*/}
-                {/*  <Route*/}
-                {/*    key={route.pathPattern}*/}
-                {/*    path={route.pathPattern}*/}
-                {/*    component={route.component}*/}
-                {/*  />*/}
-                ))}
+                <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
               </Switch>
             </Layout.Content>
           </Layout>

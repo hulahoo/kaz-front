@@ -10,6 +10,9 @@
   font-weight: 600 !important;
   cursor: pointer;
   outline: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .button > *,
@@ -19,8 +22,22 @@
   font-weight: 600 !important;
 }
 
+.button span {
+  display: inline-block;
+}
+
 .btn-primary {
   background-color: @primary-1 !important;
+}
+
+.btn-primary > i.icon {
+  margin: 0 6px;
+}
+
+.btn-primary > i.icon svg {
+  fill: white !important;
+  width: 15px;
+  height: 15px;
 }
 
 .btn-follow {

@@ -10,9 +10,6 @@ import UserSettingMainSection from "./UserSettingMainSection";
 
 class UserSettings extends React.Component<RootStoreProp & WrappedComponentProps> {
 
-  handleChangeOldPassword(e: ChangeEvent<InputElement>) {
-  }
-
   render() {
     const MainSection = SectionHoc(<UserSettingMainSection />, {});
     const PageContentComponent = PageContentHoc(<MainSection/>, {pageName: this.props.intl.formatMessage({id: 'settings'})});

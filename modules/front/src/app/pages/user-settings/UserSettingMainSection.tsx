@@ -10,6 +10,7 @@ import Notification from "../../util/notification/Notification";
 import {Icon, Modal} from "antd";
 import ChangePassword from "./ChangePassword/ChangePassword";
 import {action, observable} from "mobx";
+import {ReactComponent as KeySvg} from '../../../resources/icons/key.svg';
 
 type ChangePasswordResponse = {
   status: string,
@@ -78,7 +79,7 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
       {name: this.props.intl.formatMessage({id: 'time-zone'})});
 
     const ChangePasswordBtnComponent = CommonComponentHoc(
-      <Button children={<><span>Изменить пароль</span></>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+      <Button children={<><i className={"icon"}><KeySvg /></i><span>Изменить пароль</span></>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
               onClick={this.changeVisibleModalChangePassword}/>, {});
 
     const SubmitBtnPasswordComponent = CommonComponentHoc(

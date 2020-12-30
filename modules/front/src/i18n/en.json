@@ -92,5 +92,6 @@
   "placeholder.new-password": "Input new password",
   "placeholder.retry-password": "Retry new password",
   "time-zone": "Time zone",
-  "placeholder.time-zone": "Select time zone"
+  "placeholder.time-zone": "Select time zone",
+  "menu.my-kpi": "My KPI"
 }

@@ -85,5 +85,6 @@
   "placeholder.new-password": "Введите новый пароль",
   "placeholder.retry-password": "Повторите новый пароль",
   "time-zone": "Часовой пояс",
-  "placeholder.time-zone": "Выберите часовой пояс"
+  "placeholder.time-zone": "Выберите часовой пояс",
+  "menu.my-kpi": "Мой KPI"
 }
