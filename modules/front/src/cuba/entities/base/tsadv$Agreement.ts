@@ -16,12 +16,23 @@ export class Agreement extends AbstractParentEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type AgreementViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "agreement.view";
-export type AgreementView<V extends AgreementViewName> = V extends "_minimal"
-  ? Pick<Agreement, "id" | "agreementNumber">
+export type AgreementView<V extends AgreementViewName> = V extends "_base"
+  ? Pick<
+      Agreement,
+      | "id"
+      | "agreementNumber"
+      | "suspensionDateFrom"
+      | "suspensionDateTo"
+      | "dateFrom"
+      | "dateTo"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Agreement,
@@ -35,19 +46,8 @@ export type AgreementView<V extends AgreementViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Agreement,
-      | "id"
-      | "agreementNumber"
-      | "suspensionDateFrom"
-      | "suspensionDateTo"
-      | "dateFrom"
-      | "dateTo"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Agreement, "id" | "agreementNumber">
   : V extends "agreement.view"
   ? Pick<
       Agreement,

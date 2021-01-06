@@ -6,19 +6,19 @@ export class CoursePreRequisition extends AbstractParentEntity {
   requisitionCourse?: Course | null;
 }
 export type CoursePreRequisitionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "coursePreRequisition.edit"
   | "coursePreRequisition.edit.new";
 export type CoursePreRequisitionView<
   V extends CoursePreRequisitionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CoursePreRequisition,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CoursePreRequisition,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

@@ -5,7 +5,7 @@ export class RcgQuestionAnswerPojo extends BaseUuidEntity {
   text?: string | null;
   image?: string | null;
 }
-export type RcgQuestionAnswerPojoViewName = "_minimal" | "_local" | "_base";
+export type RcgQuestionAnswerPojoViewName = "_base" | "_local" | "_minimal";
 export type RcgQuestionAnswerPojoView<
   V extends RcgQuestionAnswerPojoViewName
 > = never;

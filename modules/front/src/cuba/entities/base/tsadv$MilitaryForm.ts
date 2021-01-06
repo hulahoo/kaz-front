@@ -32,13 +32,11 @@ export class MilitaryForm extends AbstractParentEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type MilitaryFormViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "militaryForm-view";
-export type MilitaryFormView<
-  V extends MilitaryFormViewName
-> = V extends "_local"
+export type MilitaryFormView<V extends MilitaryFormViewName> = V extends "_base"
   ? Pick<
       MilitaryForm,
       | "id"
@@ -53,7 +51,7 @@ export type MilitaryFormView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       MilitaryForm,
       | "id"

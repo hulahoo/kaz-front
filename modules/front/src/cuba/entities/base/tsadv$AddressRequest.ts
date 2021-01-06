@@ -21,13 +21,13 @@ export class AddressRequest extends StandardEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type AddressRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "addressRequest-view";
 export type AddressRequestView<
   V extends AddressRequestViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AddressRequest,
       | "id"
@@ -38,7 +38,7 @@ export type AddressRequestView<
       | "startDate"
       | "endDate"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AddressRequest,
       | "id"

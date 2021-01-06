@@ -7,15 +7,15 @@ export class SecurityPersonType extends StandardEntity {
   personType?: DicPersonType | null;
 }
 export type SecurityPersonTypeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "securityPersonType-view"
-  | "securityPersonType-edit";
+  | "_local"
+  | "_minimal"
+  | "securityPersonType-edit"
+  | "securityPersonType-view";
 export type SecurityPersonTypeView<
   V extends SecurityPersonTypeViewName
-> = V extends "securityPersonType-view"
+> = V extends "securityPersonType-edit"
   ? Pick<SecurityPersonType, "id" | "securityGroup" | "personType">
-  : V extends "securityPersonType-edit"
+  : V extends "securityPersonType-view"
   ? Pick<SecurityPersonType, "id" | "securityGroup" | "personType">
   : never;

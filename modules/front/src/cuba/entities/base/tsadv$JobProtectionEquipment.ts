@@ -10,13 +10,13 @@ export class JobProtectionEquipment extends AbstractParentEntity {
   endDate?: any | null;
 }
 export type JobProtectionEquipmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "jobProtectionEquipment.edit";
 export type JobProtectionEquipmentView<
   V extends JobProtectionEquipmentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       JobProtectionEquipment,
       | "id"
@@ -27,7 +27,7 @@ export type JobProtectionEquipmentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       JobProtectionEquipment,
       | "id"

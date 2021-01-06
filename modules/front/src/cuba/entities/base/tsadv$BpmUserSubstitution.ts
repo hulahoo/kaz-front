@@ -1,22 +1,22 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { UserExt } from "./base$UserExt";
+import { TsadvUserExt } from "./tsadv$UserExt";
 export class BpmUserSubstitution extends StandardEntity {
   static NAME = "tsadv$BpmUserSubstitution";
-  substitutedUser?: UserExt | null;
-  user?: UserExt | null;
+  substitutedUser?: TsadvUserExt | null;
+  user?: TsadvUserExt | null;
   startDate?: any | null;
   endDate?: any | null;
 }
 export type BpmUserSubstitutionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "bpmUserSubstitution-view";
 export type BpmUserSubstitutionView<
   V extends BpmUserSubstitutionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<BpmUserSubstitution, "id" | "startDate" | "endDate">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<BpmUserSubstitution, "id" | "startDate" | "endDate">
   : V extends "bpmUserSubstitution-view"
   ? Pick<

@@ -11,13 +11,11 @@ export class OfferHistory extends AbstractParentEntity {
   offer?: Offer | null;
 }
 export type OfferHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "offerHistory.edit";
-export type OfferHistoryView<
-  V extends OfferHistoryViewName
-> = V extends "_local"
+export type OfferHistoryView<V extends OfferHistoryViewName> = V extends "_base"
   ? Pick<
       OfferHistory,
       | "id"
@@ -29,7 +27,7 @@ export type OfferHistoryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       OfferHistory,
       | "id"

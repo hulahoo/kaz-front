@@ -9,14 +9,14 @@ export class GoodsCart extends StandardEntity {
   quantity?: any | null;
 }
 export type GoodsCartViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goodsCart.add"
   | "goodsCart.checkout";
-export type GoodsCartView<V extends GoodsCartViewName> = V extends "_local"
+export type GoodsCartView<V extends GoodsCartViewName> = V extends "_base"
   ? Pick<GoodsCart, "id" | "issued" | "quantity">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<GoodsCart, "id" | "issued" | "quantity">
   : V extends "goodsCart.add"
   ? Pick<GoodsCart, "id" | "issued" | "quantity" | "goods">

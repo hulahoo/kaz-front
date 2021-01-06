@@ -21,28 +21,15 @@ export class AttestationParticipant extends StandardEntity {
   attachment?: FileDescriptor | null;
 }
 export type AttestationParticipantViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "attestationParticipant.employees"
+  | "_local"
+  | "_minimal"
+  | "attestationParticipant.attestation"
   | "attestationParticipant.edit"
-  | "attestationParticipant.attestation";
+  | "attestationParticipant.employees";
 export type AttestationParticipantView<
   V extends AttestationParticipantViewName
-> = V extends "_minimal"
-  ? Pick<AttestationParticipant, "id" | "attestation">
-  : V extends "_local"
-  ? Pick<
-      AttestationParticipant,
-      | "id"
-      | "attestationDate"
-      | "passingLanguage"
-      | "commissionRecomendation"
-      | "notAppeared"
-      | "notAppearedReason"
-      | "protocol"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       AttestationParticipant,
       | "id"
@@ -54,7 +41,7 @@ export type AttestationParticipantView<
       | "notAppearedReason"
       | "protocol"
     >
-  : V extends "attestationParticipant.employees"
+  : V extends "_local"
   ? Pick<
       AttestationParticipant,
       | "id"
@@ -64,10 +51,20 @@ export type AttestationParticipantView<
       | "notAppeared"
       | "notAppearedReason"
       | "protocol"
-      | "personGroup"
-      | "result"
-      | "event"
-      | "interviewResult"
+    >
+  : V extends "_minimal"
+  ? Pick<AttestationParticipant, "id" | "attestation">
+  : V extends "attestationParticipant.attestation"
+  ? Pick<
+      AttestationParticipant,
+      | "id"
+      | "attestationDate"
+      | "passingLanguage"
+      | "commissionRecomendation"
+      | "notAppeared"
+      | "notAppearedReason"
+      | "protocol"
+      | "attestation"
       | "attachment"
     >
   : V extends "attestationParticipant.edit"
@@ -87,7 +84,7 @@ export type AttestationParticipantView<
       | "interviewResult"
       | "attachment"
     >
-  : V extends "attestationParticipant.attestation"
+  : V extends "attestationParticipant.employees"
   ? Pick<
       AttestationParticipant,
       | "id"
@@ -97,7 +94,10 @@ export type AttestationParticipantView<
       | "notAppeared"
       | "notAppearedReason"
       | "protocol"
-      | "attestation"
+      | "personGroup"
+      | "result"
+      | "event"
+      | "interviewResult"
       | "attachment"
     >
   : never;

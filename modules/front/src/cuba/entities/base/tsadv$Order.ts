@@ -21,26 +21,8 @@ export class Order extends AbstractTimeBasedEntity {
   orderReason?: DicOrderReason | null;
   caption?: string | null;
 }
-export type OrderViewName = "_minimal" | "_local" | "_base" | "order-view";
-export type OrderView<V extends OrderViewName> = V extends "_minimal"
-  ? Pick<Order, "id" | "orderType" | "orderNumber" | "orderDate">
-  : V extends "_local"
-  ? Pick<
-      Order,
-      | "id"
-      | "orderNumber"
-      | "orderDate"
-      | "cancelOrderNumber"
-      | "cancelOrderDate"
-      | "caption"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
-  : V extends "_base"
+export type OrderViewName = "_base" | "_local" | "_minimal" | "order-view";
+export type OrderView<V extends OrderViewName> = V extends "_base"
   ? Pick<
       Order,
       | "id"
@@ -57,6 +39,24 @@ export type OrderView<V extends OrderViewName> = V extends "_minimal"
       | "endDate"
       | "writeHistory"
     >
+  : V extends "_local"
+  ? Pick<
+      Order,
+      | "id"
+      | "orderNumber"
+      | "orderDate"
+      | "cancelOrderNumber"
+      | "cancelOrderDate"
+      | "caption"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
+  : V extends "_minimal"
+  ? Pick<Order, "id" | "orderType" | "orderNumber" | "orderDate">
   : V extends "order-view"
   ? Pick<
       Order,

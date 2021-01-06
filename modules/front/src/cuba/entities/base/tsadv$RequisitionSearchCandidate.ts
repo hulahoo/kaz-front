@@ -12,9 +12,9 @@ export class RequisitionSearchCandidate extends BaseUuidEntity {
   reservedCandidate?: boolean | null;
 }
 export type RequisitionSearchCandidateViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type RequisitionSearchCandidateView<
   V extends RequisitionSearchCandidateViewName
 > = never;

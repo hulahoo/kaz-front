@@ -7,15 +7,15 @@ export class TalentProgramGrade extends StandardEntity {
   gradeGroup?: GradeGroup | null;
 }
 export type TalentProgramGradeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "talentProgramGrade-view";
 export type TalentProgramGradeView<
   V extends TalentProgramGradeViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<TalentProgramGrade, "id" | "talentProgram">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<TalentProgramGrade, "id" | "talentProgram">
   : V extends "talentProgramGrade-view"
   ? Pick<TalentProgramGrade, "id" | "talentProgram" | "gradeGroup">

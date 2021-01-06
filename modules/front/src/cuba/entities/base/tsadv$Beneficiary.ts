@@ -11,26 +11,11 @@ export class Beneficiary extends AbstractParentEntity {
   relationshipType?: DicRelationshipType | null;
 }
 export type BeneficiaryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "beneficiaryView";
-export type BeneficiaryView<
-  V extends BeneficiaryViewName
-> = V extends "_minimal"
-  ? Pick<Beneficiary, "id" | "personGroupChild" | "personGroupParent">
-  : V extends "_local"
-  ? Pick<
-      Beneficiary,
-      | "id"
-      | "dateFrom"
-      | "dateTo"
-      | "getAlimony"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "_base"
+export type BeneficiaryView<V extends BeneficiaryViewName> = V extends "_base"
   ? Pick<
       Beneficiary,
       | "id"
@@ -43,6 +28,19 @@ export type BeneficiaryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      Beneficiary,
+      | "id"
+      | "dateFrom"
+      | "dateTo"
+      | "getAlimony"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<Beneficiary, "id" | "personGroupChild" | "personGroupParent">
   : V extends "beneficiaryView"
   ? Pick<
       Beneficiary,

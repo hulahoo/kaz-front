@@ -18,19 +18,20 @@ export class SendingMessage extends StandardEntity {
   attemptsMade?: number | null;
   attachments?: SendingAttachment[] | null;
   headers?: string | null;
+  sysTenantId?: string | null;
   bodyContentType?: string | null;
 }
 export type SendingMessageViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
+  | "notifications.message.lmsp"
   | "sendingMessage.browse"
-  | "sendingMessage.loadFromQueue"
   | "sendingMessage.loadContentText"
-  | "notifications.message.lmsp";
+  | "sendingMessage.loadFromQueue";
 export type SendingMessageView<
   V extends SendingMessageViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       SendingMessage,
       | "id"
@@ -47,9 +48,10 @@ export type SendingMessageView<
       | "attemptsCount"
       | "attemptsMade"
       | "headers"
+      | "sysTenantId"
       | "bodyContentType"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SendingMessage,
       | "id"
@@ -66,8 +68,11 @@ export type SendingMessageView<
       | "attemptsCount"
       | "attemptsMade"
       | "headers"
+      | "sysTenantId"
       | "bodyContentType"
     >
+  : V extends "notifications.message.lmsp"
+  ? Pick<SendingMessage, "id" | "contentText" | "caption">
   : V extends "sendingMessage.browse"
   ? Pick<
       SendingMessage,
@@ -85,7 +90,13 @@ export type SendingMessageView<
       | "status"
       | "updateTs"
       | "bodyContentType"
+      | "contentText"
+      | "contentTextFile"
+      | "headers"
+      | "attachments"
     >
+  : V extends "sendingMessage.loadContentText"
+  ? Pick<SendingMessage, "id" | "contentTextFile" | "contentText">
   : V extends "sendingMessage.loadFromQueue"
   ? Pick<
       SendingMessage,
@@ -110,12 +121,9 @@ export type SendingMessageView<
       | "attemptsCount"
       | "attemptsMade"
       | "headers"
+      | "sysTenantId"
       | "bodyContentType"
       | "attachments"
       | "contentTextFile"
     >
-  : V extends "sendingMessage.loadContentText"
-  ? Pick<SendingMessage, "id" | "contentTextFile" | "contentText">
-  : V extends "notifications.message.lmsp"
-  ? Pick<SendingMessage, "id" | "contentText" | "caption">
   : never;

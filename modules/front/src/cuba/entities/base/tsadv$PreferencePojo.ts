@@ -8,5 +8,5 @@ export class PreferencePojo extends BaseUuidEntity {
   coins?: any | null;
   showCoinsDescription?: boolean | null;
 }
-export type PreferencePojoViewName = "_minimal" | "_local" | "_base";
+export type PreferencePojoViewName = "_base" | "_local" | "_minimal";
 export type PreferencePojoView<V extends PreferencePojoViewName> = never;

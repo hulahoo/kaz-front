@@ -9,8 +9,8 @@ export class JobTest extends AbstractParentEntity {
   startDate?: any | null;
   endDate?: any | null;
 }
-export type JobTestViewName = "_minimal" | "_local" | "_base" | "jobTest.edit";
-export type JobTestView<V extends JobTestViewName> = V extends "_local"
+export type JobTestViewName = "_base" | "_local" | "_minimal" | "jobTest.edit";
+export type JobTestView<V extends JobTestViewName> = V extends "_base"
   ? Pick<
       JobTest,
       | "id"
@@ -21,7 +21,7 @@ export type JobTestView<V extends JobTestViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       JobTest,
       | "id"

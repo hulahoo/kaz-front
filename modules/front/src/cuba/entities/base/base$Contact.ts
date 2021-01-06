@@ -13,9 +13,24 @@ export class Contact extends AbstractParty {
   upperFirstName?: string | null;
   upperMiddleName?: string | null;
 }
-export type ContactViewName = "_minimal" | "_local" | "_base";
-export type ContactView<V extends ContactViewName> = V extends "_minimal"
-  ? Pick<Contact, "id" | "lastName" | "firstName">
+export type ContactViewName = "_base" | "_local" | "_minimal";
+export type ContactView<V extends ContactViewName> = V extends "_base"
+  ? Pick<
+      Contact,
+      | "id"
+      | "lastName"
+      | "firstName"
+      | "middleName"
+      | "nickName"
+      | "dateOfBirth"
+      | "birthPlace"
+      | "upperLastName"
+      | "upperFirstName"
+      | "upperMiddleName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Contact,
@@ -33,21 +48,6 @@ export type ContactView<V extends ContactViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Contact,
-      | "id"
-      | "lastName"
-      | "firstName"
-      | "middleName"
-      | "nickName"
-      | "dateOfBirth"
-      | "birthPlace"
-      | "upperLastName"
-      | "upperFirstName"
-      | "upperMiddleName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Contact, "id" | "lastName" | "firstName">
   : never;

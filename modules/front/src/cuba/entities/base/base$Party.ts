@@ -21,13 +21,25 @@ export class Party extends AbstractParty {
   upperName?: string | null;
 }
 export type PartyViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "party-base-browse"
   | "party-base-edit";
-export type PartyView<V extends PartyViewName> = V extends "_minimal"
-  ? Pick<Party, "id" | "name">
+export type PartyView<V extends PartyViewName> = V extends "_base"
+  ? Pick<
+      Party,
+      | "id"
+      | "name"
+      | "partyType"
+      | "nationalIdentifier"
+      | "active"
+      | "resident"
+      | "upperName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Party,
@@ -42,20 +54,8 @@ export type PartyView<V extends PartyViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Party,
-      | "id"
-      | "name"
-      | "partyType"
-      | "nationalIdentifier"
-      | "active"
-      | "resident"
-      | "upperName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Party, "id" | "name">
   : V extends "party-base-browse"
   ? Pick<
       Party,

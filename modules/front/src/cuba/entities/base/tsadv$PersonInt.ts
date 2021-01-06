@@ -27,9 +27,9 @@ export class PersonInt extends AbstractEntityInt {
   photo?: string | null;
   cityName?: string | null;
 }
-export type PersonIntViewName = "_minimal" | "_local" | "_base";
-export type PersonIntView<V extends PersonIntViewName> = V extends "_minimal"
+export type PersonIntViewName = "_base" | "_local" | "_minimal";
+export type PersonIntView<V extends PersonIntViewName> = V extends "_base"
   ? Pick<PersonInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonInt, "id">
   : never;

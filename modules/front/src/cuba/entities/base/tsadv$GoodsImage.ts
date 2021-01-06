@@ -8,13 +8,13 @@ export class GoodsImage extends StandardEntity {
   image?: FileDescriptor | null;
 }
 export type GoodsImageViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goodsImage.edit";
-export type GoodsImageView<V extends GoodsImageViewName> = V extends "_local"
+export type GoodsImageView<V extends GoodsImageViewName> = V extends "_base"
   ? Pick<GoodsImage, "id" | "primary">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<GoodsImage, "id" | "primary">
   : V extends "goodsImage.edit"
   ? Pick<GoodsImage, "id" | "primary" | "image">

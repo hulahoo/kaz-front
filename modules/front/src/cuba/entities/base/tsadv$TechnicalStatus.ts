@@ -9,13 +9,13 @@ export class TechnicalStatus extends AbstractParentEntity {
   buildings?: Buildings | null;
 }
 export type TechnicalStatusViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "technicalStatus-view";
 export type TechnicalStatusView<
   V extends TechnicalStatusViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       TechnicalStatus,
       | "id"
@@ -24,7 +24,7 @@ export type TechnicalStatusView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       TechnicalStatus,
       | "id"

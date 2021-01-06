@@ -29,12 +29,28 @@ export class Buildings extends AbstractParentEntity {
   oldInventoryNumber?: string | null;
 }
 export type BuildingsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "buildings-view";
-export type BuildingsView<V extends BuildingsViewName> = V extends "_minimal"
-  ? Pick<Buildings, "id" | "name">
+export type BuildingsView<V extends BuildingsViewName> = V extends "_base"
+  ? Pick<
+      Buildings,
+      | "id"
+      | "name"
+      | "commissioning"
+      | "buildingVolume"
+      | "buildingArea"
+      | "totalArea"
+      | "technicalPassport"
+      | "buildingPassport"
+      | "technicalJournal"
+      | "inventoryNumber"
+      | "oldInventoryNumber"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Buildings,
@@ -53,24 +69,8 @@ export type BuildingsView<V extends BuildingsViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Buildings,
-      | "id"
-      | "name"
-      | "commissioning"
-      | "buildingVolume"
-      | "buildingArea"
-      | "totalArea"
-      | "technicalPassport"
-      | "buildingPassport"
-      | "technicalJournal"
-      | "inventoryNumber"
-      | "oldInventoryNumber"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Buildings, "id" | "name">
   : V extends "buildings-view"
   ? Pick<
       Buildings,

@@ -4,7 +4,7 @@ export class ScreenAndComponent extends BaseUuidEntity {
   screen?: string | null;
   component?: string | null;
 }
-export type ScreenAndComponentViewName = "_minimal" | "_local" | "_base";
+export type ScreenAndComponentViewName = "_base" | "_local" | "_minimal";
 export type ScreenAndComponentView<
   V extends ScreenAndComponentViewName
 > = never;

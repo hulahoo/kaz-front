@@ -5,7 +5,7 @@ export class PivotTableAggregation extends BaseUuidEntity {
   caption?: string | null;
   function?: string | null;
 }
-export type PivotTableAggregationViewName = "_minimal" | "_local" | "_base";
+export type PivotTableAggregationViewName = "_base" | "_local" | "_minimal";
 export type PivotTableAggregationView<
   V extends PivotTableAggregationViewName
 > = never;

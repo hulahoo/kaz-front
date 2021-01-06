@@ -11,10 +11,10 @@ export class BudgetRequestItem extends AbstractParentEntity {
   amount?: any | null;
   currency?: DicCurrency | null;
 }
-export type BudgetRequestItemViewName = "_minimal" | "_local" | "_base";
+export type BudgetRequestItemViewName = "_base" | "_local" | "_minimal";
 export type BudgetRequestItemView<
   V extends BudgetRequestItemViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       BudgetRequestItem,
       | "id"
@@ -25,7 +25,7 @@ export type BudgetRequestItemView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BudgetRequestItem,
       | "id"

@@ -7,9 +7,9 @@ export class CoinDistributionGrade extends StandardEntity {
   coinDistributionRule?: CoinDistributionRule | null;
 }
 export type CoinDistributionGradeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "coinDistributionGrade.edit";
 export type CoinDistributionGradeView<
   V extends CoinDistributionGradeViewName

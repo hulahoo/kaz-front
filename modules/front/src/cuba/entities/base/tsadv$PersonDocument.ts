@@ -17,16 +17,16 @@ export class PersonDocument extends AbstractParentEntity {
   file?: FileDescriptor | null;
 }
 export type PersonDocumentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "personDocument.edit"
-  | "personDocument.full"
+  | "_local"
+  | "_minimal"
   | "personDocument.card"
-  | "personDocument.forNotification";
+  | "personDocument.edit"
+  | "personDocument.forNotification"
+  | "personDocument.full";
 export type PersonDocumentView<
   V extends PersonDocumentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonDocument,
       | "id"
@@ -40,7 +40,7 @@ export type PersonDocumentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonDocument,
       | "id"
@@ -53,6 +53,18 @@ export type PersonDocumentView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "personDocument.card"
+  ? Pick<
+      PersonDocument,
+      | "id"
+      | "issueDate"
+      | "expiredDate"
+      | "issuedBy"
+      | "description"
+      | "documentType"
+      | "documentNumber"
+      | "series"
     >
   : V extends "personDocument.edit"
   ? Pick<
@@ -72,7 +84,7 @@ export type PersonDocumentView<
       | "file"
       | "personGroup"
     >
-  : V extends "personDocument.full"
+  : V extends "personDocument.forNotification"
   ? Pick<
       PersonDocument,
       | "id"
@@ -89,19 +101,7 @@ export type PersonDocumentView<
       | "personGroup"
       | "status"
     >
-  : V extends "personDocument.card"
-  ? Pick<
-      PersonDocument,
-      | "id"
-      | "issueDate"
-      | "expiredDate"
-      | "issuedBy"
-      | "description"
-      | "documentType"
-      | "documentNumber"
-      | "series"
-    >
-  : V extends "personDocument.forNotification"
+  : V extends "personDocument.full"
   ? Pick<
       PersonDocument,
       | "id"

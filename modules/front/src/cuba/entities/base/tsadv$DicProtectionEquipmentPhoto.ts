@@ -8,14 +8,21 @@ export class DicProtectionEquipmentPhoto extends AbstractParentEntity {
   dicProtectionEquipment?: DicProtectionEquipment | null;
 }
 export type DicProtectionEquipmentPhotoViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicProtectionEquipmentPhoto.edit";
 export type DicProtectionEquipmentPhotoView<
   V extends DicProtectionEquipmentPhotoViewName
-> = V extends "_minimal"
-  ? Pick<DicProtectionEquipmentPhoto, "id" | "description">
+> = V extends "_base"
+  ? Pick<
+      DicProtectionEquipmentPhoto,
+      | "id"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       DicProtectionEquipmentPhoto,
@@ -25,15 +32,8 @@ export type DicProtectionEquipmentPhotoView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      DicProtectionEquipmentPhoto,
-      | "id"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<DicProtectionEquipmentPhoto, "id" | "description">
   : V extends "dicProtectionEquipmentPhoto.edit"
   ? Pick<
       DicProtectionEquipmentPhoto,

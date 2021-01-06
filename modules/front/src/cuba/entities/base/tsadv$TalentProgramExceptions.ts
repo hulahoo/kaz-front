@@ -7,15 +7,15 @@ export class TalentProgramExceptions extends StandardEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type TalentProgramExceptionsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "talentProgramExceptions-view";
 export type TalentProgramExceptionsView<
   V extends TalentProgramExceptionsViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<TalentProgramExceptions, "id" | "talentProgram">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<TalentProgramExceptions, "id" | "talentProgram">
   : V extends "talentProgramExceptions-view"
   ? Pick<TalentProgramExceptions, "id" | "talentProgram" | "personGroup">

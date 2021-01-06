@@ -15,13 +15,13 @@ export class HarmfullFactors extends AbstractParentEntity {
   laboratory?: string | null;
 }
 export type HarmfullFactorsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "harmfullFactors-view";
 export type HarmfullFactorsView<
   V extends HarmfullFactorsViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       HarmfullFactors,
       | "id"
@@ -31,7 +31,7 @@ export type HarmfullFactorsView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       HarmfullFactors,
       | "id"

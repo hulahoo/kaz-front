@@ -13,9 +13,20 @@ export class Address extends AbstractParentEntity {
   startDate?: any | null;
   endDate?: any | null;
 }
-export type AddressViewName = "_minimal" | "_local" | "_base" | "address.view";
-export type AddressView<V extends AddressViewName> = V extends "_minimal"
-  ? Pick<Address, "id" | "address">
+export type AddressViewName = "_base" | "_local" | "_minimal" | "address.view";
+export type AddressView<V extends AddressViewName> = V extends "_base"
+  ? Pick<
+      Address,
+      | "id"
+      | "address"
+      | "postalCode"
+      | "city"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Address,
@@ -29,19 +40,8 @@ export type AddressView<V extends AddressViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Address,
-      | "id"
-      | "address"
-      | "postalCode"
-      | "city"
-      | "startDate"
-      | "endDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Address, "id" | "address">
   : V extends "address.view"
   ? Pick<
       Address,

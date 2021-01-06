@@ -12,11 +12,23 @@ export class InterviewAnswer extends AbstractParentEntity {
   order?: number | null;
   numberAnswer?: any | null;
 }
-export type InterviewAnswerViewName = "_minimal" | "_local" | "_base";
+export type InterviewAnswerViewName = "_base" | "_local" | "_minimal";
 export type InterviewAnswerView<
   V extends InterviewAnswerViewName
-> = V extends "_minimal"
-  ? Pick<InterviewAnswer, "id">
+> = V extends "_base"
+  ? Pick<
+      InterviewAnswer,
+      | "id"
+      | "weight"
+      | "textAnswer"
+      | "dateAnswer"
+      | "booleanAnswer"
+      | "order"
+      | "numberAnswer"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       InterviewAnswer,
@@ -31,18 +43,6 @@ export type InterviewAnswerView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      InterviewAnswer,
-      | "id"
-      | "weight"
-      | "textAnswer"
-      | "dateAnswer"
-      | "booleanAnswer"
-      | "order"
-      | "numberAnswer"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<InterviewAnswer, "id">
   : never;

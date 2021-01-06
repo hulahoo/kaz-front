@@ -7,9 +7,9 @@ export class CoinDistributionPerson extends StandardEntity {
   coinDistributionRule?: CoinDistributionRule | null;
 }
 export type CoinDistributionPersonViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "coinDistributionPerson.edit";
 export type CoinDistributionPersonView<
   V extends CoinDistributionPersonViewName

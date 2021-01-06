@@ -8,13 +8,13 @@ export class RepairsDismantling extends AbstractParentEntity {
   buildings?: Buildings | null;
 }
 export type RepairsDismantlingViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "repairsDismantling-view";
 export type RepairsDismantlingView<
   V extends RepairsDismantlingViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       RepairsDismantling,
       | "id"
@@ -25,7 +25,7 @@ export type RepairsDismantlingView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RepairsDismantling,
       | "id"

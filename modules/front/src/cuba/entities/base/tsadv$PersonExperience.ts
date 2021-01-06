@@ -11,15 +11,27 @@ export class PersonExperience extends AbstractParentEntity {
   description?: string | null;
 }
 export type PersonExperienceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "personExperience.view"
-  | "personExperience.full";
+  | "_local"
+  | "_minimal"
+  | "personExperience.full"
+  | "personExperience.view";
 export type PersonExperienceView<
   V extends PersonExperienceViewName
-> = V extends "_minimal"
-  ? Pick<PersonExperience, "id" | "company" | "startMonth" | "endMonth">
+> = V extends "_base"
+  ? Pick<
+      PersonExperience,
+      | "id"
+      | "company"
+      | "startMonth"
+      | "endMonth"
+      | "untilNow"
+      | "job"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       PersonExperience,
@@ -34,21 +46,9 @@ export type PersonExperienceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      PersonExperience,
-      | "id"
-      | "company"
-      | "startMonth"
-      | "endMonth"
-      | "untilNow"
-      | "job"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "personExperience.view"
+  : V extends "_minimal"
+  ? Pick<PersonExperience, "id" | "company" | "startMonth" | "endMonth">
+  : V extends "personExperience.full"
   ? Pick<
       PersonExperience,
       | "id"
@@ -63,7 +63,7 @@ export type PersonExperienceView<
       | "integrationUserLogin"
       | "personGroup"
     >
-  : V extends "personExperience.full"
+  : V extends "personExperience.view"
   ? Pick<
       PersonExperience,
       | "id"

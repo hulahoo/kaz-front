@@ -17,16 +17,24 @@ export class SendingNotification extends AbstractParentEntity {
   sendDate?: any | null;
 }
 export type SendingNotificationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "notifications.lmsp"
-  | "sendingNotification.view"
-  | "sendingNotification.check.def";
+  | "sendingNotification.check.def"
+  | "sendingNotification.view";
 export type SendingNotificationView<
   V extends SendingNotificationViewName
-> = V extends "_minimal"
-  ? Pick<SendingNotification, "id">
+> = V extends "_base"
+  ? Pick<
+      SendingNotification,
+      | "id"
+      | "readed"
+      | "sendDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       SendingNotification,
@@ -37,7 +45,11 @@ export type SendingNotificationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<SendingNotification, "id">
+  : V extends "notifications.lmsp"
+  ? Pick<SendingNotification, "id" | "sendingMessage" | "createTs" | "readed">
+  : V extends "sendingNotification.check.def"
   ? Pick<
       SendingNotification,
       | "id"
@@ -46,9 +58,10 @@ export type SendingNotificationView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "sendingSms"
+      | "sendingMessage"
+      | "createTs"
     >
-  : V extends "notifications.lmsp"
-  ? Pick<SendingNotification, "id" | "sendingMessage" | "createTs" | "readed">
   : V extends "sendingNotification.view"
   ? Pick<
       SendingNotification,
@@ -61,19 +74,6 @@ export type SendingNotificationView<
       | "template"
       | "recipient"
       | "user"
-      | "sendingSms"
-      | "sendingMessage"
-      | "createTs"
-    >
-  : V extends "sendingNotification.check.def"
-  ? Pick<
-      SendingNotification,
-      | "id"
-      | "readed"
-      | "sendDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
       | "sendingSms"
       | "sendingMessage"
       | "createTs"

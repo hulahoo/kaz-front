@@ -28,15 +28,34 @@ export class BusinessTrip extends AbstractParentEntity {
   parentBusinessTripCaption?: string | null;
 }
 export type BusinessTripViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "businessTrip-view"
-  | "businessTrip-like-absence";
-export type BusinessTripView<
-  V extends BusinessTripViewName
-> = V extends "_minimal"
-  ? Pick<BusinessTrip, "id" | "purpose" | "type" | "dateFrom" | "dateTo">
+  | "_local"
+  | "_minimal"
+  | "businessTrip-like-absence"
+  | "businessTrip-view";
+export type BusinessTripView<V extends BusinessTripViewName> = V extends "_base"
+  ? Pick<
+      BusinessTrip,
+      | "id"
+      | "purpose"
+      | "type"
+      | "dateFrom"
+      | "dateTo"
+      | "reason"
+      | "orderNum"
+      | "orderDate"
+      | "status"
+      | "typeTrip"
+      | "cancelOrderNumber"
+      | "cancelOrderDate"
+      | "route"
+      | "absenceDays"
+      | "businessTripWithDate"
+      | "parentBusinessTripCaption"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       BusinessTrip,
@@ -59,14 +78,13 @@ export type BusinessTripView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<BusinessTrip, "id" | "purpose" | "type" | "dateFrom" | "dateTo">
+  : V extends "businessTrip-like-absence"
   ? Pick<
       BusinessTrip,
       | "id"
-      | "purpose"
-      | "type"
       | "dateFrom"
-      | "dateTo"
       | "reason"
       | "orderNum"
       | "orderDate"
@@ -74,6 +92,8 @@ export type BusinessTripView<
       | "typeTrip"
       | "cancelOrderNumber"
       | "cancelOrderDate"
+      | "dateTo"
+      | "purpose"
       | "route"
       | "absenceDays"
       | "businessTripWithDate"
@@ -81,6 +101,8 @@ export type BusinessTripView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "type"
+      | "personGroup"
     >
   : V extends "businessTrip-view"
   ? Pick<
@@ -110,29 +132,5 @@ export type BusinessTripView<
       | "route"
       | "parentBusinessTrip"
       | "businessTripWithDate"
-    >
-  : V extends "businessTrip-like-absence"
-  ? Pick<
-      BusinessTrip,
-      | "id"
-      | "dateFrom"
-      | "reason"
-      | "orderNum"
-      | "orderDate"
-      | "status"
-      | "typeTrip"
-      | "cancelOrderNumber"
-      | "cancelOrderDate"
-      | "dateTo"
-      | "purpose"
-      | "route"
-      | "absenceDays"
-      | "businessTripWithDate"
-      | "parentBusinessTripCaption"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "type"
-      | "personGroup"
     >
   : never;

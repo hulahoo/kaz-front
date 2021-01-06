@@ -4,7 +4,7 @@ export class AbstractPermissionTarget {
   caption?: string | null;
   permissionValue?: string | null;
 }
-export type AbstractPermissionTargetViewName = "_minimal" | "_local" | "_base";
+export type AbstractPermissionTargetViewName = "_base" | "_local" | "_minimal";
 export type AbstractPermissionTargetView<
   V extends AbstractPermissionTargetViewName
 > = never;

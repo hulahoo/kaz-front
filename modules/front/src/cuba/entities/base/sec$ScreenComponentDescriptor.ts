@@ -4,7 +4,7 @@ export class ScreenComponentDescriptor extends BaseUuidEntity {
   parent?: ScreenComponentDescriptor | null;
   caption?: string | null;
 }
-export type ScreenComponentDescriptorViewName = "_minimal" | "_local" | "_base";
+export type ScreenComponentDescriptorViewName = "_base" | "_local" | "_minimal";
 export type ScreenComponentDescriptorView<
   V extends ScreenComponentDescriptorViewName
 > = never;

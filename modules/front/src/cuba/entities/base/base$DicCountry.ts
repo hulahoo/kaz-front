@@ -5,11 +5,11 @@ export class DicCountry extends AbstractSortableDictionary {
   regions?: DicRegion[] | null;
 }
 export type DicCountryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicCountry.full.edit";
-export type DicCountryView<V extends DicCountryViewName> = V extends "_minimal"
+export type DicCountryView<V extends DicCountryViewName> = V extends "_base"
   ? Pick<
       DicCountry,
       | "id"
@@ -19,6 +19,21 @@ export type DicCountryView<V extends DicCountryViewName> = V extends "_minimal"
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -46,7 +61,7 @@ export type DicCountryView<V extends DicCountryViewName> = V extends "_minimal"
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicCountry,
       | "id"
@@ -56,21 +71,6 @@ export type DicCountryView<V extends DicCountryViewName> = V extends "_minimal"
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : V extends "dicCountry.full.edit"
   ? Pick<

@@ -8,13 +8,37 @@ export class DicBusinessTripLine extends AbstractDictionary {
   dateFrom?: any | null;
   dateTo?: any | null;
 }
-export type DicBusinessTripLineViewName = "_minimal" | "_local" | "_base";
+export type DicBusinessTripLineViewName = "_base" | "_local" | "_minimal";
 export type DicBusinessTripLineView<
   V extends DicBusinessTripLineViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       DicBusinessTripLine,
-      "id" | "city" | "dateFrom" | "dateTo" | "langValue"
+      | "id"
+      | "city"
+      | "dateFrom"
+      | "dateTo"
+      | "langValue"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -43,33 +67,9 @@ export type DicBusinessTripLineView<
       | "isDefault"
       | "order"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicBusinessTripLine,
-      | "id"
-      | "city"
-      | "dateFrom"
-      | "dateTo"
-      | "langValue"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
+      "id" | "city" | "dateFrom" | "dateTo" | "langValue"
     >
   : never;

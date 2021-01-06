@@ -5,13 +5,13 @@ export class DicCityDistrict extends AbstractSortableDictionary {
   city?: DicCity | null;
 }
 export type DicCityDistrictViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicCityDistrict.full";
 export type DicCityDistrictView<
   V extends DicCityDistrictViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       DicCityDistrict,
       | "id"
@@ -21,6 +21,21 @@ export type DicCityDistrictView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -48,7 +63,7 @@ export type DicCityDistrictView<
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicCityDistrict,
       | "id"
@@ -58,21 +73,6 @@ export type DicCityDistrictView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : V extends "dicCityDistrict.full"
   ? Pick<

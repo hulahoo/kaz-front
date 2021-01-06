@@ -22,17 +22,36 @@ export class ScheduleHeader extends AbstractParentEntity {
   summaries?: ScheduleSummary[] | null;
 }
 export type ScheduleHeaderViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "scheduleHeaderWithOffset.view"
+  | "_local"
+  | "_minimal"
   | "scheduleHeader.view"
   | "scheduleHeaderForTimecard"
-  | "scheduleHeaderForTimecardWithOffset";
+  | "scheduleHeaderForTimecardWithOffset"
+  | "scheduleHeaderWithOffset.view";
 export type ScheduleHeaderView<
   V extends ScheduleHeaderViewName
-> = V extends "_minimal"
-  ? Pick<ScheduleHeader, "id">
+> = V extends "_base"
+  ? Pick<
+      ScheduleHeader,
+      | "id"
+      | "month"
+      | "isLocked"
+      | "baseDays"
+      | "baseHours"
+      | "planDays"
+      | "planHours"
+      | "planHoursPart"
+      | "planHoursMonth"
+      | "nightHours"
+      | "weekendDays"
+      | "holidayDays"
+      | "holidayWorkDays"
+      | "holidayWorkHours"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ScheduleHeader,
@@ -54,51 +73,8 @@ export type ScheduleHeaderView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ScheduleHeader,
-      | "id"
-      | "month"
-      | "isLocked"
-      | "baseDays"
-      | "baseHours"
-      | "planDays"
-      | "planHours"
-      | "planHoursPart"
-      | "planHoursMonth"
-      | "nightHours"
-      | "weekendDays"
-      | "holidayDays"
-      | "holidayWorkDays"
-      | "holidayWorkHours"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "scheduleHeaderWithOffset.view"
-  ? Pick<
-      ScheduleHeader,
-      | "id"
-      | "month"
-      | "isLocked"
-      | "baseDays"
-      | "baseHours"
-      | "planDays"
-      | "planHours"
-      | "planHoursPart"
-      | "planHoursMonth"
-      | "nightHours"
-      | "weekendDays"
-      | "holidayDays"
-      | "holidayWorkDays"
-      | "holidayWorkHours"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "schedule"
-      | "offset"
-      | "summaries"
-    >
+  : V extends "_minimal"
+  ? Pick<ScheduleHeader, "id">
   : V extends "scheduleHeader.view"
   ? Pick<
       ScheduleHeader,
@@ -127,4 +103,28 @@ export type ScheduleHeaderView<
   ? Pick<ScheduleHeader, "id" | "summaries">
   : V extends "scheduleHeaderForTimecardWithOffset"
   ? Pick<ScheduleHeader, "id" | "offset" | "summaries">
+  : V extends "scheduleHeaderWithOffset.view"
+  ? Pick<
+      ScheduleHeader,
+      | "id"
+      | "month"
+      | "isLocked"
+      | "baseDays"
+      | "baseHours"
+      | "planDays"
+      | "planHours"
+      | "planHoursPart"
+      | "planHoursMonth"
+      | "nightHours"
+      | "weekendDays"
+      | "holidayDays"
+      | "holidayWorkDays"
+      | "holidayWorkHours"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "schedule"
+      | "offset"
+      | "summaries"
+    >
   : never;

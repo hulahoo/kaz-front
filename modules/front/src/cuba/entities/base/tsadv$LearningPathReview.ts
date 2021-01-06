@@ -9,14 +9,14 @@ export class LearningPathReview extends AbstractParentEntity {
   text?: string | null;
 }
 export type LearningPathReviewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "learningPathReview.browse"
   | "learningPathReview.rate";
 export type LearningPathReviewView<
   V extends LearningPathReviewViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LearningPathReview,
       | "id"
@@ -26,7 +26,7 @@ export type LearningPathReviewView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LearningPathReview,
       | "id"

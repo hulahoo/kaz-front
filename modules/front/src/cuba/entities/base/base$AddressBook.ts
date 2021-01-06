@@ -12,14 +12,23 @@ export class AddressBook extends AbstractParentEntity {
   partyContactInfo?: ContactInfo | null;
 }
 export type AddressBookViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "addressBook.getParty";
-export type AddressBookView<
-  V extends AddressBookViewName
-> = V extends "_minimal"
-  ? Pick<AddressBook, "id" | "fullAddress">
+export type AddressBookView<V extends AddressBookViewName> = V extends "_base"
+  ? Pick<
+      AddressBook,
+      | "id"
+      | "fullAddress"
+      | "addressType"
+      | "recipientType"
+      | "address"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       AddressBook,
@@ -33,19 +42,8 @@ export type AddressBookView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      AddressBook,
-      | "id"
-      | "fullAddress"
-      | "addressType"
-      | "recipientType"
-      | "address"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<AddressBook, "id" | "fullAddress">
   : V extends "addressBook.getParty"
   ? Pick<
       AddressBook,

@@ -6,7 +6,7 @@ export class ParentElementsGoal extends BaseUuidEntity {
   goalName?: string | null;
   goalWeight?: number | null;
 }
-export type ParentElementsGoalViewName = "_minimal" | "_local" | "_base";
+export type ParentElementsGoalViewName = "_base" | "_local" | "_minimal";
 export type ParentElementsGoalView<
   V extends ParentElementsGoalViewName
 > = never;

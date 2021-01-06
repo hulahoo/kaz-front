@@ -11,9 +11,9 @@ export class RequisitionSearchCandidateResult extends BaseUuidEntity {
   isReserved?: boolean | null;
 }
 export type RequisitionSearchCandidateResultViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type RequisitionSearchCandidateResultView<
   V extends RequisitionSearchCandidateResultViewName
 > = never;

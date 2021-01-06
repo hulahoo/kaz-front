@@ -14,5 +14,5 @@ export class NotPersistEntity extends BaseUuidEntity {
   amount?: number | null;
   currency?: DicCurrency | null;
 }
-export type NotPersistEntityViewName = "_minimal" | "_local" | "_base";
+export type NotPersistEntityViewName = "_base" | "_local" | "_minimal";
 export type NotPersistEntityView<V extends NotPersistEntityViewName> = never;

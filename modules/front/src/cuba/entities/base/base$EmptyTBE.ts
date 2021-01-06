@@ -2,8 +2,8 @@ import { AbstractTimeBasedEntity } from "./AbstractTimeBasedEntity";
 export class EmptyTBE extends AbstractTimeBasedEntity {
   static NAME = "base$EmptyTBE";
 }
-export type EmptyTBEViewName = "_minimal" | "_local" | "_base";
-export type EmptyTBEView<V extends EmptyTBEViewName> = V extends "_local"
+export type EmptyTBEViewName = "_base" | "_local" | "_minimal";
+export type EmptyTBEView<V extends EmptyTBEViewName> = V extends "_base"
   ? Pick<
       EmptyTBE,
       | "id"
@@ -14,7 +14,7 @@ export type EmptyTBEView<V extends EmptyTBEViewName> = V extends "_local"
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       EmptyTBE,
       | "id"

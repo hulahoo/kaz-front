@@ -6,41 +6,11 @@ export class ActivityType extends AbstractDictionary {
   windowProperty?: WindowProperty | null;
 }
 export type ActivityTypeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "activityType.edit";
-export type ActivityTypeView<
-  V extends ActivityTypeViewName
-> = V extends "_minimal"
-  ? Pick<ActivityType, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      ActivityType,
-      | "id"
-      | "screen"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+export type ActivityTypeView<V extends ActivityTypeViewName> = V extends "_base"
   ? Pick<
       ActivityType,
       | "id"
@@ -67,6 +37,34 @@ export type ActivityTypeView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      ActivityType,
+      | "id"
+      | "screen"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<ActivityType, "id" | "langValue">
   : V extends "activityType.edit"
   ? Pick<
       ActivityType,

@@ -4,11 +4,9 @@ export class CandidateInt extends AbstractEntityInt {
   requisitionId?: any | null;
   userExtId?: any | null;
 }
-export type CandidateIntViewName = "_minimal" | "_local" | "_base";
-export type CandidateIntView<
-  V extends CandidateIntViewName
-> = V extends "_minimal"
+export type CandidateIntViewName = "_base" | "_local" | "_minimal";
+export type CandidateIntView<V extends CandidateIntViewName> = V extends "_base"
   ? Pick<CandidateInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<CandidateInt, "id">
   : never;

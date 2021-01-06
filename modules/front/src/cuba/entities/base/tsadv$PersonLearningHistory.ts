@@ -30,13 +30,13 @@ export class PersonLearningHistory extends AbstractParentEntity {
   budget?: BudgetRequest | null;
 }
 export type PersonLearningHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personLearningHistory.edit";
 export type PersonLearningHistoryView<
   V extends PersonLearningHistoryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonLearningHistory,
       | "id"
@@ -49,7 +49,7 @@ export type PersonLearningHistoryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonLearningHistory,
       | "id"

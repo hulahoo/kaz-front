@@ -3,9 +3,9 @@ export class AbstractNotPersistentEntity {
   id?: any | null;
 }
 export type AbstractNotPersistentEntityViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type AbstractNotPersistentEntityView<
   V extends AbstractNotPersistentEntityViewName
 > = never;

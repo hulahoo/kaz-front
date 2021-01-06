@@ -10,13 +10,11 @@ export class ExchangeRate extends AbstractParentEntity {
   value?: any | null;
 }
 export type ExchangeRateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "exchangeRate.edit";
-export type ExchangeRateView<
-  V extends ExchangeRateViewName
-> = V extends "_local"
+export type ExchangeRateView<V extends ExchangeRateViewName> = V extends "_base"
   ? Pick<
       ExchangeRate,
       | "id"
@@ -26,7 +24,7 @@ export type ExchangeRateView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       ExchangeRate,
       | "id"

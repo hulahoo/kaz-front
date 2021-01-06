@@ -15,8 +15,8 @@ export class Awards extends AbstractParentEntity {
   assignmentGroup?: AssignmentGroupExt | null;
   reason?: string | null;
 }
-export type AwardsViewName = "_minimal" | "_local" | "_base" | "awards.all";
-export type AwardsView<V extends AwardsViewName> = V extends "_local"
+export type AwardsViewName = "_base" | "_local" | "_minimal" | "awards.all";
+export type AwardsView<V extends AwardsViewName> = V extends "_base"
   ? Pick<
       Awards,
       | "id"
@@ -31,7 +31,7 @@ export type AwardsView<V extends AwardsViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Awards,
       | "id"

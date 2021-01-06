@@ -6,14 +6,21 @@ export class InterviewHistory extends AbstractParentEntity {
   interviewStatus?: any | null;
 }
 export type InterviewHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "interviewHistory.view";
 export type InterviewHistoryView<
   V extends InterviewHistoryViewName
-> = V extends "_minimal"
-  ? Pick<InterviewHistory, "id">
+> = V extends "_base"
+  ? Pick<
+      InterviewHistory,
+      | "id"
+      | "interviewStatus"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       InterviewHistory,
@@ -23,15 +30,8 @@ export type InterviewHistoryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      InterviewHistory,
-      | "id"
-      | "interviewStatus"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<InterviewHistory, "id">
   : V extends "interviewHistory.view"
   ? Pick<
       InterviewHistory,

@@ -20,13 +20,13 @@ export class CourseFeedbackPersonAnswerDetail extends AbstractParentEntity {
   courseFeedbackPersonAnswer?: CourseFeedbackPersonAnswer | null;
 }
 export type CourseFeedbackPersonAnswerDetailViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseFeedbackPersonAnswerDetail.edit";
 export type CourseFeedbackPersonAnswerDetailView<
   V extends CourseFeedbackPersonAnswerDetailViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseFeedbackPersonAnswerDetail,
       | "id"
@@ -37,7 +37,7 @@ export type CourseFeedbackPersonAnswerDetailView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseFeedbackPersonAnswerDetail,
       | "id"

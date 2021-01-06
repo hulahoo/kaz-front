@@ -10,10 +10,10 @@ export class AssessmentCompetence extends AbstractParentEntity {
   comment?: string | null;
   weight?: any | null;
 }
-export type AssessmentCompetenceViewName = "_minimal" | "_local" | "_base";
+export type AssessmentCompetenceViewName = "_base" | "_local" | "_minimal";
 export type AssessmentCompetenceView<
   V extends AssessmentCompetenceViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AssessmentCompetence,
       | "id"
@@ -23,7 +23,7 @@ export type AssessmentCompetenceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AssessmentCompetence,
       | "id"

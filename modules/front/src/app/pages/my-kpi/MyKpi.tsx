@@ -1,44 +1,63 @@
 import React from 'react';
-import {Table} from "antd";
 import {ColumnProps} from "antd/es/table";
-import {observable} from "mobx";
-import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
+import KzmTable, {SelectRowType} from "../../components/Table/KzmTable";
+import {CardStatusEnum} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
+import {inject} from "mobx-react";
+import {MatchParams, RootStoreProp, RouteComponentProps} from "../../store";
+import {restServices} from "../../../cuba/services";
+import {formatDefaultDate} from "../../util/Date/Date";
 
-const tableColumns: ColumnProps<AssignedGoal>[] = [{
-  title: "Процедура",
-  dataIndex: 'procedure',
+export type MyKpiTableMeta = {
+  id: string,
+  performancePlanName: string,
+  startDate: Date,
+  endDate: Date,
+  status: CardStatusEnum
+}
+
+const tableColumns: ColumnProps<MyKpiTableMeta>[] = [{
+  title: "План",
+  dataIndex: 'performancePlanName',
+  key: "performance_plan_name",
   sorter: true,
   filtered: true
 }, {
   title: "Оцениваемые периоды - начало",
   dataIndex: 'startDate',
   sorter: true,
-  filtered: true
+  filtered: true,
+  render: (value: string) => {
+    return <span>{formatDefaultDate(new Date(value))}</span>
+  }
 }, {
   title: "Оцениваемые периоды - окончание",
   dataIndex: 'endDate',
   sorter: true,
-  filtered: true
+  filtered: true,
+  render: (value: string) => {
+    return <span>{formatDefaultDate(new Date(value))}</span>
+  }
 }, {
   title: "Этап",
-  dataIndex: 'stage',
-  sorter: true,
-  filtered: true
-}, {
-  title: "Мои действия",
-  dataIndex: 'action',
+  dataIndex: 'statusName',
   sorter: true,
   filtered: true
 }]
 
-class MyKpi extends React.Component {
+@inject("rootStore")
+class MyKpi extends React.Component<RootStoreProp & RouteComponentProps<MatchParams>> {
 
   render() {
+    const onRowClick = (record: MyKpiTableMeta, index: number, event: Event) => {
+      this.props.history!.push("/kpi/" + record.id)
+    }
+
     return (
       <div>
-        <Table columns={tableColumns}>
-
-        </Table>
+        <KzmTable columns={tableColumns} fetch={restServices.kpiService.myKpiList} onRowClick={onRowClick}
+                  paginationPosition={"both"}
+                  countFetch={restServices.kpiService.myKpiListCount} tableProps={{rowKey: "id"}}
+        />
       </div>
     );
   }

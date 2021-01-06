@@ -11,7 +11,7 @@ export class SerialChartDescription extends AbstractChartDescription {
   series?: ChartSeries | null;
   categoryAxisLabelRotation?: number | null;
 }
-export type SerialChartDescriptionViewName = "_minimal" | "_local" | "_base";
+export type SerialChartDescriptionViewName = "_base" | "_local" | "_minimal";
 export type SerialChartDescriptionView<
   V extends SerialChartDescriptionViewName
 > = never;

@@ -10,18 +10,18 @@ export class RequisitionRequirement extends StandardEntity {
   critical?: boolean | null;
 }
 export type RequisitionRequirementViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "requisitionRequirement-view";
 export type RequisitionRequirementView<
   V extends RequisitionRequirementViewName
-> = V extends "_minimal"
-  ? Pick<RequisitionRequirement, "id" | "requirement">
+> = V extends "_base"
+  ? Pick<RequisitionRequirement, "id" | "requirement" | "critical">
   : V extends "_local"
   ? Pick<RequisitionRequirement, "id" | "critical">
-  : V extends "_base"
-  ? Pick<RequisitionRequirement, "id" | "requirement" | "critical">
+  : V extends "_minimal"
+  ? Pick<RequisitionRequirement, "id" | "requirement">
   : V extends "requisitionRequirement-view"
   ? Pick<
       RequisitionRequirement,

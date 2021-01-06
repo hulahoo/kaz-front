@@ -22,15 +22,15 @@ export class AssignmentRequest extends StandardEntity {
   substitutedEmployee?: PersonGroupExt | null;
 }
 export type AssignmentRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assignmentRequest-view";
 export type AssignmentRequestView<
   V extends AssignmentRequestViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<AssignmentRequest, "id" | "dateFrom" | "requestNumber" | "note">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<AssignmentRequest, "id" | "dateFrom" | "requestNumber" | "note">
   : V extends "assignmentRequest-view"
   ? Pick<

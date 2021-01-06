@@ -18,5 +18,5 @@ export class AssignedTestPojo extends BaseUuidEntity {
   organizationGroupId?: any | null;
   createdByLogin?: string | null;
 }
-export type AssignedTestPojoViewName = "_minimal" | "_local" | "_base";
+export type AssignedTestPojoViewName = "_base" | "_local" | "_minimal";
 export type AssignedTestPojoView<V extends AssignedTestPojoViewName> = never;

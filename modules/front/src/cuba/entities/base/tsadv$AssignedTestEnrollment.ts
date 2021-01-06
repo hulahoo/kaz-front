@@ -25,14 +25,27 @@ export class AssignedTestEnrollment extends BaseUuidEntity {
   createdBy?: string | null;
 }
 export type AssignedTestEnrollmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assignedTestEnrollment.browse";
 export type AssignedTestEnrollmentView<
   V extends AssignedTestEnrollmentViewName
-> = V extends "_minimal"
-  ? Pick<AssignedTestEnrollment, "id" | "fullName" | "testName">
+> = V extends "_base"
+  ? Pick<
+      AssignedTestEnrollment,
+      | "id"
+      | "fullName"
+      | "testName"
+      | "organizationNameLang1"
+      | "positionNameLang1"
+      | "enrollmentStatus"
+      | "success"
+      | "attempts"
+      | "testResult"
+      | "sectionName"
+      | "createdBy"
+    >
   : V extends "_local"
   ? Pick<
       AssignedTestEnrollment,
@@ -48,21 +61,8 @@ export type AssignedTestEnrollmentView<
       | "sectionName"
       | "createdBy"
     >
-  : V extends "_base"
-  ? Pick<
-      AssignedTestEnrollment,
-      | "id"
-      | "fullName"
-      | "testName"
-      | "organizationNameLang1"
-      | "positionNameLang1"
-      | "enrollmentStatus"
-      | "success"
-      | "attempts"
-      | "testResult"
-      | "sectionName"
-      | "createdBy"
-    >
+  : V extends "_minimal"
+  ? Pick<AssignedTestEnrollment, "id" | "fullName" | "testName">
   : V extends "assignedTestEnrollment.browse"
   ? Pick<
       AssignedTestEnrollment,

@@ -9,7 +9,7 @@ export class ManagedBeanAttribute extends BaseUuidEntity {
   writeable?: boolean | null;
   valueString?: string | null;
 }
-export type ManagedBeanAttributeViewName = "_minimal" | "_local" | "_base";
+export type ManagedBeanAttributeViewName = "_base" | "_local" | "_minimal";
 export type ManagedBeanAttributeView<
   V extends ManagedBeanAttributeViewName
 > = never;

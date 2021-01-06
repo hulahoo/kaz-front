@@ -6,7 +6,7 @@ export class RcgFeedbackPageInfo extends BaseUuidEntity {
   pageInfo?: PageInfo | null;
   feedback?: RcgFeedbackPojo | null;
 }
-export type RcgFeedbackPageInfoViewName = "_minimal" | "_local" | "_base";
+export type RcgFeedbackPageInfoViewName = "_base" | "_local" | "_minimal";
 export type RcgFeedbackPageInfoView<
   V extends RcgFeedbackPageInfoViewName
 > = never;

@@ -6,17 +6,17 @@ export class LocalizedConstraintMessage extends StandardEntity {
   values?: string | null;
 }
 export type LocalizedConstraintMessageViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type LocalizedConstraintMessageView<
   V extends LocalizedConstraintMessageViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LocalizedConstraintMessage,
       "id" | "entityName" | "operationType" | "values"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LocalizedConstraintMessage,
       "id" | "entityName" | "operationType" | "values"

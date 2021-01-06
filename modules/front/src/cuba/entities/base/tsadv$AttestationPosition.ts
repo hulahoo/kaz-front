@@ -7,18 +7,18 @@ export class AttestationPosition extends AbstractParentEntity {
   positionGroup?: PositionGroupExt | null;
 }
 export type AttestationPositionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "attestationPosition-view";
 export type AttestationPositionView<
   V extends AttestationPositionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AttestationPosition,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AttestationPosition,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

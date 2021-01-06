@@ -5,13 +5,13 @@ export class TelegramCommandVariable extends StandardEntity {
   nameVariable?: string | null;
   telegramAnswer?: TelegramAnswer | null;
 }
-export type TelegramCommandVariableViewName = "_minimal" | "_local" | "_base";
+export type TelegramCommandVariableViewName = "_base" | "_local" | "_minimal";
 export type TelegramCommandVariableView<
   V extends TelegramCommandVariableViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<TelegramCommandVariable, "id" | "nameVariable">
   : V extends "_local"
   ? Pick<TelegramCommandVariable, "id" | "nameVariable">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<TelegramCommandVariable, "id" | "nameVariable">
   : never;

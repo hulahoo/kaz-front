@@ -7,11 +7,11 @@ export class InterviewQuestionInt extends AbstractEntityInt {
   anotherAnswer?: string | null;
   type?: string | null;
 }
-export type InterviewQuestionIntViewName = "_minimal" | "_local" | "_base";
+export type InterviewQuestionIntViewName = "_base" | "_local" | "_minimal";
 export type InterviewQuestionIntView<
   V extends InterviewQuestionIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<InterviewQuestionInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<InterviewQuestionInt, "id">
   : never;

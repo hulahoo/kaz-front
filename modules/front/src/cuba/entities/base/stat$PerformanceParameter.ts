@@ -8,7 +8,7 @@ export class PerformanceParameter extends BaseUuidEntity {
   recentStringValue?: string | null;
   averageStringValue?: string | null;
 }
-export type PerformanceParameterViewName = "_minimal" | "_local" | "_base";
+export type PerformanceParameterViewName = "_base" | "_local" | "_minimal";
 export type PerformanceParameterView<
   V extends PerformanceParameterViewName
 > = never;

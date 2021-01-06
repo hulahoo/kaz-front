@@ -2,10 +2,10 @@ import { AbstractSortableDictionary } from "./AbstractSortableDictionary";
 export class DicOrgLegalFormType extends AbstractSortableDictionary {
   static NAME = "base$DicOrgLegalFormType";
 }
-export type DicOrgLegalFormTypeViewName = "_minimal" | "_local" | "_base";
+export type DicOrgLegalFormTypeViewName = "_base" | "_local" | "_minimal";
 export type DicOrgLegalFormTypeView<
   V extends DicOrgLegalFormTypeViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       DicOrgLegalFormType,
       | "id"
@@ -15,6 +15,21 @@ export type DicOrgLegalFormTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -42,7 +57,7 @@ export type DicOrgLegalFormTypeView<
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicOrgLegalFormType,
       | "id"
@@ -52,20 +67,5 @@ export type DicOrgLegalFormTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : never;

@@ -9,8 +9,8 @@ export class TimecardLog extends AbstractParentEntity {
   durationInSeconds?: any | null;
   timecardsCount?: number | null;
 }
-export type TimecardLogViewName = "_minimal" | "_local" | "_base";
-export type TimecardLogView<V extends TimecardLogViewName> = V extends "_local"
+export type TimecardLogViewName = "_base" | "_local" | "_minimal";
+export type TimecardLogView<V extends TimecardLogViewName> = V extends "_base"
   ? Pick<
       TimecardLog,
       | "id"
@@ -25,7 +25,7 @@ export type TimecardLogView<V extends TimecardLogViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       TimecardLog,
       | "id"

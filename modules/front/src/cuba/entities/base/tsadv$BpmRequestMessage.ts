@@ -1,6 +1,5 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { UserExtPersonGroup } from "./tsadv$UserExtPersonGroup";
-import { ProcInstance } from "./bpm$ProcInstance";
+import { TsadvUserExt } from "./tsadv$UserExt";
 import { Activity } from "./uactivity$Activity";
 export class BpmRequestMessage extends StandardEntity {
   static NAME = "tsadv$BpmRequestMessage";
@@ -9,22 +8,21 @@ export class BpmRequestMessage extends StandardEntity {
   entityRequestNumber?: any | null;
   sendDate?: any | null;
   message?: string | null;
-  assignedUser?: UserExtPersonGroup | null;
-  assignedBy?: UserExtPersonGroup | null;
+  assignedUser?: TsadvUserExt | null;
+  assignedBy?: TsadvUserExt | null;
   parent?: BpmRequestMessage | null;
   lvl?: number | null;
   screenName?: string | null;
-  procInstance?: ProcInstance | null;
   activity?: Activity | null;
 }
 export type BpmRequestMessageViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "bpmRequestMessage-view";
 export type BpmRequestMessageView<
   V extends BpmRequestMessageViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       BpmRequestMessage,
       | "id"
@@ -36,7 +34,7 @@ export type BpmRequestMessageView<
       | "lvl"
       | "screenName"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BpmRequestMessage,
       | "id"
@@ -62,7 +60,6 @@ export type BpmRequestMessageView<
       | "assignedUser"
       | "assignedBy"
       | "parent"
-      | "procInstance"
       | "activity"
     >
   : never;

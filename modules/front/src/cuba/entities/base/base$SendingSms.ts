@@ -10,12 +10,25 @@ export class SendingSms extends AbstractParentEntity {
   deadline?: any | null;
 }
 export type SendingSmsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "sendingSms.view";
-export type SendingSmsView<V extends SendingSmsViewName> = V extends "_minimal"
-  ? Pick<SendingSms, "id" | "phoneNumber" | "dateSent">
+export type SendingSmsView<V extends SendingSmsViewName> = V extends "_base"
+  ? Pick<
+      SendingSms,
+      | "id"
+      | "phoneNumber"
+      | "dateSent"
+      | "text"
+      | "status"
+      | "attemptsCount"
+      | "attemptsMade"
+      | "deadline"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       SendingSms,
@@ -31,21 +44,8 @@ export type SendingSmsView<V extends SendingSmsViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      SendingSms,
-      | "id"
-      | "phoneNumber"
-      | "dateSent"
-      | "text"
-      | "status"
-      | "attemptsCount"
-      | "attemptsMade"
-      | "deadline"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<SendingSms, "id" | "phoneNumber" | "dateSent">
   : V extends "sendingSms.view"
   ? Pick<
       SendingSms,

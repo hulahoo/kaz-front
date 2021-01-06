@@ -7,7 +7,7 @@ export class AwardProgramPerson extends BaseUuidEntity {
   awardProgram?: AwardProgram | null;
   count?: any | null;
 }
-export type AwardProgramPersonViewName = "_minimal" | "_local" | "_base";
+export type AwardProgramPersonViewName = "_base" | "_local" | "_minimal";
 export type AwardProgramPersonView<
   V extends AwardProgramPersonViewName
 > = never;

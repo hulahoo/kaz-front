@@ -7,9 +7,9 @@ export class PersonActionObject extends StandardEntity {
   object?: FileDescriptor | null;
 }
 export type PersonActionObjectViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personActionObject-view";
 export type PersonActionObjectView<
   V extends PersonActionObjectViewName

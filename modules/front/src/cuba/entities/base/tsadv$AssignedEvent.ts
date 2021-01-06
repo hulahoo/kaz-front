@@ -21,13 +21,13 @@ export class AssignedEvent extends AbstractParentEntity {
   organization?: OrganizationGroupExt | null;
 }
 export type AssignedEventViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assignedEvent-view";
 export type AssignedEventView<
   V extends AssignedEventViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AssignedEvent,
       | "id"
@@ -41,7 +41,7 @@ export type AssignedEventView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AssignedEvent,
       | "id"

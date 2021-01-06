@@ -14,14 +14,23 @@ export class HiringStepMember extends AbstractParentEntity {
   mainInterviewer?: boolean | null;
 }
 export type HiringStepMemberViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "hiringStepMember.view";
 export type HiringStepMemberView<
   V extends HiringStepMemberViewName
-> = V extends "_minimal"
-  ? Pick<HiringStepMember, "id">
+> = V extends "_base"
+  ? Pick<
+      HiringStepMember,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "mainInterviewer"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       HiringStepMember,
@@ -33,17 +42,8 @@ export type HiringStepMemberView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      HiringStepMember,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "mainInterviewer"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<HiringStepMember, "id">
   : V extends "hiringStepMember.view"
   ? Pick<
       HiringStepMember,

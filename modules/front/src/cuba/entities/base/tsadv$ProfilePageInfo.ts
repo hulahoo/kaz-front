@@ -6,5 +6,5 @@ export class ProfilePageInfo extends BaseUuidEntity {
   pageInfo?: PageInfo | null;
   profiles?: ProfilePojo | null;
 }
-export type ProfilePageInfoViewName = "_minimal" | "_local" | "_base";
+export type ProfilePageInfoViewName = "_base" | "_local" | "_minimal";
 export type ProfilePageInfoView<V extends ProfilePageInfoViewName> = never;

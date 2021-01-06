@@ -10,10 +10,10 @@ export class AssessmentGoal extends AbstractParentEntity {
   comment?: string | null;
   weight?: any | null;
 }
-export type AssessmentGoalViewName = "_minimal" | "_local" | "_base";
+export type AssessmentGoalViewName = "_base" | "_local" | "_minimal";
 export type AssessmentGoalView<
   V extends AssessmentGoalViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AssessmentGoal,
       | "id"
@@ -23,7 +23,7 @@ export type AssessmentGoalView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AssessmentGoal,
       | "id"

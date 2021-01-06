@@ -7,17 +7,17 @@ export class AbsenceToWorkedHoursSummary extends AbstractParentEntity {
   workedHoursSummary?: WorkedHoursSummary | null;
 }
 export type AbsenceToWorkedHoursSummaryViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type AbsenceToWorkedHoursSummaryView<
   V extends AbsenceToWorkedHoursSummaryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AbsenceToWorkedHoursSummary,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AbsenceToWorkedHoursSummary,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

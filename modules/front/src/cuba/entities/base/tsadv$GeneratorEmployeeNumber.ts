@@ -5,11 +5,11 @@ export class GeneratorEmployeeNumber extends StandardEntity {
   prefix?: string | null;
   suffix?: string | null;
 }
-export type GeneratorEmployeeNumberViewName = "_minimal" | "_local" | "_base";
+export type GeneratorEmployeeNumberViewName = "_base" | "_local" | "_minimal";
 export type GeneratorEmployeeNumberView<
   V extends GeneratorEmployeeNumberViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<GeneratorEmployeeNumber, "id" | "name" | "prefix" | "suffix">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<GeneratorEmployeeNumber, "id" | "name" | "prefix" | "suffix">
   : never;

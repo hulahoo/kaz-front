@@ -17,13 +17,13 @@ export class IdentifiedViolations extends AbstractParentEntity {
   identifieByWorkers?: boolean | null;
 }
 export type IdentifiedViolationsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "identifiedViolations-view";
 export type IdentifiedViolationsView<
   V extends IdentifiedViolationsViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       IdentifiedViolations,
       | "id"
@@ -37,7 +37,7 @@ export type IdentifiedViolationsView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       IdentifiedViolations,
       | "id"

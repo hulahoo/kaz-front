@@ -17,19 +17,25 @@ export class CompetenceElement extends AbstractParentEntity {
   jobGroup?: JobGroup | null;
 }
 export type CompetenceElementViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "competenceElement-view"
-  | "competenceElement.full"
+  | "competenceElement.card"
   | "competenceElement.for.language"
-  | "competenceElement.card";
+  | "competenceElement.full";
 export type CompetenceElementView<
   V extends CompetenceElementViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       CompetenceElement,
-      "id" | "competenceGroup" | "objectId" | "objectTypeId"
+      | "id"
+      | "competenceGroup"
+      | "objectId"
+      | "objectTypeId"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : V extends "_local"
   ? Pick<
@@ -41,19 +47,35 @@ export type CompetenceElementView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<
+      CompetenceElement,
+      "id" | "competenceGroup" | "objectId" | "objectTypeId"
+    >
+  : V extends "competenceElement-view"
+  ? Pick<CompetenceElement, "id" | "competenceGroup" | "scaleLevel">
+  : V extends "competenceElement.card"
   ? Pick<
       CompetenceElement,
       | "id"
       | "competenceGroup"
       | "objectId"
       | "objectTypeId"
+      | "scaleLevel"
+      | "competenceGroup"
+    >
+  : V extends "competenceElement.for.language"
+  ? Pick<
+      CompetenceElement,
+      | "id"
+      | "objectId"
+      | "objectTypeId"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "competenceGroup"
+      | "scaleLevel"
     >
-  : V extends "competenceElement-view"
-  ? Pick<CompetenceElement, "id" | "competenceGroup" | "scaleLevel">
   : V extends "competenceElement.full"
   ? Pick<
       CompetenceElement,
@@ -68,27 +90,5 @@ export type CompetenceElementView<
       | "organizationGroup"
       | "positionGroup"
       | "scaleLevel"
-    >
-  : V extends "competenceElement.for.language"
-  ? Pick<
-      CompetenceElement,
-      | "id"
-      | "objectId"
-      | "objectTypeId"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "competenceGroup"
-      | "scaleLevel"
-    >
-  : V extends "competenceElement.card"
-  ? Pick<
-      CompetenceElement,
-      | "id"
-      | "competenceGroup"
-      | "objectId"
-      | "objectTypeId"
-      | "scaleLevel"
-      | "competenceGroup"
     >
   : never;

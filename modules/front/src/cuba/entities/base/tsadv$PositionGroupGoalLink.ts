@@ -9,13 +9,13 @@ export class PositionGroupGoalLink extends AbstractParentEntity {
   goal?: Goal | null;
 }
 export type PositionGroupGoalLinkViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "positionGroupGoalLink.edit";
 export type PositionGroupGoalLinkView<
   V extends PositionGroupGoalLinkViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PositionGroupGoalLink,
       | "id"
@@ -25,7 +25,7 @@ export type PositionGroupGoalLinkView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PositionGroupGoalLink,
       | "id"

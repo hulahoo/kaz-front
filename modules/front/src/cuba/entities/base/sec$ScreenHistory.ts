@@ -4,6 +4,7 @@ export class ScreenHistoryEntity extends BaseUuidEntity {
   static NAME = "sec$ScreenHistory";
   createTs?: any | null;
   createdBy?: string | null;
+  sysTenantId?: string | null;
   user?: User | null;
   substitutedUser?: User | null;
   caption?: string | null;
@@ -12,20 +13,27 @@ export class ScreenHistoryEntity extends BaseUuidEntity {
   displayUser?: string | null;
 }
 export type ScreenHistoryEntityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "browse";
 export type ScreenHistoryEntityView<
   V extends ScreenHistoryEntityViewName
-> = V extends "_local"
-  ? Pick<ScreenHistoryEntity, "id" | "caption" | "url" | "displayUser">
-  : V extends "_base"
-  ? Pick<ScreenHistoryEntity, "id" | "caption" | "url" | "displayUser">
+> = V extends "_base"
+  ? Pick<
+      ScreenHistoryEntity,
+      "id" | "sysTenantId" | "caption" | "url" | "displayUser"
+    >
+  : V extends "_local"
+  ? Pick<
+      ScreenHistoryEntity,
+      "id" | "sysTenantId" | "caption" | "url" | "displayUser"
+    >
   : V extends "browse"
   ? Pick<
       ScreenHistoryEntity,
       | "id"
+      | "sysTenantId"
       | "caption"
       | "url"
       | "displayUser"

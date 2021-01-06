@@ -15,24 +15,24 @@ export class TrainingRequest extends StandardEntity {
   enrollment?: EnrollmentForTrainingRequest[] | null;
 }
 export type TrainingRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "trainingRequest-view";
 export type TrainingRequestView<
   V extends TrainingRequestViewName
-> = V extends "_minimal"
-  ? Pick<TrainingRequest, "id" | "requestNumber">
+> = V extends "_base"
+  ? Pick<
+      TrainingRequest,
+      "id" | "requestNumber" | "startDate" | "endDate" | "status"
+    >
   : V extends "_local"
   ? Pick<
       TrainingRequest,
       "id" | "requestNumber" | "startDate" | "endDate" | "status"
     >
-  : V extends "_base"
-  ? Pick<
-      TrainingRequest,
-      "id" | "requestNumber" | "startDate" | "endDate" | "status"
-    >
+  : V extends "_minimal"
+  ? Pick<TrainingRequest, "id" | "requestNumber">
   : V extends "trainingRequest-view"
   ? Pick<
       TrainingRequest,

@@ -9,14 +9,14 @@ export class CourseFeedbackTemplate extends AbstractParentEntity {
   endDate?: any | null;
 }
 export type CourseFeedbackTemplateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "courseFeedbackTemplate.edit"
-  | "courseFeedbackTemplate.course";
+  | "_local"
+  | "_minimal"
+  | "courseFeedbackTemplate.course"
+  | "courseFeedbackTemplate.edit";
 export type CourseFeedbackTemplateView<
   V extends CourseFeedbackTemplateViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseFeedbackTemplate,
       | "id"
@@ -26,7 +26,7 @@ export type CourseFeedbackTemplateView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseFeedbackTemplate,
       | "id"
@@ -35,6 +35,17 @@ export type CourseFeedbackTemplateView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "courseFeedbackTemplate.course"
+  ? Pick<
+      CourseFeedbackTemplate,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "feedbackTemplate"
     >
   : V extends "courseFeedbackTemplate.edit"
   ? Pick<
@@ -47,16 +58,5 @@ export type CourseFeedbackTemplateView<
       | "integrationUserLogin"
       | "feedbackTemplate"
       | "course"
-    >
-  : V extends "courseFeedbackTemplate.course"
-  ? Pick<
-      CourseFeedbackTemplate,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "feedbackTemplate"
     >
   : never;

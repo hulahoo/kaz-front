@@ -5,7 +5,7 @@ export class TemplateEnrollment extends BaseUuidEntity {
   date?: any | null;
   reason?: string | null;
 }
-export type TemplateEnrollmentViewName = "_minimal" | "_local" | "_base";
+export type TemplateEnrollmentViewName = "_base" | "_local" | "_minimal";
 export type TemplateEnrollmentView<
   V extends TemplateEnrollmentViewName
 > = never;

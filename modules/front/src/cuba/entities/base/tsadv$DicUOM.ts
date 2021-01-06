@@ -2,35 +2,8 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicUOM extends AbstractDictionary {
   static NAME = "tsadv$DicUOM";
 }
-export type DicUOMViewName = "_minimal" | "_local" | "_base" | "dicUOM.browse";
-export type DicUOMView<V extends DicUOMViewName> = V extends "_minimal"
-  ? Pick<DicUOM, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicUOM,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+export type DicUOMViewName = "_base" | "_local" | "_minimal" | "dicUOM.browse";
+export type DicUOMView<V extends DicUOMViewName> = V extends "_base"
   ? Pick<
       DicUOM,
       | "id"
@@ -56,6 +29,33 @@ export type DicUOMView<V extends DicUOMViewName> = V extends "_minimal"
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicUOM,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicUOM, "id" | "langValue">
   : V extends "dicUOM.browse"
   ? Pick<
       DicUOM,

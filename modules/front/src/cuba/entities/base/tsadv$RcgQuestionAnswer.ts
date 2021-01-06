@@ -15,13 +15,13 @@ export class RcgQuestionAnswer extends StandardEntity {
   text?: string | null;
 }
 export type RcgQuestionAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "rcgQuestionAnswer.edit";
 export type RcgQuestionAnswerView<
   V extends RcgQuestionAnswerViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       RcgQuestionAnswer,
       | "id"
@@ -34,7 +34,7 @@ export type RcgQuestionAnswerView<
       | "code"
       | "text"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RcgQuestionAnswer,
       | "id"

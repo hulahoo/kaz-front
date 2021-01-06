@@ -6,13 +6,20 @@ export class RcJobGroup extends AbstractParentEntity {
   jobs?: JobGroup[] | null;
 }
 export type RcJobGroupViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "rcJobGroup.browse"
   | "rcJobGroup.edit";
-export type RcJobGroupView<V extends RcJobGroupViewName> = V extends "_minimal"
-  ? Pick<RcJobGroup, "id" | "groupName">
+export type RcJobGroupView<V extends RcJobGroupViewName> = V extends "_base"
+  ? Pick<
+      RcJobGroup,
+      | "id"
+      | "groupName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RcJobGroup,
@@ -22,15 +29,8 @@ export type RcJobGroupView<V extends RcJobGroupViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RcJobGroup,
-      | "id"
-      | "groupName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<RcJobGroup, "id" | "groupName">
   : V extends "rcJobGroup.browse"
   ? Pick<
       RcJobGroup,

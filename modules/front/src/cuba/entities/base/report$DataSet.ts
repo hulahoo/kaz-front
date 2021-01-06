@@ -19,5 +19,5 @@ export class DataSet extends BaseUuidEntity {
   dataStore?: string | null;
   processTemplate?: boolean | null;
 }
-export type DataSetViewName = "_minimal" | "_local" | "_base";
+export type DataSetViewName = "_base" | "_local" | "_minimal";
 export type DataSetView<V extends DataSetViewName> = never;

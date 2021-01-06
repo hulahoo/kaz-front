@@ -9,18 +9,18 @@ export class CourseCompetence extends AbstractParentEntity {
   scaleLevel?: ScaleLevel | null;
 }
 export type CourseCompetenceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseCompetence.edit";
 export type CourseCompetenceView<
   V extends CourseCompetenceViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseCompetence,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseCompetence,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

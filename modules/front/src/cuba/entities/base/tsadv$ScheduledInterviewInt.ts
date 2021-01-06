@@ -11,11 +11,11 @@ export class ScheduledInterviewInt extends AbstractEntityInt {
   requisitionCode?: string | null;
   requisitionJob?: string | null;
 }
-export type ScheduledInterviewIntViewName = "_minimal" | "_local" | "_base";
+export type ScheduledInterviewIntViewName = "_base" | "_local" | "_minimal";
 export type ScheduledInterviewIntView<
   V extends ScheduledInterviewIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<ScheduledInterviewInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<ScheduledInterviewInt, "id">
   : never;

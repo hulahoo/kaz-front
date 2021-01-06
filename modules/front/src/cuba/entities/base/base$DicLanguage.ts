@@ -3,13 +3,11 @@ export class DicLanguage extends AbstractSortableDictionary {
   static NAME = "base$DicLanguage";
 }
 export type DicLanguageViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicLanguage.langValueAndCode.view";
-export type DicLanguageView<
-  V extends DicLanguageViewName
-> = V extends "_minimal"
+export type DicLanguageView<V extends DicLanguageViewName> = V extends "_base"
   ? Pick<
       DicLanguage,
       | "id"
@@ -19,6 +17,21 @@ export type DicLanguageView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -46,7 +59,7 @@ export type DicLanguageView<
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicLanguage,
       | "id"
@@ -56,21 +69,6 @@ export type DicLanguageView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : V extends "dicLanguage.langValueAndCode.view"
   ? Pick<

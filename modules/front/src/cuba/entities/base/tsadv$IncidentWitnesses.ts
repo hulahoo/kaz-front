@@ -7,18 +7,18 @@ export class IncidentWitnesses extends AbstractParentEntity {
   incident?: Incident | null;
 }
 export type IncidentWitnessesViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "incidentWitnesses-view";
 export type IncidentWitnessesView<
   V extends IncidentWitnessesViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       IncidentWitnesses,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       IncidentWitnesses,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

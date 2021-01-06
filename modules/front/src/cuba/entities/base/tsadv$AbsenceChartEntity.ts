@@ -10,7 +10,7 @@ export class AbsenceChartEntity extends BaseUuidEntity {
   absenceType?: string | null;
   assignmentAbsence?: AssignmentAbsenceChartEntity | null;
 }
-export type AbsenceChartEntityViewName = "_minimal" | "_local" | "_base";
+export type AbsenceChartEntityViewName = "_base" | "_local" | "_minimal";
 export type AbsenceChartEntityView<
   V extends AbsenceChartEntityViewName
 > = never;

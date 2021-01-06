@@ -12,7 +12,7 @@ class UserSettings extends React.Component<RootStoreProp & WrappedComponentProps
 
   render() {
     const MainSection = SectionHoc(<UserSettingMainSection />, {});
-    const PageContentComponent = PageContentHoc(<MainSection/>, {pageName: this.props.intl.formatMessage({id: 'settings'})});
+    const PageContentComponent = PageContentHoc({pageName: this.props.intl.formatMessage({id: 'settings'})}, <MainSection/>);
     return <PageContentComponent/>
   }
 }

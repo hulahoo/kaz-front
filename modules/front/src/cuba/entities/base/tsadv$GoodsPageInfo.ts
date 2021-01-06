@@ -6,5 +6,5 @@ export class GoodsPageInfo extends BaseUuidEntity {
   pageInfo?: PageInfo | null;
   goods?: GoodsPojo | null;
 }
-export type GoodsPageInfoViewName = "_minimal" | "_local" | "_base";
+export type GoodsPageInfoViewName = "_base" | "_local" | "_minimal";
 export type GoodsPageInfoView<V extends GoodsPageInfoViewName> = never;

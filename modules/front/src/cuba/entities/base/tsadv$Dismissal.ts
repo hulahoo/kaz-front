@@ -24,14 +24,25 @@ export class Dismissal extends AbstractParentEntity {
   finalCalculationDate?: any | null;
 }
 export type DismissalViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "dismissal.view"
+  | "_local"
+  | "_minimal"
   | "dismissal.card"
-  | "dismissal.forNotification";
-export type DismissalView<V extends DismissalViewName> = V extends "_minimal"
-  ? Pick<Dismissal, "id">
+  | "dismissal.forNotification"
+  | "dismissal.view";
+export type DismissalView<V extends DismissalViewName> = V extends "_base"
+  ? Pick<
+      Dismissal,
+      | "id"
+      | "dismissalDate"
+      | "requestDate"
+      | "orderNumber"
+      | "orderDate"
+      | "finalCalculationDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Dismissal,
@@ -45,39 +56,8 @@ export type DismissalView<V extends DismissalViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Dismissal,
-      | "id"
-      | "dismissalDate"
-      | "requestDate"
-      | "orderNumber"
-      | "orderDate"
-      | "finalCalculationDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "dismissal.view"
-  ? Pick<
-      Dismissal,
-      | "id"
-      | "dismissalDate"
-      | "requestDate"
-      | "orderNumber"
-      | "orderDate"
-      | "finalCalculationDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "personGroup"
-      | "ordAssignment"
-      | "orderGroup"
-      | "lcArticle"
-      | "dismissalReason"
-      | "status"
-      | "order"
-    >
+  : V extends "_minimal"
+  ? Pick<Dismissal, "id">
   : V extends "dismissal.card"
   ? Pick<
       Dismissal,
@@ -111,5 +91,25 @@ export type DismissalView<V extends DismissalViewName> = V extends "_minimal"
       | "status"
       | "order"
       | "assignmentGroup"
+    >
+  : V extends "dismissal.view"
+  ? Pick<
+      Dismissal,
+      | "id"
+      | "dismissalDate"
+      | "requestDate"
+      | "orderNumber"
+      | "orderDate"
+      | "finalCalculationDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "personGroup"
+      | "ordAssignment"
+      | "orderGroup"
+      | "lcArticle"
+      | "dismissalReason"
+      | "status"
+      | "order"
     >
   : never;

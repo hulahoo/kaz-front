@@ -11,16 +11,24 @@ export class PersonAttachment extends AbstractParentEntity {
   attachment?: FileDescriptor | null;
 }
 export type PersonAttachmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "personAttachment.view"
+  | "_local"
+  | "_minimal"
+  | "personAttachment-view-for-requisitionjobrequest"
   | "personAttachment.full"
-  | "personAttachment-view-for-requisitionjobrequest";
+  | "personAttachment.view";
 export type PersonAttachmentView<
   V extends PersonAttachmentViewName
-> = V extends "_minimal"
-  ? Pick<PersonAttachment, "id" | "filename">
+> = V extends "_base"
+  ? Pick<
+      PersonAttachment,
+      | "id"
+      | "filename"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       PersonAttachment,
@@ -31,7 +39,11 @@ export type PersonAttachmentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<PersonAttachment, "id" | "filename">
+  : V extends "personAttachment-view-for-requisitionjobrequest"
+  ? Pick<PersonAttachment, "id" | "filename" | "category" | "attachment">
+  : V extends "personAttachment.full"
   ? Pick<
       PersonAttachment,
       | "id"
@@ -40,6 +52,9 @@ export type PersonAttachmentView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "personGroup"
+      | "category"
+      | "attachment"
     >
   : V extends "personAttachment.view"
   ? Pick<
@@ -54,19 +69,4 @@ export type PersonAttachmentView<
       | "category"
       | "attachment"
     >
-  : V extends "personAttachment.full"
-  ? Pick<
-      PersonAttachment,
-      | "id"
-      | "filename"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "personGroup"
-      | "category"
-      | "attachment"
-    >
-  : V extends "personAttachment-view-for-requisitionjobrequest"
-  ? Pick<PersonAttachment, "id" | "filename" | "category" | "attachment">
   : never;

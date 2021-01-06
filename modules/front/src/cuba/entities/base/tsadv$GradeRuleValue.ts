@@ -13,15 +13,28 @@ export class GradeRuleValue extends AbstractTimeBasedEntity {
   gradeRule?: GradeRule | null;
 }
 export type GradeRuleValueViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "gradeRuleValue-view"
   | "gradeRuleValue.edit";
 export type GradeRuleValueView<
   V extends GradeRuleValueViewName
-> = V extends "_minimal"
-  ? Pick<GradeRuleValue, "id" | "max" | "mid" | "min" | "value">
+> = V extends "_base"
+  ? Pick<
+      GradeRuleValue,
+      | "id"
+      | "max"
+      | "mid"
+      | "min"
+      | "value"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
   : V extends "_local"
   ? Pick<
       GradeRuleValue,
@@ -37,21 +50,8 @@ export type GradeRuleValueView<
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
-  ? Pick<
-      GradeRuleValue,
-      | "id"
-      | "max"
-      | "mid"
-      | "min"
-      | "value"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
+  : V extends "_minimal"
+  ? Pick<GradeRuleValue, "id" | "max" | "mid" | "min" | "value">
   : V extends "gradeRuleValue-view"
   ? Pick<
       GradeRuleValue,

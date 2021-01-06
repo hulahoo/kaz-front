@@ -17,14 +17,27 @@ export class StandardSchedule extends AbstractParentEntity {
   standardShifts?: StandardShift[] | null;
 }
 export type StandardScheduleViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "schedule.view";
 export type StandardScheduleView<
   V extends StandardScheduleViewName
-> = V extends "_minimal"
-  ? Pick<StandardSchedule, "id">
+> = V extends "_base"
+  ? Pick<
+      StandardSchedule,
+      | "id"
+      | "scheduleName"
+      | "description"
+      | "startDate"
+      | "endDate"
+      | "period"
+      | "scheduleType"
+      | "isHolidayWorkDay"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       StandardSchedule,
@@ -40,21 +53,8 @@ export type StandardScheduleView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      StandardSchedule,
-      | "id"
-      | "scheduleName"
-      | "description"
-      | "startDate"
-      | "endDate"
-      | "period"
-      | "scheduleType"
-      | "isHolidayWorkDay"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<StandardSchedule, "id">
   : V extends "schedule.view"
   ? Pick<
       StandardSchedule,

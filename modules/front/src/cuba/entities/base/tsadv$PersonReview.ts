@@ -9,13 +9,11 @@ export class PersonReview extends AbstractParentEntity {
   person?: PersonGroupExt | null;
 }
 export type PersonReviewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personReview.browse";
-export type PersonReviewView<
-  V extends PersonReviewViewName
-> = V extends "_local"
+export type PersonReviewView<V extends PersonReviewViewName> = V extends "_base"
   ? Pick<
       PersonReview,
       | "id"
@@ -26,7 +24,7 @@ export type PersonReviewView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonReview,
       | "id"

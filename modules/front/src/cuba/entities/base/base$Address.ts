@@ -16,14 +16,39 @@ export class Address extends AbstractCisAddress {
   fullAddress?: string | null;
 }
 export type AddressViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "address.browse"
   | "address.edit"
   | "address.test";
-export type AddressView<V extends AddressViewName> = V extends "_minimal"
-  ? Pick<Address, "id" | "fullAddress">
+export type AddressView<V extends AddressViewName> = V extends "_base"
+  ? Pick<
+      Address,
+      | "id"
+      | "fullAddress"
+      | "streetAddressLang1"
+      | "streetAddressLang2"
+      | "streetAddressLang3"
+      | "streetAddressLang4"
+      | "streetAddressLang5"
+      | "legacyAddress"
+      | "latitude"
+      | "longitude"
+      | "streetAddress"
+      | "additionalInformation"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "street"
+      | "house"
+      | "apartment"
+      | "additionalInformationLang1"
+      | "additionalInformationLang2"
+      | "additionalInformationLang3"
+      | "additionalInformationLang4"
+      | "additionalInformationLang5"
+    >
   : V extends "_local"
   ? Pick<
       Address,
@@ -51,33 +76,8 @@ export type AddressView<V extends AddressViewName> = V extends "_minimal"
       | "additionalInformationLang4"
       | "additionalInformationLang5"
     >
-  : V extends "_base"
-  ? Pick<
-      Address,
-      | "id"
-      | "fullAddress"
-      | "streetAddressLang1"
-      | "streetAddressLang2"
-      | "streetAddressLang3"
-      | "streetAddressLang4"
-      | "streetAddressLang5"
-      | "legacyAddress"
-      | "latitude"
-      | "longitude"
-      | "streetAddress"
-      | "additionalInformation"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "street"
-      | "house"
-      | "apartment"
-      | "additionalInformationLang1"
-      | "additionalInformationLang2"
-      | "additionalInformationLang3"
-      | "additionalInformationLang4"
-      | "additionalInformationLang5"
-    >
+  : V extends "_minimal"
+  ? Pick<Address, "id" | "fullAddress">
   : V extends "address.browse"
   ? Pick<
       Address,

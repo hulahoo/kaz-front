@@ -6,7 +6,7 @@ export class PersonGroupAttestation extends BaseUuidEntity {
   personGroupExt?: PersonGroupExt | null;
   attestation?: Attestation | null;
 }
-export type PersonGroupAttestationViewName = "_minimal" | "_local" | "_base";
+export type PersonGroupAttestationViewName = "_base" | "_local" | "_minimal";
 export type PersonGroupAttestationView<
   V extends PersonGroupAttestationViewName
 > = never;

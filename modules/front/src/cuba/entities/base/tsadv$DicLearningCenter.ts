@@ -5,40 +5,10 @@ export class DicLearningCenter extends AbstractDictionary {
   latitude?: any | null;
   longitude?: any | null;
 }
-export type DicLearningCenterViewName = "_minimal" | "_local" | "_base";
+export type DicLearningCenterViewName = "_base" | "_local" | "_minimal";
 export type DicLearningCenterView<
   V extends DicLearningCenterViewName
-> = V extends "_minimal"
-  ? Pick<DicLearningCenter, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicLearningCenter,
-      | "id"
-      | "address"
-      | "latitude"
-      | "longitude"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DicLearningCenter,
       | "id"
@@ -67,4 +37,34 @@ export type DicLearningCenterView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicLearningCenter,
+      | "id"
+      | "address"
+      | "latitude"
+      | "longitude"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicLearningCenter, "id" | "langValue">
   : never;

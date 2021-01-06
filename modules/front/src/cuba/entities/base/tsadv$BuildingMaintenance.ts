@@ -21,13 +21,13 @@ export class BuildingMaintenance extends AbstractParentEntity {
   buildings?: Buildings | null;
 }
 export type BuildingMaintenanceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "buildingMaintenance-view";
 export type BuildingMaintenanceView<
   V extends BuildingMaintenanceViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       BuildingMaintenance,
       | "id"
@@ -48,7 +48,7 @@ export type BuildingMaintenanceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BuildingMaintenance,
       | "id"

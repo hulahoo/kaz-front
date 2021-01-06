@@ -2,6 +2,7 @@ import RootStore from "./RootStore";
 import {initializeApp} from "@cuba-platform/rest";
 import {CUBA_APP_URL} from "../../config";
 import {getMainStore} from "@cuba-platform/react";
+import {History, Location} from "history";
 
 
 export const cubaREST = initializeApp({
@@ -16,6 +17,24 @@ export const cubaREST = initializeApp({
 
 export type RootStoreProp = {
   rootStore?: RootStore,
+}
+
+export interface RouteComponentProps<P> {
+  match?: match<P>;
+  location?: Location;
+  history?: History;
+  staticContext?: any;
+}
+
+export interface match<P> {
+  params: P;
+  isExact: boolean;
+  path: string;
+  url: string;
+}
+
+export interface MatchParams {
+  id: string
 }
 
 export const rootStore = new RootStore(cubaREST);

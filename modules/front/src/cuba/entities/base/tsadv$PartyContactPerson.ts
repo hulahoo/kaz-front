@@ -8,18 +8,18 @@ export class PartyContactPerson extends StandardEntity {
   contactPersonType?: DicContactPersonType | null;
 }
 export type PartyContactPersonViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "partyContactPerson.browse"
   | "partyContactPerson.edit";
 export type PartyContactPersonView<
   V extends PartyContactPersonViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PartyContactPerson, "id" | "fullName">
   : V extends "_local"
   ? Pick<PartyContactPerson, "id" | "fullName">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PartyContactPerson, "id" | "fullName">
   : V extends "partyContactPerson.browse"
   ? Pick<

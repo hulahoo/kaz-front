@@ -16,13 +16,13 @@ export class MedicalInspection extends AbstractParentEntity {
   passedInspection?: any | null;
 }
 export type MedicalInspectionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "medicalInspection-view";
 export type MedicalInspectionView<
   V extends MedicalInspectionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       MedicalInspection,
       | "id"
@@ -35,7 +35,7 @@ export type MedicalInspectionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       MedicalInspection,
       | "id"

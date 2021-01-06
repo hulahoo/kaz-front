@@ -3,7 +3,7 @@ import {inject, observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {Tabs} from "antd";
 import {RootStoreProp} from "../../../../store";
-import {DEFAULT_PATTERN_WITHOUT_SECONDS, format} from "../../../../util/Date/Date";
+import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, format} from "../../../../util/Date/Date";
 import Button, {ButtonType} from "../../../../components/Button/Button";
 
 @inject("rootStore")
@@ -22,7 +22,7 @@ class NotificationDropdownMenu extends Component<WrappedComponentProps & RootSto
                   return <li key={task.id}>
                     <div className={"bell-notification-name"}>{task.name}</div>
                     <div
-                      className={"bell-notification-date"}>{format(task.createTs, DEFAULT_PATTERN_WITHOUT_SECONDS)}</div>
+                      className={"bell-notification-date"}>{format(task.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>
                   </li>
                 }) : <></>}
               </ul>
@@ -39,7 +39,7 @@ class NotificationDropdownMenu extends Component<WrappedComponentProps & RootSto
                   return <li key={notification.id}>
                     <div className={"bell-notification-name"}>{notification.name}</div>
                     <div
-                      className={"bell-notification-date"}>{format(notification.createTs, DEFAULT_PATTERN_WITHOUT_SECONDS)}</div>
+                      className={"bell-notification-date"}>{format(notification.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>
                   </li>
                 }) : <></>}
               </ul>

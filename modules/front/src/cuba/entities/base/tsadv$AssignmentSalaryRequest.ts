@@ -30,13 +30,13 @@ export class AssignmentSalaryRequest extends StandardEntity {
   substitutedEmployee?: PersonGroupExt | null;
 }
 export type AssignmentSalaryRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assignmentSalaryRequest-view";
 export type AssignmentSalaryRequestView<
   V extends AssignmentSalaryRequestViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AssignmentSalaryRequest,
       | "id"
@@ -48,7 +48,7 @@ export type AssignmentSalaryRequestView<
       | "netGross"
       | "note"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AssignmentSalaryRequest,
       | "id"

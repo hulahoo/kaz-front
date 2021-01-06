@@ -8,11 +8,11 @@ export class PersonExperienceInt extends AbstractEntityInt {
   endMonth?: string | null;
   description?: string | null;
 }
-export type PersonExperienceIntViewName = "_minimal" | "_local" | "_base";
+export type PersonExperienceIntViewName = "_base" | "_local" | "_minimal";
 export type PersonExperienceIntView<
   V extends PersonExperienceIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PersonExperienceInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonExperienceInt, "id">
   : never;

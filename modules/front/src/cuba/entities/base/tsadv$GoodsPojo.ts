@@ -11,5 +11,5 @@ export class GoodsPojo extends BaseUuidEntity {
   quantity?: any | null;
   cartId?: any | null;
 }
-export type GoodsPojoViewName = "_minimal" | "_local" | "_base";
+export type GoodsPojoViewName = "_base" | "_local" | "_minimal";
 export type GoodsPojoView<V extends GoodsPojoViewName> = never;

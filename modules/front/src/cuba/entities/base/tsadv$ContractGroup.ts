@@ -5,19 +5,19 @@ export class ContractGroup extends AbstractGroup {
   list?: Contract[] | null;
   contract?: Contract | null;
 }
-export type ContractGroupViewName = "_minimal" | "_local" | "_base";
+export type ContractGroupViewName = "_base" | "_local" | "_minimal";
 export type ContractGroupView<
   V extends ContractGroupViewName
-> = V extends "_minimal"
-  ? Pick<ContractGroup, "id">
+> = V extends "_base"
+  ? Pick<
+      ContractGroup,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ContractGroup,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ContractGroup,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<ContractGroup, "id">
   : never;

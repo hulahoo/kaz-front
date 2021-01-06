@@ -11,13 +11,13 @@ export class CourseTrainerAssessment extends AbstractParentEntity {
   score?: any | null;
 }
 export type CourseTrainerAssessmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseTrainerAssessment.edit";
 export type CourseTrainerAssessmentView<
   V extends CourseTrainerAssessmentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseTrainerAssessment,
       | "id"
@@ -27,7 +27,7 @@ export type CourseTrainerAssessmentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseTrainerAssessment,
       | "id"

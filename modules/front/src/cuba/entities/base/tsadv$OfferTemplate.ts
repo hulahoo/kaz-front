@@ -13,21 +13,14 @@ export class OfferTemplate extends AbstractParentEntity {
   rcJobGroup?: RcJobGroup | null;
 }
 export type OfferTemplateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "offerTemplate.browse"
   | "offerTemplate.edit";
 export type OfferTemplateView<
   V extends OfferTemplateViewName
-> = V extends "_minimal"
-  ? Pick<OfferTemplate, "id" | "reportTemplate">
-  : V extends "_local"
-  ? Pick<
-      OfferTemplate,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       OfferTemplate,
       | "id"
@@ -36,6 +29,13 @@ export type OfferTemplateView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      OfferTemplate,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<OfferTemplate, "id" | "reportTemplate">
   : V extends "offerTemplate.browse"
   ? Pick<
       OfferTemplate,

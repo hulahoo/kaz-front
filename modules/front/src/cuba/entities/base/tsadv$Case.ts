@@ -16,25 +16,12 @@ export class Case extends AbstractParentEntity {
   positionGroup?: PositionGroupExt | null;
 }
 export type CaseViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "case.view"
   | "caseJobName";
-export type CaseView<V extends CaseViewName> = V extends "_minimal"
-  ? Pick<Case, "id" | "caseType" | "language" | "longName" | "shortName">
-  : V extends "_local"
-  ? Pick<
-      Case,
-      | "id"
-      | "longName"
-      | "shortName"
-      | "language"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "_base"
+export type CaseView<V extends CaseViewName> = V extends "_base"
   ? Pick<
       Case,
       | "id"
@@ -46,6 +33,19 @@ export type CaseView<V extends CaseViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      Case,
+      | "id"
+      | "longName"
+      | "shortName"
+      | "language"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<Case, "id" | "caseType" | "language" | "longName" | "shortName">
   : V extends "case.view"
   ? Pick<
       Case,

@@ -6,15 +6,15 @@ export class RelationshipTypeBeneficiary extends StandardEntity {
   child?: DicRelationshipType | null;
 }
 export type RelationshipTypeBeneficiaryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "relationshipTypeBeneficiaryView";
 export type RelationshipTypeBeneficiaryView<
   V extends RelationshipTypeBeneficiaryViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<RelationshipTypeBeneficiary, "id" | "parent" | "child">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<RelationshipTypeBeneficiary, "id" | "parent" | "child">
   : V extends "relationshipTypeBeneficiaryView"
   ? Pick<RelationshipTypeBeneficiary, "id" | "parent" | "child">

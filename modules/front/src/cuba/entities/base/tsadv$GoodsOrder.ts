@@ -16,23 +16,34 @@ export class GoodsOrder extends StandardEntity {
   details?: GoodsOrderDetail[] | null;
 }
 export type GoodsOrderViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "goodsOrder.edit"
+  | "_local"
+  | "_minimal"
   | "goodsOrder.browse"
+  | "goodsOrder.edit"
   | "goodsOrder.for.integration";
-export type GoodsOrderView<V extends GoodsOrderViewName> = V extends "_minimal"
-  ? Pick<GoodsOrder, "id" | "orderNumber">
+export type GoodsOrderView<V extends GoodsOrderViewName> = V extends "_base"
+  ? Pick<
+      GoodsOrder,
+      "id" | "orderNumber" | "status" | "discount" | "totalSum" | "orderDate"
+    >
   : V extends "_local"
   ? Pick<
       GoodsOrder,
       "id" | "status" | "discount" | "totalSum" | "orderNumber" | "orderDate"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<GoodsOrder, "id" | "orderNumber">
+  : V extends "goodsOrder.browse"
   ? Pick<
       GoodsOrder,
-      "id" | "orderNumber" | "status" | "discount" | "totalSum" | "orderDate"
+      | "id"
+      | "status"
+      | "discount"
+      | "totalSum"
+      | "orderNumber"
+      | "orderDate"
+      | "personGroup"
     >
   : V extends "goodsOrder.edit"
   ? Pick<
@@ -46,17 +57,6 @@ export type GoodsOrderView<V extends GoodsOrderViewName> = V extends "_minimal"
       | "personGroup"
       | "details"
       | "deliveryAddress"
-    >
-  : V extends "goodsOrder.browse"
-  ? Pick<
-      GoodsOrder,
-      | "id"
-      | "status"
-      | "discount"
-      | "totalSum"
-      | "orderNumber"
-      | "orderDate"
-      | "personGroup"
     >
   : V extends "goodsOrder.for.integration"
   ? Pick<

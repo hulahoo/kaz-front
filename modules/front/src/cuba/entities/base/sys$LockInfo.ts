@@ -7,5 +7,5 @@ export class LockInfo extends BaseUuidEntity {
   since?: any | null;
   user?: User | null;
 }
-export type LockInfoViewName = "_minimal" | "_local" | "_base";
+export type LockInfoViewName = "_base" | "_local" | "_minimal";
 export type LockInfoView<V extends LockInfoViewName> = never;

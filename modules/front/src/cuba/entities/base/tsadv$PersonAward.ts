@@ -14,14 +14,14 @@ export class PersonAward extends StandardEntity {
   status?: any | null;
 }
 export type PersonAwardViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personAward.edit"
   | "personAward.find";
-export type PersonAwardView<V extends PersonAwardViewName> = V extends "_local"
+export type PersonAwardView<V extends PersonAwardViewName> = V extends "_base"
   ? Pick<PersonAward, "id" | "date" | "history" | "why" | "status">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<PersonAward, "id" | "date" | "history" | "why" | "status">
   : V extends "personAward.edit"
   ? Pick<

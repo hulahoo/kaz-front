@@ -10,14 +10,23 @@ export class PersonExpectedSalary extends AbstractParentEntity {
   currency?: DicCurrency | null;
 }
 export type PersonExpectedSalaryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personExpectedSalary.view";
 export type PersonExpectedSalaryView<
   V extends PersonExpectedSalaryViewName
-> = V extends "_minimal"
-  ? Pick<PersonExpectedSalary, "id">
+> = V extends "_base"
+  ? Pick<
+      PersonExpectedSalary,
+      | "id"
+      | "actualDate"
+      | "amount"
+      | "grossNet"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       PersonExpectedSalary,
@@ -29,17 +38,8 @@ export type PersonExpectedSalaryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      PersonExpectedSalary,
-      | "id"
-      | "actualDate"
-      | "amount"
-      | "grossNet"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<PersonExpectedSalary, "id">
   : V extends "personExpectedSalary.view"
   ? Pick<
       PersonExpectedSalary,

@@ -29,14 +29,31 @@ export class PositionChangeRequest extends AbstractParentEntity {
   status?: DicRequestStatus | null;
 }
 export type PositionChangeRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "positionChangeRequest.edit";
 export type PositionChangeRequestView<
   V extends PositionChangeRequestViewName
-> = V extends "_minimal"
-  ? Pick<PositionChangeRequest, "id" | "requestNumber">
+> = V extends "_base"
+  ? Pick<
+      PositionChangeRequest,
+      | "id"
+      | "requestNumber"
+      | "requestDate"
+      | "requestType"
+      | "jobNameLang1"
+      | "jobNameLang2"
+      | "jobNameLang3"
+      | "location"
+      | "fte"
+      | "effectiveDate"
+      | "comments"
+      | "materialLiabilityAgreementRequired"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       PositionChangeRequest,
@@ -56,25 +73,8 @@ export type PositionChangeRequestView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      PositionChangeRequest,
-      | "id"
-      | "requestNumber"
-      | "requestDate"
-      | "requestType"
-      | "jobNameLang1"
-      | "jobNameLang2"
-      | "jobNameLang3"
-      | "location"
-      | "fte"
-      | "effectiveDate"
-      | "comments"
-      | "materialLiabilityAgreementRequired"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<PositionChangeRequest, "id" | "requestNumber">
   : V extends "positionChangeRequest.edit"
   ? Pick<
       PositionChangeRequest,

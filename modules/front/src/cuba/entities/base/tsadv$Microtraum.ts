@@ -22,11 +22,11 @@ export class Microtraum extends AbstractParentEntity {
   workPlace?: WorkPlace | null;
 }
 export type MicrotraumViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "microtraum-view";
-export type MicrotraumView<V extends MicrotraumViewName> = V extends "_local"
+export type MicrotraumView<V extends MicrotraumViewName> = V extends "_base"
   ? Pick<
       Microtraum,
       | "id"
@@ -40,7 +40,7 @@ export type MicrotraumView<V extends MicrotraumViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Microtraum,
       | "id"

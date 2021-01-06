@@ -13,13 +13,13 @@ export class InfoSalaryMarket extends AbstractTimeBasedEntity {
   job?: Job | null;
 }
 export type InfoSalaryMarketViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "infoSalaryMarket.browse";
 export type InfoSalaryMarketView<
   V extends InfoSalaryMarketViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       InfoSalaryMarket,
       | "id"
@@ -38,7 +38,7 @@ export type InfoSalaryMarketView<
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       InfoSalaryMarket,
       | "id"

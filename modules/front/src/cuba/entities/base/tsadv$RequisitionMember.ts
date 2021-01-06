@@ -8,14 +8,21 @@ export class RequisitionMember extends AbstractParentEntity {
   accessLevel?: any | null;
 }
 export type RequisitionMemberViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "requisitionMember.view";
 export type RequisitionMemberView<
   V extends RequisitionMemberViewName
-> = V extends "_minimal"
-  ? Pick<RequisitionMember, "id">
+> = V extends "_base"
+  ? Pick<
+      RequisitionMember,
+      | "id"
+      | "accessLevel"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RequisitionMember,
@@ -25,15 +32,8 @@ export type RequisitionMemberView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RequisitionMember,
-      | "id"
-      | "accessLevel"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<RequisitionMember, "id">
   : V extends "requisitionMember.view"
   ? Pick<
       RequisitionMember,

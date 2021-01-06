@@ -24,11 +24,11 @@ export class Incident extends AbstractParentEntity {
   workPlace?: WorkPlace | null;
 }
 export type IncidentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "incident-view";
-export type IncidentView<V extends IncidentViewName> = V extends "_local"
+export type IncidentView<V extends IncidentViewName> = V extends "_base"
   ? Pick<
       Incident,
       | "id"
@@ -45,7 +45,7 @@ export type IncidentView<V extends IncidentViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Incident,
       | "id"

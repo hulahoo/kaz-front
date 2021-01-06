@@ -11,5 +11,5 @@ export class ForMassEnrollment extends BaseUuidEntity {
   position?: PositionGroupExt | null;
   job?: JobGroup | null;
 }
-export type ForMassEnrollmentViewName = "_minimal" | "_local" | "_base";
+export type ForMassEnrollmentViewName = "_base" | "_local" | "_minimal";
 export type ForMassEnrollmentView<V extends ForMassEnrollmentViewName> = never;

@@ -16,9 +16,19 @@ export class Medal extends StandardEntity {
   sort?: number | null;
   langName?: string | null;
 }
-export type MedalViewName = "_minimal" | "_local" | "_base" | "medal.edit";
-export type MedalView<V extends MedalViewName> = V extends "_minimal"
-  ? Pick<Medal, "id" | "langName1">
+export type MedalViewName = "_base" | "_local" | "_minimal" | "medal.edit";
+export type MedalView<V extends MedalViewName> = V extends "_base"
+  ? Pick<
+      Medal,
+      | "id"
+      | "langName1"
+      | "langName2"
+      | "langName5"
+      | "langName3"
+      | "langName4"
+      | "sort"
+      | "langName"
+    >
   : V extends "_local"
   ? Pick<
       Medal,
@@ -31,18 +41,8 @@ export type MedalView<V extends MedalViewName> = V extends "_minimal"
       | "sort"
       | "langName"
     >
-  : V extends "_base"
-  ? Pick<
-      Medal,
-      | "id"
-      | "langName1"
-      | "langName2"
-      | "langName5"
-      | "langName3"
-      | "langName4"
-      | "sort"
-      | "langName"
-    >
+  : V extends "_minimal"
+  ? Pick<Medal, "id" | "langName1">
   : V extends "medal.edit"
   ? Pick<
       Medal,

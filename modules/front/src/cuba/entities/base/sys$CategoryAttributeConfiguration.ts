@@ -1,7 +1,7 @@
 import { BaseGenericIdEntity } from "./sys$BaseGenericIdEntity";
-import { CategoryAttribute } from "./sys$CategoryAttribute";
 export class CategoryAttributeConfiguration extends BaseGenericIdEntity {
   static NAME = "sys$CategoryAttributeConfiguration";
+  id?: string | null;
   minInt?: number | null;
   minDouble?: any | null;
   minDecimal?: any | null;
@@ -18,12 +18,11 @@ export class CategoryAttributeConfiguration extends BaseGenericIdEntity {
   recalculationScript?: string | null;
   xCoordinate?: number | null;
   yCoordinate?: number | null;
-  dependsOnAttributes?: CategoryAttribute | null;
 }
 export type CategoryAttributeConfigurationViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type CategoryAttributeConfigurationView<
   V extends CategoryAttributeConfigurationViewName
 > = never;

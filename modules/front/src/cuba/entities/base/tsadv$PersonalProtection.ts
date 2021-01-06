@@ -17,13 +17,13 @@ export class PersonalProtection extends AbstractParentEntity {
   replacementDate?: any | null;
 }
 export type PersonalProtectionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personalProtection.edit";
 export type PersonalProtectionView<
   V extends PersonalProtectionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonalProtection,
       | "id"
@@ -39,7 +39,7 @@ export type PersonalProtectionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonalProtection,
       | "id"

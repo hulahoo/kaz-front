@@ -7,5 +7,5 @@ export class ReportValueFormat extends BaseUuidEntity {
   report?: Report | null;
   groovyScript?: boolean | null;
 }
-export type ReportValueFormatViewName = "_minimal" | "_local" | "_base";
+export type ReportValueFormatViewName = "_base" | "_local" | "_minimal";
 export type ReportValueFormatView<V extends ReportValueFormatViewName> = never;

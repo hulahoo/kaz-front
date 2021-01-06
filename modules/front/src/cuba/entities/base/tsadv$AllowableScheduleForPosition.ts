@@ -9,13 +9,13 @@ export class AllowableScheduleForPosition extends AbstractParentEntity {
   endDate?: any | null;
 }
 export type AllowableScheduleForPositionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "allowableScheduleForPosition-view";
 export type AllowableScheduleForPositionView<
   V extends AllowableScheduleForPositionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AllowableScheduleForPosition,
       | "id"
@@ -25,7 +25,7 @@ export type AllowableScheduleForPositionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AllowableScheduleForPosition,
       | "id"

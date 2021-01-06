@@ -7,9 +7,9 @@ export class ManagedBeanOperationParameter extends BaseUuidEntity {
   javaType?: string | null;
 }
 export type ManagedBeanOperationParameterViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type ManagedBeanOperationParameterView<
   V extends ManagedBeanOperationParameterViewName
 > = never;

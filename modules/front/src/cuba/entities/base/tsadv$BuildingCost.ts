@@ -8,13 +8,11 @@ export class BuildingCost extends AbstractParentEntity {
   buildings?: Buildings | null;
 }
 export type BuildingCostViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "buildingCost-view";
-export type BuildingCostView<
-  V extends BuildingCostViewName
-> = V extends "_local"
+export type BuildingCostView<V extends BuildingCostViewName> = V extends "_base"
   ? Pick<
       BuildingCost,
       | "id"
@@ -25,7 +23,7 @@ export type BuildingCostView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BuildingCost,
       | "id"

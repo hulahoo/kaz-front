@@ -1,41 +1,38 @@
-import { AbstractParentEntity } from "./AbstractParentEntity";
+import { AbstractTimeBasedEntity } from "./AbstractTimeBasedEntity";
 import { Hierarchy } from "./base$Hierarchy";
-export class HierarchyElement extends AbstractParentEntity {
+export class HierarchyElement extends AbstractTimeBasedEntity {
   static NAME = "base$HierarchyElement";
   elementType?: any | null;
   hierarchy?: Hierarchy | null;
-  startDate?: any | null;
-  endDate?: any | null;
   parentName?: string | null;
-  doNotCopy?: boolean | null;
 }
-export type HierarchyElementViewName = "_minimal" | "_local" | "_base";
+export type HierarchyElementViewName = "_base" | "_local" | "_minimal";
 export type HierarchyElementView<
   V extends HierarchyElementViewName
-> = V extends "_minimal"
-  ? Pick<HierarchyElement, "id">
+> = V extends "_base"
+  ? Pick<
+      HierarchyElement,
+      | "id"
+      | "elementType"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
   : V extends "_local"
   ? Pick<
       HierarchyElement,
       | "id"
       | "elementType"
-      | "startDate"
-      | "endDate"
-      | "doNotCopy"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-    >
-  : V extends "_base"
-  ? Pick<
-      HierarchyElement,
-      | "id"
-      | "elementType"
       | "startDate"
       | "endDate"
-      | "doNotCopy"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      | "writeHistory"
     >
+  : V extends "_minimal"
+  ? Pick<HierarchyElement, "id">
   : never;

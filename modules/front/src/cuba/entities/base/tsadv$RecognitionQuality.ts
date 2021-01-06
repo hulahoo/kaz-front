@@ -7,9 +7,9 @@ export class RecognitionQuality extends StandardEntity {
   quality?: DicQuality | null;
 }
 export type RecognitionQualityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "recognitionQuality.edit";
 export type RecognitionQualityView<
   V extends RecognitionQualityViewName

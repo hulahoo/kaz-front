@@ -5,7 +5,7 @@ export class RcgFeedbackAttachmentPojo extends BaseUuidEntity {
   type?: string | null;
   url?: string | null;
 }
-export type RcgFeedbackAttachmentPojoViewName = "_minimal" | "_local" | "_base";
+export type RcgFeedbackAttachmentPojoViewName = "_base" | "_local" | "_minimal";
 export type RcgFeedbackAttachmentPojoView<
   V extends RcgFeedbackAttachmentPojoViewName
 > = never;

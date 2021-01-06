@@ -17,14 +17,25 @@ export class ActivityTask extends BaseUuidEntity {
   detailEn?: string | null;
 }
 export type ActivityTaskViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "activityTask.view";
-export type ActivityTaskView<
-  V extends ActivityTaskViewName
-> = V extends "_minimal"
-  ? Pick<ActivityTask, "id" | "orderCode">
+export type ActivityTaskView<V extends ActivityTaskViewName> = V extends "_base"
+  ? Pick<
+      ActivityTask,
+      | "id"
+      | "orderCode"
+      | "processEn"
+      | "orderDate"
+      | "status"
+      | "processRu"
+      | "startDate"
+      | "expiryDate"
+      | "isExpiredTask"
+      | "detailRu"
+      | "detailEn"
+    >
   : V extends "_local"
   ? Pick<
       ActivityTask,
@@ -40,21 +51,8 @@ export type ActivityTaskView<
       | "detailRu"
       | "detailEn"
     >
-  : V extends "_base"
-  ? Pick<
-      ActivityTask,
-      | "id"
-      | "orderCode"
-      | "processEn"
-      | "orderDate"
-      | "status"
-      | "processRu"
-      | "startDate"
-      | "expiryDate"
-      | "isExpiredTask"
-      | "detailRu"
-      | "detailEn"
-    >
+  : V extends "_minimal"
+  ? Pick<ActivityTask, "id" | "orderCode">
   : V extends "activityTask.view"
   ? Pick<
       ActivityTask,

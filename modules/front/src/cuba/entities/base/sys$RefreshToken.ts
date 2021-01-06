@@ -8,10 +8,8 @@ export class RefreshToken extends BaseUuidEntity {
   expiry?: any | null;
   userLogin?: string | null;
 }
-export type RefreshTokenViewName = "_minimal" | "_local" | "_base";
-export type RefreshTokenView<
-  V extends RefreshTokenViewName
-> = V extends "_local"
+export type RefreshTokenViewName = "_base" | "_local" | "_minimal";
+export type RefreshTokenView<V extends RefreshTokenViewName> = V extends "_base"
   ? Pick<
       RefreshToken,
       | "id"
@@ -22,7 +20,7 @@ export type RefreshTokenView<
       | "expiry"
       | "userLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RefreshToken,
       | "id"

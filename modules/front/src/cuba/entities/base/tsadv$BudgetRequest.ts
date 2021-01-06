@@ -46,15 +46,34 @@ export class BudgetRequest extends AbstractParentEntity {
   calcCourseName?: string | null;
 }
 export type BudgetRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "budgetRequest.view"
-  | "budgetRequest-with-items";
+  | "_local"
+  | "_minimal"
+  | "budgetRequest-with-items"
+  | "budgetRequest.view";
 export type BudgetRequestView<
   V extends BudgetRequestViewName
-> = V extends "_minimal"
-  ? Pick<BudgetRequest, "id">
+> = V extends "_base"
+  ? Pick<
+      BudgetRequest,
+      | "id"
+      | "trainingSubject"
+      | "educationOnWork"
+      | "courseName"
+      | "employeesCount"
+      | "month"
+      | "learningCosts"
+      | "tripCosts"
+      | "comment"
+      | "reason"
+      | "day"
+      | "hour"
+      | "businessTripEmployee"
+      | "calcCourseName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       BudgetRequest,
@@ -76,7 +95,9 @@ export type BudgetRequestView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<BudgetRequest, "id">
+  : V extends "budgetRequest-with-items"
   ? Pick<
       BudgetRequest,
       | "id"
@@ -96,6 +117,10 @@ export type BudgetRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "budgetRequestItems"
+      | "budgetHeader"
+      | "budget"
+      | "initiatorPersonGroup"
     >
   : V extends "budgetRequest.view"
   ? Pick<
@@ -127,30 +152,5 @@ export type BudgetRequestView<
       | "city"
       | "budgetItem"
       | "budget"
-    >
-  : V extends "budgetRequest-with-items"
-  ? Pick<
-      BudgetRequest,
-      | "id"
-      | "trainingSubject"
-      | "educationOnWork"
-      | "courseName"
-      | "employeesCount"
-      | "month"
-      | "learningCosts"
-      | "tripCosts"
-      | "comment"
-      | "reason"
-      | "day"
-      | "hour"
-      | "businessTripEmployee"
-      | "calcCourseName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "budgetRequestItems"
-      | "budgetHeader"
-      | "budget"
-      | "initiatorPersonGroup"
     >
   : never;

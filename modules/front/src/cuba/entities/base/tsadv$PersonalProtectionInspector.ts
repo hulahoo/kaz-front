@@ -10,13 +10,13 @@ export class PersonalProtectionInspector extends AbstractParentEntity {
   employeeFullName?: string | null;
 }
 export type PersonalProtectionInspectorViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personalProtectionInspector.edit";
 export type PersonalProtectionInspectorView<
   V extends PersonalProtectionInspectorViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonalProtectionInspector,
       | "id"
@@ -27,7 +27,7 @@ export type PersonalProtectionInspectorView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonalProtectionInspector,
       | "id"

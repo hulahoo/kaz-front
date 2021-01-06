@@ -9,16 +9,16 @@ export class Witnesses extends AbstractParentEntity {
   accidents?: Accidents | null;
 }
 export type WitnessesViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "witnesses-view";
-export type WitnessesView<V extends WitnessesViewName> = V extends "_local"
+export type WitnessesView<V extends WitnessesViewName> = V extends "_base"
   ? Pick<
       Witnesses,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Witnesses,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

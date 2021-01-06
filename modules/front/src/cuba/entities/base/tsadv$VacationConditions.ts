@@ -14,13 +14,13 @@ export class VacationConditions extends AbstractTimeBasedEntity {
   jobGroup?: JobGroup | null;
 }
 export type VacationConditionsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "vacationConditions-view";
 export type VacationConditionsView<
   V extends VacationConditionsViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       VacationConditions,
       | "id"
@@ -34,7 +34,7 @@ export type VacationConditionsView<
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       VacationConditions,
       | "id"

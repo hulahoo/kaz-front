@@ -11,9 +11,21 @@ export class Budget extends AbstractParentEntity {
   status?: DicBudgetStatus | null;
   previousBudget?: Budget | null;
 }
-export type BudgetViewName = "_minimal" | "_local" | "_base" | "budget.view";
-export type BudgetView<V extends BudgetViewName> = V extends "_minimal"
-  ? Pick<Budget, "id" | "name">
+export type BudgetViewName = "_base" | "_local" | "_minimal" | "budget.view";
+export type BudgetView<V extends BudgetViewName> = V extends "_base"
+  ? Pick<
+      Budget,
+      | "id"
+      | "name"
+      | "description"
+      | "budgetStartDate"
+      | "budgetEndDate"
+      | "requestStartDate"
+      | "requestEndDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Budget,
@@ -28,20 +40,8 @@ export type BudgetView<V extends BudgetViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Budget,
-      | "id"
-      | "name"
-      | "description"
-      | "budgetStartDate"
-      | "budgetEndDate"
-      | "requestStartDate"
-      | "requestEndDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Budget, "id" | "name">
   : V extends "budget.view"
   ? Pick<
       Budget,

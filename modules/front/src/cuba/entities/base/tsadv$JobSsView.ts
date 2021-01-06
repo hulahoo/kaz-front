@@ -14,11 +14,11 @@ export class JobSsView extends StandardEntity {
   employeeCategory?: DicEmployeeCategory | null;
 }
 export type JobSsViewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "jobSsView-view";
-export type JobSsViewView<V extends JobSsViewViewName> = V extends "_local"
+export type JobSsViewView<V extends JobSsViewViewName> = V extends "_base"
   ? Pick<
       JobSsView,
       | "id"
@@ -29,7 +29,7 @@ export type JobSsViewView<V extends JobSsViewViewName> = V extends "_local"
       | "jobNameEn"
       | "maxStartDate"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       JobSsView,
       | "id"

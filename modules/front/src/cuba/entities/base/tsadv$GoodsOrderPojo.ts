@@ -11,5 +11,5 @@ export class GoodsOrderPojo extends BaseUuidEntity {
   voucherQRCode?: string | null;
   personGroupId?: string | null;
 }
-export type GoodsOrderPojoViewName = "_minimal" | "_local" | "_base";
+export type GoodsOrderPojoViewName = "_base" | "_local" | "_minimal";
 export type GoodsOrderPojoView<V extends GoodsOrderPojoViewName> = never;

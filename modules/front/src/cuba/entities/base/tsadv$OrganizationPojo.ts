@@ -4,5 +4,5 @@ export class OrganizationPojo extends BaseUuidEntity {
   groupId?: string | null;
   name?: string | null;
 }
-export type OrganizationPojoViewName = "_minimal" | "_local" | "_base";
+export type OrganizationPojoViewName = "_base" | "_local" | "_minimal";
 export type OrganizationPojoView<V extends OrganizationPojoViewName> = never;

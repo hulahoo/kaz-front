@@ -9,14 +9,22 @@ export class RequisitionPostingChannel extends AbstractParentEntity {
   endDate?: any | null;
 }
 export type RequisitionPostingChannelViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "requisitionPostingChannel.view";
 export type RequisitionPostingChannelView<
   V extends RequisitionPostingChannelViewName
-> = V extends "_minimal"
-  ? Pick<RequisitionPostingChannel, "id">
+> = V extends "_base"
+  ? Pick<
+      RequisitionPostingChannel,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RequisitionPostingChannel,
@@ -27,16 +35,8 @@ export type RequisitionPostingChannelView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RequisitionPostingChannel,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<RequisitionPostingChannel, "id">
   : V extends "requisitionPostingChannel.view"
   ? Pick<
       RequisitionPostingChannel,

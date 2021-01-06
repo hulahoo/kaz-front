@@ -11,19 +11,19 @@ export class InterviewQuestion extends AbstractParentEntity {
   score?: any | null;
   wholeObject?: InterviewQuestion | null;
 }
-export type InterviewQuestionViewName = "_minimal" | "_local" | "_base";
+export type InterviewQuestionViewName = "_base" | "_local" | "_minimal";
 export type InterviewQuestionView<
   V extends InterviewQuestionViewName
-> = V extends "_minimal"
-  ? Pick<InterviewQuestion, "id">
+> = V extends "_base"
+  ? Pick<
+      InterviewQuestion,
+      "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       InterviewQuestion,
       "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      InterviewQuestion,
-      "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<InterviewQuestion, "id">
   : never;

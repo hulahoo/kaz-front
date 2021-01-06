@@ -8,11 +8,11 @@ export class GoodsCategoryPojo extends BaseUuidEntity {
   main?: number | null;
   children?: GoodsCategoryPojo | null;
 }
-export type GoodsCategoryPojoViewName = "_minimal" | "_local" | "_base";
+export type GoodsCategoryPojoViewName = "_base" | "_local" | "_minimal";
 export type GoodsCategoryPojoView<
   V extends GoodsCategoryPojoViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<GoodsCategoryPojo, "id" | "name">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<GoodsCategoryPojo, "id" | "name">
   : never;

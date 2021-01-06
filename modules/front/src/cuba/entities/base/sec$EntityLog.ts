@@ -5,6 +5,7 @@ export class EntityLogItem extends BaseUuidEntity {
   static NAME = "sec$EntityLog";
   createTs?: any | null;
   createdBy?: string | null;
+  sysTenantId?: string | null;
   eventTs?: any | null;
   user?: User | null;
   type?: any | null;
@@ -13,29 +14,46 @@ export class EntityLogItem extends BaseUuidEntity {
   entityInstanceName?: string | null;
   attributes?: EntityLogAttr | null;
   changes?: string | null;
+  displayedEntityName?: string | null;
 }
-export type EntityLogItemViewName = "_minimal" | "_local" | "_base" | "logView";
+export type EntityLogItemViewName = "_base" | "_local" | "_minimal" | "logView";
 export type EntityLogItemView<
   V extends EntityLogItemViewName
-> = V extends "_local"
-  ? Pick<
-      EntityLogItem,
-      "id" | "eventTs" | "type" | "entity" | "entityInstanceName" | "changes"
-    >
-  : V extends "_base"
-  ? Pick<
-      EntityLogItem,
-      "id" | "eventTs" | "type" | "entity" | "entityInstanceName" | "changes"
-    >
-  : V extends "logView"
+> = V extends "_base"
   ? Pick<
       EntityLogItem,
       | "id"
+      | "sysTenantId"
       | "eventTs"
       | "type"
       | "entity"
       | "entityInstanceName"
       | "changes"
+      | "displayedEntityName"
+    >
+  : V extends "_local"
+  ? Pick<
+      EntityLogItem,
+      | "id"
+      | "sysTenantId"
+      | "eventTs"
+      | "type"
+      | "entity"
+      | "entityInstanceName"
+      | "changes"
+      | "displayedEntityName"
+    >
+  : V extends "logView"
+  ? Pick<
+      EntityLogItem,
+      | "id"
+      | "sysTenantId"
+      | "eventTs"
+      | "type"
+      | "entity"
+      | "entityInstanceName"
+      | "changes"
+      | "displayedEntityName"
       | "user"
       | "entityRef"
     >

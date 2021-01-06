@@ -10,15 +10,13 @@ export class LoggedEntity extends BaseUuidEntity {
   attributes?: LoggedAttribute[] | null;
 }
 export type LoggedEntityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "loggedAttrs";
-export type LoggedEntityView<
-  V extends LoggedEntityViewName
-> = V extends "_local"
+export type LoggedEntityView<V extends LoggedEntityViewName> = V extends "_base"
   ? Pick<LoggedEntity, "id" | "name" | "auto" | "manual">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<LoggedEntity, "id" | "name" | "auto" | "manual">
   : V extends "loggedAttrs"
   ? Pick<LoggedEntity, "id" | "attributes" | "auto" | "manual" | "name">

@@ -5,11 +5,11 @@ export class PersonContactInt extends AbstractEntityInt {
   contactTypeName?: string | null;
   contactValue?: string | null;
 }
-export type PersonContactIntViewName = "_minimal" | "_local" | "_base";
+export type PersonContactIntViewName = "_base" | "_local" | "_minimal";
 export type PersonContactIntView<
   V extends PersonContactIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PersonContactInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonContactInt, "id">
   : never;

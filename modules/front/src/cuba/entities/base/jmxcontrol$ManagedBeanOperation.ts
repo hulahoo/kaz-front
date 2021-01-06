@@ -7,7 +7,7 @@ export class ManagedBeanOperation extends BaseUuidEntity {
   runAsync?: boolean | null;
   timeout?: any | null;
 }
-export type ManagedBeanOperationViewName = "_minimal" | "_local" | "_base";
+export type ManagedBeanOperationViewName = "_base" | "_local" | "_minimal";
 export type ManagedBeanOperationView<
   V extends ManagedBeanOperationViewName
 > = never;

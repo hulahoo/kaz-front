@@ -8,8 +8,8 @@ export class LookupType extends AbstractParentEntity {
   lookupNameLang3?: string | null;
   lookupValue?: LookupValue[] | null;
 }
-export type LookupTypeViewName = "_minimal" | "_local" | "_base";
-export type LookupTypeView<V extends LookupTypeViewName> = V extends "_local"
+export type LookupTypeViewName = "_base" | "_local" | "_minimal";
+export type LookupTypeView<V extends LookupTypeViewName> = V extends "_base"
   ? Pick<
       LookupType,
       | "id"
@@ -21,7 +21,7 @@ export type LookupTypeView<V extends LookupTypeViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LookupType,
       | "id"

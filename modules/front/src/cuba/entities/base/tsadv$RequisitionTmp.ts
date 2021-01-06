@@ -47,15 +47,46 @@ export class RequisitionTmp extends AbstractParentEntity {
   managerDescriptionLang5?: string | null;
 }
 export type RequisitionTmpViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "requisitionTmp.full"
   | "requisitionTmp.view";
 export type RequisitionTmpView<
   V extends RequisitionTmpViewName
-> = V extends "_minimal"
-  ? Pick<RequisitionTmp, "id">
+> = V extends "_base"
+  ? Pick<
+      RequisitionTmp,
+      | "id"
+      | "code"
+      | "requisitionType"
+      | "startDate"
+      | "endDate"
+      | "openedPositionsCount"
+      | "requisitionStatus"
+      | "finalCollectDate"
+      | "nameForSiteLang1"
+      | "nameForSiteLang2"
+      | "nameForSiteLang3"
+      | "nameForSiteLang4"
+      | "nameForSiteLang5"
+      | "videoInterviewRequired"
+      | "withoutOffer"
+      | "descriptionLang1"
+      | "descriptionLang2"
+      | "descriptionLang3"
+      | "descriptionLang4"
+      | "descriptionLang5"
+      | "forSubstitution"
+      | "managerDescriptionLang1"
+      | "managerDescriptionLang2"
+      | "managerDescriptionLang3"
+      | "managerDescriptionLang4"
+      | "managerDescriptionLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RequisitionTmp,
@@ -89,39 +120,8 @@ export type RequisitionTmpView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RequisitionTmp,
-      | "id"
-      | "code"
-      | "requisitionType"
-      | "startDate"
-      | "endDate"
-      | "openedPositionsCount"
-      | "requisitionStatus"
-      | "finalCollectDate"
-      | "nameForSiteLang1"
-      | "nameForSiteLang2"
-      | "nameForSiteLang3"
-      | "nameForSiteLang4"
-      | "nameForSiteLang5"
-      | "videoInterviewRequired"
-      | "withoutOffer"
-      | "descriptionLang1"
-      | "descriptionLang2"
-      | "descriptionLang3"
-      | "descriptionLang4"
-      | "descriptionLang5"
-      | "forSubstitution"
-      | "managerDescriptionLang1"
-      | "managerDescriptionLang2"
-      | "managerDescriptionLang3"
-      | "managerDescriptionLang4"
-      | "managerDescriptionLang5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<RequisitionTmp, "id">
   : V extends "requisitionTmp.full"
   ? Pick<
       RequisitionTmp,

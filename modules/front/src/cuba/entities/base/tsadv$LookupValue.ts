@@ -16,11 +16,11 @@ export class LookupValue extends AbstractParentEntity {
   tag?: string | null;
 }
 export type LookupValueViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "lookupValue.edit";
-export type LookupValueView<V extends LookupValueViewName> = V extends "_local"
+export type LookupValueView<V extends LookupValueViewName> = V extends "_base"
   ? Pick<
       LookupValue,
       | "id"
@@ -39,7 +39,7 @@ export type LookupValueView<V extends LookupValueViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LookupValue,
       | "id"

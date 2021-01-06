@@ -19,13 +19,13 @@ export class TalentProgramPersonStep extends AbstractParentEntity {
   file?: FileDescriptor | null;
 }
 export type TalentProgramPersonStepViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "talentProgramPersonStep-view";
 export type TalentProgramPersonStepView<
   V extends TalentProgramPersonStepViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       TalentProgramPersonStep,
       | "id"
@@ -39,7 +39,7 @@ export type TalentProgramPersonStepView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       TalentProgramPersonStep,
       | "id"

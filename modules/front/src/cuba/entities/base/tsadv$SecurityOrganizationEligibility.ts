@@ -8,23 +8,23 @@ export class SecurityOrganizationEligibility extends StandardEntity {
   include?: boolean | null;
 }
 export type SecurityOrganizationEligibilityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "securityOrganizationEligibility-view"
-  | "securityOrganizationEligibility-edit";
+  | "_local"
+  | "_minimal"
+  | "securityOrganizationEligibility-edit"
+  | "securityOrganizationEligibility-view";
 export type SecurityOrganizationEligibilityView<
   V extends SecurityOrganizationEligibilityViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<SecurityOrganizationEligibility, "id" | "include">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<SecurityOrganizationEligibility, "id" | "include">
-  : V extends "securityOrganizationEligibility-view"
+  : V extends "securityOrganizationEligibility-edit"
   ? Pick<
       SecurityOrganizationEligibility,
       "id" | "securityGroup" | "organizationGroup" | "include"
     >
-  : V extends "securityOrganizationEligibility-edit"
+  : V extends "securityOrganizationEligibility-view"
   ? Pick<
       SecurityOrganizationEligibility,
       "id" | "securityGroup" | "organizationGroup" | "include"

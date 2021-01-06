@@ -7,19 +7,13 @@ export class GeneratorEmployeeNumberDefiner extends StandardEntity {
   personType?: DicPersonType | null;
 }
 export type GeneratorEmployeeNumberDefinerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "generatorEmployeeNumberDefiner-view"
+  | "_local"
+  | "_minimal"
   | "generatorEmployeeNumberDefiner-view";
 export type GeneratorEmployeeNumberDefinerView<
   V extends GeneratorEmployeeNumberDefinerViewName
 > = V extends "generatorEmployeeNumberDefiner-view"
-  ? Pick<
-      GeneratorEmployeeNumberDefiner,
-      "id" | "generatorEmployeeNumber" | "personType"
-    >
-  : V extends "generatorEmployeeNumberDefiner-view"
   ? Pick<
       GeneratorEmployeeNumberDefiner,
       "id" | "generatorEmployeeNumber" | "personType"

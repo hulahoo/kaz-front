@@ -7,9 +7,9 @@ export class SecurityHierarchyNode extends StandardEntity {
   organizationGroup?: OrganizationGroupExt | null;
 }
 export type SecurityHierarchyNodeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "securityHierarchyNode-browse"
   | "securityHierarchyNode-edit";
 export type SecurityHierarchyNodeView<

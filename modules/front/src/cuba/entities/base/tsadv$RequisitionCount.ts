@@ -6,5 +6,5 @@ export class RequisitionCount extends BaseUuidEntity {
   countRequisition?: any | null;
   countJobRequest?: any | null;
 }
-export type RequisitionCountViewName = "_minimal" | "_local" | "_base";
+export type RequisitionCountViewName = "_base" | "_local" | "_minimal";
 export type RequisitionCountView<V extends RequisitionCountViewName> = never;

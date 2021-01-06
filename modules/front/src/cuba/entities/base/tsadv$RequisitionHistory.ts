@@ -8,13 +8,13 @@ export class RequisitionHistory extends AbstractParentEntity {
   openedPositionsCount?: any | null;
 }
 export type RequisitionHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "requisitionHistory.browse";
 export type RequisitionHistoryView<
   V extends RequisitionHistoryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       RequisitionHistory,
       | "id"
@@ -25,7 +25,7 @@ export type RequisitionHistoryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RequisitionHistory,
       | "id"

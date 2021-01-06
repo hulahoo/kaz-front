@@ -7,20 +7,13 @@ export class VideoFileForPlay extends AbstractParentEntity {
   status?: any | null;
 }
 export type VideoFileForPlayViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "video-file-for-play";
 export type VideoFileForPlayView<
   V extends VideoFileForPlayViewName
-> = V extends "_minimal"
-  ? Pick<VideoFileForPlay, "id" | "source">
-  : V extends "_local"
-  ? Pick<
-      VideoFileForPlay,
-      "id" | "status" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       VideoFileForPlay,
       | "id"
@@ -30,6 +23,13 @@ export type VideoFileForPlayView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      VideoFileForPlay,
+      "id" | "status" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<VideoFileForPlay, "id" | "source">
   : V extends "video-file-for-play"
   ? Pick<
       VideoFileForPlay,

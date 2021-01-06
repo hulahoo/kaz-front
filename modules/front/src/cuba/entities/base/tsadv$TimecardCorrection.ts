@@ -7,13 +7,13 @@ export class TimecardCorrection extends AbstractParentEntity {
   dateTo?: any | null;
 }
 export type TimecardCorrectionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "timecardCorrection-with-assignmentGroup";
 export type TimecardCorrectionView<
   V extends TimecardCorrectionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       TimecardCorrection,
       | "id"
@@ -23,7 +23,7 @@ export type TimecardCorrectionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       TimecardCorrection,
       | "id"

@@ -13,13 +13,13 @@ export class PreAndPostShiftInspection extends AbstractParentEntity {
   harmfullFactors?: HarmfullFactors | null;
 }
 export type PreAndPostShiftInspectionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "preAndPostShiftInspection-view";
 export type PreAndPostShiftInspectionView<
   V extends PreAndPostShiftInspectionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PreAndPostShiftInspection,
       | "id"
@@ -31,7 +31,7 @@ export type PreAndPostShiftInspectionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PreAndPostShiftInspection,
       | "id"

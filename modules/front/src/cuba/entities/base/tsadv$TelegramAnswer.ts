@@ -6,17 +6,17 @@ export class TelegramAnswer extends StandardEntity {
   variable?: TelegramCommandVariable[] | null;
 }
 export type TelegramAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "telegramAnswer-view";
 export type TelegramAnswerView<
   V extends TelegramAnswerViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<TelegramAnswer, "id" | "comandName">
   : V extends "_local"
   ? Pick<TelegramAnswer, "id" | "comandName">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<TelegramAnswer, "id" | "comandName">
   : V extends "telegramAnswer-view"
   ? Pick<TelegramAnswer, "id" | "comandName" | "variable">

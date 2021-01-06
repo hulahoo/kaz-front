@@ -13,13 +13,11 @@ export class PersonAnswer extends AbstractParentEntity {
   answer?: string | null;
 }
 export type PersonAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personAnswer-view";
-export type PersonAnswerView<
-  V extends PersonAnswerViewName
-> = V extends "_local"
+export type PersonAnswerView<V extends PersonAnswerViewName> = V extends "_base"
   ? Pick<
       PersonAnswer,
       | "id"
@@ -31,7 +29,7 @@ export type PersonAnswerView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonAnswer,
       | "id"

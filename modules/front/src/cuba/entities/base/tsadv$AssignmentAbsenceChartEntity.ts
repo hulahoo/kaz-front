@@ -7,9 +7,9 @@ export class AssignmentAbsenceChartEntity extends BaseUuidEntity {
   assignmentGroupId?: any | null;
 }
 export type AssignmentAbsenceChartEntityViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type AssignmentAbsenceChartEntityView<
   V extends AssignmentAbsenceChartEntityViewName
 > = never;

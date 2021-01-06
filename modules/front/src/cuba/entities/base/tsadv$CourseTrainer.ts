@@ -9,13 +9,13 @@ export class CourseTrainer extends AbstractParentEntity {
   dateTo?: any | null;
 }
 export type CourseTrainerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseTrainer.edit";
 export type CourseTrainerView<
   V extends CourseTrainerViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseTrainer,
       | "id"
@@ -25,7 +25,7 @@ export type CourseTrainerView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseTrainer,
       | "id"

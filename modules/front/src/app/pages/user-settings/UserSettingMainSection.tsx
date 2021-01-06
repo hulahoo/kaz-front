@@ -87,7 +87,7 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
               onClick={this.handleSubmitSaveButton}/>, {});
 
     return <form autoComplete={"off"}>
-      <div className={"form-container form-container"}>
+      <div className={"vertical-form-container"}>
         <ChangePasswordBtnComponent/>
         <TimeZoneComponent/>
         <SubmitBtnPasswordComponent/>

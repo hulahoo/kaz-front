@@ -12,20 +12,14 @@ export class MyTeamNew extends BaseUuidEntity {
   hasChild?: boolean | null;
 }
 export type MyTeamNewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "myTeamNew-view"
-  | "myTeamNew-view"
+  | "_local"
+  | "_minimal"
   | "myTeamNew-view";
-export type MyTeamNewView<V extends MyTeamNewViewName> = V extends "_minimal"
+export type MyTeamNewView<V extends MyTeamNewViewName> = V extends "_base"
   ? Pick<MyTeamNew, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<MyTeamNew, "id">
-  : V extends "myTeamNew-view"
-  ? Pick<MyTeamNew, "id" | "parent">
-  : V extends "myTeamNew-view"
-  ? Pick<MyTeamNew, "id" | "parent">
   : V extends "myTeamNew-view"
   ? Pick<MyTeamNew, "id" | "parent">
   : never;

@@ -13,15 +13,23 @@ export class TransferRequest extends AbstractParentEntity {
   requestStatus?: DicRequestStatus | null;
 }
 export type TransferRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "transferRequest.view"
-  | "transferRequest.edit";
+  | "_local"
+  | "_minimal"
+  | "transferRequest.edit"
+  | "transferRequest.view";
 export type TransferRequestView<
   V extends TransferRequestViewName
-> = V extends "_minimal"
-  ? Pick<TransferRequest, "id">
+> = V extends "_base"
+  ? Pick<
+      TransferRequest,
+      | "id"
+      | "requestDate"
+      | "transferDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       TransferRequest,
@@ -32,17 +40,9 @@ export type TransferRequestView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      TransferRequest,
-      | "id"
-      | "requestDate"
-      | "transferDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "transferRequest.view"
+  : V extends "_minimal"
+  ? Pick<TransferRequest, "id">
+  : V extends "transferRequest.edit"
   ? Pick<
       TransferRequest,
       | "id"
@@ -63,7 +63,7 @@ export type TransferRequestView<
       | "newOrganizationGroup"
       | "requestStatus"
     >
-  : V extends "transferRequest.edit"
+  : V extends "transferRequest.view"
   ? Pick<
       TransferRequest,
       | "id"

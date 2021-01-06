@@ -10,15 +10,15 @@ export class PersonContact extends AbstractParentEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type PersonContactViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
+  | "personContact.card"
   | "personContact.edit"
-  | "personContact.full"
-  | "personContact.card";
+  | "personContact.full";
 export type PersonContactView<
   V extends PersonContactViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonContact,
       | "id"
@@ -29,7 +29,7 @@ export type PersonContactView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonContact,
       | "id"
@@ -39,6 +39,11 @@ export type PersonContactView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "personContact.card"
+  ? Pick<
+      PersonContact,
+      "id" | "contactValue" | "endDate" | "startDate" | "type" | "personGroup"
     >
   : V extends "personContact.edit"
   ? Pick<
@@ -65,10 +70,5 @@ export type PersonContactView<
       | "integrationUserLogin"
       | "type"
       | "personGroup"
-    >
-  : V extends "personContact.card"
-  ? Pick<
-      PersonContact,
-      "id" | "contactValue" | "endDate" | "startDate" | "type" | "personGroup"
     >
   : never;

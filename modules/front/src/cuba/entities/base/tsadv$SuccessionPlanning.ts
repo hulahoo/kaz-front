@@ -13,14 +13,24 @@ export class SuccessionPlanning extends AbstractParentEntity {
   positionName?: string | null;
 }
 export type SuccessionPlanningViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "successionPlanning.browse";
 export type SuccessionPlanningView<
   V extends SuccessionPlanningViewName
-> = V extends "_minimal"
-  ? Pick<SuccessionPlanning, "id" | "positionName">
+> = V extends "_base"
+  ? Pick<
+      SuccessionPlanning,
+      | "id"
+      | "positionName"
+      | "startDate"
+      | "endDate"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       SuccessionPlanning,
@@ -33,18 +43,8 @@ export type SuccessionPlanningView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      SuccessionPlanning,
-      | "id"
-      | "positionName"
-      | "startDate"
-      | "endDate"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<SuccessionPlanning, "id" | "positionName">
   : V extends "successionPlanning.browse"
   ? Pick<
       SuccessionPlanning,

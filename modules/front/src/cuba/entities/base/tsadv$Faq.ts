@@ -16,13 +16,32 @@ export class Faq extends AbstractParentEntity {
   contentLangValue?: string | null;
 }
 export type FaqViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "faq.browse"
   | "faq.edit";
-export type FaqView<V extends FaqViewName> = V extends "_minimal"
-  ? Pick<Faq, "id" | "langValue">
+export type FaqView<V extends FaqViewName> = V extends "_base"
+  ? Pick<
+      Faq,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "order"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+      | "contentLangValue1"
+      | "contentLangValue2"
+      | "contentLangValue3"
+      | "contentLangValue4"
+      | "contentLangValue5"
+      | "contentLangValue"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Faq,
@@ -44,27 +63,8 @@ export type FaqView<V extends FaqViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Faq,
-      | "id"
-      | "langValue"
-      | "langValue1"
-      | "order"
-      | "langValue2"
-      | "langValue3"
-      | "langValue4"
-      | "langValue5"
-      | "contentLangValue1"
-      | "contentLangValue2"
-      | "contentLangValue3"
-      | "contentLangValue4"
-      | "contentLangValue5"
-      | "contentLangValue"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Faq, "id" | "langValue">
   : V extends "faq.browse"
   ? Pick<
       Faq,

@@ -18,11 +18,11 @@ export class IdpDetail extends AbstractParentEntity {
   reason?: string | null;
 }
 export type IdpDetailViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "idpDetail.edit";
-export type IdpDetailView<V extends IdpDetailViewName> = V extends "_local"
+export type IdpDetailView<V extends IdpDetailViewName> = V extends "_base"
   ? Pick<
       IdpDetail,
       | "id"
@@ -35,7 +35,7 @@ export type IdpDetailView<V extends IdpDetailViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       IdpDetail,
       | "id"

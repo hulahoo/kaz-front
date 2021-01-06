@@ -5,9 +5,9 @@ export class AbstractConditionDescriptor extends BaseUuidEntity {
   treeCaption?: string | null;
 }
 export type AbstractConditionDescriptorViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type AbstractConditionDescriptorView<
   V extends AbstractConditionDescriptorViewName
 > = never;

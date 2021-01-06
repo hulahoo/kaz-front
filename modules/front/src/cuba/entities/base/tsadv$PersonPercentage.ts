@@ -12,5 +12,5 @@ export class PersonPercentage extends BaseUuidEntity {
   match?: number | null;
   location?: string | null;
 }
-export type PersonPercentageViewName = "_minimal" | "_local" | "_base";
+export type PersonPercentageViewName = "_base" | "_local" | "_minimal";
 export type PersonPercentageView<V extends PersonPercentageViewName> = never;

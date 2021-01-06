@@ -32,23 +32,36 @@ export class JobRequest extends AbstractParentEntity {
   name?: string | null;
 }
 export type JobRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "for-jobrequest-count"
-  | "requisition-browsefor-groupinterview"
-  | "jobRequest.view"
-  | "jobRequest.full"
-  | "jobRequest-view"
-  | "jobRequest.listener.view"
-  | "jobRequest-for-new"
   | "jobRequest-for-count"
   | "jobRequest-for-filter"
-  | "jobRequest.card"
+  | "jobRequest-for-new"
   | "jobRequest-status-edit"
-  | "jobRequest-for-new";
-export type JobRequestView<V extends JobRequestViewName> = V extends "_minimal"
-  ? Pick<JobRequest, "id">
+  | "jobRequest-view"
+  | "jobRequest.card"
+  | "jobRequest.full"
+  | "jobRequest.listener.view"
+  | "jobRequest.view"
+  | "requisition-browsefor-groupinterview";
+export type JobRequestView<V extends JobRequestViewName> = V extends "_base"
+  ? Pick<
+      JobRequest,
+      | "id"
+      | "otherSource"
+      | "requestDate"
+      | "requestStatus"
+      | "reason"
+      | "isReserved"
+      | "selectedByManager"
+      | "sent"
+      | "name"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       JobRequest,
@@ -65,22 +78,8 @@ export type JobRequestView<V extends JobRequestViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      JobRequest,
-      | "id"
-      | "otherSource"
-      | "requestDate"
-      | "requestStatus"
-      | "reason"
-      | "isReserved"
-      | "selectedByManager"
-      | "sent"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<JobRequest, "id">
   : V extends "for-jobrequest-count"
   ? Pick<
       JobRequest,
@@ -98,17 +97,67 @@ export type JobRequestView<V extends JobRequestViewName> = V extends "_minimal"
       | "integrationUserLogin"
       | "candidatePersonGroup"
     >
-  : V extends "requisition-browsefor-groupinterview"
+  : V extends "jobRequest-for-count"
   ? Pick<
       JobRequest,
       | "id"
-      | "requisition"
-      | "candidatePersonGroup"
-      | "interviews"
+      | "otherSource"
       | "requestDate"
       | "requestStatus"
+      | "reason"
+      | "isReserved"
+      | "selectedByManager"
+      | "sent"
+      | "name"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requisition"
+      | "candidatePersonGroup"
     >
-  : V extends "jobRequest.view"
+  : V extends "jobRequest-for-filter"
+  ? Pick<JobRequest, "id" | "requestStatus">
+  : V extends "jobRequest-for-new"
+  ? Pick<
+      JobRequest,
+      | "id"
+      | "otherSource"
+      | "requestDate"
+      | "requestStatus"
+      | "reason"
+      | "isReserved"
+      | "selectedByManager"
+      | "sent"
+      | "name"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "candidatePersonGroup"
+      | "interviews"
+      | "requisition"
+    >
+  : V extends "jobRequest-status-edit"
+  ? Pick<JobRequest, "id" | "requestStatus">
+  : V extends "jobRequest-view"
+  ? Pick<
+      JobRequest,
+      | "id"
+      | "otherSource"
+      | "requestDate"
+      | "requestStatus"
+      | "reason"
+      | "isReserved"
+      | "selectedByManager"
+      | "sent"
+      | "name"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "candidatePersonGroup"
+      | "interviews"
+      | "interview"
+    >
+  : V extends "jobRequest.card"
   ? Pick<
       JobRequest,
       | "id"
@@ -131,6 +180,9 @@ export type JobRequestView<V extends JobRequestViewName> = V extends "_minimal"
       | "viewLaters"
       | "source"
       | "createdBy"
+      | "viewLater"
+      | "name"
+      | "requisition"
     >
   : V extends "jobRequest.full"
   ? Pick<
@@ -151,25 +203,6 @@ export type JobRequestView<V extends JobRequestViewName> = V extends "_minimal"
       | "jobRequestReason"
       | "videoFile"
       | "requisition"
-    >
-  : V extends "jobRequest-view"
-  ? Pick<
-      JobRequest,
-      | "id"
-      | "otherSource"
-      | "requestDate"
-      | "requestStatus"
-      | "reason"
-      | "isReserved"
-      | "selectedByManager"
-      | "sent"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "candidatePersonGroup"
-      | "interviews"
-      | "interview"
     >
   : V extends "jobRequest.listener.view"
   ? Pick<
@@ -198,46 +231,7 @@ export type JobRequestView<V extends JobRequestViewName> = V extends "_minimal"
       | "updateTs"
       | "updatedBy"
     >
-  : V extends "jobRequest-for-new"
-  ? Pick<
-      JobRequest,
-      | "id"
-      | "otherSource"
-      | "requestDate"
-      | "requestStatus"
-      | "reason"
-      | "isReserved"
-      | "selectedByManager"
-      | "sent"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "candidatePersonGroup"
-      | "interviews"
-      | "requisition"
-    >
-  : V extends "jobRequest-for-count"
-  ? Pick<
-      JobRequest,
-      | "id"
-      | "otherSource"
-      | "requestDate"
-      | "requestStatus"
-      | "reason"
-      | "isReserved"
-      | "selectedByManager"
-      | "sent"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requisition"
-      | "candidatePersonGroup"
-    >
-  : V extends "jobRequest-for-filter"
-  ? Pick<JobRequest, "id" | "requestStatus">
-  : V extends "jobRequest.card"
+  : V extends "jobRequest.view"
   ? Pick<
       JobRequest,
       | "id"
@@ -260,29 +254,15 @@ export type JobRequestView<V extends JobRequestViewName> = V extends "_minimal"
       | "viewLaters"
       | "source"
       | "createdBy"
-      | "viewLater"
-      | "name"
-      | "requisition"
     >
-  : V extends "jobRequest-status-edit"
-  ? Pick<JobRequest, "id" | "requestStatus">
-  : V extends "jobRequest-for-new"
+  : V extends "requisition-browsefor-groupinterview"
   ? Pick<
       JobRequest,
       | "id"
-      | "otherSource"
-      | "requestDate"
-      | "requestStatus"
-      | "reason"
-      | "isReserved"
-      | "selectedByManager"
-      | "sent"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      | "requisition"
       | "candidatePersonGroup"
       | "interviews"
-      | "requisition"
+      | "requestDate"
+      | "requestStatus"
     >
   : never;

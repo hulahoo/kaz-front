@@ -14,19 +14,19 @@ export class GoodsOrderDetail extends StandardEntity {
   qrCodeImg?: FileDescriptor | null;
 }
 export type GoodsOrderDetailViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goodsOrderDetail.edit"
   | "goodsOrderDetailWithVoucher";
 export type GoodsOrderDetailView<
   V extends GoodsOrderDetailViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       GoodsOrderDetail,
       "id" | "comment" | "excluded" | "quantity" | "voucherUsed" | "qrCode"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       GoodsOrderDetail,
       "id" | "comment" | "excluded" | "quantity" | "voucherUsed" | "qrCode"

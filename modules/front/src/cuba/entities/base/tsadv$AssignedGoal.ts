@@ -25,18 +25,29 @@ export class AssignedGoal extends AbstractParentEntity {
   performancePlan?: PerformancePlan | null;
 }
 export type AssignedGoalViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
+  | "assignedGoal.assess"
   | "assignedGoal.browse"
   | "assignedGoal.edit"
-  | "assignedGoalForCard"
   | "assignedGoal.save"
-  | "assignedGoal.assess";
-export type AssignedGoalView<
-  V extends AssignedGoalViewName
-> = V extends "_minimal"
-  ? Pick<AssignedGoal, "id" | "goal">
+  | "assignedGoalForCard";
+export type AssignedGoalView<V extends AssignedGoalViewName> = V extends "_base"
+  ? Pick<
+      AssignedGoal,
+      | "id"
+      | "goal"
+      | "targetValue"
+      | "actualValue"
+      | "successCritetia"
+      | "startDate"
+      | "endDate"
+      | "weight"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       AssignedGoal,
@@ -51,20 +62,12 @@ export type AssignedGoalView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<AssignedGoal, "id" | "goal">
+  : V extends "assignedGoal.assess"
   ? Pick<
       AssignedGoal,
-      | "id"
-      | "goal"
-      | "targetValue"
-      | "actualValue"
-      | "successCritetia"
-      | "startDate"
-      | "endDate"
-      | "weight"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      "id" | "goal" | "personGroup" | "weight" | "performancePlan"
     >
   : V extends "assignedGoal.browse"
   ? Pick<
@@ -105,23 +108,6 @@ export type AssignedGoalView<
       | "priority"
       | "performancePlan"
     >
-  : V extends "assignedGoalForCard"
-  ? Pick<
-      AssignedGoal,
-      | "id"
-      | "targetValue"
-      | "actualValue"
-      | "successCritetia"
-      | "startDate"
-      | "endDate"
-      | "weight"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "goal"
-      | "personGroup"
-      | "performancePlan"
-    >
   : V extends "assignedGoal.save"
   ? Pick<
       AssignedGoal,
@@ -145,9 +131,21 @@ export type AssignedGoalView<
       | "priority"
       | "performancePlan"
     >
-  : V extends "assignedGoal.assess"
+  : V extends "assignedGoalForCard"
   ? Pick<
       AssignedGoal,
-      "id" | "goal" | "personGroup" | "weight" | "performancePlan"
+      | "id"
+      | "targetValue"
+      | "actualValue"
+      | "successCritetia"
+      | "startDate"
+      | "endDate"
+      | "weight"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "goal"
+      | "personGroup"
+      | "performancePlan"
     >
   : never;

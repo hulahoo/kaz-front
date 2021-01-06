@@ -13,13 +13,13 @@ export class PersonQualification extends AbstractParentEntity {
   note?: string | null;
 }
 export type PersonQualificationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personQualification-view";
 export type PersonQualificationView<
   V extends PersonQualificationViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonQualification,
       | "id"
@@ -31,7 +31,7 @@ export type PersonQualificationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonQualification,
       | "id"

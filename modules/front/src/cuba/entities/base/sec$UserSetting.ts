@@ -10,13 +10,13 @@ export class UserSetting extends BaseUuidEntity {
   value?: string | null;
 }
 export type UserSettingViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "userSetting.value";
-export type UserSettingView<V extends UserSettingViewName> = V extends "_local"
+export type UserSettingView<V extends UserSettingViewName> = V extends "_base"
   ? Pick<UserSetting, "id" | "clientType" | "name" | "value">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<UserSetting, "id" | "clientType" | "name" | "value">
   : V extends "userSetting.value"
   ? Pick<UserSetting, "id" | "value">

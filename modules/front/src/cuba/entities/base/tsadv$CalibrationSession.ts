@@ -12,13 +12,13 @@ export class CalibrationSession extends AbstractParentEntity {
   template?: AssessmentTemplate | null;
 }
 export type CalibrationSessionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "calibrationSession.browse";
 export type CalibrationSessionView<
   V extends CalibrationSessionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CalibrationSession,
       | "id"
@@ -29,7 +29,7 @@ export type CalibrationSessionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CalibrationSession,
       | "id"

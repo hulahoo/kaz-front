@@ -12,13 +12,13 @@ export class FlightTimeRate extends AbstractParentEntity {
   hoursTo?: any | null;
 }
 export type FlightTimeRateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "flightTimeRate-view";
 export type FlightTimeRateView<
   V extends FlightTimeRateViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       FlightTimeRate,
       | "id"
@@ -31,7 +31,7 @@ export type FlightTimeRateView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       FlightTimeRate,
       | "id"

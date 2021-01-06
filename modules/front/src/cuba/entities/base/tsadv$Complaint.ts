@@ -7,11 +7,11 @@ export class Complaint extends AbstractParentEntity {
   healthDeterioration?: HealthDeterioration | null;
 }
 export type ComplaintViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "complaint-view";
-export type ComplaintView<V extends ComplaintViewName> = V extends "_local"
+export type ComplaintView<V extends ComplaintViewName> = V extends "_base"
   ? Pick<
       Complaint,
       | "id"
@@ -21,7 +21,7 @@ export type ComplaintView<V extends ComplaintViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Complaint,
       | "id"

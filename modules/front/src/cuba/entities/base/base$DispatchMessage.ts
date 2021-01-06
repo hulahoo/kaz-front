@@ -5,17 +5,10 @@ export class DispatchMessage extends AbstractParentEntity {
   dispatch?: Dispatch | null;
   code?: string | null;
 }
-export type DispatchMessageViewName = "_minimal" | "_local" | "_base";
+export type DispatchMessageViewName = "_base" | "_local" | "_minimal";
 export type DispatchMessageView<
   V extends DispatchMessageViewName
-> = V extends "_minimal"
-  ? Pick<DispatchMessage, "id" | "dispatch" | "code">
-  : V extends "_local"
-  ? Pick<
-      DispatchMessage,
-      "id" | "code" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DispatchMessage,
       | "id"
@@ -25,4 +18,11 @@ export type DispatchMessageView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      DispatchMessage,
+      "id" | "code" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<DispatchMessage, "id" | "dispatch" | "code">
   : never;

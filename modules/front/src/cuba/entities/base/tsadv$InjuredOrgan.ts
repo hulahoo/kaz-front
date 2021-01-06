@@ -6,13 +6,11 @@ export class InjuredOrgan extends AbstractParentEntity {
   microtraumaInjured?: MicrotraumaInjured | null;
 }
 export type InjuredOrganViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "injuredOrgan-view";
-export type InjuredOrganView<
-  V extends InjuredOrganViewName
-> = V extends "_local"
+export type InjuredOrganView<V extends InjuredOrganViewName> = V extends "_base"
   ? Pick<
       InjuredOrgan,
       | "id"
@@ -21,7 +19,7 @@ export type InjuredOrganView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       InjuredOrgan,
       | "id"

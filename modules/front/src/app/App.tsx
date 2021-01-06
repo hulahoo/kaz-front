@@ -26,6 +26,7 @@ import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
+import KpiEditPage from "./pages/KpiEditPage";
 
 @injectMainStore
 @inject("rootStore")
@@ -34,6 +35,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
 
   constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
     super(props, context);
+    console.log(this.props)
   }
 
   render() {
@@ -77,6 +79,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
+                <Route exact={true} path="/kpi/:id" component={KpiEditPage}/>
               </Switch>
             </Layout.Content>
           </Layout>

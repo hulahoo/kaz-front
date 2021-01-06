@@ -6,20 +6,21 @@ export class UserSubstitution extends StandardEntity {
   substitutedUser?: User | null;
   startDate?: any | null;
   endDate?: any | null;
+  sysTenantId?: string | null;
 }
 export type UserSubstitutionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "app"
   | "user.edit"
   | "usersubst.edit";
 export type UserSubstitutionView<
   V extends UserSubstitutionViewName
-> = V extends "_local"
-  ? Pick<UserSubstitution, "id" | "startDate" | "endDate">
-  : V extends "_base"
-  ? Pick<UserSubstitution, "id" | "startDate" | "endDate">
+> = V extends "_base"
+  ? Pick<UserSubstitution, "id" | "startDate" | "endDate" | "sysTenantId">
+  : V extends "_local"
+  ? Pick<UserSubstitution, "id" | "startDate" | "endDate" | "sysTenantId">
   : V extends "app"
   ? Pick<UserSubstitution, "id" | "substitutedUser">
   : V extends "user.edit"

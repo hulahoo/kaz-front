@@ -12,15 +12,26 @@ export class StandardOffset extends AbstractParentEntity {
   offsetScheduleName?: string | null;
 }
 export type StandardOffsetViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "standardOffset.view"
-  | "standardOffset-with-schedule-view";
+  | "_local"
+  | "_minimal"
+  | "standardOffset-with-schedule-view"
+  | "standardOffset.view";
 export type StandardOffsetView<
   V extends StandardOffsetViewName
-> = V extends "_minimal"
-  ? Pick<StandardOffset, "id">
+> = V extends "_base"
+  ? Pick<
+      StandardOffset,
+      | "id"
+      | "offsetDisplay"
+      | "offsetDisplayDays"
+      | "startDate"
+      | "endDate"
+      | "offsetScheduleName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       StandardOffset,
@@ -34,7 +45,9 @@ export type StandardOffsetView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<StandardOffset, "id">
+  : V extends "standardOffset-with-schedule-view"
   ? Pick<
       StandardOffset,
       | "id"
@@ -46,6 +59,7 @@ export type StandardOffsetView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "standardSchedule"
     >
   : V extends "standardOffset.view"
   ? Pick<
@@ -61,19 +75,5 @@ export type StandardOffsetView<
       | "integrationUserLogin"
       | "standardSchedule"
       | "offsetScheduleName"
-    >
-  : V extends "standardOffset-with-schedule-view"
-  ? Pick<
-      StandardOffset,
-      | "id"
-      | "offsetDisplay"
-      | "offsetDisplayDays"
-      | "startDate"
-      | "endDate"
-      | "offsetScheduleName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "standardSchedule"
     >
   : never;

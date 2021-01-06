@@ -7,5 +7,5 @@ export class PersonMedalPojo extends BaseUuidEntity {
   count?: any | null;
   sort?: number | null;
 }
-export type PersonMedalPojoViewName = "_minimal" | "_local" | "_base";
+export type PersonMedalPojoViewName = "_base" | "_local" | "_minimal";
 export type PersonMedalPojoView<V extends PersonMedalPojoViewName> = never;

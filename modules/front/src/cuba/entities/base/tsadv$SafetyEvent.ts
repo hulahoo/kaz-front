@@ -9,18 +9,16 @@ export class SafetyEvent extends StandardEntity {
   uom?: UOM | null;
 }
 export type SafetyEventViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "safetyEvent-view";
-export type SafetyEventView<
-  V extends SafetyEventViewName
-> = V extends "_minimal"
-  ? Pick<SafetyEvent, "id" | "name">
+export type SafetyEventView<V extends SafetyEventViewName> = V extends "_base"
+  ? Pick<SafetyEvent, "id" | "name" | "code">
   : V extends "_local"
   ? Pick<SafetyEvent, "id" | "code" | "name">
-  : V extends "_base"
-  ? Pick<SafetyEvent, "id" | "name" | "code">
+  : V extends "_minimal"
+  ? Pick<SafetyEvent, "id" | "name">
   : V extends "safetyEvent-view"
   ? Pick<SafetyEvent, "id" | "name" | "code" | "type" | "uom">
   : never;

@@ -6,7 +6,7 @@ export class CoinDistributionJob extends StandardEntity {
   jobGroup?: JobGroup | null;
   coinDistributionRule?: CoinDistributionRule | null;
 }
-export type CoinDistributionJobViewName = "_minimal" | "_local" | "_base";
+export type CoinDistributionJobViewName = "_base" | "_local" | "_minimal";
 export type CoinDistributionJobView<
   V extends CoinDistributionJobViewName
 > = never;

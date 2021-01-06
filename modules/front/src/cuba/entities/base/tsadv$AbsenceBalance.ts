@@ -18,18 +18,32 @@ export class AbsenceBalance extends AbstractParentEntity {
   addBalanceDaysAims?: number | null;
 }
 export type AbsenceBalanceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "absenceBalance.browse"
-  | "absenceBalance.view"
-  | "absenceBalance.edit";
+  | "absenceBalance.edit"
+  | "absenceBalance.view";
 export type AbsenceBalanceView<
   V extends AbsenceBalanceViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       AbsenceBalance,
-      "id" | "additionalBalanceDays" | "balanceDays" | "dateFrom" | "dateTo"
+      | "id"
+      | "additionalBalanceDays"
+      | "balanceDays"
+      | "dateFrom"
+      | "dateTo"
+      | "overallBalanceDays"
+      | "daysSpent"
+      | "daysLeft"
+      | "extraDaysSpent"
+      | "extraDaysLeft"
+      | "longAbsenceDays"
+      | "addBalanceDaysAims"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : V extends "_local"
   ? Pick<
@@ -50,24 +64,10 @@ export type AbsenceBalanceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       AbsenceBalance,
-      | "id"
-      | "additionalBalanceDays"
-      | "balanceDays"
-      | "dateFrom"
-      | "dateTo"
-      | "overallBalanceDays"
-      | "daysSpent"
-      | "daysLeft"
-      | "extraDaysSpent"
-      | "extraDaysLeft"
-      | "longAbsenceDays"
-      | "addBalanceDaysAims"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      "id" | "additionalBalanceDays" | "balanceDays" | "dateFrom" | "dateTo"
     >
   : V extends "absenceBalance.browse"
   ? Pick<
@@ -89,25 +89,6 @@ export type AbsenceBalanceView<
       | "integrationUserLogin"
       | "absenceToAbsenceBalances"
     >
-  : V extends "absenceBalance.view"
-  ? Pick<
-      AbsenceBalance,
-      | "id"
-      | "overallBalanceDays"
-      | "dateFrom"
-      | "dateTo"
-      | "balanceDays"
-      | "additionalBalanceDays"
-      | "daysSpent"
-      | "daysLeft"
-      | "extraDaysSpent"
-      | "extraDaysLeft"
-      | "longAbsenceDays"
-      | "addBalanceDaysAims"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
   : V extends "absenceBalance.edit"
   ? Pick<
       AbsenceBalance,
@@ -127,5 +108,24 @@ export type AbsenceBalanceView<
       | "organizationBin"
       | "integrationUserLogin"
       | "personGroup"
+    >
+  : V extends "absenceBalance.view"
+  ? Pick<
+      AbsenceBalance,
+      | "id"
+      | "overallBalanceDays"
+      | "dateFrom"
+      | "dateTo"
+      | "balanceDays"
+      | "additionalBalanceDays"
+      | "daysSpent"
+      | "daysLeft"
+      | "extraDaysSpent"
+      | "extraDaysLeft"
+      | "longAbsenceDays"
+      | "addBalanceDaysAims"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : never;

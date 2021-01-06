@@ -5,5 +5,5 @@ export class SalaryChartEntity extends BaseUuidEntity {
   salaryDescription?: string | null;
   color?: string | null;
 }
-export type SalaryChartEntityViewName = "_minimal" | "_local" | "_base";
+export type SalaryChartEntityViewName = "_base" | "_local" | "_minimal";
 export type SalaryChartEntityView<V extends SalaryChartEntityViewName> = never;

@@ -2,37 +2,10 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicCourseCycle extends AbstractDictionary {
   static NAME = "tsadv$DicCourseCycle";
 }
-export type DicCourseCycleViewName = "_minimal" | "_local" | "_base";
+export type DicCourseCycleViewName = "_base" | "_local" | "_minimal";
 export type DicCourseCycleView<
   V extends DicCourseCycleViewName
-> = V extends "_minimal"
-  ? Pick<DicCourseCycle, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicCourseCycle,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DicCourseCycle,
       | "id"
@@ -58,4 +31,31 @@ export type DicCourseCycleView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicCourseCycle,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicCourseCycle, "id" | "langValue">
   : never;

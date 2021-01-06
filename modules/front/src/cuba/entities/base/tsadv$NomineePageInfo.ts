@@ -6,5 +6,5 @@ export class NomineePageInfo extends BaseUuidEntity {
   pageInfo?: PageInfo | null;
   nominees?: NomineePojo | null;
 }
-export type NomineePageInfoViewName = "_minimal" | "_local" | "_base";
+export type NomineePageInfoViewName = "_base" | "_local" | "_minimal";
 export type NomineePageInfoView<V extends NomineePageInfoViewName> = never;

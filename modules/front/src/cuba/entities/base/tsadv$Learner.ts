@@ -7,15 +7,15 @@ export class Learner extends StandardEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type LearnerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "learner-browse"
   | "learner-edit"
   | "learnerGroup-learner-list";
-export type LearnerView<V extends LearnerViewName> = V extends "_minimal"
+export type LearnerView<V extends LearnerViewName> = V extends "_base"
   ? Pick<Learner, "id" | "group" | "personGroup">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<Learner, "id" | "group" | "personGroup">
   : V extends "learner-browse"
   ? Pick<Learner, "id" | "group" | "personGroup">

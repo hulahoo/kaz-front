@@ -16,15 +16,29 @@ export class QuestionAnswer extends AbstractParentEntity {
   correctAnswer?: boolean | null;
 }
 export type QuestionAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "questionAnswer.browse"
   | "questionAnswer.edit";
 export type QuestionAnswerView<
   V extends QuestionAnswerViewName
-> = V extends "_minimal"
-  ? Pick<QuestionAnswer, "id" | "answerLang1">
+> = V extends "_base"
+  ? Pick<
+      QuestionAnswer,
+      | "id"
+      | "answerLang1"
+      | "order"
+      | "score"
+      | "answerLang2"
+      | "answerLang3"
+      | "answerLang4"
+      | "answerLang5"
+      | "correctAnswer"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       QuestionAnswer,
@@ -41,22 +55,8 @@ export type QuestionAnswerView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      QuestionAnswer,
-      | "id"
-      | "answerLang1"
-      | "order"
-      | "score"
-      | "answerLang2"
-      | "answerLang3"
-      | "answerLang4"
-      | "answerLang5"
-      | "correctAnswer"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<QuestionAnswer, "id" | "answerLang1">
   : V extends "questionAnswer.browse"
   ? Pick<
       QuestionAnswer,

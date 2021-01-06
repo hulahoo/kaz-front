@@ -11,26 +11,46 @@ export class InterviewQuestionnaire extends AbstractParentEntity {
   totalMaxScore?: any | null;
 }
 export type InterviewQuestionnaireViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "interviewQuestionnaire.view"
-  | "interviewQuestionnaire.weight"
+  | "_local"
+  | "_minimal"
   | "interviewQuestionnaire.answers"
-  | "interviewQuestionnaire.calculate";
+  | "interviewQuestionnaire.calculate"
+  | "interviewQuestionnaire.view"
+  | "interviewQuestionnaire.weight";
 export type InterviewQuestionnaireView<
   V extends InterviewQuestionnaireViewName
-> = V extends "_minimal"
-  ? Pick<InterviewQuestionnaire, "id">
+> = V extends "_base"
+  ? Pick<
+      InterviewQuestionnaire,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       InterviewQuestionnaire,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<InterviewQuestionnaire, "id">
+  : V extends "interviewQuestionnaire.answers"
   ? Pick<
       InterviewQuestionnaire,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "interview"
+      | "questionnaire"
+      | "questions"
+    >
+  : V extends "interviewQuestionnaire.calculate"
+  ? Pick<
+      InterviewQuestionnaire,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "questions"
     >
   : V extends "interviewQuestionnaire.view"
   ? Pick<
@@ -56,25 +76,5 @@ export type InterviewQuestionnaireView<
       | "totalMaxScore"
       | "questions"
       | "createTs"
-    >
-  : V extends "interviewQuestionnaire.answers"
-  ? Pick<
-      InterviewQuestionnaire,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "interview"
-      | "questionnaire"
-      | "questions"
-    >
-  : V extends "interviewQuestionnaire.calculate"
-  ? Pick<
-      InterviewQuestionnaire,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "questions"
     >
   : never;

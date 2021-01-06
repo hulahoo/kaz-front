@@ -11,9 +11,24 @@ export class Analytics extends AbstractParentEntity {
   jobCategory?: boolean | null;
   personCategory?: boolean | null;
 }
-export type AnalyticsViewName = "_minimal" | "_local" | "_base";
-export type AnalyticsView<V extends AnalyticsViewName> = V extends "_minimal"
-  ? Pick<Analytics, "id" | "analyticsType">
+export type AnalyticsViewName = "_base" | "_local" | "_minimal";
+export type AnalyticsView<V extends AnalyticsViewName> = V extends "_base"
+  ? Pick<
+      Analytics,
+      | "id"
+      | "analyticsType"
+      | "dataType"
+      | "active"
+      | "organization"
+      | "job"
+      | "grade"
+      | "position"
+      | "jobCategory"
+      | "personCategory"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Analytics,
@@ -31,21 +46,6 @@ export type AnalyticsView<V extends AnalyticsViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Analytics,
-      | "id"
-      | "analyticsType"
-      | "dataType"
-      | "active"
-      | "organization"
-      | "job"
-      | "grade"
-      | "position"
-      | "jobCategory"
-      | "personCategory"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Analytics, "id" | "analyticsType">
   : never;

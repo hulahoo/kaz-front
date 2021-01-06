@@ -14,14 +14,14 @@ export class PersonQuestionnaire extends AbstractParentEntity {
   appraisalDate?: any | null;
 }
 export type PersonQuestionnaireViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personQuestionnaire-view"
   | "personQuestionnaire.estimate";
 export type PersonQuestionnaireView<
   V extends PersonQuestionnaireViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonQuestionnaire,
       | "id"
@@ -33,7 +33,7 @@ export type PersonQuestionnaireView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonQuestionnaire,
       | "id"

@@ -23,5 +23,5 @@ export class RcgFeedbackPojo extends BaseUuidEntity {
   attachmentChanged?: boolean | null;
   sendFeedbackToAuthor?: boolean | null;
 }
-export type RcgFeedbackPojoViewName = "_minimal" | "_local" | "_base";
+export type RcgFeedbackPojoViewName = "_base" | "_local" | "_minimal";
 export type RcgFeedbackPojoView<V extends RcgFeedbackPojoViewName> = never;

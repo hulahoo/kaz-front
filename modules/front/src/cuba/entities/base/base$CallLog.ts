@@ -24,9 +24,31 @@ export class CallLog extends StandardEntity {
   billableSeconds?: number | null;
   description?: string | null;
 }
-export type CallLogViewName = "_minimal" | "_local" | "_base";
-export type CallLogView<V extends CallLogViewName> = V extends "_minimal"
-  ? Pick<CallLog, "id" | "description">
+export type CallLogViewName = "_base" | "_local" | "_minimal";
+export type CallLogView<V extends CallLogViewName> = V extends "_base"
+  ? Pick<
+      CallLog,
+      | "id"
+      | "description"
+      | "callId"
+      | "langCode"
+      | "atsCode"
+      | "durationOfWait"
+      | "durationOfTalk"
+      | "callDateStart"
+      | "callAnswerDate"
+      | "callDateEnd"
+      | "callStatus"
+      | "phoneConversationStart"
+      | "userId"
+      | "fromNumber"
+      | "toNumber"
+      | "callType"
+      | "callRecordFileName"
+      | "clientId"
+      | "duration"
+      | "billableSeconds"
+    >
   : V extends "_local"
   ? Pick<
       CallLog,
@@ -51,28 +73,6 @@ export type CallLogView<V extends CallLogViewName> = V extends "_minimal"
       | "billableSeconds"
       | "description"
     >
-  : V extends "_base"
-  ? Pick<
-      CallLog,
-      | "id"
-      | "description"
-      | "callId"
-      | "langCode"
-      | "atsCode"
-      | "durationOfWait"
-      | "durationOfTalk"
-      | "callDateStart"
-      | "callAnswerDate"
-      | "callDateEnd"
-      | "callStatus"
-      | "phoneConversationStart"
-      | "userId"
-      | "fromNumber"
-      | "toNumber"
-      | "callType"
-      | "callRecordFileName"
-      | "clientId"
-      | "duration"
-      | "billableSeconds"
-    >
+  : V extends "_minimal"
+  ? Pick<CallLog, "id" | "description">
   : never;

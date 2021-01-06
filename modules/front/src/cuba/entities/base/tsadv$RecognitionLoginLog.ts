@@ -5,10 +5,10 @@ export class RecognitionLoginLog extends AbstractParentEntity {
   sessionId?: any | null;
   dateTime?: any | null;
 }
-export type RecognitionLoginLogViewName = "_minimal" | "_local" | "_base";
+export type RecognitionLoginLogViewName = "_base" | "_local" | "_minimal";
 export type RecognitionLoginLogView<
   V extends RecognitionLoginLogViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       RecognitionLoginLog,
       | "id"
@@ -19,7 +19,7 @@ export type RecognitionLoginLogView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RecognitionLoginLog,
       | "id"

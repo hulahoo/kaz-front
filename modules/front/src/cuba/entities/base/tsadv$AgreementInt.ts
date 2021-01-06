@@ -8,11 +8,9 @@ export class AgreementInt extends AbstractEntityInt {
   status?: string | null;
   personGroup?: string | null;
 }
-export type AgreementIntViewName = "_minimal" | "_local" | "_base";
-export type AgreementIntView<
-  V extends AgreementIntViewName
-> = V extends "_minimal"
+export type AgreementIntViewName = "_base" | "_local" | "_minimal";
+export type AgreementIntView<V extends AgreementIntViewName> = V extends "_base"
   ? Pick<AgreementInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<AgreementInt, "id">
   : never;

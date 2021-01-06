@@ -4,9 +4,9 @@ export class AnswerInt extends AbstractEntityInt {
   answerText?: string | null;
   weight?: string | null;
 }
-export type AnswerIntViewName = "_minimal" | "_local" | "_base";
-export type AnswerIntView<V extends AnswerIntViewName> = V extends "_minimal"
+export type AnswerIntViewName = "_base" | "_local" | "_minimal";
+export type AnswerIntView<V extends AnswerIntViewName> = V extends "_base"
   ? Pick<AnswerInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<AnswerInt, "id">
   : never;

@@ -10,13 +10,13 @@ export class PersonPreference extends AbstractParentEntity {
   descriptionRu?: string | null;
 }
 export type PersonPreferenceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personPreference.edit";
 export type PersonPreferenceView<
   V extends PersonPreferenceViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonPreference,
       | "id"
@@ -27,7 +27,7 @@ export type PersonPreferenceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonPreference,
       | "id"

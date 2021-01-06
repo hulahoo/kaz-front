@@ -7,7 +7,7 @@ export class BudgetRequestItemsRowDto extends BaseUuidEntity {
   list?: BudgetRequestItem | null;
   dicCostType?: DicCostType | null;
 }
-export type BudgetRequestItemsRowDtoViewName = "_minimal" | "_local" | "_base";
+export type BudgetRequestItemsRowDtoViewName = "_base" | "_local" | "_minimal";
 export type BudgetRequestItemsRowDtoView<
   V extends BudgetRequestItemsRowDtoViewName
 > = never;

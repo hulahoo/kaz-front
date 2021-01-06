@@ -23,15 +23,26 @@ export class Book extends StandardEntity {
   reviews?: BookReview[] | null;
 }
 export type BookViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "book-browse-view"
   | "book-edit-view"
   | "book-library-view"
   | "book.with.books";
-export type BookView<V extends BookViewName> = V extends "_minimal"
-  ? Pick<Book, "id" | "bookNameLang1">
+export type BookView<V extends BookViewName> = V extends "_base"
+  ? Pick<
+      Book,
+      | "id"
+      | "bookNameLang1"
+      | "bookDescriptionLang1"
+      | "authorLang1"
+      | "publishDate"
+      | "isbn"
+      | "active"
+      | "averageScore"
+      | "language"
+    >
   : V extends "_local"
   ? Pick<
       Book,
@@ -45,19 +56,8 @@ export type BookView<V extends BookViewName> = V extends "_minimal"
       | "averageScore"
       | "language"
     >
-  : V extends "_base"
-  ? Pick<
-      Book,
-      | "id"
-      | "bookNameLang1"
-      | "bookDescriptionLang1"
-      | "authorLang1"
-      | "publishDate"
-      | "isbn"
-      | "active"
-      | "averageScore"
-      | "language"
-    >
+  : V extends "_minimal"
+  ? Pick<Book, "id" | "bookNameLang1">
   : V extends "book-browse-view"
   ? Pick<
       Book,

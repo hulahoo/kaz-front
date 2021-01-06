@@ -7,7 +7,7 @@ export class PivotTableProperty extends BaseUuidEntity {
   hidden?: boolean | null;
   type?: any | null;
 }
-export type PivotTablePropertyViewName = "_minimal" | "_local" | "_base";
+export type PivotTablePropertyViewName = "_base" | "_local" | "_minimal";
 export type PivotTablePropertyView<
   V extends PivotTablePropertyViewName
 > = never;

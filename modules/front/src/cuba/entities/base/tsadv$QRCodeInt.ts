@@ -8,5 +8,5 @@ export class QRCodeInt extends BaseUuidEntity {
   voucherUsed?: string | null;
   goodsName?: string | null;
 }
-export type QRCodeIntViewName = "_minimal" | "_local" | "_base";
+export type QRCodeIntViewName = "_base" | "_local" | "_minimal";
 export type QRCodeIntView<V extends QRCodeIntViewName> = never;

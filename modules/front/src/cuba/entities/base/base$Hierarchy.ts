@@ -7,12 +7,20 @@ export class Hierarchy extends AbstractParentEntity {
   type?: DicHierarchyType | null;
 }
 export type HierarchyViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "hierarchy.view";
-export type HierarchyView<V extends HierarchyViewName> = V extends "_minimal"
-  ? Pick<Hierarchy, "id" | "hierarchyName">
+export type HierarchyView<V extends HierarchyViewName> = V extends "_base"
+  ? Pick<
+      Hierarchy,
+      | "id"
+      | "hierarchyName"
+      | "primaryFlag"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Hierarchy,
@@ -23,16 +31,8 @@ export type HierarchyView<V extends HierarchyViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Hierarchy,
-      | "id"
-      | "hierarchyName"
-      | "primaryFlag"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Hierarchy, "id" | "hierarchyName">
   : V extends "hierarchy.view"
   ? Pick<
       Hierarchy,

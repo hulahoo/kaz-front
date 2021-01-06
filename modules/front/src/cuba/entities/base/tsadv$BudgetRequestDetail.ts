@@ -10,10 +10,10 @@ export class BudgetRequestDetail extends AbstractParentEntity {
   businessTripEmployee?: number | null;
   budgetRequestItemDetail?: BudgetRequestItemDetail[] | null;
 }
-export type BudgetRequestDetailViewName = "_minimal" | "_local" | "_base";
+export type BudgetRequestDetailViewName = "_base" | "_local" | "_minimal";
 export type BudgetRequestDetailView<
   V extends BudgetRequestDetailViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       BudgetRequestDetail,
       | "id"
@@ -23,7 +23,7 @@ export type BudgetRequestDetailView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BudgetRequestDetail,
       | "id"

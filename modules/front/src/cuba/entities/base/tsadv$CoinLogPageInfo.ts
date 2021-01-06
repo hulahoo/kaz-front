@@ -6,5 +6,5 @@ export class CoinLogPageInfo extends BaseUuidEntity {
   pageInfo?: PageInfo | null;
   coinLogs?: CoinLogPojo | null;
 }
-export type CoinLogPageInfoViewName = "_minimal" | "_local" | "_base";
+export type CoinLogPageInfoViewName = "_base" | "_local" | "_minimal";
 export type CoinLogPageInfoView<V extends CoinLogPageInfoViewName> = never;

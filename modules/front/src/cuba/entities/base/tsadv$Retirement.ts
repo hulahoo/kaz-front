@@ -10,11 +10,11 @@ export class Retirement extends AbstractParentEntity {
   personGroupExt?: PersonGroupExt | null;
 }
 export type RetirementViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "retirement.all";
-export type RetirementView<V extends RetirementViewName> = V extends "_local"
+export type RetirementView<V extends RetirementViewName> = V extends "_base"
   ? Pick<
       Retirement,
       | "id"
@@ -25,7 +25,7 @@ export type RetirementView<V extends RetirementViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Retirement,
       | "id"

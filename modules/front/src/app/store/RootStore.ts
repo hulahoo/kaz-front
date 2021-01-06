@@ -7,6 +7,7 @@ import BellNotificationStore from "./BellNotificationStore";
 import {inject} from "mobx-react";
 import {injectMainStore, MainStore} from "@cuba-platform/react";
 import ChangePasswordStore from "./ChangePasswordStore";
+import KpiStore from "./KpiStore";
 
 export default class RootStore {
   cubaRest: CubaApp;
@@ -16,6 +17,7 @@ export default class RootStore {
   userInfo: UserInfoStore;
   bellNotification: BellNotificationStore;
   changePassword: ChangePasswordStore;
+  kpiEditStore: KpiStore;
 
   constructor(cubaRest: CubaApp) {
     this.cubaRest = cubaRest;
@@ -28,5 +30,9 @@ export default class RootStore {
 
   createChangePasswordStore = () => {
     this.changePassword = new ChangePasswordStore(this);
+  }
+
+  createKpiStore = (appId: string) => {
+    this.kpiEditStore = new KpiStore(this, appId);
   }
 }

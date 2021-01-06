@@ -4,6 +4,7 @@ export class EntitySnapshot extends BaseUuidEntity {
   static NAME = "sys$EntitySnapshot";
   createTs?: any | null;
   createdBy?: string | null;
+  sysTenantId?: string | null;
   viewXml?: string | null;
   snapshotXml?: string | null;
   entityMetaClass?: string | null;
@@ -14,16 +15,17 @@ export class EntitySnapshot extends BaseUuidEntity {
   changeDate?: any | null;
 }
 export type EntitySnapshotViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "entitySnapshot.browse";
 export type EntitySnapshotView<
   V extends EntitySnapshotViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       EntitySnapshot,
       | "id"
+      | "sysTenantId"
       | "viewXml"
       | "snapshotXml"
       | "entityMetaClass"
@@ -31,10 +33,11 @@ export type EntitySnapshotView<
       | "label"
       | "changeDate"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       EntitySnapshot,
       | "id"
+      | "sysTenantId"
       | "viewXml"
       | "snapshotXml"
       | "entityMetaClass"
@@ -46,6 +49,7 @@ export type EntitySnapshotView<
   ? Pick<
       EntitySnapshot,
       | "id"
+      | "sysTenantId"
       | "viewXml"
       | "snapshotXml"
       | "entityMetaClass"

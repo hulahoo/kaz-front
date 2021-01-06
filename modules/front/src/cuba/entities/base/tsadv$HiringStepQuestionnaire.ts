@@ -6,19 +6,19 @@ export class HiringStepQuestionnaire extends AbstractParentEntity {
   hiringStep?: HiringStep | null;
   questionnaire?: RcQuestionnaire | null;
 }
-export type HiringStepQuestionnaireViewName = "_minimal" | "_local" | "_base";
+export type HiringStepQuestionnaireViewName = "_base" | "_local" | "_minimal";
 export type HiringStepQuestionnaireView<
   V extends HiringStepQuestionnaireViewName
-> = V extends "_minimal"
-  ? Pick<HiringStepQuestionnaire, "id">
+> = V extends "_base"
+  ? Pick<
+      HiringStepQuestionnaire,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       HiringStepQuestionnaire,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      HiringStepQuestionnaire,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<HiringStepQuestionnaire, "id">
   : never;

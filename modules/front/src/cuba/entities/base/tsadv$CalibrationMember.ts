@@ -13,13 +13,13 @@ export class CalibrationMember extends AbstractParentEntity {
   session?: CalibrationSession | null;
 }
 export type CalibrationMemberViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "calibrationMember.browse";
 export type CalibrationMemberView<
   V extends CalibrationMemberViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CalibrationMember,
       | "id"
@@ -33,7 +33,7 @@ export type CalibrationMemberView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CalibrationMember,
       | "id"

@@ -7,18 +7,18 @@ export class PersonLearningPath extends AbstractParentEntity {
   learningPath?: LearningPath | null;
 }
 export type PersonLearningPathViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personLearningPath.browse";
 export type PersonLearningPathView<
   V extends PersonLearningPathViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonLearningPath,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonLearningPath,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

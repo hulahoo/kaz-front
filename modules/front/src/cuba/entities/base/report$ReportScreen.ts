@@ -5,5 +5,5 @@ export class ReportScreen extends BaseUuidEntity {
   report?: Report | null;
   screenId?: string | null;
 }
-export type ReportScreenViewName = "_minimal" | "_local" | "_base";
+export type ReportScreenViewName = "_base" | "_local" | "_minimal";
 export type ReportScreenView<V extends ReportScreenViewName> = never;

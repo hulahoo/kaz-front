@@ -8,24 +8,24 @@ export class RequisitionQuestionnaire extends AbstractParentEntity {
   weight?: any | null;
 }
 export type RequisitionQuestionnaireViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "requisitionQuestionnaire.view";
 export type RequisitionQuestionnaireView<
   V extends RequisitionQuestionnaireViewName
-> = V extends "_minimal"
-  ? Pick<RequisitionQuestionnaire, "id">
+> = V extends "_base"
+  ? Pick<
+      RequisitionQuestionnaire,
+      "id" | "weight" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RequisitionQuestionnaire,
       "id" | "weight" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RequisitionQuestionnaire,
-      "id" | "weight" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<RequisitionQuestionnaire, "id">
   : V extends "requisitionQuestionnaire.view"
   ? Pick<
       RequisitionQuestionnaire,

@@ -11,7 +11,7 @@ export class RecognitionCommentPojo extends BaseUuidEntity {
   parentCommentId?: any | null;
   parentCommentAuthor?: PersonPojo | null;
 }
-export type RecognitionCommentPojoViewName = "_minimal" | "_local" | "_base";
+export type RecognitionCommentPojoViewName = "_base" | "_local" | "_minimal";
 export type RecognitionCommentPojoView<
   V extends RecognitionCommentPojoViewName
 > = never;

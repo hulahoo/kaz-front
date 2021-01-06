@@ -7,9 +7,9 @@ export class EnrollmentCertificateFile extends StandardEntity {
   certificateFile?: FileDescriptor | null;
 }
 export type EnrollmentCertificateFileViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "enrollmentCertificateFile.with.certificateFile";
 export type EnrollmentCertificateFileView<
   V extends EnrollmentCertificateFileViewName

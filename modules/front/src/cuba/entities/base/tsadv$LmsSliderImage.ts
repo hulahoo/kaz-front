@@ -8,15 +8,15 @@ export class LmsSliderImage extends StandardEntity {
   slider?: LmsSlider | null;
 }
 export type LmsSliderImageViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "lmsSliderImage.with.image";
 export type LmsSliderImageView<
   V extends LmsSliderImageViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<LmsSliderImage, "id" | "order">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<LmsSliderImage, "id" | "order">
   : V extends "lmsSliderImage.with.image"
   ? Pick<LmsSliderImage, "id" | "order" | "image">

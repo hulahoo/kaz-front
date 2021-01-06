@@ -10,18 +10,18 @@ export class AssessmentPersonAnswer extends AbstractParentEntity {
   assessment?: Assessment | null;
 }
 export type AssessmentPersonAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assessmentPersonAnswer-view";
 export type AssessmentPersonAnswerView<
   V extends AssessmentPersonAnswerViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AssessmentPersonAnswer,
       "id" | "answer" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AssessmentPersonAnswer,
       "id" | "answer" | "legacyId" | "organizationBin" | "integrationUserLogin"

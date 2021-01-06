@@ -7,5 +7,5 @@ export class ChartSeries extends BaseUuidEntity {
   colorField?: string | null;
   order?: number | null;
 }
-export type ChartSeriesViewName = "_minimal" | "_local" | "_base";
+export type ChartSeriesViewName = "_base" | "_local" | "_minimal";
 export type ChartSeriesView<V extends ChartSeriesViewName> = never;

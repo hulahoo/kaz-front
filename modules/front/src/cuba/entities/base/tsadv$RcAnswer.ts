@@ -14,12 +14,27 @@ export class RcAnswer extends AbstractParentEntity {
   answerText?: string | null;
 }
 export type RcAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "rcAnswer.view";
-export type RcAnswerView<V extends RcAnswerViewName> = V extends "_minimal"
-  ? Pick<RcAnswer, "id" | "answerText">
+export type RcAnswerView<V extends RcAnswerViewName> = V extends "_base"
+  ? Pick<
+      RcAnswer,
+      | "id"
+      | "answerText"
+      | "order"
+      | "answerText1"
+      | "answerText2"
+      | "answerText3"
+      | "answerText4"
+      | "answerText5"
+      | "answerResult"
+      | "positive"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RcAnswer,
@@ -37,23 +52,8 @@ export type RcAnswerView<V extends RcAnswerViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RcAnswer,
-      | "id"
-      | "answerText"
-      | "order"
-      | "answerText1"
-      | "answerText2"
-      | "answerText3"
-      | "answerText4"
-      | "answerText5"
-      | "answerResult"
-      | "positive"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<RcAnswer, "id" | "answerText">
   : V extends "rcAnswer.view"
   ? Pick<
       RcAnswer,

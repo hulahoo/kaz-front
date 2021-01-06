@@ -6,18 +6,18 @@ export class GlobalValueGroup extends AbstractGroup {
   globalValue?: GlobalValue | null;
 }
 export type GlobalValueGroupViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "globalValueGroup.view";
 export type GlobalValueGroupView<
   V extends GlobalValueGroupViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       GlobalValueGroup,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       GlobalValueGroup,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

@@ -5,9 +5,16 @@ export class Scale extends AbstractParentEntity {
   scaleName?: string | null;
   scaleLevels?: ScaleLevel[] | null;
 }
-export type ScaleViewName = "_minimal" | "_local" | "_base" | "scale-view";
-export type ScaleView<V extends ScaleViewName> = V extends "_minimal"
-  ? Pick<Scale, "id" | "scaleName">
+export type ScaleViewName = "_base" | "_local" | "_minimal" | "scale-view";
+export type ScaleView<V extends ScaleViewName> = V extends "_base"
+  ? Pick<
+      Scale,
+      | "id"
+      | "scaleName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Scale,
@@ -17,15 +24,8 @@ export type ScaleView<V extends ScaleViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Scale,
-      | "id"
-      | "scaleName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Scale, "id" | "scaleName">
   : V extends "scale-view"
   ? Pick<
       Scale,

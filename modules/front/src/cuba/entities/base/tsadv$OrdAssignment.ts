@@ -20,17 +20,10 @@ export class OrdAssignment extends AbstractParentEntity {
   assignmentPersonByOrderDate?: PersonExt | null;
   assignmentPositionByOrderDate?: PositionExt | null;
 }
-export type OrdAssignmentViewName = "_minimal" | "_local" | "_base";
+export type OrdAssignmentViewName = "_base" | "_local" | "_minimal";
 export type OrdAssignmentView<
   V extends OrdAssignmentViewName
-> = V extends "_minimal"
-  ? Pick<OrdAssignment, "id" | "assignmentGroup">
-  : V extends "_local"
-  ? Pick<
-      OrdAssignment,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       OrdAssignment,
       | "id"
@@ -39,4 +32,11 @@ export type OrdAssignmentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      OrdAssignment,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<OrdAssignment, "id" | "assignmentGroup">
   : never;

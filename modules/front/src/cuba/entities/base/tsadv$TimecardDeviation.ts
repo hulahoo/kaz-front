@@ -12,15 +12,15 @@ export class TimecardDeviation extends AbstractParentEntity {
   changesWeekends?: boolean | null;
 }
 export type TimecardDeviationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "timecardDeviation-view"
+  | "_local"
+  | "_minimal"
+  | "timecardDeviation-for-form-timecard"
   | "timecardDeviation-for-timecard-copy"
-  | "timecardDeviation-for-form-timecard";
+  | "timecardDeviation-view";
 export type TimecardDeviationView<
   V extends TimecardDeviationViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       TimecardDeviation,
       | "id"
@@ -35,37 +35,7 @@ export type TimecardDeviationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      TimecardDeviation,
-      | "id"
-      | "hours"
-      | "dateFrom"
-      | "dateTo"
-      | "isChangesFactHours"
-      | "isChangesPlanHours"
-      | "isChangesDetailsFromBegin"
-      | "changesWeekends"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "timecardDeviation-view"
-  ? Pick<
-      TimecardDeviation,
-      | "id"
-      | "hours"
-      | "dateFrom"
-      | "dateTo"
-      | "isChangesFactHours"
-      | "isChangesPlanHours"
-      | "isChangesDetailsFromBegin"
-      | "changesWeekends"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "timecardDeviation-for-timecard-copy"
+  : V extends "_local"
   ? Pick<
       TimecardDeviation,
       | "id"
@@ -95,5 +65,35 @@ export type TimecardDeviationView<
       | "organizationBin"
       | "integrationUserLogin"
       | "assignmentGroup"
+    >
+  : V extends "timecardDeviation-for-timecard-copy"
+  ? Pick<
+      TimecardDeviation,
+      | "id"
+      | "hours"
+      | "dateFrom"
+      | "dateTo"
+      | "isChangesFactHours"
+      | "isChangesPlanHours"
+      | "isChangesDetailsFromBegin"
+      | "changesWeekends"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "timecardDeviation-view"
+  ? Pick<
+      TimecardDeviation,
+      | "id"
+      | "hours"
+      | "dateFrom"
+      | "dateTo"
+      | "isChangesFactHours"
+      | "isChangesPlanHours"
+      | "isChangesDetailsFromBegin"
+      | "changesWeekends"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : never;

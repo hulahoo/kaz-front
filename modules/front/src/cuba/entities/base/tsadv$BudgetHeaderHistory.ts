@@ -9,13 +9,13 @@ export class BudgetHeaderHistory extends AbstractParentEntity {
   comment?: string | null;
 }
 export type BudgetHeaderHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "budgetHeaderHistory-view";
 export type BudgetHeaderHistoryView<
   V extends BudgetHeaderHistoryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       BudgetHeaderHistory,
       | "id"
@@ -25,7 +25,7 @@ export type BudgetHeaderHistoryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BudgetHeaderHistory,
       | "id"

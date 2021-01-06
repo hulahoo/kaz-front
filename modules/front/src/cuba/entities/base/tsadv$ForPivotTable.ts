@@ -4,5 +4,5 @@ export class ForPivotTable extends BaseUuidEntity {
   static NAME = "tsadv$ForPivotTable";
   personGroup?: PersonGroupExt | null;
 }
-export type ForPivotTableViewName = "_minimal" | "_local" | "_base";
+export type ForPivotTableViewName = "_base" | "_local" | "_minimal";
 export type ForPivotTableView<V extends ForPivotTableViewName> = never;

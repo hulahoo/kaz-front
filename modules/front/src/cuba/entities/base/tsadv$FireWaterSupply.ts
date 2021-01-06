@@ -8,13 +8,13 @@ export class FireWaterSupply extends AbstractParentEntity {
   buildingFireSafety?: BuildingFireSafety | null;
 }
 export type FireWaterSupplyViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "fireWaterSupply-view";
 export type FireWaterSupplyView<
   V extends FireWaterSupplyViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       FireWaterSupply,
       | "id"
@@ -25,7 +25,7 @@ export type FireWaterSupplyView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       FireWaterSupply,
       | "id"

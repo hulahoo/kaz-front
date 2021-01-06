@@ -8,14 +8,21 @@ export class NotificationRecipient extends AbstractParentEntity {
   sqlQuery?: string | null;
 }
 export type NotificationRecipientViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "notificationRecipient.view";
 export type NotificationRecipientView<
   V extends NotificationRecipientViewName
-> = V extends "_minimal"
-  ? Pick<NotificationRecipient, "id">
+> = V extends "_base"
+  ? Pick<
+      NotificationRecipient,
+      | "id"
+      | "sqlQuery"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       NotificationRecipient,
@@ -25,15 +32,8 @@ export type NotificationRecipientView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      NotificationRecipient,
-      | "id"
-      | "sqlQuery"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<NotificationRecipient, "id">
   : V extends "notificationRecipient.view"
   ? Pick<
       NotificationRecipient,

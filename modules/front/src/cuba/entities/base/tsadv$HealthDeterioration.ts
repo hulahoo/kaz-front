@@ -29,13 +29,13 @@ export class HealthDeterioration extends AbstractParentEntity {
   resultDate?: any | null;
 }
 export type HealthDeteriorationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "healthDeterioration-view";
 export type HealthDeteriorationView<
   V extends HealthDeteriorationViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       HealthDeterioration,
       | "id"
@@ -54,7 +54,7 @@ export type HealthDeteriorationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       HealthDeterioration,
       | "id"

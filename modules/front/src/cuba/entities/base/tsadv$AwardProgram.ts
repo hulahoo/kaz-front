@@ -8,13 +8,11 @@ export class AwardProgram extends StandardEntity {
   active?: boolean | null;
   order?: number | null;
 }
-export type AwardProgramViewName = "_minimal" | "_local" | "_base";
-export type AwardProgramView<
-  V extends AwardProgramViewName
-> = V extends "_minimal"
-  ? Pick<AwardProgram, "id" | "name">
+export type AwardProgramViewName = "_base" | "_local" | "_minimal";
+export type AwardProgramView<V extends AwardProgramViewName> = V extends "_base"
+  ? Pick<AwardProgram, "id" | "name" | "year" | "active" | "order">
   : V extends "_local"
   ? Pick<AwardProgram, "id" | "name" | "year" | "active" | "order">
-  : V extends "_base"
-  ? Pick<AwardProgram, "id" | "name" | "year" | "active" | "order">
+  : V extends "_minimal"
+  ? Pick<AwardProgram, "id" | "name">
   : never;

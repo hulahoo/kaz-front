@@ -8,7 +8,7 @@ export class RecognitionTypePojo extends BaseUuidEntity {
   count?: any | null;
   coins?: any | null;
 }
-export type RecognitionTypePojoViewName = "_minimal" | "_local" | "_base";
+export type RecognitionTypePojoViewName = "_base" | "_local" | "_minimal";
 export type RecognitionTypePojoView<
   V extends RecognitionTypePojoViewName
 > = never;

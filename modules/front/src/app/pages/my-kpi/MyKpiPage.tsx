@@ -7,10 +7,9 @@ import MyKpi from "./MyKpi";
 
 class MyKpiPage extends React.Component<WrappedComponentProps> {
   render() {
-    console.log('i m here');
-    const MainSection = SectionHoc(<MyKpi/>, {});
+    const MainSection = SectionHoc(<MyKpi/>, {size: "large"});
     const PageContentComponent = PageContentHoc(
-      <MainSection/>, {pageName: this.props.intl.formatMessage({id: 'menu.my-kpi'})});
+      {pageName: this.props.intl.formatMessage({id: 'menu.my-kpi'})}, <MainSection key={1}/>);
 
     return <PageContentComponent/>
   }

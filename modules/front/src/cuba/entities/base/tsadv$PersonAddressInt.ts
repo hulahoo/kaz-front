@@ -10,11 +10,11 @@ export class PersonAddressInt extends BaseUuidEntity {
   startDate?: any | null;
   endDate?: any | null;
 }
-export type PersonAddressIntViewName = "_minimal" | "_local" | "_base";
+export type PersonAddressIntViewName = "_base" | "_local" | "_minimal";
 export type PersonAddressIntView<
   V extends PersonAddressIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PersonAddressInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonAddressInt, "id">
   : never;

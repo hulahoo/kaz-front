@@ -20,13 +20,13 @@ export class PersonalDataRequest extends StandardEntity {
   attachments?: FileDescriptor[] | null;
 }
 export type PersonalDataRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personalDataRequest-view";
 export type PersonalDataRequestView<
   V extends PersonalDataRequestViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonalDataRequest,
       | "id"
@@ -39,7 +39,7 @@ export type PersonalDataRequestView<
       | "middleNameLatin"
       | "dateOfBirth"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonalDataRequest,
       | "id"

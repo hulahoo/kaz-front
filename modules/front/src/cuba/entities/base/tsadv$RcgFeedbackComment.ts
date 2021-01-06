@@ -11,14 +11,14 @@ export class RcgFeedbackComment extends AbstractParentEntity {
   rcgFeedback?: RcgFeedback | null;
 }
 export type RcgFeedbackCommentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "rcgFeedbackComment.edit"
   | "rcgFeedbackComment.parse";
 export type RcgFeedbackCommentView<
   V extends RcgFeedbackCommentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       RcgFeedbackComment,
       | "id"
@@ -29,7 +29,7 @@ export type RcgFeedbackCommentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RcgFeedbackComment,
       | "id"

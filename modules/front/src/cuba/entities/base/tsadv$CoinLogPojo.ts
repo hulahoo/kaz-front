@@ -10,5 +10,5 @@ export class CoinLogPojo extends BaseUuidEntity {
   date?: string | null;
   comment?: string | null;
 }
-export type CoinLogPojoViewName = "_minimal" | "_local" | "_base";
+export type CoinLogPojoViewName = "_base" | "_local" | "_minimal";
 export type CoinLogPojoView<V extends CoinLogPojoViewName> = never;

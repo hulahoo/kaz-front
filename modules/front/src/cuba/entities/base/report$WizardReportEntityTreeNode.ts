@@ -12,5 +12,5 @@ export class EntityTreeNode extends BaseUuidEntity {
   hierarchicalNameExceptRoot?: string | null;
   hierarchicalLocalizedNameExceptRoot?: string | null;
 }
-export type EntityTreeNodeViewName = "_minimal" | "_local" | "_base";
+export type EntityTreeNodeViewName = "_base" | "_local" | "_minimal";
 export type EntityTreeNodeView<V extends EntityTreeNodeViewName> = never;

@@ -12,11 +12,9 @@ export class InterviewInt extends AbstractEntityInt {
   interviewStatus?: string | null;
   reason?: string | null;
 }
-export type InterviewIntViewName = "_minimal" | "_local" | "_base";
-export type InterviewIntView<
-  V extends InterviewIntViewName
-> = V extends "_minimal"
+export type InterviewIntViewName = "_base" | "_local" | "_minimal";
+export type InterviewIntView<V extends InterviewIntViewName> = V extends "_base"
   ? Pick<InterviewInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<InterviewInt, "id">
   : never;

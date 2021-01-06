@@ -16,13 +16,13 @@ export class OrderMasterEntity extends AbstractParentEntity {
   entityLangName?: string | null;
 }
 export type OrderMasterEntityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "orderMasterEntity.edit";
 export type OrderMasterEntityView<
   V extends OrderMasterEntityViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       OrderMasterEntity,
       | "id"
@@ -39,7 +39,7 @@ export type OrderMasterEntityView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       OrderMasterEntity,
       | "id"

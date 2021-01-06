@@ -14,5 +14,5 @@ export class TopTenPojo extends BaseUuidEntity {
   heartAward?: string | null;
   employeeNumber?: string | null;
 }
-export type TopTenPojoViewName = "_minimal" | "_local" | "_base";
+export type TopTenPojoViewName = "_base" | "_local" | "_minimal";
 export type TopTenPojoView<V extends TopTenPojoViewName> = never;

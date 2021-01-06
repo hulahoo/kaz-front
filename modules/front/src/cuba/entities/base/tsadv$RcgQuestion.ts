@@ -20,12 +20,12 @@ export class RcgQuestion extends StandardEntity {
   description?: string | null;
 }
 export type RcgQuestionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "rcgQuestion.edit"
-  | "rcgQuestion.browse";
-export type RcgQuestionView<V extends RcgQuestionViewName> = V extends "_local"
+  | "_local"
+  | "_minimal"
+  | "rcgQuestion.browse"
+  | "rcgQuestion.edit";
+export type RcgQuestionView<V extends RcgQuestionViewName> = V extends "_base"
   ? Pick<
       RcgQuestion,
       | "id"
@@ -45,7 +45,27 @@ export type RcgQuestionView<V extends RcgQuestionViewName> = V extends "_local"
       | "text"
       | "description"
     >
-  : V extends "_base"
+  : V extends "_local"
+  ? Pick<
+      RcgQuestion,
+      | "id"
+      | "textLang1"
+      | "textLang2"
+      | "textLang3"
+      | "textLang4"
+      | "textLang5"
+      | "descriptionLang1"
+      | "descriptionLang2"
+      | "descriptionLang3"
+      | "descriptionLang4"
+      | "descriptionLang5"
+      | "active"
+      | "answerType"
+      | "coins"
+      | "text"
+      | "description"
+    >
+  : V extends "rcgQuestion.browse"
   ? Pick<
       RcgQuestion,
       | "id"
@@ -85,25 +105,5 @@ export type RcgQuestionView<V extends RcgQuestionViewName> = V extends "_local"
       | "text"
       | "description"
       | "answers"
-    >
-  : V extends "rcgQuestion.browse"
-  ? Pick<
-      RcgQuestion,
-      | "id"
-      | "textLang1"
-      | "textLang2"
-      | "textLang3"
-      | "textLang4"
-      | "textLang5"
-      | "descriptionLang1"
-      | "descriptionLang2"
-      | "descriptionLang3"
-      | "descriptionLang4"
-      | "descriptionLang5"
-      | "active"
-      | "answerType"
-      | "coins"
-      | "text"
-      | "description"
     >
   : never;

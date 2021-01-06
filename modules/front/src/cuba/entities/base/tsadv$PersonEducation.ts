@@ -17,15 +17,29 @@ export class PersonEducation extends AbstractParentEntity {
   level?: DicEducationLevel | null;
 }
 export type PersonEducationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "personEducation.view"
-  | "personEducation.full";
+  | "_local"
+  | "_minimal"
+  | "personEducation.full"
+  | "personEducation.view";
 export type PersonEducationView<
   V extends PersonEducationViewName
-> = V extends "_minimal"
-  ? Pick<PersonEducation, "id" | "school" | "startYear" | "endYear">
+> = V extends "_base"
+  ? Pick<
+      PersonEducation,
+      | "id"
+      | "school"
+      | "startYear"
+      | "endYear"
+      | "diplomaNumber"
+      | "graduationDate"
+      | "foreignEducation"
+      | "specialization"
+      | "location"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       PersonEducation,
@@ -42,23 +56,9 @@ export type PersonEducationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      PersonEducation,
-      | "id"
-      | "school"
-      | "startYear"
-      | "endYear"
-      | "diplomaNumber"
-      | "graduationDate"
-      | "foreignEducation"
-      | "specialization"
-      | "location"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "personEducation.view"
+  : V extends "_minimal"
+  ? Pick<PersonEducation, "id" | "school" | "startYear" | "endYear">
+  : V extends "personEducation.full"
   ? Pick<
       PersonEducation,
       | "id"
@@ -77,7 +77,7 @@ export type PersonEducationView<
       | "degree"
       | "level"
     >
-  : V extends "personEducation.full"
+  : V extends "personEducation.view"
   ? Pick<
       PersonEducation,
       | "id"

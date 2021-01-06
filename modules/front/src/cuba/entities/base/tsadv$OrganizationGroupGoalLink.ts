@@ -9,13 +9,13 @@ export class OrganizationGroupGoalLink extends AbstractParentEntity {
   organizationGroup?: OrganizationGroupExt | null;
 }
 export type OrganizationGroupGoalLinkViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "organizationGroupGoalLink-view";
 export type OrganizationGroupGoalLinkView<
   V extends OrganizationGroupGoalLinkViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       OrganizationGroupGoalLink,
       | "id"
@@ -25,7 +25,7 @@ export type OrganizationGroupGoalLinkView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       OrganizationGroupGoalLink,
       | "id"

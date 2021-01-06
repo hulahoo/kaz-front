@@ -21,5 +21,5 @@ export class RecognitionPojo extends BaseUuidEntity {
   qualities?: QualityPojo | null;
   teamLiker?: PersonPojo | null;
 }
-export type RecognitionPojoViewName = "_minimal" | "_local" | "_base";
+export type RecognitionPojoViewName = "_base" | "_local" | "_minimal";
 export type RecognitionPojoView<V extends RecognitionPojoViewName> = never;

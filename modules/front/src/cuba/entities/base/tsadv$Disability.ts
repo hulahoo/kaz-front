@@ -13,11 +13,11 @@ export class Disability extends AbstractParentEntity {
   personGroupExt?: PersonGroupExt | null;
 }
 export type DisabilityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "disability.all";
-export type DisabilityView<V extends DisabilityViewName> = V extends "_local"
+export type DisabilityView<V extends DisabilityViewName> = V extends "_base"
   ? Pick<
       Disability,
       | "id"
@@ -29,7 +29,7 @@ export type DisabilityView<V extends DisabilityViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Disability,
       | "id"

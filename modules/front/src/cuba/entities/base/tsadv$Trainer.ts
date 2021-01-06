@@ -15,13 +15,23 @@ export class Trainer extends AbstractParentEntity {
   trainerFullName?: string | null;
 }
 export type TrainerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "trainer.edit"
-  | "trainer.browse";
-export type TrainerView<V extends TrainerViewName> = V extends "_minimal"
-  ? Pick<Trainer, "id" | "trainerFullName">
+  | "_local"
+  | "_minimal"
+  | "trainer.browse"
+  | "trainer.edit";
+export type TrainerView<V extends TrainerViewName> = V extends "_base"
+  ? Pick<
+      Trainer,
+      | "id"
+      | "trainerFullName"
+      | "addPaymentAmount"
+      | "orderNumber"
+      | "orderDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Trainer,
@@ -33,17 +43,20 @@ export type TrainerView<V extends TrainerViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<Trainer, "id" | "trainerFullName">
+  : V extends "trainer.browse"
   ? Pick<
       Trainer,
       | "id"
-      | "trainerFullName"
       | "addPaymentAmount"
       | "orderNumber"
       | "orderDate"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "employee"
+      | "party"
     >
   : V extends "trainer.edit"
   ? Pick<
@@ -59,18 +72,5 @@ export type TrainerView<V extends TrainerViewName> = V extends "_minimal"
       | "party"
       | "courseTrainerAssessment"
       | "courseTrainer"
-    >
-  : V extends "trainer.browse"
-  ? Pick<
-      Trainer,
-      | "id"
-      | "addPaymentAmount"
-      | "orderNumber"
-      | "orderDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "employee"
-      | "party"
     >
   : never;

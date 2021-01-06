@@ -10,26 +10,26 @@ export class RcQuestionnaireQuestion extends AbstractParentEntity {
   order?: number | null;
 }
 export type RcQuestionnaireQuestionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "rcQuestionnaireQuestion.view"
-  | "rcQuestionnaireQuestion.rest";
+  | "_local"
+  | "_minimal"
+  | "rcQuestionnaireQuestion.rest"
+  | "rcQuestionnaireQuestion.view";
 export type RcQuestionnaireQuestionView<
   V extends RcQuestionnaireQuestionViewName
-> = V extends "_minimal"
-  ? Pick<RcQuestionnaireQuestion, "id">
+> = V extends "_base"
+  ? Pick<
+      RcQuestionnaireQuestion,
+      "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RcQuestionnaireQuestion,
       "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RcQuestionnaireQuestion,
-      "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "rcQuestionnaireQuestion.view"
+  : V extends "_minimal"
+  ? Pick<RcQuestionnaireQuestion, "id">
+  : V extends "rcQuestionnaireQuestion.rest"
   ? Pick<
       RcQuestionnaireQuestion,
       | "id"
@@ -41,7 +41,7 @@ export type RcQuestionnaireQuestionView<
       | "question"
       | "answers"
     >
-  : V extends "rcQuestionnaireQuestion.rest"
+  : V extends "rcQuestionnaireQuestion.view"
   ? Pick<
       RcQuestionnaireQuestion,
       | "id"

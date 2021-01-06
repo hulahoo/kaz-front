@@ -11,11 +11,11 @@ export class BandDefinition extends BaseUuidEntity {
   orientation?: any | null;
   position?: number | null;
 }
-export type BandDefinitionViewName = "_minimal" | "_local" | "_base";
+export type BandDefinitionViewName = "_base" | "_local" | "_minimal";
 export type BandDefinitionView<
   V extends BandDefinitionViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<BandDefinition, "id" | "name">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<BandDefinition, "id" | "name">
   : never;

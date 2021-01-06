@@ -6,7 +6,7 @@ export class PositionVacancyChart extends BaseUuidEntity {
   fillCount?: number | null;
   vacancyCount?: number | null;
 }
-export type PositionVacancyChartViewName = "_minimal" | "_local" | "_base";
+export type PositionVacancyChartViewName = "_base" | "_local" | "_minimal";
 export type PositionVacancyChartView<
   V extends PositionVacancyChartViewName
 > = never;

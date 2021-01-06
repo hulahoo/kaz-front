@@ -6,13 +6,13 @@ export class WindowProperty extends AbstractParentEntity {
   entityName?: string | null;
 }
 export type WindowPropertyViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "windowProperty.edit";
 export type WindowPropertyView<
   V extends WindowPropertyViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       WindowProperty,
       | "id"
@@ -23,7 +23,7 @@ export type WindowPropertyView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       WindowProperty,
       | "id"

@@ -11,14 +11,14 @@ export class PersonLearningContract extends AbstractParentEntity {
   other?: string | null;
 }
 export type PersonLearningContractViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "personLearningContract.edit"
-  | "personLearningContract-for-learninexpense";
+  | "_local"
+  | "_minimal"
+  | "personLearningContract-for-learninexpense"
+  | "personLearningContract.edit";
 export type PersonLearningContractView<
   V extends PersonLearningContractViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonLearningContract,
       | "id"
@@ -30,7 +30,7 @@ export type PersonLearningContractView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonLearningContract,
       | "id"
@@ -41,6 +41,11 @@ export type PersonLearningContractView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "personLearningContract-for-learninexpense"
+  ? Pick<
+      PersonLearningContract,
+      "id" | "personGroup" | "contractNumber" | "contractDate" | "termOfService"
     >
   : V extends "personLearningContract.edit"
   ? Pick<
@@ -54,10 +59,5 @@ export type PersonLearningContractView<
       | "organizationBin"
       | "integrationUserLogin"
       | "personGroup"
-    >
-  : V extends "personLearningContract-for-learninexpense"
-  ? Pick<
-      PersonLearningContract,
-      "id" | "personGroup" | "contractNumber" | "contractDate" | "termOfService"
     >
   : never;

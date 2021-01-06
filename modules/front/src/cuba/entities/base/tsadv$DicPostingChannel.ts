@@ -9,44 +9,13 @@ export class DicPostingChannel extends AbstractDictionary {
   requisitionPostingChannel?: RequisitionPostingChannel | null;
 }
 export type DicPostingChannelViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicPostingChannel-view";
 export type DicPostingChannelView<
   V extends DicPostingChannelViewName
-> = V extends "_minimal"
-  ? Pick<DicPostingChannel, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicPostingChannel,
-      | "id"
-      | "channalName"
-      | "userName"
-      | "password"
-      | "connectionURL"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DicPostingChannel,
       | "id"
@@ -76,6 +45,37 @@ export type DicPostingChannelView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicPostingChannel,
+      | "id"
+      | "channalName"
+      | "userName"
+      | "password"
+      | "connectionURL"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicPostingChannel, "id" | "langValue">
   : V extends "dicPostingChannel-view"
   ? Pick<
       DicPostingChannel,

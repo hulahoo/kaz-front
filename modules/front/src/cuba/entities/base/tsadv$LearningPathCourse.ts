@@ -8,14 +8,14 @@ export class LearningPathCourse extends AbstractParentEntity {
   learningPath?: LearningPath | null;
 }
 export type LearningPathCourseViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "learningPathCourse.edit"
-  | "learningPathCourse.card";
+  | "_local"
+  | "_minimal"
+  | "learningPathCourse.card"
+  | "learningPathCourse.edit";
 export type LearningPathCourseView<
   V extends LearningPathCourseViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LearningPathCourse,
       | "id"
@@ -24,7 +24,7 @@ export type LearningPathCourseView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LearningPathCourse,
       | "id"
@@ -33,8 +33,8 @@ export type LearningPathCourseView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "learningPathCourse.edit"
-  ? Pick<LearningPathCourse, "id" | "orderNumber" | "course" | "learningPath">
   : V extends "learningPathCourse.card"
+  ? Pick<LearningPathCourse, "id" | "orderNumber" | "course" | "learningPath">
+  : V extends "learningPathCourse.edit"
   ? Pick<LearningPathCourse, "id" | "orderNumber" | "course" | "learningPath">
   : never;

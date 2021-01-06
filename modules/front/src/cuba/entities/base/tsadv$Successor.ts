@@ -12,14 +12,25 @@ export class Successor extends AbstractParentEntity {
   note?: string | null;
 }
 export type SuccessorViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "successor.browse"
+  | "_local"
+  | "_minimal"
   | "successor-view"
-  | "successor-viewPersonCard";
-export type SuccessorView<V extends SuccessorViewName> = V extends "_minimal"
-  ? Pick<Successor, "id" | "succession" | "personGroup">
+  | "successor-viewPersonCard"
+  | "successor.browse";
+export type SuccessorView<V extends SuccessorViewName> = V extends "_base"
+  ? Pick<
+      Successor,
+      | "id"
+      | "succession"
+      | "personGroup"
+      | "startDate"
+      | "endDate"
+      | "note"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Successor,
@@ -31,33 +42,8 @@ export type SuccessorView<V extends SuccessorViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Successor,
-      | "id"
-      | "succession"
-      | "personGroup"
-      | "startDate"
-      | "endDate"
-      | "note"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "successor.browse"
-  ? Pick<
-      Successor,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "note"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "succession"
-      | "personGroup"
-      | "readinessLevel"
-    >
+  : V extends "_minimal"
+  ? Pick<Successor, "id" | "succession" | "personGroup">
   : V extends "successor-view"
   ? Pick<
       Successor,
@@ -84,6 +70,20 @@ export type SuccessorView<V extends SuccessorViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
       | "succession"
+      | "readinessLevel"
+    >
+  : V extends "successor.browse"
+  ? Pick<
+      Successor,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "note"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "succession"
+      | "personGroup"
       | "readinessLevel"
     >
   : never;

@@ -28,38 +28,14 @@ export class TalentProgram extends StandardEntity {
   questionOfEssay?: string | null;
 }
 export type TalentProgramViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "talentProgram-view"
   | "talentProgram-view_1";
 export type TalentProgramView<
   V extends TalentProgramViewName
-> = V extends "_minimal"
-  ? Pick<TalentProgram, "id" | "programNameLang">
-  : V extends "_local"
-  ? Pick<
-      TalentProgram,
-      | "id"
-      | "programNameLang1"
-      | "essayRequirementLang1"
-      | "essayRequirementLang2"
-      | "essayRequirementLang3"
-      | "programNameLang2"
-      | "programNameLang3"
-      | "isActive"
-      | "startDate"
-      | "endDate"
-      | "participationRuleLang1"
-      | "participationRuleLang2"
-      | "participationRuleLang3"
-      | "webLink"
-      | "questionOfEssayRu"
-      | "questionOfEssayKz"
-      | "questionOfEssayEn"
-      | "questionOfEssay"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       TalentProgram,
       | "id"
@@ -82,6 +58,30 @@ export type TalentProgramView<
       | "questionOfEssayEn"
       | "questionOfEssay"
     >
+  : V extends "_local"
+  ? Pick<
+      TalentProgram,
+      | "id"
+      | "programNameLang1"
+      | "essayRequirementLang1"
+      | "essayRequirementLang2"
+      | "essayRequirementLang3"
+      | "programNameLang2"
+      | "programNameLang3"
+      | "isActive"
+      | "startDate"
+      | "endDate"
+      | "participationRuleLang1"
+      | "participationRuleLang2"
+      | "participationRuleLang3"
+      | "webLink"
+      | "questionOfEssayRu"
+      | "questionOfEssayKz"
+      | "questionOfEssayEn"
+      | "questionOfEssay"
+    >
+  : V extends "_minimal"
+  ? Pick<TalentProgram, "id" | "programNameLang">
   : V extends "talentProgram-view"
   ? Pick<
       TalentProgram,

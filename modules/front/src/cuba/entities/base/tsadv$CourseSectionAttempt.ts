@@ -18,19 +18,33 @@ export class CourseSectionAttempt extends AbstractParentEntity {
   courseSectionFormat?: string | null;
 }
 export type CourseSectionAttemptViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseSectionAttempt.browse"
-  | "courseSectionAttempt.edit"
   | "courseSectionAttempt.course.schedule"
-  | "courseSectionAttempt.for.result"
+  | "courseSectionAttempt.edit"
   | "courseSectionAttempt.for.check.on.remove"
+  | "courseSectionAttempt.for.result"
   | "courseSectionAttempt.lms.test.finish";
 export type CourseSectionAttemptView<
   V extends CourseSectionAttemptViewName
-> = V extends "_minimal"
-  ? Pick<CourseSectionAttempt, "id" | "courseSection">
+> = V extends "_base"
+  ? Pick<
+      CourseSectionAttempt,
+      | "id"
+      | "courseSection"
+      | "attemptDate"
+      | "testResult"
+      | "testResultPercent"
+      | "timeSpent"
+      | "activeAttempt"
+      | "success"
+      | "courseSectionFormat"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       CourseSectionAttempt,
@@ -46,22 +60,8 @@ export type CourseSectionAttemptView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      CourseSectionAttempt,
-      | "id"
-      | "courseSection"
-      | "attemptDate"
-      | "testResult"
-      | "testResultPercent"
-      | "timeSpent"
-      | "activeAttempt"
-      | "success"
-      | "courseSectionFormat"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<CourseSectionAttempt, "id" | "courseSection">
   : V extends "courseSectionAttempt.browse"
   ? Pick<
       CourseSectionAttempt,
@@ -76,6 +76,11 @@ export type CourseSectionAttemptView<
       | "testResult"
       | "testResultPercent"
       | "timeSpent"
+    >
+  : V extends "courseSectionAttempt.course.schedule"
+  ? Pick<
+      CourseSectionAttempt,
+      "id" | "enrollment" | "courseSection" | "courseSectionSession"
     >
   : V extends "courseSectionAttempt.edit"
   ? Pick<
@@ -92,11 +97,8 @@ export type CourseSectionAttemptView<
       | "testResult"
       | "timeSpent"
     >
-  : V extends "courseSectionAttempt.course.schedule"
-  ? Pick<
-      CourseSectionAttempt,
-      "id" | "enrollment" | "courseSection" | "courseSectionSession"
-    >
+  : V extends "courseSectionAttempt.for.check.on.remove"
+  ? Pick<CourseSectionAttempt, "id" | "courseSection" | "enrollment">
   : V extends "courseSectionAttempt.for.result"
   ? Pick<
       CourseSectionAttempt,
@@ -107,8 +109,6 @@ export type CourseSectionAttemptView<
       | "courseSection"
       | "success"
     >
-  : V extends "courseSectionAttempt.for.check.on.remove"
-  ? Pick<CourseSectionAttempt, "id" | "courseSection" | "enrollment">
   : V extends "courseSectionAttempt.lms.test.finish"
   ? Pick<
       CourseSectionAttempt,

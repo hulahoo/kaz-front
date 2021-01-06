@@ -11,15 +11,15 @@ export class ImportHistory extends StandardEntity {
   finished?: any | null;
 }
 export type ImportHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "importHistory.browse";
 export type ImportHistoryView<
   V extends ImportHistoryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<ImportHistory, "id" | "started" | "finished">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<ImportHistory, "id" | "started" | "finished">
   : V extends "importHistory.browse"
   ? Pick<

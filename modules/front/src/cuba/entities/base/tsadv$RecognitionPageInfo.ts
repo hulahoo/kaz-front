@@ -6,7 +6,7 @@ export class RecognitionPageInfo extends BaseUuidEntity {
   pageInfo?: PageInfo | null;
   recognitions?: RecognitionPojo | null;
 }
-export type RecognitionPageInfoViewName = "_minimal" | "_local" | "_base";
+export type RecognitionPageInfoViewName = "_base" | "_local" | "_minimal";
 export type RecognitionPageInfoView<
   V extends RecognitionPageInfoViewName
 > = never;

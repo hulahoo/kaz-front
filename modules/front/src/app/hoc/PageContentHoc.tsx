@@ -7,7 +7,7 @@ export interface ContentProps {
   onHeaderClick?: () => void
 }
 
-export function PageContentHoc(Child: JSX.Element, props: ContentProps): React.ComponentClass {
+export function PageContentHoc(props: ContentProps, ...Child: JSX.Element[]): React.ComponentClass {
 
   class InnerContentComponent extends React.Component<any> {
     render() {

@@ -10,15 +10,15 @@ export class InternshipExpenses extends StandardEntity {
   currency?: DicCurrency | null;
 }
 export type InternshipExpensesViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "internshipExpenses.edit";
 export type InternshipExpensesView<
   V extends InternshipExpensesViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<InternshipExpenses, "id" | "amount">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<InternshipExpenses, "id" | "amount">
   : V extends "internshipExpenses.edit"
   ? Pick<

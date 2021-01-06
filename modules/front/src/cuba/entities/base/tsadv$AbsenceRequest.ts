@@ -16,17 +16,29 @@ export class AbsenceRequest extends AbstractParentEntity {
   requestDate?: any | null;
   comment?: string | null;
   distanceWorkingConfirm?: boolean | null;
-  requestName?: string | null;
 }
 export type AbsenceRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "absenceRequest.view";
 export type AbsenceRequestView<
   V extends AbsenceRequestViewName
-> = V extends "_minimal"
-  ? Pick<AbsenceRequest, "id" | "requestDate">
+> = V extends "_base"
+  ? Pick<
+      AbsenceRequest,
+      | "id"
+      | "requestDate"
+      | "requestNumber"
+      | "dateFrom"
+      | "dateTo"
+      | "absenceDays"
+      | "comment"
+      | "distanceWorkingConfirm"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       AbsenceRequest,
@@ -38,27 +50,12 @@ export type AbsenceRequestView<
       | "requestDate"
       | "comment"
       | "distanceWorkingConfirm"
-      | "requestName"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      AbsenceRequest,
-      | "id"
-      | "requestDate"
-      | "requestNumber"
-      | "dateFrom"
-      | "dateTo"
-      | "absenceDays"
-      | "comment"
-      | "distanceWorkingConfirm"
-      | "requestName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<AbsenceRequest, "id" | "requestDate">
   : V extends "absenceRequest.view"
   ? Pick<
       AbsenceRequest,
@@ -70,14 +67,12 @@ export type AbsenceRequestView<
       | "requestDate"
       | "comment"
       | "distanceWorkingConfirm"
-      | "requestName"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "assignmentGroup"
       | "type"
       | "attachment"
-      | "requestName"
       | "status"
     >
   : never;

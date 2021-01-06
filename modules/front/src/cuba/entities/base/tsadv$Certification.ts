@@ -10,13 +10,13 @@ export class Certification extends AbstractParentEntity {
   period?: any | null;
 }
 export type CertificationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "certification.browse";
 export type CertificationView<
   V extends CertificationViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       Certification,
       | "id"
@@ -29,7 +29,7 @@ export type CertificationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Certification,
       | "id"

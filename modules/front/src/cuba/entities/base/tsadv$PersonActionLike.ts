@@ -9,9 +9,9 @@ export class PersonActionLike extends StandardEntity {
   personGroup?: Person | null;
 }
 export type PersonActionLikeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personActionLike-view";
 export type PersonActionLikeView<
   V extends PersonActionLikeViewName

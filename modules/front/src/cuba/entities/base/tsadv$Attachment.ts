@@ -29,16 +29,16 @@ export class Attachment extends AbstractParentEntity {
   medicalInspection?: MedicalInspection | null;
 }
 export type AttachmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "attachment-view";
-export type AttachmentView<V extends AttachmentViewName> = V extends "_local"
+export type AttachmentView<V extends AttachmentViewName> = V extends "_base"
   ? Pick<
       Attachment,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Attachment,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

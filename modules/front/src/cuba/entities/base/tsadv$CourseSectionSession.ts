@@ -15,16 +15,16 @@ export class CourseSectionSession extends AbstractParentEntity {
   courseSection?: CourseSection | null;
 }
 export type CourseSectionSessionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseSectionSession.browse"
+  | "lms.course.view"
   | "myCourseSectionSession.browse"
-  | "myCourseSectionSession.edit"
-  | "lms.course.view";
+  | "myCourseSectionSession.edit";
 export type CourseSectionSessionView<
   V extends CourseSectionSessionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseSectionSession,
       | "id"
@@ -36,7 +36,7 @@ export type CourseSectionSessionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseSectionSession,
       | "id"
@@ -60,6 +60,20 @@ export type CourseSectionSessionView<
       | "name"
       | "courseSessionEnrollmentList"
       | "trainer"
+    >
+  : V extends "lms.course.view"
+  ? Pick<
+      CourseSectionSession,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "learningCenter"
+      | "maxPerson"
+      | "courseSection"
+      | "name"
+      | "courseSessionEnrollmentList"
+      | "trainer"
+      | "courseSessionEnrollmentList"
     >
   : V extends "myCourseSectionSession.browse"
   ? Pick<
@@ -92,19 +106,5 @@ export type CourseSectionSessionView<
       | "courseSection"
       | "trainer"
       | "learningCenter"
-    >
-  : V extends "lms.course.view"
-  ? Pick<
-      CourseSectionSession,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "learningCenter"
-      | "maxPerson"
-      | "courseSection"
-      | "name"
-      | "courseSessionEnrollmentList"
-      | "trainer"
-      | "courseSessionEnrollmentList"
     >
   : never;

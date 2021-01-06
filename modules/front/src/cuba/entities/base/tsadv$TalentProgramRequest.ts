@@ -14,31 +14,19 @@ export class TalentProgramRequest extends StandardEntity {
   currentStepStatus?: DicTalentProgramRequestStatus | null;
 }
 export type TalentProgramRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "talentProgramRequest-view"
-  | "all-talentProgramRequest-view";
+  | "_local"
+  | "_minimal"
+  | "all-talentProgramRequest-view"
+  | "talentProgramRequest-view";
 export type TalentProgramRequestView<
   V extends TalentProgramRequestViewName
-> = V extends "_minimal"
-  ? Pick<TalentProgramRequest, "id" | "talentProgram">
+> = V extends "_base"
+  ? Pick<TalentProgramRequest, "id" | "talentProgram" | "requestDate" | "essay">
   : V extends "_local"
   ? Pick<TalentProgramRequest, "id" | "requestDate" | "essay">
-  : V extends "_base"
-  ? Pick<TalentProgramRequest, "id" | "talentProgram" | "requestDate" | "essay">
-  : V extends "talentProgramRequest-view"
-  ? Pick<
-      TalentProgramRequest,
-      | "id"
-      | "requestDate"
-      | "essay"
-      | "talentProgram"
-      | "status"
-      | "personGroup"
-      | "currentStep"
-      | "currentStepStatus"
-    >
+  : V extends "_minimal"
+  ? Pick<TalentProgramRequest, "id" | "talentProgram">
   : V extends "all-talentProgramRequest-view"
   ? Pick<
       TalentProgramRequest,
@@ -48,6 +36,18 @@ export type TalentProgramRequestView<
       | "personGroup"
       | "talentProgram"
       | "status"
+      | "currentStep"
+      | "currentStepStatus"
+    >
+  : V extends "talentProgramRequest-view"
+  ? Pick<
+      TalentProgramRequest,
+      | "id"
+      | "requestDate"
+      | "essay"
+      | "talentProgram"
+      | "status"
+      | "personGroup"
       | "currentStep"
       | "currentStepStatus"
     >

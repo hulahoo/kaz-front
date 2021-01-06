@@ -13,13 +13,13 @@ export class OrganizationSsView extends StandardEntity {
   costCenter?: string | null;
 }
 export type OrganizationSsViewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "organizationSsView-view";
 export type OrganizationSsViewView<
   V extends OrganizationSsViewViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       OrganizationSsView,
       | "id"
@@ -31,7 +31,7 @@ export type OrganizationSsViewView<
       | "organizationNameEn"
       | "costCenter"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       OrganizationSsView,
       | "id"

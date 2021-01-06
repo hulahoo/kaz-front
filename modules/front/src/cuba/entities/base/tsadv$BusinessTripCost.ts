@@ -10,20 +10,13 @@ export class BusinessTripCost extends AbstractParentEntity {
   businessTripLines?: BusinessTripLines | null;
 }
 export type BusinessTripCostViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "businessTripCost-view";
 export type BusinessTripCostView<
   V extends BusinessTripCostViewName
-> = V extends "_minimal"
-  ? Pick<BusinessTripCost, "id" | "amount" | "costType" | "currency">
-  : V extends "_local"
-  ? Pick<
-      BusinessTripCost,
-      "id" | "amount" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       BusinessTripCost,
       | "id"
@@ -34,6 +27,13 @@ export type BusinessTripCostView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      BusinessTripCost,
+      "id" | "amount" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<BusinessTripCost, "id" | "amount" | "costType" | "currency">
   : V extends "businessTripCost-view"
   ? Pick<
       BusinessTripCost,
