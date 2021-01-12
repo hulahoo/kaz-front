@@ -45,7 +45,7 @@ const tableColumns: ColumnProps<MyKpiTableMeta>[] = [{
   filtered: true
 }]
 
-//@inject("rootStore")
+@inject("rootStore")
 class MyKpi extends React.Component<RootStoreProp & RouteComponentProps<any>> {
   render() {
     const onRowClick = (record: MyKpiTableMeta, index: number, event: Event) => {

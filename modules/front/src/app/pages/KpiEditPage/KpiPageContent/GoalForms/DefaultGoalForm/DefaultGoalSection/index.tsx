@@ -13,7 +13,7 @@ import DefaultInputNumber from "../../../../../../components/DefaultInputNumber"
 import Input from "../../../../../../components/Input/Input";
 import Goal from "./Goal";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class DefaultGoalSection extends Component<WrappedComponentProps & RootStoreProp> {
 

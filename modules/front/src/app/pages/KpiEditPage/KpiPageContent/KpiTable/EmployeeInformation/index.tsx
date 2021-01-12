@@ -8,7 +8,7 @@ import {RootStoreProp} from "../../../../../store";
 import DefaultDatePicker from "../../../../../components/Datepicker";
 import moment from "moment";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class EmployeeInformation extends React.Component<WrappedComponentProps & RootStoreProp> {
   render() {

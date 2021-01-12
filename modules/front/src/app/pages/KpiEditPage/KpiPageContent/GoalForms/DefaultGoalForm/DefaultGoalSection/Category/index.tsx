@@ -5,7 +5,7 @@ import {RootStoreProp} from "../../../../../../../store";
 import {inject, observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class Category extends Component<RootStoreProp & WrappedComponentProps> {
   render() {

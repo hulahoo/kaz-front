@@ -12,7 +12,7 @@ type UrlParams = {
   appId: string
 }
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class DefaultGoalForm extends Component<RootStoreProp & RouteComponentProps<any> & WrappedComponentProps> {
   render() {

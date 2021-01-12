@@ -11,7 +11,7 @@ import {MenuRaw} from "../../../components/Dropdown/DefaultDropdown";
 import {inject, observer} from "mobx-react";
 import {RootStoreProp} from "../../../store";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class KpiPageContent extends React.Component<RootStoreProp> {
 

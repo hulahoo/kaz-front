@@ -4,7 +4,7 @@ import {inject, observer} from "mobx-react";
 import RootStore from "../../store/RootStore";
 import {RootStoreProp} from "../../store";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 export default class extends React.Component<RouteComponentProps & RootStoreProp> {
   render() {

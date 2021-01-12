@@ -15,7 +15,7 @@ import {
 import {RootStoreProp} from "../store";
 
 @injectMainStore
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class Login extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 

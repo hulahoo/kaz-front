@@ -8,7 +8,7 @@ import Notification from "./Notification/Notification";
 import {RootStoreProp} from "../../store";
 
 @injectMainStore
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps> {
 

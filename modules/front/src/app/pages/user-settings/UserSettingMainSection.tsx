@@ -17,7 +17,7 @@ type ChangePasswordResponse = {
   message: string
 }
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class UserSettingsMainSection extends React.Component<WrappedComponentProps & RootStoreProp> {
 

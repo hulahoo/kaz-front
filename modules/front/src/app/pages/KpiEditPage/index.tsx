@@ -12,7 +12,7 @@ import LoadingPage from "../LoadingPage";
 import {action} from "mobx";
 import {RouteComponentProps} from "react-router";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class KpiEditPage extends React.Component<WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
 

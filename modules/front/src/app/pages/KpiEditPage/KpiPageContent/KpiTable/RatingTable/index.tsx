@@ -7,7 +7,7 @@ import {ColumnProps} from "antd/es/table";
 import {Goal} from "../../../../../store/KpiStore";
 import {NavLink} from "react-router-dom";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class RatingTable extends Component<RootStoreProp> {
 

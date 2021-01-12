@@ -6,7 +6,7 @@ import {RootStoreProp} from "../../../../store";
 import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, format} from "../../../../util/Date/Date";
 import Button, {ButtonType} from "../../../../components/Button/Button";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class NotificationDropdownMenu extends Component<WrappedComponentProps & RootStoreProp> {
   render() {

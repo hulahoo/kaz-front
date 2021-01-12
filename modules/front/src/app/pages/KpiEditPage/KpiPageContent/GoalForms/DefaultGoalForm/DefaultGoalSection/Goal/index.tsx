@@ -5,7 +5,7 @@ import {inject, observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Input from "../../../../../../../components/Input/Input";
 
-//@inject("rootStore")
+@inject("rootStore")
 @observer
 class Goal extends Component<RootStoreProp & WrappedComponentProps> {
   render() {
