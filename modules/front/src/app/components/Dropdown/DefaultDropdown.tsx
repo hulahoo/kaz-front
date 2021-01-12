@@ -1,16 +1,18 @@
 import React from "react";
-import {Menu, Select} from "antd";
+import {Select} from "antd";
 import {action, observable} from "mobx";
 import {observer} from "mobx-react";
 
 export type MenuRaw = {
   id: string,
-  value: string
+  value: string,
+  render?: () => React.ReactNode
 }
 
 type DropdownProps = {
   selected?: string,
-  menu: MenuRaw[]
+  placeholder?: string,
+  menu?: MenuRaw[]
 }
 
 type DropdownHandlers = {
@@ -30,11 +32,15 @@ export default class extends React.Component<DropdownProps & DropdownHandlers> {
   }
 
   render() {
-    return <Select defaultValue={this.selected} className={"default-type"} onChange={this.handleMenuClick}>
-      {this.props.menu.map((m: MenuRaw) => <Select.Option key={m.id}>
-          {m.value}
-        </Select.Option>
-      )}
+    return <Select defaultValue={this.selected} className={"default-type"} onChange={this.handleMenuClick} placeholder={this.props.placeholder}>
+      {this.props.menu ? this.props.menu.map((m: MenuRaw) => {
+        return <Select.Option key={m.id}>
+            {m.value}
+          </Select.Option>
+        }
+      ) : <Select.Option key={"EMPTY"}>
+        "Список пуст"
+      </Select.Option>}
     </Select>
   }
 

@@ -6,7 +6,7 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../../store";
 import Button, {ButtonType} from "../../../components/Button/Button";
 
-@inject("rootStore")
+//@inject("rootStore")
 @observer
 class ChangePassword extends React.Component<WrappedComponentProps & RootStoreProp> {
 

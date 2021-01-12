@@ -3,9 +3,10 @@ import {ColumnProps} from "antd/es/table";
 import KzmTable, {SelectRowType} from "../../components/Table/KzmTable";
 import {CardStatusEnum} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {inject} from "mobx-react";
-import {MatchParams, RootStoreProp, RouteComponentProps} from "../../store";
-import {restServices} from "../../../cuba/services";
+import {RootStoreProp} from "../../store";
 import {formatDefaultDate} from "../../util/Date/Date";
+import {kpiService} from "../../../cuba/kpi-service/kpiService";
+import {RouteComponentProps, withRouter} from "react-router";
 
 export type MyKpiTableMeta = {
   id: string,
@@ -44,9 +45,8 @@ const tableColumns: ColumnProps<MyKpiTableMeta>[] = [{
   filtered: true
 }]
 
-@inject("rootStore")
-class MyKpi extends React.Component<RootStoreProp & RouteComponentProps<MatchParams>> {
-
+//@inject("rootStore")
+class MyKpi extends React.Component<RootStoreProp & RouteComponentProps<any>> {
   render() {
     const onRowClick = (record: MyKpiTableMeta, index: number, event: Event) => {
       this.props.history!.push("/kpi/" + record.id)
@@ -54,13 +54,13 @@ class MyKpi extends React.Component<RootStoreProp & RouteComponentProps<MatchPar
 
     return (
       <div>
-        <KzmTable columns={tableColumns} fetch={restServices.kpiService.myKpiList} onRowClick={onRowClick}
+        <KzmTable columns={tableColumns} fetch={kpiService.myKpiList} onRowClick={onRowClick}
                   paginationPosition={"both"}
-                  countFetch={restServices.kpiService.myKpiListCount} tableProps={{rowKey: "id"}}
+                  countFetch={kpiService.myKpiListCount} tableProps={{rowKey: "id"}}
         />
       </div>
     );
   }
 }
 
-export default MyKpi;
+export default withRouter(MyKpi);

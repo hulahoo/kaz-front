@@ -14,8 +14,8 @@ export enum ButtonType {
 
 export default class extends React.Component<ButtonComponentProps> {
     render() {
-        const {buttonType, ...rest} = {...this.props};
+        const {buttonType, className, ...rest} = {...this.props};
         return <button
-            className={(this.props.className ? this.props.className + " button" : "button") + " " + "btn-" + buttonType} {...rest}/>;
+            className={(className ? className + " button" : "button") + " " + "btn-" + buttonType} {...rest}/>;
     }
 }

@@ -4,8 +4,9 @@ import UserSettingMainSection from "../user-settings/UserSettingMainSection";
 import PageContentHoc from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import MyKpi from "./MyKpi";
+import {RouteComponentProps} from "react-router";
 
-class MyKpiPage extends React.Component<WrappedComponentProps> {
+class MyKpiPage extends React.Component<WrappedComponentProps & RouteComponentProps<any>> {
   render() {
     const MainSection = SectionHoc(<MyKpi/>, {size: "large"});
     const PageContentComponent = PageContentHoc(

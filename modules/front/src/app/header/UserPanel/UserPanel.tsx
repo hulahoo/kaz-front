@@ -8,14 +8,14 @@ import Notification from "./Notification/Notification";
 import {RootStoreProp} from "../../store";
 
 @injectMainStore
-@inject("rootStore")
+//@inject("rootStore")
 @observer
-class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps> {
 
   constructor(props: MainStoreInjected & WrappedComponentProps & RootStoreProp, context: any) {
     super(props, context);
 
-    this.props.rootStore!.bellNotification.loadBellNotificationsAndTasks();
+    // this.props.rootStore!.bellNotification.loadBellNotificationsAndTasks();
   }
 
   render() {

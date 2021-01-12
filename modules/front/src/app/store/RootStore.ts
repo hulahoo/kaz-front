@@ -4,10 +4,10 @@ import UserSettingsStore from "./UserSettingsStore";
 import UserInfoStore from "./UserInfoStore";
 import {CubaApp} from "@cuba-platform/rest";
 import BellNotificationStore from "./BellNotificationStore";
-import {inject} from "mobx-react";
-import {injectMainStore, MainStore} from "@cuba-platform/react";
 import ChangePasswordStore from "./ChangePasswordStore";
 import KpiStore from "./KpiStore";
+import {observable} from "mobx";
+import DefaultGoalStore from "./DefaultGoalStore";
 
 export default class RootStore {
   cubaRest: CubaApp;
@@ -17,7 +17,9 @@ export default class RootStore {
   userInfo: UserInfoStore;
   bellNotification: BellNotificationStore;
   changePassword: ChangePasswordStore;
-  kpiEditStore: KpiStore;
+  @observable kpiEditStore: KpiStore;
+  @observable goalStore: DefaultGoalStore;
+
 
   constructor(cubaRest: CubaApp) {
     this.cubaRest = cubaRest;
@@ -26,6 +28,7 @@ export default class RootStore {
     this.login = new LoginStore(this);
     this.userInfo = new UserInfoStore(this);
     this.bellNotification = new BellNotificationStore(this);
+    this.createDefaultGoalStore();
   }
 
   createChangePasswordStore = () => {
@@ -34,5 +37,9 @@ export default class RootStore {
 
   createKpiStore = (appId: string) => {
     this.kpiEditStore = new KpiStore(this, appId);
+  }
+
+  createDefaultGoalStore = () => {
+    this.goalStore = new DefaultGoalStore(this);
   }
 }

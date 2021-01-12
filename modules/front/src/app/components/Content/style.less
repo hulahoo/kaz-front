@@ -7,22 +7,25 @@
     font-size: 32px;
     line-height: 48px;
   }
+}
 
-  .section-container {
-    padding: 24px;
-    box-shadow: 0 3px 24px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
-    display: inline-block;
-    margin: 16px;
+.section-container:not(.hidden) {
+  box-shadow: 0 3px 24px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 24px;
+}
 
-    .section-header-container {
-      margin-bottom: 24px;
-      font-size: 18px;
-      font-weight: 600;
-    }
+.section-container {
+  display: inline-block;
+  margin: 16px;
+
+  .section-header-container {
+    margin-bottom: 24px;
+    font-size: 18px;
+    font-weight: 600;
   }
+}
 
-  .large-section {
-    width: 100%;
-  }
+.large-section {
+  width: 100%;
 }

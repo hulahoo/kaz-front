@@ -1,6 +1,7 @@
-import {getMenuItems, RouteItem, SubMenu} from "@cuba-platform/react";
+import { GoalManagement } from "./app/pages/Goal/GoalManagement";
+import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
+import { rootStore } from "./app/store";
 import {MenuSubMenu, MenuRouteItem} from "./app/store/MenuStore";
-import {rootStore} from "./app/store";
 
 export const menuItems = getMenuItems();
 
@@ -48,3 +49,10 @@ rootStore.menu.menuList.forEach((e: MenuSubMenu | MenuRouteItem) => {
 //
 // // Add sub menu item to menu config
 // menuItems.push(userSettingsSubMenu);
+
+menuItems.push({
+  pathPattern: "/goalManagement/:entityId?",
+  menuLink: "/goalManagement",
+  component: GoalManagement,
+  caption: "GoalManagement"
+});

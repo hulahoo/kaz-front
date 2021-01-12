@@ -5,7 +5,7 @@ import {Dropdown} from "antd";
 import NotificationDropdown from "./NotificationDropdown/NotificationDropdown";
 import {RootStoreProp} from "../../../store";
 
-@inject("rootStore")
+//@inject("rootStore")
 @observer
 class Notification extends React.Component<RootStoreProp> {
 

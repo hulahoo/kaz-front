@@ -17,6 +17,9 @@ export enum SelectRowType {
   MULTI = "multi"
 }
 
+type TableDataType<T> = WrappedItems<T> | any[];
+type FetchFunc<T> = (defaultParams: DefaultRestParams) => Promise<TableDataType<T>>
+
 type PaginationPosition = 'top' | 'bottom' | 'both';
 
 type WrappedItems<T> = {
@@ -28,7 +31,7 @@ type KzmTableProps<T> = {
   selectRowType?: SelectRowType,
   columns: ColumnProps<T>[],
   paginationPosition?: PaginationPosition,
-  fetch: (defaultParams: DefaultRestParams) => Promise<string>
+  fetch: FetchFunc<T> | TableDataType<T>
   countFetch?: () => Promise<number>,
   onRowClick?: (record: T, index: number, event: Event) => void,
   tableProps: TableProps<T>
@@ -36,7 +39,7 @@ type KzmTableProps<T> = {
 
 type TableState<T> = {
   loading: boolean,
-  pagination?: PageConfig,
+  pagination?: PageConfig | false,
   selectedRowKeys: string[] | number[],
   items: Array<T>,
   sorterColumns: SorterResult<T>[]
@@ -54,11 +57,19 @@ export default class KzmTable<T> extends React.Component<KzmTableProps<T>> {
     loading: false,
     selectedRowKeys: [],
     items: [],
-    pagination: {
-      position: this.props.paginationPosition
-    },
+    pagination: false,
     sorterColumns: []
   };
+
+  constructor(props: KzmTableProps<T>, context: any) {
+    super(props, context);
+
+    if (this.props.paginationPosition) {
+      this.tableState.pagination = {
+        position: this.props.paginationPosition
+      }
+    }
+  }
 
   componentDidMount() {
     this.setLoading(true);
@@ -68,7 +79,7 @@ export default class KzmTable<T> extends React.Component<KzmTableProps<T>> {
         this.loadTable(1, 10);
       })
     } else {
-      this.loadTable(1, 10);
+      this.loadTable();
     }
   }
 
@@ -106,7 +117,6 @@ export default class KzmTable<T> extends React.Component<KzmTableProps<T>> {
 
   @action
   clearSelectedRowKeys = () => {
-    console.log('cleared');
     this.tableState.selectedRowKeys = [];
   }
 
@@ -117,16 +127,23 @@ export default class KzmTable<T> extends React.Component<KzmTableProps<T>> {
   }
 
   loadTable = (page?: number, pageSize?: number, sort?: Sort) => {
-    this.props.fetch({page, pageSize, sort}).then((response: string) => {
-      const data = JSON.parse(response);
-      if (data.hasOwnProperty("data")) {
-        const wrappedData = data as WrappedItems<any>;
-        this.setPageCount(wrappedData.count);
-        this.setItems(wrappedData.data);
-      } else {
-        this.setItems((data as any[]));
-      }
-    });
+    if (typeof this.props.fetch === 'function') {
+      (this.props.fetch as FetchFunc<T>)({page, pageSize, sort}).then((data: WrappedItems<T> | any[]) => {
+        this.fetchTableData(data);
+      });
+    } else {
+      this.fetchTableData(this.props.fetch);
+    }
+  }
+
+  fetchTableData = (data: WrappedItems<T> | any[]) => {
+    if (data.hasOwnProperty("data")) {
+      const wrappedData = data as WrappedItems<any>;
+      this.setPageCount(wrappedData.count);
+      this.setItems(wrappedData.data);
+    } else {
+      this.setItems((data as any[]));
+    }
   }
 
   render() {
