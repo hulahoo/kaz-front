@@ -65,3 +65,10 @@ rootStore.menu.menuList.forEach((e: MenuSubMenu | MenuRouteItem) => {
 //   component: PersonDocumentManagement,
 //   caption: "PersonDocumentManagement"
 // });
+
+// menuItems.push({
+//   pathPattern: "/personDocumentManagement/:entityId?",
+//   menuLink: "/personDocumentManagement",
+//   component: PersonDocumentManagement,
+//   caption: "PersonDocumentManagement"
+// });

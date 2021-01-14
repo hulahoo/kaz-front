@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
 
+    <view entity="tsadv$PersonDocument" name="personDocument-view" extends="_local">
+        <property name="documentType" view="_minimal"/>
+        <property name="file" fetch="AUTO" view="_minimal"/>
+    </view>
 </views>

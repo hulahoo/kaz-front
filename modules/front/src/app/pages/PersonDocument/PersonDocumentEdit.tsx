@@ -13,19 +13,22 @@ import {
 } from "react-intl";
 
 import {
+  collection,
   Field,
   instance,
   withLocalizedForm,
   extractServerValidationErrors,
   constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText, EntityProperty
+  MultilineText
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
 import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
-import {EntitySelectField} from "@cuba-platform/react/dist/ui/EntitySelectField";
+import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
+import {DicApprovalStatus} from "../../../cuba/entities/base/tsadv$DicApprovalStatus";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -36,8 +39,20 @@ type EditorProps = {
 @observer
 class PersonDocumentEditComponent extends React.Component<Props & WrappedComponentProps> {
   dataInstance = instance<PersonDocument>(PersonDocument.NAME, {
-    view: "_local",
+    view: "personDocument-view",
     loadImmediately: false
+  });
+
+  documentTypesDc = collection<DicDocumentType>(DicDocumentType.NAME, {
+    view: "_minimal"
+  });
+
+  statusDc = collection<DicApprovalStatus>(DicApprovalStatus.NAME, {
+    view: "_minimal"
+  });
+
+  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
+    view: "_minimal"
   });
 
   @observable
@@ -45,6 +60,10 @@ class PersonDocumentEditComponent extends React.Component<Props & WrappedCompone
   reactionDisposer: IReactionDisposer;
 
   fields = [
+    "documentType",
+
+    "status",
+
     "issueDate",
 
     "expiredDate",
@@ -57,11 +76,7 @@ class PersonDocumentEditComponent extends React.Component<Props & WrappedCompone
 
     "series",
 
-    "legacyId",
-
-    "organizationBin",
-
-    "integrationUserLogin"
+    "file"
   ];
 
   @observable
@@ -136,7 +151,27 @@ class PersonDocumentEditComponent extends React.Component<Props & WrappedCompone
         <Form onSubmit={this.handleSubmit} layout="vertical">
           <Field
             entityName={PersonDocument.NAME}
-            propertyName="issueDate"
+            propertyName="documentType"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            optionsContainer={this.documentTypesDc}
+            getFieldDecoratorOpts={{
+              rules: [{required: true}]
+            }}/>
+
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="status"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            optionsContainer={this.statusDc}
+            getFieldDecoratorOpts={{
+              rules: [{required: true}]
+            }}/>
+
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="expiredDate"
             form={this.props.form}
             formItemOpts={{style: {marginBottom: "12px"}}}
             getFieldDecoratorOpts={{
@@ -146,7 +181,7 @@ class PersonDocumentEditComponent extends React.Component<Props & WrappedCompone
 
           <Field
             entityName={PersonDocument.NAME}
-            propertyName="expiredDate"
+            propertyName="issueDate"
             form={this.props.form}
             formItemOpts={{style: {marginBottom: "12px"}}}
             getFieldDecoratorOpts={{
@@ -190,27 +225,11 @@ class PersonDocumentEditComponent extends React.Component<Props & WrappedCompone
 
           <Field
             entityName={PersonDocument.NAME}
-            propertyName="legacyId"
+            propertyName="file"
             form={this.props.form}
             formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{}}
-          />
-
-          <Field
-            entityName={PersonDocument.NAME}
-            propertyName="organizationBin"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{}}
-          />
-
-          <Field
-            entityName={PersonDocument.NAME}
-            propertyName="integrationUserLogin"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{}}
-          />
+            optionsContainer={this.filesDc}
+            getFieldDecoratorOpts={{}}/>
 
           {this.globalErrors.length > 0 && (
             <Alert

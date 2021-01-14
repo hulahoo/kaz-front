@@ -1,5 +1,5 @@
 import * as React from "react";
-import {inject, observer} from "mobx-react";
+import {observer} from "mobx-react";
 import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
@@ -12,22 +12,13 @@ import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {PersonDocumentManagement} from "./PersonDocumentManagement";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import {RootStoreProp} from "../../store";
 import Button, {ButtonType} from "../../components/Button/Button";
 
-@inject("rootStore")
 @injectMainStore
 @observer
-class PersonDocumentListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+class PersonDocumentListComponent extends React.Component<MainStoreInjected & WrappedComponentProps> {
   dataCollection = collection<PersonDocument>(PersonDocument.NAME, {
-    view: "portal.my-profile",
-    filter: {
-      conditions: [{
-        property: "personGroup",
-        operator: "=",
-        value: this.props.rootStore!.userInfo.personGroupId
-      }]
-    },
+    view: "personDocument-view",
     sort: "-updateTs"
   });
 
@@ -38,9 +29,11 @@ class PersonDocumentListComponent extends React.Component<MainStoreInjected & Wr
 
     "documentNumber",
 
+    "issueDate",
+
     "issuedBy",
 
-    "series"
+    "file"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -75,7 +68,9 @@ class PersonDocumentListComponent extends React.Component<MainStoreInjected & Wr
         }
         key="create"
       >
-        <Button style={{margin: "0 12px 12px 0"}} buttonType={ButtonType.FOLLOW}>
+        <Button buttonType={ButtonType.FOLLOW}
+                style={{margin: "0 12px 12px 0"}}
+        >
           <span>
             <FormattedMessage id="management.browser.create"/>
           </span>
@@ -83,10 +78,12 @@ class PersonDocumentListComponent extends React.Component<MainStoreInjected & Wr
       </Link>,
       <Link
         to={PersonDocumentManagement.PATH + "/" + this.selectedRowKey}
-        key="edit">
-        <Button  buttonType={ButtonType.FOLLOW}
-          style={{margin: "0 12px 12px 0"}}
-          disabled={!this.selectedRowKey}>
+        key="edit"
+      >
+        <Button buttonType={ButtonType.FOLLOW}
+                style={{margin: "0 12px 12px 0"}}
+                disabled={!this.selectedRowKey}
+        >
           <FormattedMessage id="management.browser.edit"/>
         </Button>
       </Link>
