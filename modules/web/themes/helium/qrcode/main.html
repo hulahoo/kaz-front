@@ -102,7 +102,6 @@
     function checkCookie() {
         qrCode = getCookie("qrCode");
         access_token = getCookie("token");
-        console.log(access_token);
         if (qrCode != "") {
             loadInfoByQRCode(qrCode);
         }

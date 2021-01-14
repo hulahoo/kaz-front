@@ -23,6 +23,7 @@ export type PersonDocumentViewName =
   | "personDocument.card"
   | "personDocument.edit"
   | "personDocument.forNotification"
+  | "portal.my-profile"
   | "personDocument.full";
 export type PersonDocumentView<
   V extends PersonDocumentViewName

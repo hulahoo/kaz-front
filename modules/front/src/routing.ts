@@ -1,7 +1,9 @@
-import { GoalManagement } from "./app/pages/Goal/GoalManagement";
+import { PersonDocumentManagement } from "./app/pages/PersonDocument/PersonDocumentManagement";
+import { PersonContactManagement } from "./app/pages/PersonContact/PersonContactManagement";
+import { PersonalDataRequestManagement } from "./app/pages/PersonalDataRequest/PersonalDataRequestManagement";
 import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
 import { rootStore } from "./app/store";
-import {MenuSubMenu, MenuRouteItem} from "./app/store/MenuStore";
+import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";
 
 export const menuItems = getMenuItems();
 
@@ -49,10 +51,17 @@ rootStore.menu.menuList.forEach((e: MenuSubMenu | MenuRouteItem) => {
 //
 // // Add sub menu item to menu config
 // menuItems.push(userSettingsSubMenu);
-
-menuItems.push({
-  pathPattern: "/goalManagement/:entityId?",
-  menuLink: "/goalManagement",
-  component: GoalManagement,
-  caption: "GoalManagement"
-});
+//
+// menuItems.push({
+//   pathPattern: "/personContactManagement/:entityId?",
+//   menuLink: "/personContactManagement",
+//   component: PersonContactManagement,
+//   caption: "PersonContactManagement"
+// });
+//
+// menuItems.push({
+//   pathPattern: "/personDocumentManagement/:entityId?",
+//   menuLink: "/personDocumentManagement",
+//   component: PersonDocumentManagement,
+//   caption: "PersonDocumentManagement"
+// });

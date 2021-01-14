@@ -3,7 +3,7 @@
   "management.browser.delete.ok": "Удалить",
   "management.browser.delete.cancel": "Отмена",
   "management.browser.create": "Создать",
-  "management.browser.edit": "Изменить",
+  "management.browser.edit": "Редактировать",
   "management.browser.remove": "Удалить",
   "management.browser.noItems": "Нет данных",
   "management.editor.validationError": "Ошибка валидации. Пожалуйста, проверьте введенные данные.",

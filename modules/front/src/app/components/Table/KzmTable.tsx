@@ -121,8 +121,6 @@ export default class KzmTable<T> extends React.Component<KzmTableProps<T>> {
   }
 
   onTableChange = (pagination: PaginationConfig, filters: Partial<Record<keyof T, string[]>>, sorter: SorterResult<T>, extra: TableCurrentDataSource<T>) => {
-    console.log(filters);
-    console.log(sorter);
     this.loadTable(pagination.current, 10, sorter);
   }
 

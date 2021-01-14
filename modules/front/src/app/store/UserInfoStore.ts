@@ -1,6 +1,7 @@
 import {getCubaREST} from "@cuba-platform/react";
 import {UserInfo} from "@cuba-platform/rest/dist-node/model";
 import RootStore from "./RootStore";
+import {restQueries} from "../../cuba/queries";
 
 export default class implements UserInfo {
   rootStore: RootStore;
@@ -16,11 +17,18 @@ export default class implements UserInfo {
   name: string;
   position: string;
   timeZone: string;
+  personGroupId: string;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     this.loadUserInfo();
   }
+
+  loadPersonGroup = async () => {
+    return await restQueries.personGroupInfo(this.id).then(personGroup => {
+      this.personGroupId = personGroup.id;
+    })
+  };
 
   loadUserInfo = async () => {
     return await this.rootStore.cubaRest.getUserInfo().then((response: UserInfo) => {
@@ -36,6 +44,8 @@ export default class implements UserInfo {
       this.middleName = response.middleName;
       this.name = response.name;
       this.position = response.position;
+
+      this.loadPersonGroup();
     });
   }
 }

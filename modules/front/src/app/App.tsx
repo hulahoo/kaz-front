@@ -27,6 +27,10 @@ import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
 import KpiEditPage from "./pages/KpiEditPage";
+import {PersonalDataRequestManagement} from "./pages/PersonalDataRequest/PersonalDataRequestManagement";
+import PersonalDataRequestEdit from "./pages/PersonalDataRequest/PersonalDataRequestEdit";
+import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
+import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -35,7 +39,6 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
 
   constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
     super(props, context);
-    console.log(this.props)
   }
 
   render() {
@@ -80,6 +83,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
                 <Route exact={true} path="/kpi/:id" component={KpiEditPage}/>
+                <Route path="/my-profile" component={PersonalDataRequestEditPage}/>
+                <Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>
+                <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
               </Switch>
             </Layout.Content>
           </Layout>

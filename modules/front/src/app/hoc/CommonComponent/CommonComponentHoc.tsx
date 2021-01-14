@@ -12,8 +12,6 @@ const CommonComponentHoc = (Child: JSX.Element, props: ContentProps) => {
   @observer
   class InnerContentComponent extends React.Component<ContentProps> {
     render() {
-      console.log('rendered hoc');
-
       const {className = undefined, ...rest} = {...props.wrapperStyles};
       return <div className={className ? className + " element-property" : "element-property"} {...rest}
                   key={props.key}>
