@@ -10,7 +10,7 @@
   "management.editor.success": "Сущность успешно сохранена",
   "management.editor.error": "Ошибка",
   "management.editor.cancel": "Отмена",
-  "management.editor.submit": "ОК",
+  "management.editor.submit": "Сохранить",
   "common.alt.logo": "Лого",
   "home.welcome": "Добро пожаловать в",
   "router.home": "Главная",
@@ -131,5 +131,11 @@
   "expiredDate": "Срок",
   "comment": "Комментарий",
   "placeholder.comment": "Введите комментарий",
-  "goal.create": "Создание цели"
+  "goal.create": "Создание цели",
+  "form.validation.required": "Поле {fieldName} является обязательным.",
+  "employeeInfo": "Информация о сотруднике",
+  "addGoal": "Добавить цель",
+  "newGoal": "Новая цель",
+  "fromLibrary": "Из библиотеки",
+  "cascade": "Каскадировать"
 }

@@ -103,7 +103,12 @@ export type PersonGroupExtViewName =
   | "personGroup.with.positionGroup"
   | "personGroupBeneficiary"
   | "personGroupExt-absenceEdit"
+  | "personGroupExt-for-beneficary-request-edit"
+  | "personGroupExt-for-load-attribute"
+  | "personGroupExt-for-person-data"
+  | "personGroupExt-for-person-data"
   | "personGroupExt-for-search-candidate"
+  | "personGroupExt-person-data"
   | "personGroupExt-view"
   | "personGroupExt-view-for-requisition-edit"
   | "personGroupExt-view-for-selvservice-requisition"
@@ -216,6 +221,7 @@ export type PersonGroupExtView<
       | "integrationUserLogin"
       | "list"
       | "assignments"
+      | "personExperience"
     >
   : V extends "personGroup.candidate"
   ? Pick<
@@ -364,6 +370,50 @@ export type PersonGroupExtView<
       | "integrationUserLogin"
       | "list"
     >
+  : V extends "personGroupExt-for-beneficary-request-edit"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "assignments"
+      | "personExperience"
+    >
+  : V extends "personGroupExt-for-load-attribute"
+  ? Pick<PersonGroupExt, "id" | "person" | "list">
+  : V extends "personGroupExt-for-person-data"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "assignments"
+      | "personExperience"
+    >
+  : V extends "personGroupExt-for-person-data"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "assignments"
+      | "personExperience"
+    >
   : V extends "personGroupExt-for-search-candidate"
   ? Pick<
       PersonGroupExt,
@@ -384,6 +434,21 @@ export type PersonGroupExtView<
       | "currentAssignment"
       | "personContacts"
     >
+  : V extends "personGroupExt-person-data"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "person"
+      | "assignments"
+      | "personExperience"
+    >
   : V extends "personGroupExt-view"
   ? Pick<
       PersonGroupExt,
@@ -395,8 +460,6 @@ export type PersonGroupExtView<
       | "organizationBin"
       | "integrationUserLogin"
       | "list"
-      | "assignments"
-      | "currentAssignment"
     >
   : V extends "personGroupExt-view-for-requisition-edit"
   ? Pick<
@@ -420,26 +483,25 @@ export type PersonGroupExtView<
       PersonGroupExt,
       | "id"
       | "person"
-      | "person"
       | "list"
+      | "retirement"
+      | "disability"
+      | "militaryRank"
+      | "competenceElements"
       | "personContacts"
       | "personDocuments"
-      | "addresses"
-      | "beneficiary"
-      | "cases"
-      | "militaryRank"
-      | "disability"
-      | "retirement"
-      | "agreements"
+      | "assessments"
+      | "personEducation"
       | "personExperience"
       | "jobRequests"
-      | "dismissals"
-      | "relocation"
-      | "personEducation"
-      | "competenceElements"
-      | "assessments"
       | "successionPlanning"
       | "businessTrip"
+      | "agreements"
+      | "dismissals"
+      | "cases"
+      | "addresses"
+      | "relocation"
+      | "beneficiary"
     >
   : V extends "personGroupExt.edit"
   ? Pick<PersonGroupExt, "id" | "person">

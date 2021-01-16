@@ -1,5 +1,5 @@
 import React from 'react';
-import {SectionHoc} from "../../../hoc/SectionHoc";
+import Section from "../../../hoc/Section";
 import EmployeeInformation from "./KpiTable/EmployeeInformation";
 import StatusSteps from "../../../common/StatusSteps";
 import PageContentHoc from "../../../hoc/PageContentHoc";
@@ -10,33 +10,39 @@ import DropdownButton from "../../../components/Dropdown/DropdownButton";
 import {MenuRaw} from "../../../components/Dropdown/DefaultDropdown";
 import {inject, observer} from "mobx-react";
 import {RootStoreProp} from "../../../store";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 
 @inject("rootStore")
 @observer
-class KpiPageContent extends React.Component<RootStoreProp> {
+class KpiPageContent extends React.Component<RootStoreProp & WrappedComponentProps> {
 
   render() {
-    const EmployeeInformationSection = SectionHoc(<EmployeeInformation/>, {
-      sectionName: "Информация о сотруднике",
-      size: "large"
-    });
-    const StatusStepsSection = SectionHoc(<StatusSteps/>, {size: "large"});
-    const TableSection = SectionHoc(<KpiTable/>, {size: "large"});
 
-    const createGoalsMenu: MenuRaw[] = [{id: "/kpi/" + this.props.rootStore!.kpiEditStore.appId + "/goal/create/default", value: "Новая цель"}, {
+    const createGoalsMenu: MenuRaw[] = [{
+      id: "/kpi/" + this.props.rootStore!.kpiEditStore.appId + "/goal/create/default",
+      value: this.props.intl.formatMessage({id: "newGoal"})
+    }, {
       id: "/kpi/goal/create/library",
-      value: "Из библиотеки"
-    }, {id: "/kpi/goal/create/cascade", value: "Каскадировать"}];
-    const CreateDropdownSection = SectionHoc(<DropdownButton menu={createGoalsMenu} buttonText={"Добавить цель"}/>, {size: "large", visible: false});
+      value: this.props.intl.formatMessage({id: "fromLibrary"})
+    }, {id: "/kpi/goal/create/cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
 
     return (<>
-        <EmployeeInformationSection/>
-        <StatusStepsSection/>
-        <CreateDropdownSection/>
-        <TableSection/>
+        <Section size={"large"} sectionName={this.props.intl.formatMessage({id: "employeeInformation"})}>
+          <EmployeeInformation/>
+        </Section>
+        <Section size={"large"}>
+          <StatusSteps/>
+        </Section>
+        <Section size={"large"}>
+          <KpiTable/>
+        </Section>
+        <Section size={"large"}>
+          <DropdownButton menu={createGoalsMenu}
+                          buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
+        </Section>
       </>
     );
   }
 }
 
-export default KpiPageContent;
+export default injectIntl(KpiPageContent);

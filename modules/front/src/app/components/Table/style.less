@@ -17,9 +17,9 @@
 }
 
 .ant-table-tbody {
-  > tr:nth-child(odd):not(:hover) {
+  > tr:nth-child(odd):not(:hover):not(.ant-table-row-selected) {
     > td {
-      background-color: @primary-8 !important;
+      background: @primary-8 !important;
     }
 
     > td:first-child {

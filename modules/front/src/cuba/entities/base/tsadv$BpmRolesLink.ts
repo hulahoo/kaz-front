@@ -6,6 +6,7 @@ export class BpmRolesLink extends StandardEntity {
   static NAME = "tsadv$BpmRolesLink";
   bpmRolesDefiner?: BpmRolesDefiner | null;
   hrRole?: DicHrRole | null;
+  bprocUserTaskCode?: string | null;
   required?: boolean | null;
   findByCounter?: boolean | null;
   positionBpmRole?: PositionBpmRole | null;
@@ -16,13 +17,20 @@ export type BpmRolesLinkViewName =
   | "_minimal"
   | "bpmRolesLink-view";
 export type BpmRolesLinkView<V extends BpmRolesLinkViewName> = V extends "_base"
-  ? Pick<BpmRolesLink, "id" | "required" | "findByCounter">
+  ? Pick<
+      BpmRolesLink,
+      "id" | "bprocUserTaskCode" | "required" | "findByCounter"
+    >
   : V extends "_local"
-  ? Pick<BpmRolesLink, "id" | "required" | "findByCounter">
+  ? Pick<
+      BpmRolesLink,
+      "id" | "bprocUserTaskCode" | "required" | "findByCounter"
+    >
   : V extends "bpmRolesLink-view"
   ? Pick<
       BpmRolesLink,
       | "id"
+      | "bprocUserTaskCode"
       | "required"
       | "findByCounter"
       | "hrRole"

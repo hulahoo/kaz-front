@@ -1,4 +1,5 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
+import { DicIssuingAuthority } from "./tsadv_DicIssuingAuthority";
 import { DicDocumentType } from "./tsadv$DicDocumentType";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicApprovalStatus } from "./tsadv$DicApprovalStatus";
@@ -6,8 +7,11 @@ import { FileDescriptor } from "./sys$FileDescriptor";
 export class PersonDocument extends AbstractParentEntity {
   static NAME = "tsadv$PersonDocument";
   issueDate?: any | null;
+  startDate?: any | null;
+  endDate?: any | null;
   expiredDate?: any | null;
   issuedBy?: string | null;
+  issuingAuthority?: DicIssuingAuthority | null;
   description?: string | null;
   documentType?: DicDocumentType | null;
   personGroup?: PersonGroupExt | null;
@@ -15,15 +19,16 @@ export class PersonDocument extends AbstractParentEntity {
   series?: string | null;
   status?: DicApprovalStatus | null;
   file?: FileDescriptor | null;
+  attachments?: FileDescriptor[] | null;
 }
 export type PersonDocumentViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "personDocument-view"
   | "personDocument.card"
   | "personDocument.edit"
   | "personDocument.forNotification"
-  | "portal.my-profile"
   | "personDocument.full";
 export type PersonDocumentView<
   V extends PersonDocumentViewName
@@ -32,6 +37,8 @@ export type PersonDocumentView<
       PersonDocument,
       | "id"
       | "issueDate"
+      | "startDate"
+      | "endDate"
       | "expiredDate"
       | "issuedBy"
       | "description"
@@ -46,6 +53,8 @@ export type PersonDocumentView<
       PersonDocument,
       | "id"
       | "issueDate"
+      | "startDate"
+      | "endDate"
       | "expiredDate"
       | "issuedBy"
       | "description"
@@ -54,6 +63,24 @@ export type PersonDocumentView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "personDocument-view"
+  ? Pick<
+      PersonDocument,
+      | "id"
+      | "issueDate"
+      | "startDate"
+      | "endDate"
+      | "expiredDate"
+      | "issuedBy"
+      | "description"
+      | "documentNumber"
+      | "series"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "documentType"
+      | "file"
     >
   : V extends "personDocument.card"
   ? Pick<
@@ -72,6 +99,8 @@ export type PersonDocumentView<
       PersonDocument,
       | "id"
       | "issueDate"
+      | "startDate"
+      | "endDate"
       | "expiredDate"
       | "issuedBy"
       | "description"
@@ -90,6 +119,8 @@ export type PersonDocumentView<
       PersonDocument,
       | "id"
       | "issueDate"
+      | "startDate"
+      | "endDate"
       | "expiredDate"
       | "issuedBy"
       | "description"
@@ -107,6 +138,8 @@ export type PersonDocumentView<
       PersonDocument,
       | "id"
       | "issueDate"
+      | "startDate"
+      | "endDate"
       | "expiredDate"
       | "issuedBy"
       | "description"

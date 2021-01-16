@@ -1,6 +1,7 @@
 import { AbstractDictionary } from "./AbstractDictionary";
 export class DicDocumentType extends AbstractDictionary {
   static NAME = "tsadv$DicDocumentType";
+  foreigner?: boolean | null;
 }
 export type DicDocumentTypeViewName = "_base" | "_local" | "_minimal";
 export type DicDocumentTypeView<
@@ -10,6 +11,7 @@ export type DicDocumentTypeView<
       DicDocumentType,
       | "id"
       | "langValue"
+      | "foreigner"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -35,6 +37,7 @@ export type DicDocumentTypeView<
   ? Pick<
       DicDocumentType,
       | "id"
+      | "foreigner"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

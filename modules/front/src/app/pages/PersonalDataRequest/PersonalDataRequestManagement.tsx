@@ -5,6 +5,7 @@ import PersonalDataRequestEdit from "./PersonalDataRequestEdit";
 import PersonalDataRequestList from "./PersonalDataRequestList";
 import PageContentHoc from "../../hoc/PageContentHoc";
 import {PersonalDataRequestEditPage} from "./PersonalDataRequestEditPage";
+import Page from "../../hoc/PageContentHoc";
 
 type Props = RouteComponentProps<{ entityId?: string }>;
 
@@ -16,13 +17,11 @@ export class PersonalDataRequestManagement extends React.Component<Props> {
   render() {
     const {entityId} = this.props.match.params;
     const RenderComponent = entityId ? (
-      PageContentHoc({pageName: "Мой профиль"}, <PersonalDataRequestEditPage />)
-    ) : (
-      PageContentHoc({pageName: "Мой профиль"}, <PersonalDataRequestList/>)
-    );
+        <Page pageName={"Мой профиль"}><PersonalDataRequestEditPage/></Page>) :
+      <Page pageName={"Мой профиль"}><PersonalDataRequestList/></Page>;
     return (
       <>
-        <RenderComponent/>
+        {RenderComponent}
       </>
     );
   }

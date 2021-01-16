@@ -16,6 +16,8 @@ export class PerformancePlan extends AbstractParentEntity {
   jobs?: JobGroup[] | null;
   accessibilityStartDate?: any | null;
   accessibilityEndDate?: any | null;
+  performancePlanNameKz?: string | null;
+  performancePlanNameEn?: string | null;
 }
 export type PerformancePlanViewName =
   | "_base"
@@ -35,6 +37,8 @@ export type PerformancePlanView<
       | "endDate"
       | "accessibilityStartDate"
       | "accessibilityEndDate"
+      | "performancePlanNameKz"
+      | "performancePlanNameEn"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -49,6 +53,8 @@ export type PerformancePlanView<
       | "endDate"
       | "accessibilityStartDate"
       | "accessibilityEndDate"
+      | "performancePlanNameKz"
+      | "performancePlanNameEn"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -83,5 +89,7 @@ export type PerformancePlanView<
       | "jobs"
       | "accessibilityStartDate"
       | "accessibilityEndDate"
+      | "performancePlanNameKz"
+      | "performancePlanNameEn"
     >
   : never;

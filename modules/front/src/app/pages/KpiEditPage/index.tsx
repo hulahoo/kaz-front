@@ -1,16 +1,11 @@
 import React, {useEffect} from 'react';
-import {SectionHoc} from "../../hoc/SectionHoc";
-import PageContentHoc from "../../hoc/PageContentHoc";
-import EmployeeInformation from "./KpiPageContent/KpiTable/EmployeeInformation";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
 import {inject, observer} from "mobx-react";
-import StatusSteps from "../../common/StatusSteps";
-import Button, {ButtonType} from "../../components/Button/Button";
 import KpiPageContent from "./KpiPageContent";
 import LoadingPage from "../LoadingPage";
-import {action} from "mobx";
 import {RouteComponentProps} from "react-router";
+import Page from "../../hoc/PageContentHoc";
 
 @inject("rootStore")
 @observer
@@ -22,10 +17,10 @@ class KpiEditPage extends React.Component<WrappedComponentProps & RootStoreProp 
 
   render() {
     if (this.props.rootStore!.kpiEditStore && this.props.rootStore!.kpiEditStore.state) {
-      const PageContentComponent = PageContentHoc(
-        {pageName: this.props.intl.formatMessage({id: 'page.kpi'}, {"name": this.props.rootStore!.kpiEditStore.state.personFullName})},
-        <KpiPageContent/>);
-      return <PageContentComponent/>
+      return <Page
+        pageName={this.props.intl.formatMessage({id: 'page.kpi'}, {"name": this.props.rootStore!.kpiEditStore.state.personFullName})}>
+        <KpiPageContent/>
+      </Page>
     } else {
       return <LoadingPage/>
     }

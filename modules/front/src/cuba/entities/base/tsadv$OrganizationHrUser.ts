@@ -1,12 +1,12 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { OrganizationGroupExt } from "./base$OrganizationGroupExt";
 import { DicHrRole } from "./tsadv$DicHrRole";
-import { TsadvUserExt } from "./tsadv$UserExt";
+import { UserExt } from "./tsadv$UserExt";
 export class OrganizationHrUser extends AbstractParentEntity {
   static NAME = "tsadv$OrganizationHrUser";
   organizationGroup?: OrganizationGroupExt | null;
   hrRole?: DicHrRole | null;
-  user?: TsadvUserExt | null;
+  user?: UserExt | null;
   dateFrom?: any | null;
   dateTo?: any | null;
   requestedTs?: any | null;

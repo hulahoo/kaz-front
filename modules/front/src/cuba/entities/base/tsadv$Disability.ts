@@ -11,6 +11,10 @@ export class Disability extends AbstractParentEntity {
   dateFrom?: any | null;
   dateTo?: any | null;
   personGroupExt?: PersonGroupExt | null;
+  haveDisability?: any | null;
+  group?: string | null;
+  startDateHistory?: any | null;
+  endDateHistory?: any | null;
 }
 export type DisabilityViewName =
   | "_base"
@@ -25,6 +29,10 @@ export type DisabilityView<V extends DisabilityViewName> = V extends "_base"
       | "attachment"
       | "dateFrom"
       | "dateTo"
+      | "haveDisability"
+      | "group"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -37,6 +45,10 @@ export type DisabilityView<V extends DisabilityViewName> = V extends "_base"
       | "attachment"
       | "dateFrom"
       | "dateTo"
+      | "haveDisability"
+      | "group"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -56,6 +68,10 @@ export type DisabilityView<V extends DisabilityViewName> = V extends "_base"
       | "attachment"
       | "dateFrom"
       | "dateTo"
+      | "haveDisability"
+      | "group"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

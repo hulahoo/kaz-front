@@ -5,7 +5,7 @@ import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {NavLink} from "react-router-dom";
 import Notification from "./Notification/Notification";
-import {RootStoreProp} from "../../store";
+import {rootStore, RootStoreProp} from "../../store";
 
 @injectMainStore
 @inject("rootStore")
@@ -52,7 +52,10 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
       okText: this.props.intl.formatMessage({id: "header.logout.ok"}),
       cancelText: this.props.intl.formatMessage({id: "header.logout.cancel"}),
       onOk: () => {
-        this.props.mainStore!.logout();
+        this.props.mainStore!.logout()
+          .then(() => {
+            rootStore.userInfo.clearUserInfo();
+          });
       }
     });
   };

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
 import {Redirect} from 'react-router-dom'
 import {RootStoreProp} from "../../../../../store";
-import {SectionHoc} from "../../../../../hoc/SectionHoc";
+import Section from "../../../../../hoc/Section/";
 import DefaultGoalSection from "./DefaultGoalSection";
 import {withRouter} from 'react-router-dom'
 import {RouteComponentProps} from "react-router";
@@ -19,12 +19,14 @@ class DefaultGoalForm extends Component<RootStoreProp & RouteComponentProps<any>
     const {kpiEditStore} = this.props.rootStore!;
     const appId = (!kpiEditStore || !kpiEditStore.appId)
       ? this.props.match.params.id
-      : kpiEditStore.appId
-    const MainSection = SectionHoc(<DefaultGoalSection key={"goal-section"}/>, {size: "large", sectionName: this.props.intl.formatMessage({id: "goal.create"})});
+      : kpiEditStore.appId;
+
     return (
-      <MainSection key={"main-section"}/>
+      <Section size={"large"} sectionName={this.props.intl.formatMessage({id: "goal.create"})}>
+        <DefaultGoalSection key={"goal-section"}/>
+      </Section>
     );
   }
 }
 
-export default  injectIntl(withRouter(DefaultGoalForm));
+export default injectIntl(withRouter(DefaultGoalForm));

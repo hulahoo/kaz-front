@@ -1,7 +1,7 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { NotificationTemplate } from "./base$NotificationTemplate";
 import { NotificationRecipient } from "./base$NotificationRecipient";
-import { UserExt } from "./base$UserExt";
+import { BaseUserExt } from "./base$UserExt";
 import { SendingSms } from "./base$SendingSms";
 import { SendingTelegram } from "./base$SendingTelegram";
 import { SendingMessage } from "./sys$SendingMessage";
@@ -9,7 +9,7 @@ export class SendingNotification extends AbstractParentEntity {
   static NAME = "base$SendingNotification";
   template?: NotificationTemplate | null;
   recipient?: NotificationRecipient | null;
-  user?: UserExt | null;
+  user?: BaseUserExt | null;
   sendingSms?: SendingSms | null;
   sendingTelegram?: SendingTelegram | null;
   sendingMessage?: SendingMessage | null;

@@ -62,10 +62,10 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "id"
       | "goalName"
       | "successCriteria"
+      | "library"
       | "measureType"
       | "uom"
       | "startDate"
       | "endDate"
-      | "library"
     >
   : never;

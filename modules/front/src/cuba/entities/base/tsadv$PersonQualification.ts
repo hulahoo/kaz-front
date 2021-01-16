@@ -11,6 +11,13 @@ export class PersonQualification extends AbstractParentEntity {
   assignValidationDate?: any | null;
   attachment?: FileDescriptor | null;
   note?: string | null;
+  educationalInstitutionName?: string | null;
+  diploma?: string | null;
+  typeName?: string | null;
+  issuedDate?: any | null;
+  startDateHistory?: any | null;
+  endDateHistory?: any | null;
+  attachments?: FileDescriptor[] | null;
 }
 export type PersonQualificationViewName =
   | "_base"
@@ -27,6 +34,12 @@ export type PersonQualificationView<
       | "endDate"
       | "assignValidationDate"
       | "note"
+      | "educationalInstitutionName"
+      | "diploma"
+      | "typeName"
+      | "issuedDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -39,6 +52,12 @@ export type PersonQualificationView<
       | "endDate"
       | "assignValidationDate"
       | "note"
+      | "educationalInstitutionName"
+      | "diploma"
+      | "typeName"
+      | "issuedDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -51,6 +70,12 @@ export type PersonQualificationView<
       | "endDate"
       | "assignValidationDate"
       | "note"
+      | "educationalInstitutionName"
+      | "diploma"
+      | "typeName"
+      | "issuedDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

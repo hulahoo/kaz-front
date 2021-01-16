@@ -1,7 +1,6 @@
 import React from 'react';
 import {ColumnProps} from "antd/es/table";
 import KzmTable, {SelectRowType} from "../../components/Table/KzmTable";
-import {CardStatusEnum} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {inject} from "mobx-react";
 import {RootStoreProp} from "../../store";
 import {formatDefaultDate} from "../../util/Date/Date";
@@ -13,7 +12,6 @@ export type MyKpiTableMeta = {
   performancePlanName: string,
   startDate: Date,
   endDate: Date,
-  status: CardStatusEnum
 }
 
 const tableColumns: ColumnProps<MyKpiTableMeta>[] = [{
@@ -50,7 +48,7 @@ class MyKpi extends React.Component<RootStoreProp & RouteComponentProps<any>> {
   render() {
     const onRowClick = (record: MyKpiTableMeta, index: number, event: Event) => {
       this.props.history!.push("/kpi/" + record.id)
-    }
+    };
 
     return (
       <div>

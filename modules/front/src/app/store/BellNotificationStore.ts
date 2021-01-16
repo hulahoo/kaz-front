@@ -1,8 +1,5 @@
 import RootStore from "./RootStore";
 import {action, observable} from "mobx";
-import EntityCrudRestService from "../util/EntityCrudRestService";
-import {Activity} from "../../cuba/entities/base/uactivity$Activity";
-import {getCubaREST} from "@cuba-platform/react";
 import {restServices} from "../../cuba/services";
 
 const scheduleNotificationTime: number = 10000;

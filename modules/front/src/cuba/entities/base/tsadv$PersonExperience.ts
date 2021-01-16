@@ -1,5 +1,7 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { PersonGroupExt } from "./base$PersonGroupExt";
+import { DicIndustry } from "./base$DicIndustry";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class PersonExperience extends AbstractParentEntity {
   static NAME = "tsadv$PersonExperience";
   personGroup?: PersonGroupExt | null;
@@ -9,6 +11,17 @@ export class PersonExperience extends AbstractParentEntity {
   startMonth?: any | null;
   endMonth?: any | null;
   description?: string | null;
+  location?: string | null;
+  partTime?: boolean | null;
+  miningExperience?: boolean | null;
+  groupExperience?: boolean | null;
+  industry?: DicIndustry | null;
+  years?: number | null;
+  months?: number | null;
+  days?: number | null;
+  startDateHistory?: any | null;
+  endDateHistory?: any | null;
+  attachments?: FileDescriptor[] | null;
 }
 export type PersonExperienceViewName =
   | "_base"
@@ -28,6 +41,15 @@ export type PersonExperienceView<
       | "untilNow"
       | "job"
       | "description"
+      | "location"
+      | "partTime"
+      | "miningExperience"
+      | "groupExperience"
+      | "years"
+      | "months"
+      | "days"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -42,6 +64,15 @@ export type PersonExperienceView<
       | "startMonth"
       | "endMonth"
       | "description"
+      | "location"
+      | "partTime"
+      | "miningExperience"
+      | "groupExperience"
+      | "years"
+      | "months"
+      | "days"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -58,6 +89,15 @@ export type PersonExperienceView<
       | "startMonth"
       | "endMonth"
       | "description"
+      | "location"
+      | "partTime"
+      | "miningExperience"
+      | "groupExperience"
+      | "years"
+      | "months"
+      | "days"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -73,6 +113,15 @@ export type PersonExperienceView<
       | "startMonth"
       | "endMonth"
       | "description"
+      | "location"
+      | "partTime"
+      | "miningExperience"
+      | "groupExperience"
+      | "years"
+      | "months"
+      | "days"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

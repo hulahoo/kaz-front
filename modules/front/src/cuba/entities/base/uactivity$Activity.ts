@@ -42,7 +42,8 @@ export type ActivityViewName =
   | "activity-two-tabs-browse"
   | "activity-view"
   | "activity.view"
-  | "activity.view.tsadv";
+  | "activity.view.tsadv"
+  | "portal.notification";
 export type ActivityView<V extends ActivityViewName> = V extends "_base"
   ? Pick<
       Activity,
@@ -253,5 +254,39 @@ export type ActivityView<V extends ActivityViewName> = V extends "_base"
       | "assignedUser"
       | "assignedBy"
       | "createTs"
+    >
+  : V extends "portal.notification"
+  ? Pick<
+      Activity,
+      | "id"
+      | "version"
+      | "createTs"
+      | "createdBy"
+      | "updateTs"
+      | "updatedBy"
+      | "deleteTs"
+      | "deletedBy"
+      | "nameRu"
+      | "nameKz"
+      | "nameEn"
+      | "referenceId"
+      | "notificationTemplateCode"
+      | "description"
+      | "allDay"
+      | "startDateTime"
+      | "endDateTime"
+      | "status"
+      | "reference"
+      | "eventColor"
+      | "notificationHeaderRu"
+      | "notificationHeaderKz"
+      | "notificationHeaderEn"
+      | "notificationBodyRu"
+      | "notificationBodyKz"
+      | "notificationBodyEn"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "name"
     >
   : never;

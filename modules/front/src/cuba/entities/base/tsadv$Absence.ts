@@ -133,6 +133,7 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "category"
       | "file"
       | "absenceStatus"
+      | "order"
     >
   : V extends "absence.viewForNotify"
   ? Pick<
@@ -159,6 +160,7 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "category"
       | "file"
       | "absenceStatus"
+      | "order"
       | "personGroup"
     >
   : never;

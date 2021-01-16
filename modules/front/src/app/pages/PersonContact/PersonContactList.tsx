@@ -26,7 +26,7 @@ class PersonContactListComponent extends React.Component<MainStoreInjected & Wra
     view: "portal.my-profile",
     sort: "-updateTs",
     filter: {
-      conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId}]
+      conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
   });
 
@@ -75,7 +75,7 @@ class PersonContactListComponent extends React.Component<MainStoreInjected & Wra
       >
         <Button
           // style={{margin: "0 12px 12px 0"}}
-          buttonType={ButtonType.FOLLOW}>
+          buttonType={ButtonType.PRIMARY}>
           <span>
             <FormattedMessage id="cubaReact.dataTable.listEditor.addItem"/>
           </span>

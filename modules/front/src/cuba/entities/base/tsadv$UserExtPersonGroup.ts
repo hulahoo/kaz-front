@@ -1,9 +1,9 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
-import { UserExt } from "./base$UserExt";
+import { BaseUserExt } from "./base$UserExt";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 export class UserExtPersonGroup extends AbstractParentEntity {
   static NAME = "tsadv$UserExtPersonGroup";
-  userExt?: UserExt | null;
+  userExt?: BaseUserExt | null;
   personGroup?: PersonGroupExt | null;
   fullName?: string | null;
 }

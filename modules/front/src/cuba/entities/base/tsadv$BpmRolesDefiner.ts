@@ -2,6 +2,7 @@ import { StandardEntity } from "./sys$StandardEntity";
 import { BpmRolesLink } from "./tsadv$BpmRolesLink";
 export class BpmRolesDefiner extends StandardEntity {
   static NAME = "tsadv$BpmRolesDefiner";
+  processDefinitionKey?: string | null;
   links?: BpmRolesLink[] | null;
 }
 export type BpmRolesDefinerViewName =
@@ -11,6 +12,12 @@ export type BpmRolesDefinerViewName =
   | "bpmRolesDefiner-view";
 export type BpmRolesDefinerView<
   V extends BpmRolesDefinerViewName
-> = V extends "bpmRolesDefiner-view"
-  ? Pick<BpmRolesDefiner, "id" | "links">
+> = V extends "_base"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
+  : V extends "_local"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
+  : V extends "_minimal"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
+  : V extends "bpmRolesDefiner-view"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey" | "links">
   : never;

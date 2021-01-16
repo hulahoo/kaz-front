@@ -5,4 +5,26 @@
         <property name="documentType" view="_minimal"/>
         <property name="file" fetch="AUTO" view="_minimal"/>
     </view>
+    <view entity="tsadv$AssignedPerformancePlan" name="assignedPerformancePlan-max" extends="_minimal">
+        <property name="performancePlan" view="_minimal">
+            <property name="performancePlanNameKz"/>
+            <property name="performancePlanNameEn"/>
+        </property>
+        <property name="assignedPerson" view="_minimal">
+            <property name="person">
+                <property name="firstName"/>
+                <property name="lastName"/>
+                <property name="middleName"/>
+                <property name="employeeNumber"/>
+            </property>
+        </property>
+        <property name="status"/>
+        <property name="startDate"/>
+        <property name="endDate"/>
+    </view>
+    <view entity="tsadv$AssignedPerformancePlan" name="assignedPerformancePlan-2" extends="_local">
+        <property name="performancePlan" view="_minimal"/>
+        <property name="assignedPerson" view="_minimal"/>
+        <property name="assigned_by" view="_minimal"/>
+    </view>
 </views>

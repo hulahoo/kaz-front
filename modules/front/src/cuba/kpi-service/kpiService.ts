@@ -1,7 +1,6 @@
 import {FetchOptions} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {DEFAULT_DATE_PARSE_FORMAT, DefaultRestParams} from "../services";
-import {CardStatusEnum} from "../entities/base/tsadv$AssignedPerformancePlan";
 import moment from "moment";
 import {GoalData} from "../../app/store/KpiStore";
 import {Category} from "../../app/store/DefaultGoalStore";
@@ -15,7 +14,7 @@ export type EditResponse = {
   managerName: string,
   startDate: moment.Moment,
   endDate: moment.Moment,
-  status: CardStatusEnum,
+  status: any,
 }
 
 export const kpiService = {

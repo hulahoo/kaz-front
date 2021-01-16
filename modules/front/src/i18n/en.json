@@ -11,6 +11,7 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.AssignedPerformancePlanManagement": "AssignedPerformancePlanManagement",
   "router.PersonDocumentManagement": "PersonDocumentManagement",
   "router.PersonContactManagement": "PersonContactManagement",
   "router.PersonalDataRequestManagement": "PersonalDataRequestManagement",
@@ -126,5 +127,6 @@
   "kpi.edit.tabs.history": "History",
   "kpi.edit.tabs.tree": "Goal tree",
   "page.kpi": "Форма постановки KPI ({name})",
-  "page.loading": "Loading page..."
+  "page.loading": "Loading page...",
+  "form.validation.required": "Field {fieldName} is mandatory."
 }

@@ -1,10 +1,10 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { NotificationTemplate } from "./base$NotificationTemplate";
-import { UserExt } from "./base$UserExt";
+import { BaseUserExt } from "./base$UserExt";
 export class NotificationRecipient extends AbstractParentEntity {
   static NAME = "base$NotificationRecipient";
   template?: NotificationTemplate | null;
-  user?: UserExt | null;
+  user?: BaseUserExt | null;
   sqlQuery?: string | null;
 }
 export type NotificationRecipientViewName =

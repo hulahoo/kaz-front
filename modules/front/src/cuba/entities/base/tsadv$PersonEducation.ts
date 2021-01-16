@@ -1,7 +1,11 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { PersonGroupExt } from "./base$PersonGroupExt";
+import { DicEducationalEstablishment } from "./tsadv$DicEducationalEstablishment";
+import { DicEducationType } from "./base$DicEducationType";
 import { DicEducationDegree } from "./tsadv$DicEducationDegree";
 import { DicEducationLevel } from "./tsadv$DicEducationLevel";
+import { DicFormStudy } from "./tsadv_DicFormStudy";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class PersonEducation extends AbstractParentEntity {
   static NAME = "tsadv$PersonEducation";
   personGroup?: PersonGroupExt | null;
@@ -9,12 +13,20 @@ export class PersonEducation extends AbstractParentEntity {
   graduationDate?: any | null;
   foreignEducation?: boolean | null;
   school?: string | null;
+  educationalEstablishment?: DicEducationalEstablishment | null;
+  educationType?: DicEducationType | null;
   startYear?: number | null;
   endYear?: number | null;
   specialization?: string | null;
   degree?: DicEducationDegree | null;
   location?: string | null;
   level?: DicEducationLevel | null;
+  faculty?: string | null;
+  qualification?: string | null;
+  formStudy?: DicFormStudy | null;
+  startDateHistory?: any | null;
+  endDateHistory?: any | null;
+  attachments?: FileDescriptor[] | null;
 }
 export type PersonEducationViewName =
   | "_base"
@@ -36,6 +48,10 @@ export type PersonEducationView<
       | "foreignEducation"
       | "specialization"
       | "location"
+      | "faculty"
+      | "qualification"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -52,6 +68,10 @@ export type PersonEducationView<
       | "endYear"
       | "specialization"
       | "location"
+      | "faculty"
+      | "qualification"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -70,6 +90,10 @@ export type PersonEducationView<
       | "endYear"
       | "specialization"
       | "location"
+      | "faculty"
+      | "qualification"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -89,6 +113,10 @@ export type PersonEducationView<
       | "endYear"
       | "specialization"
       | "location"
+      | "faculty"
+      | "qualification"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

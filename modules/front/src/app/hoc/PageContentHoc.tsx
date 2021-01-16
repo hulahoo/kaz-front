@@ -1,4 +1,5 @@
 import React, {CSSProperties} from "react";
+import {observer} from "mobx-react";
 
 export interface ContentProps {
   pageName?: string,
@@ -7,18 +8,12 @@ export interface ContentProps {
   onHeaderClick?: () => void
 }
 
-export function PageContentHoc(props: ContentProps, ...Child: JSX.Element[]): React.ComponentClass {
-
-  class InnerContentComponent extends React.Component<any> {
-    render() {
-      return <div className={"content-container"}>
-        {props.pageName ? <h1 className={"content-header"}>{props.pageName}</h1> : <></>}
-        {Child}
-      </div>
-    }
+@observer
+export default class Page extends React.Component<ContentProps> {
+  render() {
+    return <div className={"content-container"}>
+      {this.props.pageName ? <h1 className={"content-header"}>{this.props.pageName}</h1> : <></>}
+      {this.props.children}
+    </div>
   }
-
-  return InnerContentComponent;
 }
-
-export default PageContentHoc;

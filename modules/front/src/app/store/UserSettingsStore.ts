@@ -25,7 +25,7 @@ export default class UserSettingsStore {
 
     restServices.userMenuService.getTimeZones().then((r: string) => {
       const jsonObject: ResponseType = JSON.parse(r);
-      const map = new Map<string, string>()
+      const map = new Map<string, string>();
       for (const v in jsonObject.timeZones) {
         if (jsonObject.timeZones.hasOwnProperty(v)) {
           map.set(v, jsonObject.timeZones[v]);
@@ -56,6 +56,6 @@ export default class UserSettingsStore {
 
   @action
   saveUserTimeZone = () => {
-    return EntityCrudRestService.updateEntity(User.NAME, this.root.userInfo.id, {timeZone: this.timeZone})
+    return EntityCrudRestService.updateEntity(User.NAME, this.root.userInfo.id!, {timeZone: this.timeZone})
   }
 }

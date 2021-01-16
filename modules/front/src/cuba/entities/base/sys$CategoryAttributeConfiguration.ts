@@ -1,4 +1,5 @@
 import { BaseGenericIdEntity } from "./sys$BaseGenericIdEntity";
+import { CategoryAttribute } from "./sys$CategoryAttribute";
 export class CategoryAttributeConfiguration extends BaseGenericIdEntity {
   static NAME = "sys$CategoryAttributeConfiguration";
   id?: string | null;
@@ -18,6 +19,7 @@ export class CategoryAttributeConfiguration extends BaseGenericIdEntity {
   recalculationScript?: string | null;
   xCoordinate?: number | null;
   yCoordinate?: number | null;
+  dependsOnAttributes?: CategoryAttribute | null;
 }
 export type CategoryAttributeConfigurationViewName =
   | "_base"

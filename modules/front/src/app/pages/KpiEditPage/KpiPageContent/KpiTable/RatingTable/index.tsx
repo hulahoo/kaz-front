@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {SectionHoc} from "../../../../../hoc/SectionHoc";
+import Section from "../../../../../hoc/Section/";
 import KzmTable from "../../../../../components/Table/KzmTable";
 import {inject, observer} from "mobx-react";
 import {RootStoreProp} from "../../../../../store";
@@ -26,18 +26,18 @@ class RatingTable extends Component<RootStoreProp> {
   }, {
     title: "Комментарий",
     dataIndex: "comment"
-  }]
+  }];
 
   render() {
-    return <div>{this.props.rootStore!.kpiEditStore.rating ? this.props.rootStore!.kpiEditStore.rating.map(goal => {
-        const Section = SectionHoc(<KzmTable columns={this.columns} fetch={goal.goals} tableProps={{rowKey: "id"}}/>, {
-          size: "large",
-          visible: false,
-          sectionName: goal.categoryName
-        })
-        return <Section/>
-      }
-    ) : <></>}</div>;
+    return <div>{this.props.rootStore!.kpiEditStore.rating
+      ? this.props.rootStore!.kpiEditStore.rating.map(goal => {
+        return (
+          <Section size={"large"} visible={false} sectionName={goal.categoryName}>
+            <KzmTable columns={this.columns} fetch={goal.goals} tableProps={{rowKey: "id"}}/>
+          </Section>
+        );
+      })
+      : <></>}</div>;
   }
 }
 

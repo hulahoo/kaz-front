@@ -1,3 +1,4 @@
+import { AssignedPerformancePlanManagement } from "./app/pages/Kpi/AssignedPerformancePlanManagement";
 import { PersonDocumentManagement } from "./app/pages/PersonDocument/PersonDocumentManagement";
 import { PersonContactManagement } from "./app/pages/PersonContact/PersonContactManagement";
 import { PersonalDataRequestManagement } from "./app/pages/PersonalDataRequest/PersonalDataRequestManagement";
@@ -71,4 +72,11 @@ rootStore.menu.menuList.forEach((e: MenuSubMenu | MenuRouteItem) => {
 //   menuLink: "/personDocumentManagement",
 //   component: PersonDocumentManagement,
 //   caption: "PersonDocumentManagement"
+// });
+
+// menuItems.push({
+//   pathPattern: "/assignedPerformancePlanManagement/:entityId?",
+//   menuLink: "/assignedPerformancePlanManagement",
+//   component: AssignedPerformancePlanManagement,
+//   caption: "AssignedPerformancePlanManagement"
 // });

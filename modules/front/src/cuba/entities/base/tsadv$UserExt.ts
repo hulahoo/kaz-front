@@ -1,7 +1,7 @@
-import {UserExt} from "./base$UserExt";
+import {BaseUserExt} from "./base$UserExt";
 import {PersonGroupExt} from "./base$PersonGroupExt";
 
-export class TsadvUserExt extends UserExt {
+export class UserExt extends BaseUserExt {
   static NAME = "tsadv$UserExt";
   personGroup?: PersonGroupExt | null;
 }
@@ -14,9 +14,10 @@ export type UserExtViewName =
   | "user.browse"
   | "user.edit"
   | "user.roles"
+  | "userExt.bproc"
   | "userExt.edit";
 export type UserExtView<V extends UserExtViewName> = V extends "_base"
-  ? Pick<TsadvUserExt,
+  ? Pick<UserExt,
     | "id"
     | "shortName"
     | "login"
@@ -76,9 +77,9 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
       | "shortName"
       | "fullName">
     : V extends "_minimal"
-      ? Pick<TsadvUserExt, "id" | "shortName">
+      ? Pick<UserExt, "id" | "shortName">
       : V extends "tsadvUserExt-view"
-        ? Pick<TsadvUserExt,
+        ? Pick<UserExt,
           | "id"
           | "login"
           | "loginLowerCase"
@@ -114,7 +115,7 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
           | "personGroup"
           | "personGroup">
         : V extends "user.browse"
-          ? Pick<TsadvUserExt,
+          ? Pick<UserExt,
             | "id"
             | "version"
             | "createTs"
@@ -145,7 +146,7 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
             | "image"
             | "image">
           : V extends "user.edit"
-            ? Pick<TsadvUserExt,
+            ? Pick<UserExt,
               | "id"
               | "login"
               | "loginLowerCase"
@@ -180,19 +181,50 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
               | "atsCode"
               | "personGroup">
             : V extends "user.roles"
-              ? Pick<TsadvUserExt, "id" | "shortName" | "userRoles">
-              : V extends "userExt.edit"
-                ? Pick<TsadvUserExt,
+              ? Pick<UserExt, "id" | "shortName" | "userRoles">
+              : V extends "userExt.bproc"
+                ? Pick<UserExt,
                   | "id"
-                  | "shortName"
-                  | "image"
-                  | "fullName"
+                  | "login"
+                  | "loginLowerCase"
+                  | "password"
+                  | "passwordEncryption"
+                  | "name"
                   | "firstName"
                   | "lastName"
                   | "middleName"
-                  | "mobilePhone"
-                  | "telegramChatId"
+                  | "position"
                   | "email"
                   | "language"
+                  | "timeZone"
+                  | "timeZoneAuto"
+                  | "active"
+                  | "changePasswordAtNextLogon"
+                  | "groupNames"
+                  | "ipMask"
+                  | "sysTenantId"
+                  | "atsCode"
+                  | "innerNumber"
+                  | "availability"
+                  | "mobilePhone"
+                  | "telegramCode"
+                  | "telegramChatId"
+                  | "passwordChangeDate"
+                  | "shortName"
+                  | "fullName"
                   | "personGroup">
-                : never;
+                : V extends "userExt.edit"
+                  ? Pick<UserExt,
+                    | "id"
+                    | "shortName"
+                    | "image"
+                    | "fullName"
+                    | "firstName"
+                    | "lastName"
+                    | "middleName"
+                    | "mobilePhone"
+                    | "telegramChatId"
+                    | "email"
+                    | "language"
+                    | "personGroup">
+                  : never;

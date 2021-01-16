@@ -1,19 +1,15 @@
-import { AbstractParentEntity } from "./AbstractParentEntity";
+import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { AssignmentGroupExt } from "./base$AssignmentGroupExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
 import { DicAbsenceType } from "./tsadv$DicAbsenceType";
-import { DicRequestStatus } from "./tsadv$DicRequestStatus";
-export class AbsenceRequest extends AbstractParentEntity {
+export class AbsenceRequest extends AbstractBprocRequest {
   static NAME = "tsadv$AbsenceRequest";
-  requestNumber?: any | null;
   assignmentGroup?: AssignmentGroupExt | null;
-  dateFrom?: any | null;
   attachment?: FileDescriptor | null;
+  dateFrom?: any | null;
   dateTo?: any | null;
   absenceDays?: number | null;
   type?: DicAbsenceType | null;
-  status?: DicRequestStatus | null;
-  requestDate?: any | null;
   comment?: string | null;
   distanceWorkingConfirm?: boolean | null;
 }
@@ -21,6 +17,7 @@ export type AbsenceRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "absenceRequest.edit"
   | "absenceRequest.view";
 export type AbsenceRequestView<
   V extends AbsenceRequestViewName
@@ -29,7 +26,6 @@ export type AbsenceRequestView<
       AbsenceRequest,
       | "id"
       | "requestDate"
-      | "requestNumber"
       | "dateFrom"
       | "dateTo"
       | "absenceDays"
@@ -38,38 +34,58 @@ export type AbsenceRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
     >
   : V extends "_local"
   ? Pick<
       AbsenceRequest,
       | "id"
-      | "requestNumber"
       | "dateFrom"
       | "dateTo"
       | "absenceDays"
-      | "requestDate"
       | "comment"
       | "distanceWorkingConfirm"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
     >
   : V extends "_minimal"
   ? Pick<AbsenceRequest, "id" | "requestDate">
+  : V extends "absenceRequest.edit"
+  ? Pick<
+      AbsenceRequest,
+      | "id"
+      | "dateFrom"
+      | "dateTo"
+      | "absenceDays"
+      | "comment"
+      | "distanceWorkingConfirm"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "assignmentGroup"
+      | "type"
+      | "attachment"
+      | "status"
+    >
   : V extends "absenceRequest.view"
   ? Pick<
       AbsenceRequest,
       | "id"
-      | "requestNumber"
       | "dateFrom"
       | "dateTo"
       | "absenceDays"
-      | "requestDate"
       | "comment"
       | "distanceWorkingConfirm"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
       | "assignmentGroup"
       | "type"
       | "attachment"

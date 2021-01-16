@@ -1,6 +1,6 @@
 import {CubaApp, FetchOptions} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
-import {AssignedPerformancePlan, CardStatusEnum} from "./entities/base/tsadv$AssignedPerformancePlan";
+import {AssignedPerformancePlan} from "./entities/base/tsadv$AssignedPerformancePlan";
 import {PersonalDataRequest} from "./entities/base/tsadv$PersonalDataRequest";
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 

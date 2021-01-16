@@ -1,6 +1,5 @@
 import RootStore from "./RootStore";
 import {action, observable} from "mobx";
-import {CardStatusEnum} from "../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {kpiService} from "../../cuba/kpi-service/kpiService";
 import moment from "moment";
 import DefaultGoalStore from "./DefaultGoalStore";
@@ -14,7 +13,7 @@ type KpiState = {
   managerName: string,
   startDate: moment.Moment,
   endDate: moment.Moment,
-  status: CardStatusEnum,
+  status: any,
 }
 
 export type Goal = {

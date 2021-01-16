@@ -27,23 +27,27 @@ import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
 import KpiEditPage from "./pages/KpiEditPage";
-import {PersonalDataRequestManagement} from "./pages/PersonalDataRequest/PersonalDataRequestManagement";
 import PersonalDataRequestEdit from "./pages/PersonalDataRequest/PersonalDataRequestEdit";
 import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
+import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
+import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
+import {observable} from "mobx";
 
 @injectMainStore
 @inject("rootStore")
 @observer
 class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
+  // @observable
+  // mainStore = this.props.mainStore!;
+
   constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
     super(props, context);
   }
 
   render() {
-    const mainStore = this.props.mainStore!;
-    const {initialized, locale, loginRequired} = mainStore;
+    const {initialized, locale, loginRequired, metadata} = this.props.mainStore!;
 
     if (!initialized || !locale) {
       return <CenteredLoader/>;
@@ -55,6 +59,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
           <Login/>
         </Centered>
       );
+    }
+
+    if (!metadata) {
+      return <CenteredLoader/>;
     }
 
     const menuIdx = 1;
@@ -82,10 +90,12 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
-                <Route exact={true} path="/kpi/:id" component={KpiEditPage}/>
+                {/*<Route exact={true} path="/kpi/:id" component={KpiEditPage}/>*/}
                 <Route path="/my-profile" component={PersonalDataRequestEditPage}/>
-                <Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>
+                {/*<Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>*/}
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
+                <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
+                <Route path= "/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
               </Switch>
             </Layout.Content>
           </Layout>

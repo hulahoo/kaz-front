@@ -2,11 +2,13 @@ import * as React from "react";
 import PageContentHoc from "../../hoc/PageContentHoc";
 import PersonalDataRequestEdit from "./PersonalDataRequestEdit";
 import {observer} from "mobx-react";
+import Page from "../../hoc/PageContentHoc";
 
 @observer
 export class PersonalDataRequestEditPage extends React.Component {
   render() {
-    const Page = PageContentHoc({pageName: "Мой профиль"}, <PersonalDataRequestEdit />);
-    return <Page />;
+    return <Page pageName={"Мой профиль"}>
+      <PersonalDataRequestEdit/>
+    </Page>;
   }
 }

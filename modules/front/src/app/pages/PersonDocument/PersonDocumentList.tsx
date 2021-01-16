@@ -1,5 +1,5 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
@@ -13,13 +13,22 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import {PersonDocumentManagement} from "./PersonDocumentManagement";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Button, {ButtonType} from "../../components/Button/Button";
+import {RootStoreProp} from "../../store";
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class PersonDocumentListComponent extends React.Component<MainStoreInjected & WrappedComponentProps> {
+class PersonDocumentListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
   dataCollection = collection<PersonDocument>(PersonDocument.NAME, {
-    view: "personDocument-view",
-    sort: "-updateTs"
+    view: "portal.my-profile",
+    sort: "-updateTs",
+    filter: {
+      conditions:[{
+        property: "personGroup.id",
+        operator: "=",
+        value: this.props.rootStore!.userInfo.personGroupId!
+      }]
+    }
   });
 
   fields = [
@@ -68,7 +77,7 @@ class PersonDocumentListComponent extends React.Component<MainStoreInjected & Wr
         }
         key="create"
       >
-        <Button buttonType={ButtonType.FOLLOW}
+        <Button buttonType={ButtonType.PRIMARY}
                 style={{margin: "0 12px 12px 0"}}
         >
           <span>

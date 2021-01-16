@@ -4,7 +4,7 @@ import { DicCertificateType } from "./tsadv_DicCertificateType";
 import { DicReceivingType } from "./tsadv_DicReceivingType";
 import { DicLanguage } from "./tsadv$DicLanguage";
 import { FileDescriptor } from "./sys$FileDescriptor";
-import { AbsenceRequestStatus } from "./tsadv_AbsenceRequestStatus";
+import { DicRequestStatus } from "./tsadv$DicRequestStatus";
 export class CertificateRequest extends StandardEntity {
   static NAME = "tsadv_CertificateRequest";
   requestNumber?: any | null;
@@ -16,9 +16,13 @@ export class CertificateRequest extends StandardEntity {
   showSalary?: boolean | null;
   numberOfCopy?: number | null;
   file?: FileDescriptor | null;
-  status?: AbsenceRequestStatus | null;
+  status?: DicRequestStatus | null;
 }
-export type CertificateRequestViewName = "_base" | "_local" | "_minimal";
+export type CertificateRequestViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "certificateRequest-view";
 export type CertificateRequestView<
   V extends CertificateRequestViewName
 > = V extends "_base"
@@ -30,5 +34,20 @@ export type CertificateRequestView<
   ? Pick<
       CertificateRequest,
       "id" | "requestNumber" | "requestDate" | "showSalary" | "numberOfCopy"
+    >
+  : V extends "certificateRequest-view"
+  ? Pick<
+      CertificateRequest,
+      | "id"
+      | "requestNumber"
+      | "requestDate"
+      | "showSalary"
+      | "numberOfCopy"
+      | "personGroup"
+      | "status"
+      | "receivingType"
+      | "file"
+      | "language"
+      | "cretificateType"
     >
   : never;

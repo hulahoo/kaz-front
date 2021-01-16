@@ -1,9 +1,9 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { TsadvUserExt } from "./tsadv$UserExt";
+import { UserExt } from "./tsadv$UserExt";
 export class BpmUserSubstitution extends StandardEntity {
   static NAME = "tsadv$BpmUserSubstitution";
-  substitutedUser?: TsadvUserExt | null;
-  user?: TsadvUserExt | null;
+  substitutedUser?: UserExt | null;
+  user?: UserExt | null;
   startDate?: any | null;
   endDate?: any | null;
 }

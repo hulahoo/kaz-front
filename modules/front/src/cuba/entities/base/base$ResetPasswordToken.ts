@@ -1,8 +1,8 @@
 import { BaseUuidEntity } from "./sys$BaseUuidEntity";
-import { UserExt } from "./base$UserExt";
+import { BaseUserExt } from "./base$UserExt";
 export class ResetPasswordToken extends BaseUuidEntity {
   static NAME = "base$ResetPasswordToken";
-  user?: UserExt | null;
+  user?: BaseUserExt | null;
   token?: string | null;
   expireAt?: any | null;
   version?: number | null;

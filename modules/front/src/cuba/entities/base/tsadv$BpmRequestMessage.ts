@@ -1,5 +1,5 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { TsadvUserExt } from "./tsadv$UserExt";
+import { UserExt } from "./tsadv$UserExt";
 import { Activity } from "./uactivity$Activity";
 export class BpmRequestMessage extends StandardEntity {
   static NAME = "tsadv$BpmRequestMessage";
@@ -8,8 +8,8 @@ export class BpmRequestMessage extends StandardEntity {
   entityRequestNumber?: any | null;
   sendDate?: any | null;
   message?: string | null;
-  assignedUser?: TsadvUserExt | null;
-  assignedBy?: TsadvUserExt | null;
+  assignedUser?: UserExt | null;
+  assignedBy?: UserExt | null;
   parent?: BpmRequestMessage | null;
   lvl?: number | null;
   screenName?: string | null;

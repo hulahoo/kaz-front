@@ -48,7 +48,7 @@ export default class MenuStore {
         caption: "Отпуска",
         items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
       } as MenuSubMenu,
-      {id: "my-kpi", caption: "Мой KPI", menuLink: "/my-kpi", pathPattern: "/my-kpi", component: null},
+      {id: "my-kpi", caption: "Мой KPI", menuLink: "/kpi", pathPattern: "/kpi", component: null},
       {
         id: "team-kpi",
         caption: "KPI команды",

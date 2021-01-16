@@ -2,6 +2,9 @@ import { AbstractParentEntity } from "./AbstractParentEntity";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicAddressType } from "./tsadv$DicAddressType";
 import { DicCountry } from "./base$DicCountry";
+import { DicCity } from "./base$DicCity";
+import { DicLanguage } from "./base$DicLanguage";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class Address extends AbstractParentEntity {
   static NAME = "tsadv$Address";
   personGroup?: PersonGroupExt | null;
@@ -9,9 +12,12 @@ export class Address extends AbstractParentEntity {
   address?: string | null;
   country?: DicCountry | null;
   postalCode?: string | null;
-  city?: string | null;
+  cityName?: string | null;
+  city?: DicCity | null;
+  language?: DicLanguage | null;
   startDate?: any | null;
   endDate?: any | null;
+  attachments?: FileDescriptor[] | null;
 }
 export type AddressViewName = "_base" | "_local" | "_minimal" | "address.view";
 export type AddressView<V extends AddressViewName> = V extends "_base"
@@ -20,7 +26,7 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "id"
       | "address"
       | "postalCode"
-      | "city"
+      | "cityName"
       | "startDate"
       | "endDate"
       | "legacyId"
@@ -33,7 +39,7 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "id"
       | "address"
       | "postalCode"
-      | "city"
+      | "cityName"
       | "startDate"
       | "endDate"
       | "legacyId"
@@ -48,7 +54,7 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "id"
       | "address"
       | "postalCode"
-      | "city"
+      | "cityName"
       | "startDate"
       | "endDate"
       | "legacyId"
