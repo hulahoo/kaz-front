@@ -14,6 +14,7 @@ import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManage
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
 import Button, {ButtonType} from "../../components/Button/Button";
+import Section from "../../hoc/Section";
 
 @injectMainStore
 @inject("rootStore")
@@ -83,7 +84,7 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
     ];
 
     return (
-      <Card bordered={false}>
+      <Section visible={false} size={"large"}>
         <DataTable
           dataCollection={this.dataCollection}
           fields={this.fields}
@@ -91,7 +92,7 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
           hideSelectionColumn={true}
           buttons={buttons}
         />
-      </Card>
+      </Section>
     );
   }
 
