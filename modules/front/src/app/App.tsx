@@ -26,16 +26,10 @@ import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
-import KpiEditPage from "./pages/KpiEditPage";
-import PersonalDataRequestEdit from "./pages/PersonalDataRequest/PersonalDataRequestEdit";
 import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
-import {observable} from "mobx";
-import {AssignedGoal} from "../cuba/entities/base/tsadv$AssignedGoal";
-import AssignedGoalList from "./pages/AssignedGoals/DefaultGoal/AssignedGoalList";
-import AssignedGoalEdit from "./pages/AssignedGoals/DefaultGoal/AssignedGoalEdit";
 import {AssignedGoalManagement} from "./pages/AssignedGoals/DefaultGoal/AssignedGoalManagement";
 
 @injectMainStore

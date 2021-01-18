@@ -216,14 +216,14 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
             </Col>
           </Row>
         </Card>
-        <div className={"section-container large-section"}>
+        <Card className="narrow-layout large-section section-container">
           <div className={"section-header-container"}>Документы</div>
           <PersonDocumentList/>
-        </div>
-        <div className={"section-container large-section"}>
+        </Card>
+        <Card className="narrow-layout large-section section-container">
           <div className={"section-header-container"}>Контактная информация</div>
           <PersonContactList/>
-        </div>
+        </Card>
       </div>
     );
   }

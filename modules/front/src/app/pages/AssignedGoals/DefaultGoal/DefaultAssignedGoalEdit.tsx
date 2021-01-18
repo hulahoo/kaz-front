@@ -36,7 +36,7 @@ type EditorProps = {
 };
 
 @observer
-class AssignedGoalEdit extends React.Component<Props & WrappedComponentProps> {
+class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentProps> {
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
     loadImmediately: false
@@ -265,5 +265,5 @@ export default injectIntl(
         });
       });
     }
-  })(AssignedGoalEdit)
+  })(DefaultAssignedGoalEdit)
 );

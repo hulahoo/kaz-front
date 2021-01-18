@@ -13,7 +13,9 @@ export default class Page extends React.Component<ContentProps> {
   render() {
     return <div className={"content-container"}>
       {this.props.pageName ? <h1 className={"content-header"}>{this.props.pageName}</h1> : <></>}
+      <div className={"page-body"}>
       {this.props.children}
+      </div>
     </div>
   }
 }
