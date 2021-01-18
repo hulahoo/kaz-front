@@ -7,9 +7,9 @@ export class PersonMedal extends StandardEntity {
   medal?: Medal | null;
 }
 export type PersonMedalViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personMedal.edit";
 export type PersonMedalView<
   V extends PersonMedalViewName

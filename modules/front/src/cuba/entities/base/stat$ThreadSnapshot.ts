@@ -7,5 +7,5 @@ export class ThreadSnapshot extends BaseUuidEntity {
   deadLocked?: boolean | null;
   stackTrace?: string | null;
 }
-export type ThreadSnapshotViewName = "_minimal" | "_local" | "_base";
+export type ThreadSnapshotViewName = "_base" | "_local" | "_minimal";
 export type ThreadSnapshotView<V extends ThreadSnapshotViewName> = never;

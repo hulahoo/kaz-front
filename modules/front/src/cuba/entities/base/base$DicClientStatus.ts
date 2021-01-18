@@ -2,10 +2,10 @@ import { AbstractSortableDictionary } from "./AbstractSortableDictionary";
 export class DicClientStatus extends AbstractSortableDictionary {
   static NAME = "base$DicClientStatus";
 }
-export type DicClientStatusViewName = "_minimal" | "_local" | "_base";
+export type DicClientStatusViewName = "_base" | "_local" | "_minimal";
 export type DicClientStatusView<
   V extends DicClientStatusViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       DicClientStatus,
       | "id"
@@ -15,6 +15,21 @@ export type DicClientStatusView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -42,7 +57,7 @@ export type DicClientStatusView<
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicClientStatus,
       | "id"
@@ -52,20 +67,5 @@ export type DicClientStatusView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : never;

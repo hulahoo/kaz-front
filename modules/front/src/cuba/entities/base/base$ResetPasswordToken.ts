@@ -1,8 +1,8 @@
 import { BaseUuidEntity } from "./sys$BaseUuidEntity";
-import { UserExt } from "./base$UserExt";
+import { BaseUserExt } from "./base$UserExt";
 export class ResetPasswordToken extends BaseUuidEntity {
   static NAME = "base$ResetPasswordToken";
-  user?: UserExt | null;
+  user?: BaseUserExt | null;
   token?: string | null;
   expireAt?: any | null;
   version?: number | null;
@@ -14,18 +14,18 @@ export class ResetPasswordToken extends BaseUuidEntity {
   createdBy?: string | null;
 }
 export type ResetPasswordTokenViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "resetPasswordToken.validate";
 export type ResetPasswordTokenView<
   V extends ResetPasswordTokenViewName
-> = V extends "_minimal"
-  ? Pick<ResetPasswordToken, "id">
+> = V extends "_base"
+  ? Pick<ResetPasswordToken, "id" | "token" | "expireAt">
   : V extends "_local"
   ? Pick<ResetPasswordToken, "id" | "token" | "expireAt">
-  : V extends "_base"
-  ? Pick<ResetPasswordToken, "id" | "token" | "expireAt">
+  : V extends "_minimal"
+  ? Pick<ResetPasswordToken, "id">
   : V extends "resetPasswordToken.validate"
   ? Pick<ResetPasswordToken, "id" | "token" | "expireAt" | "user">
   : never;

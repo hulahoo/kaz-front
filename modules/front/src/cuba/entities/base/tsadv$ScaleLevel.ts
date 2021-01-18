@@ -17,32 +17,11 @@ export class ScaleLevel extends AbstractParentEntity {
   scale?: Scale | null;
 }
 export type ScaleLevelViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "scaleLevelOptionDatasource";
-export type ScaleLevelView<V extends ScaleLevelViewName> = V extends "_minimal"
-  ? Pick<ScaleLevel, "id" | "levelNumber" | "levelName">
-  : V extends "_local"
-  ? Pick<
-      ScaleLevel,
-      | "id"
-      | "levelNumber"
-      | "levelNameLang1"
-      | "levelNameLang2"
-      | "levelNameLang3"
-      | "levelNameLang4"
-      | "levelNameLang5"
-      | "levelDescriptionLang1"
-      | "levelDescriptionLang2"
-      | "levelDescriptionLang3"
-      | "levelDescriptionLang4"
-      | "levelDescriptionLang5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "_base"
+export type ScaleLevelView<V extends ScaleLevelViewName> = V extends "_base"
   ? Pick<
       ScaleLevel,
       | "id"
@@ -62,6 +41,27 @@ export type ScaleLevelView<V extends ScaleLevelViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      ScaleLevel,
+      | "id"
+      | "levelNumber"
+      | "levelNameLang1"
+      | "levelNameLang2"
+      | "levelNameLang3"
+      | "levelNameLang4"
+      | "levelNameLang5"
+      | "levelDescriptionLang1"
+      | "levelDescriptionLang2"
+      | "levelDescriptionLang3"
+      | "levelDescriptionLang4"
+      | "levelDescriptionLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<ScaleLevel, "id" | "levelNumber" | "levelName">
   : V extends "scaleLevelOptionDatasource"
   ? Pick<
       ScaleLevel,

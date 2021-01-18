@@ -8,9 +8,21 @@ export class FaqContent extends AbstractParentEntity {
   langValue5?: string | null;
   langValue?: string | null;
 }
-export type FaqContentViewName = "_minimal" | "_local" | "_base";
-export type FaqContentView<V extends FaqContentViewName> = V extends "_minimal"
-  ? Pick<FaqContent, "id" | "langValue">
+export type FaqContentViewName = "_base" | "_local" | "_minimal";
+export type FaqContentView<V extends FaqContentViewName> = V extends "_base"
+  ? Pick<
+      FaqContent,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       FaqContent,
@@ -25,18 +37,6 @@ export type FaqContentView<V extends FaqContentViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      FaqContent,
-      | "id"
-      | "langValue"
-      | "langValue1"
-      | "langValue2"
-      | "langValue3"
-      | "langValue4"
-      | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<FaqContent, "id" | "langValue">
   : never;

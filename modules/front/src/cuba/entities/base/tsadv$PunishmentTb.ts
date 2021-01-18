@@ -13,12 +13,22 @@ export class Punishment extends AbstractParentEntity {
   accidents?: Accidents | null;
 }
 export type PunishmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "punishment-view";
-export type PunishmentView<V extends PunishmentViewName> = V extends "_minimal"
-  ? Pick<Punishment, "id" | "description">
+export type PunishmentView<V extends PunishmentViewName> = V extends "_base"
+  ? Pick<
+      Punishment,
+      | "id"
+      | "description"
+      | "orderDate"
+      | "orderNumber"
+      | "punishmentDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Punishment,
@@ -31,18 +41,8 @@ export type PunishmentView<V extends PunishmentViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Punishment,
-      | "id"
-      | "description"
-      | "orderDate"
-      | "orderNumber"
-      | "punishmentDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Punishment, "id" | "description">
   : V extends "punishment-view"
   ? Pick<
       Punishment,

@@ -11,7 +11,7 @@ export class PositionPercentage extends BaseUuidEntity {
   count?: number | null;
   match?: number | null;
 }
-export type PositionPercentageViewName = "_minimal" | "_local" | "_base";
+export type PositionPercentageViewName = "_base" | "_local" | "_minimal";
 export type PositionPercentageView<
   V extends PositionPercentageViewName
 > = never;

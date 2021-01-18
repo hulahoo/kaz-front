@@ -24,16 +24,16 @@ export class WorkedHoursSummary extends AbstractParentEntity {
   timecardRepresentation?: string | null;
 }
 export type WorkedHoursSummaryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "workedHoursSummary-view"
+  | "_local"
+  | "_minimal"
   | "workedHoursSummary-for-timecard"
+  | "workedHoursSummary-view"
   | "workedHoursSummary-with-timecardHeader"
   | "workedHoursSummary-with-type";
 export type WorkedHoursSummaryView<
   V extends WorkedHoursSummaryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       WorkedHoursSummary,
       | "id"
@@ -48,7 +48,7 @@ export type WorkedHoursSummaryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       WorkedHoursSummary,
       | "id"
@@ -62,6 +62,26 @@ export type WorkedHoursSummaryView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "workedHoursSummary-for-timecard"
+  ? Pick<
+      WorkedHoursSummary,
+      | "id"
+      | "displayValue"
+      | "workedDate"
+      | "hours"
+      | "timeIn"
+      | "timeOut"
+      | "correctionFlag"
+      | "timecardRepresentation"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "timecardHeader"
+      | "shift"
+      | "scheduleElementType"
+      | "bussinessTrip"
+      | "absence"
     >
   : V extends "workedHoursSummary-view"
   ? Pick<
@@ -83,26 +103,6 @@ export type WorkedHoursSummaryView<
       | "bussinessTrip"
       | "absence"
       | "absenceToWorkedHoursSummaryList"
-    >
-  : V extends "workedHoursSummary-for-timecard"
-  ? Pick<
-      WorkedHoursSummary,
-      | "id"
-      | "displayValue"
-      | "workedDate"
-      | "hours"
-      | "timeIn"
-      | "timeOut"
-      | "correctionFlag"
-      | "timecardRepresentation"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "timecardHeader"
-      | "shift"
-      | "scheduleElementType"
-      | "bussinessTrip"
-      | "absence"
     >
   : V extends "workedHoursSummary-with-timecardHeader"
   ? Pick<

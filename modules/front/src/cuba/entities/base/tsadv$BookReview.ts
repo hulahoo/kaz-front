@@ -10,20 +10,20 @@ export class BookReview extends StandardEntity {
   rating?: any | null;
 }
 export type BookReviewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "bookReview-browse-view"
   | "bookReview-edit-view";
-export type BookReviewView<V extends BookReviewViewName> = V extends "_minimal"
-  ? Pick<BookReview, "id" | "book" | "author" | "postDate">
-  : V extends "_local"
-  ? Pick<BookReview, "id" | "postDate" | "reviewText" | "rating">
-  : V extends "_base"
+export type BookReviewView<V extends BookReviewViewName> = V extends "_base"
   ? Pick<
       BookReview,
       "id" | "book" | "author" | "postDate" | "reviewText" | "rating"
     >
+  : V extends "_local"
+  ? Pick<BookReview, "id" | "postDate" | "reviewText" | "rating">
+  : V extends "_minimal"
+  ? Pick<BookReview, "id" | "book" | "author" | "postDate">
   : V extends "bookReview-browse-view"
   ? Pick<
       BookReview,

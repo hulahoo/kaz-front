@@ -4,5 +4,5 @@ export class PageInfo extends BaseUuidEntity {
   pagesCount?: any | null;
   totalRowsCount?: any | null;
 }
-export type PageInfoViewName = "_minimal" | "_local" | "_base";
+export type PageInfoViewName = "_base" | "_local" | "_minimal";
 export type PageInfoView<V extends PageInfoViewName> = never;

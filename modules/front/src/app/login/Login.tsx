@@ -37,8 +37,8 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps & 
       .mainStore!.login(this.props.rootStore!.login.login, this.props.rootStore!.login.password)
       .then(
         action(() => {
+          this.props.rootStore!.userInfo.loadUserInfo()
           this.performingLoginRequest = false;
-          // this.props.rootStore!.menu.loadUserMenuList();
         })
       )
       .catch(

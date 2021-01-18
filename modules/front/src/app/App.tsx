@@ -2,7 +2,7 @@ import * as React from "react";
 import "./App.css";
 
 import {Icon, Layout, Menu} from "antd";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import Login from "./login/Login";
 import Centered from "./common/Centered";
 import AppHeader from "./header/AppHeader";
@@ -21,24 +21,37 @@ import {
   IntlFormatters,
   WrappedComponentProps
 } from "react-intl";
-import IconRender, {SvgProps} from '../resources/icons/menu/index';
-import {CustomIconComponentProps} from "antd/es/icon";
-import {ComponentClass} from "react";
+import IconRender from '../resources/icons/menu/index';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
-import Content from "./components/Content/Content";
 import UserSettings from "./pages/user-settings/UserSettings";
+import {RootStoreProp} from "./store";
+import MyKpiPage from "./pages/my-kpi/MyKpiPage";
+import KpiEditPage from "./pages/KpiEditPage";
+import PersonalDataRequestEdit from "./pages/PersonalDataRequest/PersonalDataRequestEdit";
+import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
+import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
+import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
+import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
+import {observable} from "mobx";
+import {AssignedGoal} from "../cuba/entities/base/tsadv$AssignedGoal";
+import AssignedGoalList from "./pages/AssignedGoals/DefaultGoal/AssignedGoalList";
+import AssignedGoalEdit from "./pages/AssignedGoals/DefaultGoal/AssignedGoalEdit";
+import {AssignedGoalManagement} from "./pages/AssignedGoals/DefaultGoal/AssignedGoalManagement";
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps> {
+class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+
+  // @observable
+  // mainStore = this.props.mainStore!;
 
   constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
     super(props, context);
   }
 
   render() {
-    const mainStore = this.props.mainStore!;
-    const {initialized, locale, loginRequired} = mainStore;
+    const {initialized, locale, loginRequired, metadata} = this.props.mainStore!;
 
     if (!initialized || !locale) {
       return <CenteredLoader/>;
@@ -50,6 +63,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
           <Login/>
         </Centered>
       );
+    }
+
+    if (!metadata) {
+      return <CenteredLoader/>;
     }
 
     const menuIdx = 1;
@@ -71,18 +88,19 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
               )}
             </Menu>
           </Layout.Sider>
-          <Layout style={{padding: "40px"}}>
+          <Layout>
             <Layout.Content>
               <Switch>
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
-                {/*{collectRouteItems(menuItems).map(route => (*/}
-                {/*  <Route*/}
-                {/*    key={route.pathPattern}*/}
-                {/*    path={route.pathPattern}*/}
-                {/*    component={route.component}*/}
-                {/*  />*/}
-                ))}
+                <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
+                {/*<Route exact={true} path="/kpi/:id" component={KpiEditPage}/>*/}
+                <Route path="/my-profile" component={PersonalDataRequestEditPage}/>
+                {/*<Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>*/}
+                <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
+                <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
+                <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/create/default" component={AssignedGoalManagement}/>
               </Switch>
             </Layout.Content>
           </Layout>

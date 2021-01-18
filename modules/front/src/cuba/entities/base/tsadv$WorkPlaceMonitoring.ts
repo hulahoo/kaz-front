@@ -10,13 +10,13 @@ export class WorkPlaceMonitoring extends AbstractParentEntity {
   workPlace?: WorkPlace | null;
 }
 export type WorkPlaceMonitoringViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "workPlaceMonitoring-view";
 export type WorkPlaceMonitoringView<
   V extends WorkPlaceMonitoringViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       WorkPlaceMonitoring,
       | "id"
@@ -25,7 +25,7 @@ export type WorkPlaceMonitoringView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       WorkPlaceMonitoring,
       | "id"

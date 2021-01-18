@@ -10,9 +10,9 @@ export class CoinDistributionOrganization extends StandardEntity {
   coinDistributionRule?: CoinDistributionRule | null;
 }
 export type CoinDistributionOrganizationViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type CoinDistributionOrganizationView<
   V extends CoinDistributionOrganizationViewName
 > = never;

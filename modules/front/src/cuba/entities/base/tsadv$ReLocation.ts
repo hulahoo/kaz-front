@@ -8,12 +8,12 @@ export class ReLocation extends AbstractParentEntity {
   description?: string | null;
 }
 export type ReLocationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "reLocation.browse"
   | "relocation.card";
-export type ReLocationView<V extends ReLocationViewName> = V extends "_local"
+export type ReLocationView<V extends ReLocationViewName> = V extends "_base"
   ? Pick<
       ReLocation,
       | "id"
@@ -22,7 +22,7 @@ export type ReLocationView<V extends ReLocationViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       ReLocation,
       | "id"

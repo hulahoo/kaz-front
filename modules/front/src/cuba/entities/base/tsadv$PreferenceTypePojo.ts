@@ -5,11 +5,11 @@ export class PreferenceTypePojo extends BaseUuidEntity {
   code?: string | null;
   coins?: any | null;
 }
-export type PreferenceTypePojoViewName = "_minimal" | "_local" | "_base";
+export type PreferenceTypePojoViewName = "_base" | "_local" | "_minimal";
 export type PreferenceTypePojoView<
   V extends PreferenceTypePojoViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PreferenceTypePojo, "id" | "name">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PreferenceTypePojo, "id" | "name">
   : never;

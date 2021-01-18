@@ -6,5 +6,5 @@ export class GoodsWishList extends StandardEntity {
   personGroup?: PersonGroupExt | null;
   goods?: Goods | null;
 }
-export type GoodsWishListViewName = "_minimal" | "_local" | "_base";
+export type GoodsWishListViewName = "_base" | "_local" | "_minimal";
 export type GoodsWishListView<V extends GoodsWishListViewName> = never;

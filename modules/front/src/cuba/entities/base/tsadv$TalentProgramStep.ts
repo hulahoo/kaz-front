@@ -10,18 +10,18 @@ export class TalentProgramStep extends StandardEntity {
   notification?: NotificationTemplate | null;
 }
 export type TalentProgramStepViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "talentProgramStep-view";
 export type TalentProgramStepView<
   V extends TalentProgramStepViewName
-> = V extends "_minimal"
-  ? Pick<TalentProgramStep, "id" | "step">
+> = V extends "_base"
+  ? Pick<TalentProgramStep, "id" | "step" | "orderNum">
   : V extends "_local"
   ? Pick<TalentProgramStep, "id" | "orderNum">
-  : V extends "_base"
-  ? Pick<TalentProgramStep, "id" | "step" | "orderNum">
+  : V extends "_minimal"
+  ? Pick<TalentProgramStep, "id" | "step">
   : V extends "talentProgramStep-view"
   ? Pick<
       TalentProgramStep,

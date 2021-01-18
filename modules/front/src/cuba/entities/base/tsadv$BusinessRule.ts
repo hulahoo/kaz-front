@@ -16,11 +16,26 @@ export class BusinessRule extends StandardEntity {
   warningTextLang4?: string | null;
   warningTextLang5?: string | null;
 }
-export type BusinessRuleViewName = "_minimal" | "_local" | "_base";
-export type BusinessRuleView<
-  V extends BusinessRuleViewName
-> = V extends "_minimal"
-  ? Pick<BusinessRule, "id" | "ruleName">
+export type BusinessRuleViewName = "_base" | "_local" | "_minimal";
+export type BusinessRuleView<V extends BusinessRuleViewName> = V extends "_base"
+  ? Pick<
+      BusinessRule,
+      | "id"
+      | "ruleName"
+      | "ruleCode"
+      | "description"
+      | "ruleStatus"
+      | "errorTextLang1"
+      | "errorTextLang2"
+      | "errorTextLang3"
+      | "errorTextLang4"
+      | "errorTextLang5"
+      | "warningTextLang1"
+      | "warningTextLang2"
+      | "warningTextLang3"
+      | "warningTextLang4"
+      | "warningTextLang5"
+    >
   : V extends "_local"
   ? Pick<
       BusinessRule,
@@ -40,23 +55,6 @@ export type BusinessRuleView<
       | "warningTextLang4"
       | "warningTextLang5"
     >
-  : V extends "_base"
-  ? Pick<
-      BusinessRule,
-      | "id"
-      | "ruleName"
-      | "ruleCode"
-      | "description"
-      | "ruleStatus"
-      | "errorTextLang1"
-      | "errorTextLang2"
-      | "errorTextLang3"
-      | "errorTextLang4"
-      | "errorTextLang5"
-      | "warningTextLang1"
-      | "warningTextLang2"
-      | "warningTextLang3"
-      | "warningTextLang4"
-      | "warningTextLang5"
-    >
+  : V extends "_minimal"
+  ? Pick<BusinessRule, "id" | "ruleName">
   : never;

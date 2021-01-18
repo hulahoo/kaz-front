@@ -9,7 +9,7 @@ export class EntityPropertyDiff extends BaseUuidEntity {
   afterCaption?: string | null;
   itemState?: any | null;
 }
-export type EntityPropertyDiffViewName = "_minimal" | "_local" | "_base";
+export type EntityPropertyDiffViewName = "_base" | "_local" | "_minimal";
 export type EntityPropertyDiffView<
   V extends EntityPropertyDiffViewName
 > = never;

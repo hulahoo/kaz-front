@@ -24,18 +24,18 @@ export class TemporaryTranslationRequest extends StandardEntity {
   actualPositionGroup?: PositionGroupExt | null;
 }
 export type TemporaryTranslationRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "temporaryTranslationRequest-view";
 export type TemporaryTranslationRequestView<
   V extends TemporaryTranslationRequestViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       TemporaryTranslationRequest,
       "id" | "requestNumber" | "startDate" | "endDate" | "note" | "reason"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       TemporaryTranslationRequest,
       "id" | "requestNumber" | "startDate" | "endDate" | "note" | "reason"

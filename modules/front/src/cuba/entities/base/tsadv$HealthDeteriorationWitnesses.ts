@@ -7,9 +7,9 @@ export class HealthDeteriorationWitnesses extends StandardEntity {
   healthDeterioration?: HealthDeterioration | null;
 }
 export type HealthDeteriorationWitnessesViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "healthDeteriorationWitnesses-view";
 export type HealthDeteriorationWitnessesView<
   V extends HealthDeteriorationWitnessesViewName

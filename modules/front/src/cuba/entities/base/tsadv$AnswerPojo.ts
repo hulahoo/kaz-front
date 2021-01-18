@@ -4,5 +4,5 @@ export class AnswerPojo extends BaseUuidEntity {
   answer?: string | null;
   checked?: boolean | null;
 }
-export type AnswerPojoViewName = "_minimal" | "_local" | "_base";
+export type AnswerPojoViewName = "_base" | "_local" | "_minimal";
 export type AnswerPojoView<V extends AnswerPojoViewName> = never;

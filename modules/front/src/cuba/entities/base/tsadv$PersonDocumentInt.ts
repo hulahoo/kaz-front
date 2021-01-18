@@ -11,11 +11,11 @@ export class PersonDocumentInt extends AbstractEntityInt {
   status?: string | null;
   file?: string | null;
 }
-export type PersonDocumentIntViewName = "_minimal" | "_local" | "_base";
+export type PersonDocumentIntViewName = "_base" | "_local" | "_minimal";
 export type PersonDocumentIntView<
   V extends PersonDocumentIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PersonDocumentInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonDocumentInt, "id">
   : never;

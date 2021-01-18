@@ -6,41 +6,13 @@ export class DicRcgFeedbackType extends AbstractDictionary {
   color?: string | null;
 }
 export type DicRcgFeedbackTypeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicRcgFeedbackType.edit";
 export type DicRcgFeedbackTypeView<
   V extends DicRcgFeedbackTypeViewName
-> = V extends "_minimal"
-  ? Pick<DicRcgFeedbackType, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicRcgFeedbackType,
-      | "id"
-      | "color"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DicRcgFeedbackType,
       | "id"
@@ -67,6 +39,34 @@ export type DicRcgFeedbackTypeView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicRcgFeedbackType,
+      | "id"
+      | "color"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicRcgFeedbackType, "id" | "langValue">
   : V extends "dicRcgFeedbackType.edit"
   ? Pick<
       DicRcgFeedbackType,

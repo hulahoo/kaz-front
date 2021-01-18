@@ -7,18 +7,18 @@ export class MicrotraumaWitnesses extends AbstractParentEntity {
   microtraum?: Microtraum | null;
 }
 export type MicrotraumaWitnessesViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "microtraumaWitnesses-view";
 export type MicrotraumaWitnessesView<
   V extends MicrotraumaWitnessesViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       MicrotraumaWitnesses,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       MicrotraumaWitnesses,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

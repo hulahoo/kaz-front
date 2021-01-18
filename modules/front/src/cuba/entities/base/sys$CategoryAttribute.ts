@@ -41,52 +41,15 @@ export class CategoryAttribute extends StandardEntity {
   configuration?: CategoryAttributeConfiguration | null;
 }
 export type CategoryAttributeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "categoryAttribute.browse"
+  | "_local"
+  | "_minimal"
   | "category.edit"
+  | "categoryAttribute.browse"
   | "for.cache";
 export type CategoryAttributeView<
   V extends CategoryAttributeViewName
-> = V extends "_minimal"
-  ? Pick<CategoryAttribute, "id" | "localeName" | "code">
-  : V extends "_local"
-  ? Pick<
-      CategoryAttribute,
-      | "id"
-      | "categoryEntityType"
-      | "name"
-      | "code"
-      | "description"
-      | "enumeration"
-      | "dataType"
-      | "entityClass"
-      | "orderNo"
-      | "screen"
-      | "required"
-      | "lookup"
-      | "targetScreens"
-      | "defaultString"
-      | "defaultInt"
-      | "defaultDouble"
-      | "defaultDecimal"
-      | "defaultBoolean"
-      | "defaultDate"
-      | "defaultDateWithoutTime"
-      | "defaultDateIsCurrent"
-      | "width"
-      | "rowsCount"
-      | "isCollection"
-      | "whereClause"
-      | "joinClause"
-      | "filterXml"
-      | "localeNames"
-      | "localeDescriptions"
-      | "enumerationLocales"
-      | "attributeConfigurationJson"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       CategoryAttribute,
       | "id"
@@ -122,7 +85,7 @@ export type CategoryAttributeView<
       | "enumerationLocales"
       | "attributeConfigurationJson"
     >
-  : V extends "categoryAttribute.browse"
+  : V extends "_local"
   ? Pick<
       CategoryAttribute,
       | "id"
@@ -156,8 +119,9 @@ export type CategoryAttributeView<
       | "localeDescriptions"
       | "enumerationLocales"
       | "attributeConfigurationJson"
-      | "defaultEntity"
     >
+  : V extends "_minimal"
+  ? Pick<CategoryAttribute, "id" | "localeName" | "code">
   : V extends "category.edit"
   ? Pick<
       CategoryAttribute,
@@ -193,6 +157,42 @@ export type CategoryAttributeView<
       | "enumerationLocales"
       | "attributeConfigurationJson"
       | "category"
+      | "defaultEntity"
+    >
+  : V extends "categoryAttribute.browse"
+  ? Pick<
+      CategoryAttribute,
+      | "id"
+      | "categoryEntityType"
+      | "name"
+      | "code"
+      | "description"
+      | "enumeration"
+      | "dataType"
+      | "entityClass"
+      | "orderNo"
+      | "screen"
+      | "required"
+      | "lookup"
+      | "targetScreens"
+      | "defaultString"
+      | "defaultInt"
+      | "defaultDouble"
+      | "defaultDecimal"
+      | "defaultBoolean"
+      | "defaultDate"
+      | "defaultDateWithoutTime"
+      | "defaultDateIsCurrent"
+      | "width"
+      | "rowsCount"
+      | "isCollection"
+      | "whereClause"
+      | "joinClause"
+      | "filterXml"
+      | "localeNames"
+      | "localeDescriptions"
+      | "enumerationLocales"
+      | "attributeConfigurationJson"
       | "defaultEntity"
     >
   : V extends "for.cache"

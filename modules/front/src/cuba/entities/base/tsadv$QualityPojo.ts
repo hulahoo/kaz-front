@@ -4,11 +4,9 @@ export class QualityPojo extends BaseUuidEntity {
   name?: string | null;
   description?: string | null;
 }
-export type QualityPojoViewName = "_minimal" | "_local" | "_base";
-export type QualityPojoView<
-  V extends QualityPojoViewName
-> = V extends "_minimal"
+export type QualityPojoViewName = "_base" | "_local" | "_minimal";
+export type QualityPojoView<V extends QualityPojoViewName> = V extends "_base"
   ? Pick<QualityPojo, "id" | "name">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<QualityPojo, "id" | "name">
   : never;

@@ -9,9 +9,9 @@ export class UserInt extends AbstractEntityInt {
   phoneNumber?: string | null;
   person?: PersonInt | null;
 }
-export type UserIntViewName = "_minimal" | "_local" | "_base";
-export type UserIntView<V extends UserIntViewName> = V extends "_minimal"
+export type UserIntViewName = "_base" | "_local" | "_minimal";
+export type UserIntView<V extends UserIntViewName> = V extends "_base"
   ? Pick<UserInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<UserInt, "id">
   : never;

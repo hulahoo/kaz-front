@@ -11,15 +11,22 @@ export class PersonQualification extends AbstractParentEntity {
   assignValidationDate?: any | null;
   attachment?: FileDescriptor | null;
   note?: string | null;
+  educationalInstitutionName?: string | null;
+  diploma?: string | null;
+  typeName?: string | null;
+  issuedDate?: any | null;
+  startDateHistory?: any | null;
+  endDateHistory?: any | null;
+  attachments?: FileDescriptor[] | null;
 }
 export type PersonQualificationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personQualification-view";
 export type PersonQualificationView<
   V extends PersonQualificationViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonQualification,
       | "id"
@@ -27,11 +34,17 @@ export type PersonQualificationView<
       | "endDate"
       | "assignValidationDate"
       | "note"
+      | "educationalInstitutionName"
+      | "diploma"
+      | "typeName"
+      | "issuedDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonQualification,
       | "id"
@@ -39,6 +52,12 @@ export type PersonQualificationView<
       | "endDate"
       | "assignValidationDate"
       | "note"
+      | "educationalInstitutionName"
+      | "diploma"
+      | "typeName"
+      | "issuedDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -51,6 +70,12 @@ export type PersonQualificationView<
       | "endDate"
       | "assignValidationDate"
       | "note"
+      | "educationalInstitutionName"
+      | "diploma"
+      | "typeName"
+      | "issuedDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

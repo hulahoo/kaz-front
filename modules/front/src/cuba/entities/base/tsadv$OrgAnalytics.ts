@@ -15,28 +15,15 @@ export class OrgAnalytics extends StandardEntity {
   assignmentGroup?: AssignmentGroupExt | null;
 }
 export type OrgAnalyticsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "organalytics.edit"
-  | "orgAnalytics-view";
-export type OrgAnalyticsView<
-  V extends OrgAnalyticsViewName
-> = V extends "_minimal"
+  | "_local"
+  | "_minimal"
+  | "orgAnalytics-view"
+  | "organalytics.edit";
+export type OrgAnalyticsView<V extends OrgAnalyticsViewName> = V extends "_base"
   ? Pick<OrgAnalytics, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<OrgAnalytics, "id">
-  : V extends "organalytics.edit"
-  ? Pick<
-      OrgAnalytics,
-      | "id"
-      | "calendar"
-      | "workingCondition"
-      | "offset"
-      | "organizationGroup"
-      | "positionGroup"
-      | "assignmentGroup"
-    >
   : V extends "orgAnalytics-view"
   ? Pick<
       OrgAnalytics,
@@ -48,5 +35,16 @@ export type OrgAnalyticsView<
       | "updateTs"
       | "updatedBy"
       | "workingCondition"
+    >
+  : V extends "organalytics.edit"
+  ? Pick<
+      OrgAnalytics,
+      | "id"
+      | "calendar"
+      | "workingCondition"
+      | "offset"
+      | "organizationGroup"
+      | "positionGroup"
+      | "assignmentGroup"
     >
   : never;

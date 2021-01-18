@@ -29,14 +29,46 @@ export class MessageTemplate extends AbstractParentEntity {
   messageBody?: string | null;
 }
 export type MessageTemplateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "messageTemplate.edit";
 export type MessageTemplateView<
   V extends MessageTemplateViewName
-> = V extends "_minimal"
-  ? Pick<MessageTemplate, "id" | "fullName">
+> = V extends "_base"
+  ? Pick<
+      MessageTemplate,
+      | "id"
+      | "fullName"
+      | "name"
+      | "code"
+      | "description"
+      | "type"
+      | "entity"
+      | "languageCode"
+      | "addressLang1"
+      | "addressLang2"
+      | "addressLang3"
+      | "addressLang4"
+      | "addressLang5"
+      | "messageHeaderLang1"
+      | "messageHeaderLang2"
+      | "messageHeaderLang3"
+      | "messageHeaderLang4"
+      | "messageHeaderLang5"
+      | "messageBodyLang1"
+      | "messageBodyLang2"
+      | "messageBodyLang3"
+      | "messageBodyLang4"
+      | "messageBodyLang5"
+      | "entityCaption"
+      | "address"
+      | "messageHeader"
+      | "messageBody"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       MessageTemplate,
@@ -71,40 +103,8 @@ export type MessageTemplateView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      MessageTemplate,
-      | "id"
-      | "fullName"
-      | "name"
-      | "code"
-      | "description"
-      | "type"
-      | "entity"
-      | "languageCode"
-      | "addressLang1"
-      | "addressLang2"
-      | "addressLang3"
-      | "addressLang4"
-      | "addressLang5"
-      | "messageHeaderLang1"
-      | "messageHeaderLang2"
-      | "messageHeaderLang3"
-      | "messageHeaderLang4"
-      | "messageHeaderLang5"
-      | "messageBodyLang1"
-      | "messageBodyLang2"
-      | "messageBodyLang3"
-      | "messageBodyLang4"
-      | "messageBodyLang5"
-      | "entityCaption"
-      | "address"
-      | "messageHeader"
-      | "messageBody"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<MessageTemplate, "id" | "fullName">
   : V extends "messageTemplate.edit"
   ? Pick<
       MessageTemplate,

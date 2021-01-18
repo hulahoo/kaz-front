@@ -9,5 +9,5 @@ export class ManagedBeanInfo extends BaseUuidEntity {
   propertyList?: string | null;
   jmxInstance?: JmxInstance | null;
 }
-export type ManagedBeanInfoViewName = "_minimal" | "_local" | "_base";
+export type ManagedBeanInfoViewName = "_base" | "_local" | "_minimal";
 export type ManagedBeanInfoView<V extends ManagedBeanInfoViewName> = never;

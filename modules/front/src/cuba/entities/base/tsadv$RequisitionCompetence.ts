@@ -10,14 +10,21 @@ export class RequisitionCompetence extends AbstractParentEntity {
   criticalness?: any | null;
 }
 export type RequisitionCompetenceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "requisitionCompetence.view";
 export type RequisitionCompetenceView<
   V extends RequisitionCompetenceViewName
-> = V extends "_minimal"
-  ? Pick<RequisitionCompetence, "id">
+> = V extends "_base"
+  ? Pick<
+      RequisitionCompetence,
+      | "id"
+      | "criticalness"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RequisitionCompetence,
@@ -27,15 +34,8 @@ export type RequisitionCompetenceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RequisitionCompetence,
-      | "id"
-      | "criticalness"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<RequisitionCompetence, "id">
   : V extends "requisitionCompetence.view"
   ? Pick<
       RequisitionCompetence,

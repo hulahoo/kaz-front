@@ -7,9 +7,9 @@ export class CoinDistributionCostCenter extends StandardEntity {
   coinDistributionRule?: CoinDistributionRule | null;
 }
 export type CoinDistributionCostCenterViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type CoinDistributionCostCenterView<
   V extends CoinDistributionCostCenterViewName
 > = never;

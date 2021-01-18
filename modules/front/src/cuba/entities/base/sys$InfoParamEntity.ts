@@ -4,11 +4,11 @@ export class InfoParamEntity extends BaseUuidEntity {
   key?: string | null;
   keyValue?: string | null;
 }
-export type InfoParamEntityViewName = "_minimal" | "_local" | "_base";
+export type InfoParamEntityViewName = "_base" | "_local" | "_minimal";
 export type InfoParamEntityView<
   V extends InfoParamEntityViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<InfoParamEntity, "id" | "keyValue">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<InfoParamEntity, "id" | "keyValue">
   : never;

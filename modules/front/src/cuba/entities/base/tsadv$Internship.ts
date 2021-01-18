@@ -28,12 +28,12 @@ export class Internship extends StandardEntity {
   mentorOrderDate?: any | null;
 }
 export type InternshipViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "internship.edit"
   | "internship.for.loadList";
-export type InternshipView<V extends InternshipViewName> = V extends "_local"
+export type InternshipView<V extends InternshipViewName> = V extends "_base"
   ? Pick<
       Internship,
       | "id"
@@ -50,7 +50,7 @@ export type InternshipView<V extends InternshipViewName> = V extends "_local"
       | "orderDate"
       | "mentorOrderDate"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Internship,
       | "id"

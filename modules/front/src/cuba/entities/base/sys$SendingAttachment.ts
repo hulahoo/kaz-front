@@ -10,24 +10,49 @@ export class SendingAttachment extends StandardEntity {
   contentId?: string | null;
   disposition?: string | null;
   encoding?: string | null;
+  sysTenantId?: string | null;
 }
 export type SendingAttachmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "sendingAttachment.loadFromQueue"
-  | "sendingAttachment.browse";
+  | "_local"
+  | "_minimal"
+  | "sendingAttachment.browse"
+  | "sendingAttachment.loadFromQueue";
 export type SendingAttachmentView<
   V extends SendingAttachmentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       SendingAttachment,
-      "id" | "content" | "name" | "contentId" | "disposition" | "encoding"
+      | "id"
+      | "content"
+      | "name"
+      | "contentId"
+      | "disposition"
+      | "encoding"
+      | "sysTenantId"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SendingAttachment,
-      "id" | "content" | "name" | "contentId" | "disposition" | "encoding"
+      | "id"
+      | "content"
+      | "name"
+      | "contentId"
+      | "disposition"
+      | "encoding"
+      | "sysTenantId"
+    >
+  : V extends "sendingAttachment.browse"
+  ? Pick<
+      SendingAttachment,
+      | "id"
+      | "content"
+      | "name"
+      | "contentId"
+      | "disposition"
+      | "encoding"
+      | "sysTenantId"
+      | "updateTs"
     >
   : V extends "sendingAttachment.loadFromQueue"
   ? Pick<
@@ -45,17 +70,7 @@ export type SendingAttachmentView<
       | "contentId"
       | "disposition"
       | "encoding"
+      | "sysTenantId"
       | "contentFile"
-    >
-  : V extends "sendingAttachment.browse"
-  ? Pick<
-      SendingAttachment,
-      | "id"
-      | "content"
-      | "name"
-      | "contentId"
-      | "disposition"
-      | "encoding"
-      | "updateTs"
     >
   : never;

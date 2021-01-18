@@ -1,35 +1,38 @@
 import { StandardEntity } from "./sys$StandardEntity";
 import { BpmRolesDefiner } from "./tsadv$BpmRolesDefiner";
-import { ProcRole } from "./bpm$ProcRole";
 import { DicHrRole } from "./tsadv$DicHrRole";
 import { PositionBpmRole } from "./tsadv$PositionBpmRole";
 export class BpmRolesLink extends StandardEntity {
   static NAME = "tsadv$BpmRolesLink";
   bpmRolesDefiner?: BpmRolesDefiner | null;
-  bpmRole?: ProcRole | null;
   hrRole?: DicHrRole | null;
+  bprocUserTaskCode?: string | null;
   required?: boolean | null;
   findByCounter?: boolean | null;
   positionBpmRole?: PositionBpmRole | null;
 }
 export type BpmRolesLinkViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "bpmRolesLink-view";
-export type BpmRolesLinkView<
-  V extends BpmRolesLinkViewName
-> = V extends "_local"
-  ? Pick<BpmRolesLink, "id" | "required" | "findByCounter">
-  : V extends "_base"
-  ? Pick<BpmRolesLink, "id" | "required" | "findByCounter">
+export type BpmRolesLinkView<V extends BpmRolesLinkViewName> = V extends "_base"
+  ? Pick<
+      BpmRolesLink,
+      "id" | "bprocUserTaskCode" | "required" | "findByCounter"
+    >
+  : V extends "_local"
+  ? Pick<
+      BpmRolesLink,
+      "id" | "bprocUserTaskCode" | "required" | "findByCounter"
+    >
   : V extends "bpmRolesLink-view"
   ? Pick<
       BpmRolesLink,
       | "id"
+      | "bprocUserTaskCode"
       | "required"
       | "findByCounter"
-      | "bpmRole"
       | "hrRole"
       | "bpmRolesDefiner"
       | "positionBpmRole"

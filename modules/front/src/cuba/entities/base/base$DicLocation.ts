@@ -13,48 +13,11 @@ export class DicLocation extends AbstractDictionary {
   addressLangValue?: string | null;
 }
 export type DicLocationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicLocation.edit";
-export type DicLocationView<
-  V extends DicLocationViewName
-> = V extends "_minimal"
-  ? Pick<DicLocation, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicLocation,
-      | "id"
-      | "latitude"
-      | "longitude"
-      | "addressLang1"
-      | "addressLang2"
-      | "addressLang3"
-      | "addressLang4"
-      | "addressLang5"
-      | "addressLangValue"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+export type DicLocationView<V extends DicLocationViewName> = V extends "_base"
   ? Pick<
       DicLocation,
       | "id"
@@ -88,6 +51,41 @@ export type DicLocationView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicLocation,
+      | "id"
+      | "latitude"
+      | "longitude"
+      | "addressLang1"
+      | "addressLang2"
+      | "addressLang3"
+      | "addressLang4"
+      | "addressLang5"
+      | "addressLangValue"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicLocation, "id" | "langValue">
   : V extends "dicLocation.edit"
   ? Pick<
       DicLocation,

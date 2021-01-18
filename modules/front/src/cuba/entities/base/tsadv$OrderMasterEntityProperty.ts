@@ -12,14 +12,27 @@ export class OrderMasterEntityProperty extends AbstractParentEntity {
   langName?: string | null;
 }
 export type OrderMasterEntityPropertyViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "orderMasterEntityProperty.edit";
 export type OrderMasterEntityPropertyView<
   V extends OrderMasterEntityPropertyViewName
-> = V extends "_minimal"
-  ? Pick<OrderMasterEntityProperty, "id" | "name">
+> = V extends "_base"
+  ? Pick<
+      OrderMasterEntityProperty,
+      | "id"
+      | "name"
+      | "langName1"
+      | "langName2"
+      | "langName3"
+      | "langName4"
+      | "langName5"
+      | "langName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       OrderMasterEntityProperty,
@@ -35,21 +48,8 @@ export type OrderMasterEntityPropertyView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      OrderMasterEntityProperty,
-      | "id"
-      | "name"
-      | "langName1"
-      | "langName2"
-      | "langName3"
-      | "langName4"
-      | "langName5"
-      | "langName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<OrderMasterEntityProperty, "id" | "name">
   : V extends "orderMasterEntityProperty.edit"
   ? Pick<
       OrderMasterEntityProperty,

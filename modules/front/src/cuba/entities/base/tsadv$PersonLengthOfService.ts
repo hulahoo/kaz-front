@@ -10,22 +10,10 @@ export class PersonLengthOfService extends AbstractParentEntity {
   effectiveDate?: any | null;
   value?: any | null;
 }
-export type PersonLengthOfServiceViewName = "_minimal" | "_local" | "_base";
+export type PersonLengthOfServiceViewName = "_base" | "_local" | "_minimal";
 export type PersonLengthOfServiceView<
   V extends PersonLengthOfServiceViewName
-> = V extends "_minimal"
-  ? Pick<PersonLengthOfService, "id" | "personGroup" | "range">
-  : V extends "_local"
-  ? Pick<
-      PersonLengthOfService,
-      | "id"
-      | "effectiveDate"
-      | "value"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       PersonLengthOfService,
       | "id"
@@ -37,4 +25,16 @@ export type PersonLengthOfServiceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      PersonLengthOfService,
+      | "id"
+      | "effectiveDate"
+      | "value"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<PersonLengthOfService, "id" | "personGroup" | "range">
   : never;

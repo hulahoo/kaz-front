@@ -9,11 +9,11 @@ export class Server extends BaseUuidEntity {
   running?: boolean | null;
   data?: string | null;
 }
-export type ServerViewName = "_minimal" | "_local" | "_base";
-export type ServerView<V extends ServerViewName> = V extends "_minimal"
-  ? Pick<Server, "id" | "name">
+export type ServerViewName = "_base" | "_local" | "_minimal";
+export type ServerView<V extends ServerViewName> = V extends "_base"
+  ? Pick<Server, "id" | "name" | "running" | "data">
   : V extends "_local"
   ? Pick<Server, "id" | "name" | "running" | "data">
-  : V extends "_base"
-  ? Pick<Server, "id" | "name" | "running" | "data">
+  : V extends "_minimal"
+  ? Pick<Server, "id" | "name">
   : never;

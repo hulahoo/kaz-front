@@ -35,16 +35,41 @@ export class Activity extends AbstractParentEntity {
   notificationBody?: string | null;
 }
 export type ActivityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "activity-view"
-  | "activity-two-tabs-browse"
+  | "_local"
+  | "_minimal"
   | "activity-source-open"
+  | "activity-two-tabs-browse"
+  | "activity-view"
   | "activity.view"
-  | "activity.view.tsadv";
-export type ActivityView<V extends ActivityViewName> = V extends "_minimal"
-  ? Pick<Activity, "id" | "nameRu">
+  | "activity.view.tsadv"
+  | "portal.notification";
+export type ActivityView<V extends ActivityViewName> = V extends "_base"
+  ? Pick<
+      Activity,
+      | "id"
+      | "nameRu"
+      | "nameKz"
+      | "nameEn"
+      | "referenceId"
+      | "notificationTemplateCode"
+      | "description"
+      | "allDay"
+      | "startDateTime"
+      | "endDateTime"
+      | "status"
+      | "reference"
+      | "eventColor"
+      | "notificationHeaderRu"
+      | "notificationHeaderKz"
+      | "notificationHeaderEn"
+      | "notificationBodyRu"
+      | "notificationBodyKz"
+      | "notificationBodyEn"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Activity,
@@ -71,33 +96,9 @@ export type ActivityView<V extends ActivityViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Activity,
-      | "id"
-      | "nameRu"
-      | "nameKz"
-      | "nameEn"
-      | "referenceId"
-      | "notificationTemplateCode"
-      | "description"
-      | "allDay"
-      | "startDateTime"
-      | "endDateTime"
-      | "status"
-      | "reference"
-      | "eventColor"
-      | "notificationHeaderRu"
-      | "notificationHeaderKz"
-      | "notificationHeaderEn"
-      | "notificationBodyRu"
-      | "notificationBodyKz"
-      | "notificationBodyEn"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "activity-view"
+  : V extends "_minimal"
+  ? Pick<Activity, "id" | "nameRu">
+  : V extends "activity-source-open"
   ? Pick<
       Activity,
       | "id"
@@ -123,10 +124,6 @@ export type ActivityView<V extends ActivityViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
       | "type"
-      | "priority"
-      | "assignedUser"
-      | "assignedBy"
-      | "createTs"
     >
   : V extends "activity-two-tabs-browse"
   ? Pick<
@@ -161,7 +158,7 @@ export type ActivityView<V extends ActivityViewName> = V extends "_minimal"
       | "notificationHeader"
       | "notificationBody"
     >
-  : V extends "activity-source-open"
+  : V extends "activity-view"
   ? Pick<
       Activity,
       | "id"
@@ -187,6 +184,10 @@ export type ActivityView<V extends ActivityViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
       | "type"
+      | "priority"
+      | "assignedUser"
+      | "assignedBy"
+      | "createTs"
     >
   : V extends "activity.view"
   ? Pick<
@@ -253,5 +254,39 @@ export type ActivityView<V extends ActivityViewName> = V extends "_minimal"
       | "assignedUser"
       | "assignedBy"
       | "createTs"
+    >
+  : V extends "portal.notification"
+  ? Pick<
+      Activity,
+      | "id"
+      | "version"
+      | "createTs"
+      | "createdBy"
+      | "updateTs"
+      | "updatedBy"
+      | "deleteTs"
+      | "deletedBy"
+      | "nameRu"
+      | "nameKz"
+      | "nameEn"
+      | "referenceId"
+      | "notificationTemplateCode"
+      | "description"
+      | "allDay"
+      | "startDateTime"
+      | "endDateTime"
+      | "status"
+      | "reference"
+      | "eventColor"
+      | "notificationHeaderRu"
+      | "notificationHeaderKz"
+      | "notificationHeaderEn"
+      | "notificationBodyRu"
+      | "notificationBodyKz"
+      | "notificationBodyEn"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "name"
     >
   : never;

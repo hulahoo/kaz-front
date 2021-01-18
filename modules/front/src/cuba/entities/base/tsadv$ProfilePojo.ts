@@ -21,5 +21,5 @@ export class ProfilePojo extends BaseUuidEntity {
   inTeam?: number | null;
   employeeNumber?: string | null;
 }
-export type ProfilePojoViewName = "_minimal" | "_local" | "_base";
+export type ProfilePojoViewName = "_base" | "_local" | "_minimal";
 export type ProfilePojoView<V extends ProfilePojoViewName> = never;

@@ -6,8 +6,8 @@ export class Answer extends AbstractParentEntity {
   correct?: boolean | null;
   question?: Question | null;
 }
-export type AnswerViewName = "_minimal" | "_local" | "_base" | "answer.edit";
-export type AnswerView<V extends AnswerViewName> = V extends "_local"
+export type AnswerViewName = "_base" | "_local" | "_minimal" | "answer.edit";
+export type AnswerView<V extends AnswerViewName> = V extends "_base"
   ? Pick<
       Answer,
       | "id"
@@ -17,7 +17,7 @@ export type AnswerView<V extends AnswerViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Answer,
       | "id"

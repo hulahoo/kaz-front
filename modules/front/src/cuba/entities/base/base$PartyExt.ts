@@ -13,13 +13,31 @@ export class PartyExt extends Party {
   partyContactPerson?: PartyContactPerson[] | null;
 }
 export type PartyExtViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "partyExt.browse"
   | "partyExt.edit";
-export type PartyExtView<V extends PartyExtViewName> = V extends "_minimal"
-  ? Pick<PartyExt, "id" | "name">
+export type PartyExtView<V extends PartyExtViewName> = V extends "_base"
+  ? Pick<
+      PartyExt,
+      | "id"
+      | "name"
+      | "trainingProvider"
+      | "bin"
+      | "rnn"
+      | "signer"
+      | "job"
+      | "reason"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "partyType"
+      | "nationalIdentifier"
+      | "active"
+      | "resident"
+      | "upperName"
+    >
   : V extends "_local"
   ? Pick<
       PartyExt,
@@ -40,26 +58,8 @@ export type PartyExtView<V extends PartyExtViewName> = V extends "_minimal"
       | "resident"
       | "upperName"
     >
-  : V extends "_base"
-  ? Pick<
-      PartyExt,
-      | "id"
-      | "name"
-      | "trainingProvider"
-      | "bin"
-      | "rnn"
-      | "signer"
-      | "job"
-      | "reason"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "partyType"
-      | "nationalIdentifier"
-      | "active"
-      | "resident"
-      | "upperName"
-    >
+  : V extends "_minimal"
+  ? Pick<PartyExt, "id" | "name">
   : V extends "partyExt.browse"
   ? Pick<
       PartyExt,

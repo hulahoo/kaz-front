@@ -9,18 +9,18 @@ export class CourseSectionObject extends AbstractParentEntity {
   test?: Test | null;
 }
 export type CourseSectionObjectViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseSectionObject.edit";
 export type CourseSectionObjectView<
   V extends CourseSectionObjectViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseSectionObject,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseSectionObject,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

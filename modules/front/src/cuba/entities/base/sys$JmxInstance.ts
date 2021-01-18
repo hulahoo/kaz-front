@@ -6,13 +6,11 @@ export class JmxInstance extends StandardEntity {
   login?: string | null;
   password?: string | null;
 }
-export type JmxInstanceViewName = "_minimal" | "_local" | "_base";
-export type JmxInstanceView<
-  V extends JmxInstanceViewName
-> = V extends "_minimal"
-  ? Pick<JmxInstance, "id" | "nodeName" | "address">
+export type JmxInstanceViewName = "_base" | "_local" | "_minimal";
+export type JmxInstanceView<V extends JmxInstanceViewName> = V extends "_base"
+  ? Pick<JmxInstance, "id" | "nodeName" | "address" | "login" | "password">
   : V extends "_local"
   ? Pick<JmxInstance, "id" | "nodeName" | "address" | "login" | "password">
-  : V extends "_base"
-  ? Pick<JmxInstance, "id" | "nodeName" | "address" | "login" | "password">
+  : V extends "_minimal"
+  ? Pick<JmxInstance, "id" | "nodeName" | "address">
   : never;

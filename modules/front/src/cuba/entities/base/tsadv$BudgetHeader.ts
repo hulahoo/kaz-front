@@ -13,14 +13,12 @@ export class BudgetHeader extends AbstractParentEntity {
   budgetRequests?: BudgetRequest[] | null;
 }
 export type BudgetHeaderViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "budgetHeader-view"
   | "budgetHeader-with-request";
-export type BudgetHeaderView<
-  V extends BudgetHeaderViewName
-> = V extends "_local"
+export type BudgetHeaderView<V extends BudgetHeaderViewName> = V extends "_base"
   ? Pick<
       BudgetHeader,
       | "id"
@@ -30,7 +28,7 @@ export type BudgetHeaderView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BudgetHeader,
       | "id"

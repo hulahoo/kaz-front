@@ -6,8 +6,16 @@ import { Case } from "./tsadv$Case";
 import { PerformancePlan } from "./tsadv$PerformancePlan";
 import { JobGroupGoalLink } from "./tsadv$JobGroupGoalLink";
 import { RcJobGroup } from "./tsadv$RcJobGroup";
+import { DicEmployeeCategory } from "./tsadv$DicEmployeeCategory";
+import { DicJobCategory } from "./tsadv$DicJobCategory";
 export class JobGroup extends AbstractGroup {
   static NAME = "tsadv$JobGroup";
+  jobNameDefault?: string | null;
+  jobNameLang1?: string | null;
+  jobNameLang2?: string | null;
+  jobNameLang3?: string | null;
+  jobNameLang4?: string | null;
+  jobNameLang5?: string | null;
   list?: Job[] | null;
   competence?: CompetenceElement[] | null;
   job?: Job | null;
@@ -16,57 +24,91 @@ export class JobGroup extends AbstractGroup {
   performancePlans?: PerformancePlan[] | null;
   goals?: JobGroupGoalLink[] | null;
   rcJobGroups?: RcJobGroup[] | null;
+  employeeCategory?: DicEmployeeCategory | null;
+  jobCategory?: DicJobCategory | null;
   jobName?: string | null;
 }
 export type JobGroupViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
+  | "jobGroup-name-Ru-En"
   | "jobGroup.browse"
-  | "jobGroup.for.requisitions"
-  | "jobGroup-name-Ru-En";
-export type JobGroupView<V extends JobGroupViewName> = V extends "_minimal"
-  ? Pick<JobGroup, "id">
+  | "jobGroup.for.requisitions";
+export type JobGroupView<V extends JobGroupViewName> = V extends "_base"
+  ? Pick<
+      JobGroup,
+      | "id"
+      | "jobNameDefault"
+      | "jobNameLang1"
+      | "jobNameLang2"
+      | "jobNameLang3"
+      | "jobNameLang4"
+      | "jobNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       JobGroup,
-      "id" | "jobName" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "jobNameLang1"
+      | "jobNameLang2"
+      | "jobNameLang3"
+      | "jobNameLang4"
+      | "jobNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<JobGroup, "id" | "jobNameDefault">
+  : V extends "jobGroup-name-Ru-En"
   ? Pick<
       JobGroup,
-      "id" | "jobName" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "jobNameLang1"
+      | "jobNameLang2"
+      | "jobNameLang3"
+      | "jobNameLang4"
+      | "jobNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "job"
     >
   : V extends "jobGroup.browse"
   ? Pick<
       JobGroup,
       | "id"
-      | "jobName"
+      | "jobNameLang1"
+      | "jobNameLang2"
+      | "jobNameLang3"
+      | "jobNameLang4"
+      | "jobNameLang5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "list"
       | "cases"
+      | "jobNameDefault"
+      | "job"
+      | "employeeCategory"
     >
   : V extends "jobGroup.for.requisitions"
   ? Pick<
       JobGroup,
       | "id"
-      | "jobName"
+      | "jobNameLang1"
+      | "jobNameLang2"
+      | "jobNameLang3"
+      | "jobNameLang4"
+      | "jobNameLang5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "list"
-      | "job"
-    >
-  : V extends "jobGroup-name-Ru-En"
-  ? Pick<
-      JobGroup,
-      | "id"
-      | "jobName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
       | "job"
     >
   : never;

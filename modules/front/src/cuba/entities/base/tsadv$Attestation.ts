@@ -19,15 +19,25 @@ export class Attestation extends AbstractParentEntity {
   personGroupExt?: PersonGroupExt | null;
 }
 export type AttestationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "attestation.browse"
   | "attestation.edit";
-export type AttestationView<
-  V extends AttestationViewName
-> = V extends "_minimal"
-  ? Pick<Attestation, "id" | "attestationName">
+export type AttestationView<V extends AttestationViewName> = V extends "_base"
+  ? Pick<
+      Attestation,
+      | "id"
+      | "attestationName"
+      | "startDate"
+      | "endDate"
+      | "reason"
+      | "documentNumber"
+      | "documentDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Attestation,
@@ -42,20 +52,8 @@ export type AttestationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Attestation,
-      | "id"
-      | "attestationName"
-      | "startDate"
-      | "endDate"
-      | "reason"
-      | "documentNumber"
-      | "documentDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Attestation, "id" | "attestationName">
   : V extends "attestation.browse"
   ? Pick<
       Attestation,

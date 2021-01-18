@@ -9,18 +9,18 @@ export class ImportLearningLog extends StandardEntity {
   errorMessage?: string | null;
 }
 export type ImportLearningLogViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "importLearningLog.edit";
 export type ImportLearningLogView<
   V extends ImportLearningLogViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       ImportLearningLog,
       "id" | "processed" | "loadingDate" | "success" | "errorMessage"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       ImportLearningLog,
       "id" | "processed" | "loadingDate" | "success" | "errorMessage"

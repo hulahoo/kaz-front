@@ -8,15 +8,22 @@ export class GoalLibrary extends AbstractParentEntity {
   endDate?: any | null;
 }
 export type GoalLibraryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goalLibrary.browse"
   | "goalLibrary.edit";
-export type GoalLibraryView<
-  V extends GoalLibraryViewName
-> = V extends "_minimal"
-  ? Pick<GoalLibrary, "id" | "libraryName">
+export type GoalLibraryView<V extends GoalLibraryViewName> = V extends "_base"
+  ? Pick<
+      GoalLibrary,
+      | "id"
+      | "libraryName"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       GoalLibrary,
@@ -28,17 +35,8 @@ export type GoalLibraryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      GoalLibrary,
-      | "id"
-      | "libraryName"
-      | "startDate"
-      | "endDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<GoalLibrary, "id" | "libraryName">
   : V extends "goalLibrary.browse"
   ? Pick<
       GoalLibrary,

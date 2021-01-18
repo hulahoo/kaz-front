@@ -21,14 +21,32 @@ export class HiringStep extends AbstractParentEntity {
   orderDefault?: number | null;
 }
 export type HiringStepViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "hiringStepForRequisition.view"
+  | "_local"
+  | "_minimal"
+  | "hiringStep-for-listener"
   | "hiringStep.view"
-  | "hiringStep-for-listener";
-export type HiringStepView<V extends HiringStepViewName> = V extends "_minimal"
-  ? Pick<HiringStep, "id" | "stepName">
+  | "hiringStepForRequisition.view";
+export type HiringStepView<V extends HiringStepViewName> = V extends "_base"
+  ? Pick<
+      HiringStep,
+      | "id"
+      | "stepName"
+      | "isJobTest"
+      | "type"
+      | "attempts_control_level"
+      | "period"
+      | "attempts"
+      | "number_between_attempts"
+      | "stepDescription"
+      | "startDate"
+      | "endDate"
+      | "default_"
+      | "orderDefault"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       HiringStep,
@@ -49,31 +67,10 @@ export type HiringStepView<V extends HiringStepViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      HiringStep,
-      | "id"
-      | "stepName"
-      | "isJobTest"
-      | "type"
-      | "attempts_control_level"
-      | "period"
-      | "attempts"
-      | "number_between_attempts"
-      | "stepDescription"
-      | "startDate"
-      | "endDate"
-      | "default_"
-      | "orderDefault"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "hiringStepForRequisition.view"
-  ? Pick<
-      HiringStep,
-      "id" | "stepName" | "stepDescription" | "startDate" | "endDate"
-    >
+  : V extends "_minimal"
+  ? Pick<HiringStep, "id" | "stepName">
+  : V extends "hiringStep-for-listener"
+  ? Pick<HiringStep, "id" | "stepName" | "default_" | "orderDefault">
   : V extends "hiringStep.view"
   ? Pick<
       HiringStep,
@@ -97,6 +94,9 @@ export type HiringStepView<V extends HiringStepViewName> = V extends "_minimal"
       | "questionnaires"
       | "test"
     >
-  : V extends "hiringStep-for-listener"
-  ? Pick<HiringStep, "id" | "stepName" | "default_" | "orderDefault">
+  : V extends "hiringStepForRequisition.view"
+  ? Pick<
+      HiringStep,
+      "id" | "stepName" | "stepDescription" | "startDate" | "endDate"
+    >
   : never;

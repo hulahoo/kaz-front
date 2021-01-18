@@ -6,9 +6,20 @@ export class Grade extends AbstractTimeBasedEntity {
   recognitionNominate?: boolean | null;
   group?: GradeGroup | null;
 }
-export type GradeViewName = "_minimal" | "_local" | "_base" | "grade.edit";
-export type GradeView<V extends GradeViewName> = V extends "_minimal"
-  ? Pick<Grade, "id" | "gradeName">
+export type GradeViewName = "_base" | "_local" | "_minimal" | "grade.edit";
+export type GradeView<V extends GradeViewName> = V extends "_base"
+  ? Pick<
+      Grade,
+      | "id"
+      | "gradeName"
+      | "recognitionNominate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
   : V extends "_local"
   ? Pick<
       Grade,
@@ -22,19 +33,8 @@ export type GradeView<V extends GradeViewName> = V extends "_minimal"
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
-  ? Pick<
-      Grade,
-      | "id"
-      | "gradeName"
-      | "recognitionNominate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
+  : V extends "_minimal"
+  ? Pick<Grade, "id" | "gradeName">
   : V extends "grade.edit"
   ? Pick<
       Grade,

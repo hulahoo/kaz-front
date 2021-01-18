@@ -17,15 +17,32 @@ export class HelpElement extends AbstractParentEntity {
   content?: string | null;
 }
 export type HelpElementViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "helpElement.view"
-  | "helpElement.edit";
-export type HelpElementView<
-  V extends HelpElementViewName
-> = V extends "_minimal"
-  ? Pick<HelpElement, "id" | "name">
+  | "_local"
+  | "_minimal"
+  | "helpElement.edit"
+  | "helpElement.view";
+export type HelpElementView<V extends HelpElementViewName> = V extends "_base"
+  ? Pick<
+      HelpElement,
+      | "id"
+      | "name"
+      | "nameLang1"
+      | "nameLang2"
+      | "nameLang3"
+      | "nameLang4"
+      | "nameLang5"
+      | "contentLang1"
+      | "contentLang2"
+      | "contentLang3"
+      | "contentLang4"
+      | "contentLang5"
+      | "screen"
+      | "content"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       HelpElement,
@@ -47,28 +64,9 @@ export type HelpElementView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      HelpElement,
-      | "id"
-      | "name"
-      | "nameLang1"
-      | "nameLang2"
-      | "nameLang3"
-      | "nameLang4"
-      | "nameLang5"
-      | "contentLang1"
-      | "contentLang2"
-      | "contentLang3"
-      | "contentLang4"
-      | "contentLang5"
-      | "screen"
-      | "content"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "helpElement.view"
+  : V extends "_minimal"
+  ? Pick<HelpElement, "id" | "name">
+  : V extends "helpElement.edit"
   ? Pick<
       HelpElement,
       | "id"
@@ -90,7 +88,7 @@ export type HelpElementView<
       | "integrationUserLogin"
       | "parent"
     >
-  : V extends "helpElement.edit"
+  : V extends "helpElement.view"
   ? Pick<
       HelpElement,
       | "id"

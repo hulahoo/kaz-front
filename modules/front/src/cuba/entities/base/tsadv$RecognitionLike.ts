@@ -7,9 +7,9 @@ export class RecognitionLike extends StandardEntity {
   recognition?: Recognition | null;
 }
 export type RecognitionLikeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "recognitionLike.edit";
 export type RecognitionLikeView<
   V extends RecognitionLikeViewName

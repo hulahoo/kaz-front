@@ -13,15 +13,16 @@ export class SessionLogEntry extends StandardEntity {
   finishedTs?: any | null;
   clientType?: any | null;
   server?: string | null;
+  sysTenantId?: string | null;
 }
 export type SessionLogEntryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "sessionLogEntry-view";
 export type SessionLogEntryView<
   V extends SessionLogEntryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       SessionLogEntry,
       | "id"
@@ -34,8 +35,9 @@ export type SessionLogEntryView<
       | "finishedTs"
       | "clientType"
       | "server"
+      | "sysTenantId"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SessionLogEntry,
       | "id"
@@ -48,6 +50,7 @@ export type SessionLogEntryView<
       | "finishedTs"
       | "clientType"
       | "server"
+      | "sysTenantId"
     >
   : V extends "sessionLogEntry-view"
   ? Pick<
@@ -62,6 +65,7 @@ export type SessionLogEntryView<
       | "finishedTs"
       | "clientType"
       | "server"
+      | "sysTenantId"
       | "user"
       | "substitutedUser"
     >

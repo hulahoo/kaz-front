@@ -11,13 +11,13 @@ export class MedicalService extends AbstractParentEntity {
   medicalInspection?: MedicalInspection | null;
 }
 export type MedicalServiceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "medicalService-view";
 export type MedicalServiceView<
   V extends MedicalServiceViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       MedicalService,
       | "id"
@@ -31,7 +31,7 @@ export type MedicalServiceView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       MedicalService,
       | "id"

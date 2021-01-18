@@ -9,5 +9,5 @@ export class StandardEntity extends BaseUuidEntity {
   deleteTs?: any | null;
   deletedBy?: string | null;
 }
-export type StandardEntityViewName = "_minimal" | "_local" | "_base";
+export type StandardEntityViewName = "_base" | "_local" | "_minimal";
 export type StandardEntityView<V extends StandardEntityViewName> = never;

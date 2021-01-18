@@ -19,17 +19,29 @@ export class AssessmentTemplate extends AbstractParentEntity {
   participantTest?: Test | null;
 }
 export type AssessmentTemplateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assessmentTemplate.browse"
   | "assessmentTemplate.edit"
-  | "assessmentTemplateForCard"
-  | "assessmentTemplate.filter";
+  | "assessmentTemplate.filter"
+  | "assessmentTemplateForCard";
 export type AssessmentTemplateView<
   V extends AssessmentTemplateViewName
-> = V extends "_minimal"
-  ? Pick<AssessmentTemplate, "id" | "assessmentTemplateName">
+> = V extends "_base"
+  ? Pick<
+      AssessmentTemplate,
+      | "id"
+      | "assessmentTemplateName"
+      | "selfAssessment"
+      | "managerAssessment"
+      | "participantAssessment"
+      | "goalWeight"
+      | "competenceWeight"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       AssessmentTemplate,
@@ -44,20 +56,8 @@ export type AssessmentTemplateView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      AssessmentTemplate,
-      | "id"
-      | "assessmentTemplateName"
-      | "selfAssessment"
-      | "managerAssessment"
-      | "participantAssessment"
-      | "goalWeight"
-      | "competenceWeight"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<AssessmentTemplate, "id" | "assessmentTemplateName">
   : V extends "assessmentTemplate.browse"
   ? Pick<
       AssessmentTemplate,
@@ -88,6 +88,8 @@ export type AssessmentTemplateView<
       | "participantTest"
       | "performancePlan"
     >
+  : V extends "assessmentTemplate.filter"
+  ? Pick<AssessmentTemplate, "id" | "assessmentTemplateName">
   : V extends "assessmentTemplateForCard"
   ? Pick<
       AssessmentTemplate,
@@ -104,6 +106,4 @@ export type AssessmentTemplateView<
       | "assessment"
       | "competenceTemplate"
     >
-  : V extends "assessmentTemplate.filter"
-  ? Pick<AssessmentTemplate, "id" | "assessmentTemplateName">
   : never;

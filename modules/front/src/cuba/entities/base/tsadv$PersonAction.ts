@@ -31,13 +31,11 @@ export class PersonAction extends StandardEntity {
   personActionComment?: PersonActionComment[] | null;
 }
 export type PersonActionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personAction-view";
-export type PersonActionView<
-  V extends PersonActionViewName
-> = V extends "_local"
+export type PersonActionView<V extends PersonActionViewName> = V extends "_base"
   ? Pick<
       PersonAction,
       | "id"
@@ -59,7 +57,7 @@ export type PersonActionView<
       | "actionDate"
       | "comment"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonAction,
       | "id"

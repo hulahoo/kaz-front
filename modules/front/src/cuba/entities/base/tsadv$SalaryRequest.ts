@@ -31,14 +31,14 @@ export class SalaryRequest extends AbstractParentEntity {
   difference?: any | null;
 }
 export type SalaryRequestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "salary-request.view"
-  | "salary-notification.view";
+  | "_local"
+  | "_minimal"
+  | "salary-notification.view"
+  | "salary-request.view";
 export type SalaryRequestView<
   V extends SalaryRequestViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       SalaryRequest,
       | "id"
@@ -55,7 +55,7 @@ export type SalaryRequestView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SalaryRequest,
       | "id"
@@ -71,6 +71,27 @@ export type SalaryRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "salary-notification.view"
+  ? Pick<
+      SalaryRequest,
+      | "id"
+      | "note"
+      | "requestNumber"
+      | "amount"
+      | "changePercent"
+      | "netGross"
+      | "startDate"
+      | "endDate"
+      | "type"
+      | "difference"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "reason"
+      | "assignmentGroup"
+      | "status"
+      | "oldSalary"
     >
   : V extends "salary-request.view"
   ? Pick<
@@ -98,26 +119,5 @@ export type SalaryRequestView<
       | "ordAssignment"
       | "status"
       | "attachment"
-    >
-  : V extends "salary-notification.view"
-  ? Pick<
-      SalaryRequest,
-      | "id"
-      | "note"
-      | "requestNumber"
-      | "amount"
-      | "changePercent"
-      | "netGross"
-      | "startDate"
-      | "endDate"
-      | "type"
-      | "difference"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "reason"
-      | "assignmentGroup"
-      | "status"
-      | "oldSalary"
     >
   : never;

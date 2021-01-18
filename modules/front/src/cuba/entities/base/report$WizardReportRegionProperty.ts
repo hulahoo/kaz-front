@@ -11,5 +11,5 @@ export class RegionProperty extends BaseUuidEntity {
   hierarchicalLocalizedName?: string | null;
   hierarchicalLocalizedNameExceptRoot?: string | null;
 }
-export type RegionPropertyViewName = "_minimal" | "_local" | "_base";
+export type RegionPropertyViewName = "_base" | "_local" | "_minimal";
 export type RegionPropertyView<V extends RegionPropertyViewName> = never;

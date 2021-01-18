@@ -6,15 +6,15 @@ export class ReferenceToEntity extends EmbeddableEntity {
   intEntityId?: number | null;
   longEntityId?: any | null;
 }
-export type ReferenceToEntityViewName = "_minimal" | "_local" | "_base";
+export type ReferenceToEntityViewName = "_base" | "_local" | "_minimal";
 export type ReferenceToEntityView<
   V extends ReferenceToEntityViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       ReferenceToEntity,
       "entityId" | "stringEntityId" | "intEntityId" | "longEntityId"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       ReferenceToEntity,
       "entityId" | "stringEntityId" | "intEntityId" | "longEntityId"

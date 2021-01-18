@@ -18,34 +18,8 @@ export class Position extends AbstractTimeBasedEntity {
   fte?: any | null;
   maxPersons?: number | null;
 }
-export type PositionViewName = "_minimal" | "_local" | "_base";
-export type PositionView<V extends PositionViewName> = V extends "_minimal"
-  ? Pick<Position, "id" | "positionName">
-  : V extends "_local"
-  ? Pick<
-      Position,
-      | "id"
-      | "positionFullNameLang1"
-      | "positionFullNameLang2"
-      | "positionFullNameLang3"
-      | "positionFullNameLang4"
-      | "positionFullNameLang5"
-      | "positionNameLang1"
-      | "positionNameLang2"
-      | "positionNameLang3"
-      | "positionNameLang4"
-      | "positionNameLang5"
-      | "managerFlag"
-      | "fte"
-      | "maxPersons"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
-  : V extends "_base"
+export type PositionViewName = "_base" | "_local" | "_minimal";
+export type PositionView<V extends PositionViewName> = V extends "_base"
   ? Pick<
       Position,
       | "id"
@@ -70,4 +44,30 @@ export type PositionView<V extends PositionViewName> = V extends "_minimal"
       | "endDate"
       | "writeHistory"
     >
+  : V extends "_local"
+  ? Pick<
+      Position,
+      | "id"
+      | "positionFullNameLang1"
+      | "positionFullNameLang2"
+      | "positionFullNameLang3"
+      | "positionFullNameLang4"
+      | "positionFullNameLang5"
+      | "positionNameLang1"
+      | "positionNameLang2"
+      | "positionNameLang3"
+      | "positionNameLang4"
+      | "positionNameLang5"
+      | "managerFlag"
+      | "fte"
+      | "maxPersons"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
+  : V extends "_minimal"
+  ? Pick<Position, "id" | "positionName">
   : never;

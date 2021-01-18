@@ -1,11 +1,10 @@
-@import "/src/theme";
+@import "/src/theme-vars";
 
 @input-color: @primary-2 !important;
 @icon-color: @primary-1 !important;
 
 .element-property {
   width: 244px;
-  margin: 16px;
 
   font-weight: 500;
   font-size: @default-font-size-header;
@@ -14,10 +13,6 @@
 .element-property *:not(.element-header-name):focus {
   box-shadow: none !important;
   border-color: @primary-4 !important;
-}
-
-.element-property .element-property-container {
-  height: 32px;
 }
 
 .element-property span {

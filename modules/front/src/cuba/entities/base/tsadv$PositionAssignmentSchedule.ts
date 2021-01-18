@@ -7,9 +7,9 @@ export class Timesheet extends BaseUuidEntity {
   assignmentGroup?: AssignmentGroupExt | null;
   assignmentSchedules?: AssignmentSchedule | null;
 }
-export type TimesheetViewName = "_minimal" | "_local" | "_base";
-export type TimesheetView<V extends TimesheetViewName> = V extends "_minimal"
+export type TimesheetViewName = "_base" | "_local" | "_minimal";
+export type TimesheetView<V extends TimesheetViewName> = V extends "_base"
   ? Pick<Timesheet, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<Timesheet, "id">
   : never;

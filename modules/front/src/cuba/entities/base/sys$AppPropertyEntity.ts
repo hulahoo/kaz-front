@@ -15,5 +15,5 @@ export class AppPropertyEntity extends BaseUuidEntity {
   displayedCurrentValue?: string | null;
   displayedDefaultValue?: string | null;
 }
-export type AppPropertyEntityViewName = "_minimal" | "_local" | "_base";
+export type AppPropertyEntityViewName = "_base" | "_local" | "_minimal";
 export type AppPropertyEntityView<V extends AppPropertyEntityViewName> = never;

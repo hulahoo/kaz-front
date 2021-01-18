@@ -14,13 +14,13 @@ export class WorkplaceMSDS extends AbstractParentEntity {
   workPlace?: WorkPlace | null;
 }
 export type WorkplaceMSDSViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "workplaceMSDS-view";
 export type WorkplaceMSDSView<
   V extends WorkplaceMSDSViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       WorkplaceMSDS,
       | "id"
@@ -32,7 +32,7 @@ export type WorkplaceMSDSView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       WorkplaceMSDS,
       | "id"

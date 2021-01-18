@@ -12,12 +12,21 @@ export class ImportLog extends AbstractParentEntity {
   importScenario?: ImportScenario | null;
 }
 export type ImportLogViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "importLog.view";
-export type ImportLogView<V extends ImportLogViewName> = V extends "_minimal"
-  ? Pick<ImportLog, "id" | "started" | "finished">
+export type ImportLogView<V extends ImportLogViewName> = V extends "_base"
+  ? Pick<
+      ImportLog,
+      | "id"
+      | "started"
+      | "finished"
+      | "entitiesProcessed"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ImportLog,
@@ -29,17 +38,8 @@ export type ImportLogView<V extends ImportLogViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ImportLog,
-      | "id"
-      | "started"
-      | "finished"
-      | "entitiesProcessed"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<ImportLog, "id" | "started" | "finished">
   : V extends "importLog.view"
   ? Pick<
       ImportLog,

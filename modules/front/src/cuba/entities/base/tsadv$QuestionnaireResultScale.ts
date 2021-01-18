@@ -11,10 +11,10 @@ export class QuestionnaireResultScale extends AbstractParentEntity {
   min?: number | null;
   max?: number | null;
 }
-export type QuestionnaireResultScaleViewName = "_minimal" | "_local" | "_base";
+export type QuestionnaireResultScaleViewName = "_base" | "_local" | "_minimal";
 export type QuestionnaireResultScaleView<
   V extends QuestionnaireResultScaleViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       QuestionnaireResultScale,
       | "id"
@@ -29,7 +29,7 @@ export type QuestionnaireResultScaleView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       QuestionnaireResultScale,
       | "id"

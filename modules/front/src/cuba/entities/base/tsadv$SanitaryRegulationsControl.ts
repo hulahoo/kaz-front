@@ -10,13 +10,13 @@ export class SanitaryRegulationsControl extends AbstractParentEntity {
   occupationalMedicine?: OccupationalMedicine | null;
 }
 export type SanitaryRegulationsControlViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "sanitaryRegulationsControl-view";
 export type SanitaryRegulationsControlView<
   V extends SanitaryRegulationsControlViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       SanitaryRegulationsControl,
       | "id"
@@ -27,7 +27,7 @@ export type SanitaryRegulationsControlView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SanitaryRegulationsControl,
       | "id"

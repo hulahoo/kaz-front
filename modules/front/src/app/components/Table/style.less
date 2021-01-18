@@ -1,0 +1,54 @@
+@import '/src/theme-vars';
+
+//@table-selected-row-color: @primary-4 !important;
+@table-selected-row-bg: @primary-6 !important;
+@table-header-bg: #FFF !important;
+
+.actionable td {
+  cursor: pointer;
+}
+
+.ant-pagination-item-active {
+  a {
+    color: @primary-1 !important;
+  }
+
+  border-color: @primary-1 !important;
+}
+
+.ant-table-tbody {
+  > tr:nth-child(odd):not(:hover):not(.ant-table-row-selected) {
+    > td {
+      background: @primary-8 !important;
+    }
+
+    > td:first-child {
+      border-bottom-left-radius: 4px !important;
+      border-top-left-radius: 4px !important;
+    }
+
+    > td:last-child {
+      border-bottom-right-radius: 4px !important;
+      border-top-right-radius: 4px !important;
+    }
+  }
+
+  > tr {
+    > td {
+      border-bottom: none !important;
+
+      a {
+        color: @primary-1;
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+.ant-table-thead {
+  > tr {
+    > th {
+      border-bottom: none !important;
+    }
+  }
+}

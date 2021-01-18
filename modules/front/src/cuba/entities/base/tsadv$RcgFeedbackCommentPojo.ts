@@ -11,7 +11,7 @@ export class RcgFeedbackCommentPojo extends BaseUuidEntity {
   parentCommentId?: any | null;
   parentCommentAuthor?: PersonPojo | null;
 }
-export type RcgFeedbackCommentPojoViewName = "_minimal" | "_local" | "_base";
+export type RcgFeedbackCommentPojoViewName = "_base" | "_local" | "_minimal";
 export type RcgFeedbackCommentPojoView<
   V extends RcgFeedbackCommentPojoViewName
 > = never;

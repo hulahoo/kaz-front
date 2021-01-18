@@ -5,9 +5,19 @@ export class Assignment extends AbstractTimeBasedEntity {
   location?: DicLocation | null;
   assignDate?: any | null;
 }
-export type AssignmentViewName = "_minimal" | "_local" | "_base";
-export type AssignmentView<V extends AssignmentViewName> = V extends "_minimal"
-  ? Pick<Assignment, "id">
+export type AssignmentViewName = "_base" | "_local" | "_minimal";
+export type AssignmentView<V extends AssignmentViewName> = V extends "_base"
+  ? Pick<
+      Assignment,
+      | "id"
+      | "assignDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
   : V extends "_local"
   ? Pick<
       Assignment,
@@ -20,16 +30,6 @@ export type AssignmentView<V extends AssignmentViewName> = V extends "_minimal"
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
-  ? Pick<
-      Assignment,
-      | "id"
-      | "assignDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
+  : V extends "_minimal"
+  ? Pick<Assignment, "id">
   : never;

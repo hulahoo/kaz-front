@@ -7,11 +7,11 @@ export class PersonCompetenceInt extends AbstractEntityInt {
   scaleLevelName?: string | null;
   competenceTypeCode?: string | null;
 }
-export type PersonCompetenceIntViewName = "_minimal" | "_local" | "_base";
+export type PersonCompetenceIntViewName = "_base" | "_local" | "_minimal";
 export type PersonCompetenceIntView<
   V extends PersonCompetenceIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PersonCompetenceInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonCompetenceInt, "id">
   : never;

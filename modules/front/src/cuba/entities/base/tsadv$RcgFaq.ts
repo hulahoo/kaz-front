@@ -16,27 +16,8 @@ export class RcgFaq extends StandardEntity {
   contentLang5?: string | null;
   code?: string | null;
 }
-export type RcgFaqViewName = "_minimal" | "_local" | "_base";
-export type RcgFaqView<V extends RcgFaqViewName> = V extends "_minimal"
-  ? Pick<RcgFaq, "id" | "title">
-  : V extends "_local"
-  ? Pick<
-      RcgFaq,
-      | "id"
-      | "order"
-      | "titleLang1"
-      | "titleLang2"
-      | "titleLang3"
-      | "titleLang4"
-      | "titleLang5"
-      | "contentLang1"
-      | "contentLang2"
-      | "contentLang3"
-      | "contentLang4"
-      | "contentLang5"
-      | "code"
-    >
-  : V extends "_base"
+export type RcgFaqViewName = "_base" | "_local" | "_minimal";
+export type RcgFaqView<V extends RcgFaqViewName> = V extends "_base"
   ? Pick<
       RcgFaq,
       | "id"
@@ -54,4 +35,23 @@ export type RcgFaqView<V extends RcgFaqViewName> = V extends "_minimal"
       | "contentLang5"
       | "code"
     >
+  : V extends "_local"
+  ? Pick<
+      RcgFaq,
+      | "id"
+      | "order"
+      | "titleLang1"
+      | "titleLang2"
+      | "titleLang3"
+      | "titleLang4"
+      | "titleLang5"
+      | "contentLang1"
+      | "contentLang2"
+      | "contentLang3"
+      | "contentLang4"
+      | "contentLang5"
+      | "code"
+    >
+  : V extends "_minimal"
+  ? Pick<RcgFaq, "id" | "title">
   : never;

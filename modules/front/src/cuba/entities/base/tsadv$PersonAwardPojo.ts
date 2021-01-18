@@ -7,5 +7,5 @@ export class PersonAwardPojo extends BaseUuidEntity {
   why?: string | null;
   status?: string | null;
 }
-export type PersonAwardPojoViewName = "_minimal" | "_local" | "_base";
+export type PersonAwardPojoViewName = "_base" | "_local" | "_minimal";
 export type PersonAwardPojoView<V extends PersonAwardPojoViewName> = never;

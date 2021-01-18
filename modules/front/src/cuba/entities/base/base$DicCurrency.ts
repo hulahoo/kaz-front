@@ -2,10 +2,8 @@ import { AbstractSortableDictionary } from "./AbstractSortableDictionary";
 export class DicCurrency extends AbstractSortableDictionary {
   static NAME = "base$DicCurrency";
 }
-export type DicCurrencyViewName = "_minimal" | "_local" | "_base";
-export type DicCurrencyView<
-  V extends DicCurrencyViewName
-> = V extends "_minimal"
+export type DicCurrencyViewName = "_base" | "_local" | "_minimal";
+export type DicCurrencyView<V extends DicCurrencyViewName> = V extends "_base"
   ? Pick<
       DicCurrency,
       | "id"
@@ -15,6 +13,21 @@ export type DicCurrencyView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -42,7 +55,7 @@ export type DicCurrencyView<
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicCurrency,
       | "id"
@@ -52,20 +65,5 @@ export type DicCurrencyView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : never;

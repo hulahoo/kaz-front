@@ -8,14 +8,14 @@ export class BankAccount extends StandardEntity {
   number?: string | null;
 }
 export type BankAccountViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "bankAccount-browse"
   | "bankAccount-edit";
-export type BankAccountView<V extends BankAccountViewName> = V extends "_local"
+export type BankAccountView<V extends BankAccountViewName> = V extends "_base"
   ? Pick<BankAccount, "id" | "number">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<BankAccount, "id" | "number">
   : V extends "bankAccount-browse"
   ? Pick<BankAccount, "id" | "number" | "party" | "bank">

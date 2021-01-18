@@ -36,13 +36,13 @@ export class AccidenInjured extends AbstractParentEntity {
   accidents?: Accidents | null;
 }
 export type AccidenInjuredViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "accidenInjured-view";
 export type AccidenInjuredView<
   V extends AccidenInjuredViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AccidenInjured,
       | "id"
@@ -67,7 +67,7 @@ export type AccidenInjuredView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AccidenInjured,
       | "id"

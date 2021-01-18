@@ -6,11 +6,11 @@ export class QuestionnaireInt extends AbstractEntityInt {
   questions?: QuestionInt | null;
   instruction?: string | null;
 }
-export type QuestionnaireIntViewName = "_minimal" | "_local" | "_base";
+export type QuestionnaireIntViewName = "_base" | "_local" | "_minimal";
 export type QuestionnaireIntView<
   V extends QuestionnaireIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<QuestionnaireInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<QuestionnaireInt, "id">
   : never;

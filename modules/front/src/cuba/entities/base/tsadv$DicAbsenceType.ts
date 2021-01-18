@@ -18,53 +18,13 @@ export class DicAbsenceType extends AbstractDictionary {
   isRequiredOrderNumber?: boolean | null;
 }
 export type DicAbsenceTypeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicAbsenceType.view";
 export type DicAbsenceTypeView<
   V extends DicAbsenceTypeViewName
-> = V extends "_minimal"
-  ? Pick<DicAbsenceType, "id" | "langValue" | "description">
-  : V extends "_local"
-  ? Pick<
-      DicAbsenceType,
-      | "id"
-      | "useInSelfService"
-      | "vacationDurationType"
-      | "elmaTransfer"
-      | "useInBalance"
-      | "ignoreHolidays"
-      | "isOnlyWorkingDay"
-      | "timesheetCode"
-      | "isWorkingDay"
-      | "useOnlyAbsenceType"
-      | "displayAbsence"
-      | "cancelParentAbsence"
-      | "availableForTimecard"
-      | "isRequiredOrderNumber"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DicAbsenceType,
       | "id"
@@ -104,6 +64,46 @@ export type DicAbsenceTypeView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicAbsenceType,
+      | "id"
+      | "useInSelfService"
+      | "vacationDurationType"
+      | "elmaTransfer"
+      | "useInBalance"
+      | "ignoreHolidays"
+      | "isOnlyWorkingDay"
+      | "timesheetCode"
+      | "isWorkingDay"
+      | "useOnlyAbsenceType"
+      | "displayAbsence"
+      | "cancelParentAbsence"
+      | "availableForTimecard"
+      | "isRequiredOrderNumber"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicAbsenceType, "id" | "langValue" | "description">
   : V extends "dicAbsenceType.view"
   ? Pick<
       DicAbsenceType,

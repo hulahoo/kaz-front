@@ -11,8 +11,8 @@ export class AccessToken extends BaseUuidEntity {
   locale?: string | null;
   refreshTokenValue?: string | null;
 }
-export type AccessTokenViewName = "_minimal" | "_local" | "_base";
-export type AccessTokenView<V extends AccessTokenViewName> = V extends "_local"
+export type AccessTokenViewName = "_base" | "_local" | "_minimal";
+export type AccessTokenView<V extends AccessTokenViewName> = V extends "_base"
   ? Pick<
       AccessToken,
       | "id"
@@ -26,7 +26,7 @@ export type AccessTokenView<V extends AccessTokenViewName> = V extends "_local"
       | "locale"
       | "refreshTokenValue"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AccessToken,
       | "id"

@@ -5,11 +5,11 @@ export class DicRcgFeedbackTypePojo extends BaseUuidEntity {
   imageId?: string | null;
   image?: string | null;
 }
-export type DicRcgFeedbackTypePojoViewName = "_minimal" | "_local" | "_base";
+export type DicRcgFeedbackTypePojoViewName = "_base" | "_local" | "_minimal";
 export type DicRcgFeedbackTypePojoView<
   V extends DicRcgFeedbackTypePojoViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<DicRcgFeedbackTypePojo, "id" | "name">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<DicRcgFeedbackTypePojo, "id" | "name">
   : never;

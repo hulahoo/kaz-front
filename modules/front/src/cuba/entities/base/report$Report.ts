@@ -20,6 +20,7 @@ export class Report extends StandardEntity {
   screensIdx?: string | null;
   inputEntityTypesIdx?: string | null;
   restAccess?: boolean | null;
+  sysTenantId?: string | null;
   templates?: ReportTemplate[] | null;
   system?: boolean | null;
   rootBandDefinition?: BandDefinition | null;
@@ -33,14 +34,31 @@ export class Report extends StandardEntity {
   locName?: string | null;
 }
 export type ReportViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
+  | "emailTemplate-view"
   | "report.edit"
   | "report.view"
   | "report.withTemplates";
-export type ReportView<V extends ReportViewName> = V extends "_minimal"
-  ? Pick<Report, "id" | "locName" | "name" | "localeNames">
+export type ReportView<V extends ReportViewName> = V extends "_base"
+  ? Pick<
+      Report,
+      | "id"
+      | "locName"
+      | "name"
+      | "localeNames"
+      | "code"
+      | "reportType"
+      | "description"
+      | "xml"
+      | "rolesIdx"
+      | "screensIdx"
+      | "inputEntityTypesIdx"
+      | "restAccess"
+      | "sysTenantId"
+      | "system"
+    >
   : V extends "_local"
   ? Pick<
       Report,
@@ -55,25 +73,25 @@ export type ReportView<V extends ReportViewName> = V extends "_minimal"
       | "screensIdx"
       | "inputEntityTypesIdx"
       | "restAccess"
+      | "sysTenantId"
       | "system"
       | "locName"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<Report, "id" | "locName" | "name" | "localeNames">
+  : V extends "emailTemplate-view"
   ? Pick<
       Report,
       | "id"
-      | "locName"
       | "name"
       | "localeNames"
       | "code"
-      | "reportType"
       | "description"
+      | "reportType"
+      | "group"
+      | "inputParameters"
+      | "defaultTemplate"
       | "xml"
-      | "rolesIdx"
-      | "screensIdx"
-      | "inputEntityTypesIdx"
-      | "restAccess"
-      | "system"
     >
   : V extends "report.edit"
   ? Pick<
@@ -89,6 +107,7 @@ export type ReportView<V extends ReportViewName> = V extends "_minimal"
       | "screensIdx"
       | "inputEntityTypesIdx"
       | "restAccess"
+      | "sysTenantId"
       | "system"
       | "locName"
       | "templates"

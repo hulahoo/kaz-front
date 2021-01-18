@@ -13,14 +13,23 @@ export class AssignmentSchedule extends AbstractParentEntity {
   name?: string | null;
 }
 export type AssignmentScheduleViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assignmentSchedule.view";
 export type AssignmentScheduleView<
   V extends AssignmentScheduleViewName
-> = V extends "_minimal"
-  ? Pick<AssignmentSchedule, "id">
+> = V extends "_base"
+  ? Pick<
+      AssignmentSchedule,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "colorsSet"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       AssignmentSchedule,
@@ -32,17 +41,8 @@ export type AssignmentScheduleView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      AssignmentSchedule,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "colorsSet"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<AssignmentSchedule, "id">
   : V extends "assignmentSchedule.view"
   ? Pick<
       AssignmentSchedule,

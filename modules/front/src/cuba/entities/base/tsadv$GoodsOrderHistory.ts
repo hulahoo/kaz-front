@@ -9,15 +9,15 @@ export class GoodsOrderHistory extends StandardEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type GoodsOrderHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goodsOrderHistory.browse";
 export type GoodsOrderHistoryView<
   V extends GoodsOrderHistoryViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<GoodsOrderHistory, "id" | "status" | "dateTime">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<GoodsOrderHistory, "id" | "status" | "dateTime">
   : V extends "goodsOrderHistory.browse"
   ? Pick<

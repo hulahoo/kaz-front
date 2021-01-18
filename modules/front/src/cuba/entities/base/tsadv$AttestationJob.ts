@@ -7,18 +7,18 @@ export class AttestationJob extends AbstractParentEntity {
   jobGroup?: JobGroup | null;
 }
 export type AttestationJobViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "attestationJob-view";
 export type AttestationJobView<
   V extends AttestationJobViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AttestationJob,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AttestationJob,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

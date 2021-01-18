@@ -13,9 +13,9 @@ export class OfferInt extends AbstractEntityInt {
   comment?: string | null;
   offerId?: any | null;
 }
-export type OfferIntViewName = "_minimal" | "_local" | "_base";
-export type OfferIntView<V extends OfferIntViewName> = V extends "_minimal"
+export type OfferIntViewName = "_base" | "_local" | "_minimal";
+export type OfferIntView<V extends OfferIntViewName> = V extends "_base"
   ? Pick<OfferInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<OfferInt, "id">
   : never;

@@ -14,28 +14,13 @@ export class InteractionLog extends StandardEntity {
   statusText?: string | null;
 }
 export type InteractionLogViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "interactionLog-browse";
 export type InteractionLogView<
   V extends InteractionLogViewName
-> = V extends "_minimal"
-  ? Pick<InteractionLog, "id" | "action" | "createTs">
-  : V extends "_local"
-  ? Pick<
-      InteractionLog,
-      | "id"
-      | "action"
-      | "description"
-      | "status"
-      | "totalQuantity"
-      | "successQuantity"
-      | "errorQuantity"
-      | "warningQuantity"
-      | "statusText"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       InteractionLog,
       | "id"
@@ -49,6 +34,21 @@ export type InteractionLogView<
       | "warningQuantity"
       | "statusText"
     >
+  : V extends "_local"
+  ? Pick<
+      InteractionLog,
+      | "id"
+      | "action"
+      | "description"
+      | "status"
+      | "totalQuantity"
+      | "successQuantity"
+      | "errorQuantity"
+      | "warningQuantity"
+      | "statusText"
+    >
+  : V extends "_minimal"
+  ? Pick<InteractionLog, "id" | "action" | "createTs">
   : V extends "interactionLog-browse"
   ? Pick<
       InteractionLog,

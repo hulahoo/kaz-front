@@ -1,18 +1,23 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { ProcModel } from "./bpm$ProcModel";
 import { BpmRolesLink } from "./tsadv$BpmRolesLink";
 export class BpmRolesDefiner extends StandardEntity {
   static NAME = "tsadv$BpmRolesDefiner";
-  procModel?: ProcModel | null;
+  processDefinitionKey?: string | null;
   links?: BpmRolesLink[] | null;
 }
 export type BpmRolesDefinerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "bpmRolesDefiner-view";
 export type BpmRolesDefinerView<
   V extends BpmRolesDefinerViewName
-> = V extends "bpmRolesDefiner-view"
-  ? Pick<BpmRolesDefiner, "id" | "procModel" | "links">
+> = V extends "_base"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
+  : V extends "_local"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
+  : V extends "_minimal"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
+  : V extends "bpmRolesDefiner-view"
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey" | "links">
   : never;

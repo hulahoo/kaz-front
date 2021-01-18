@@ -11,13 +11,13 @@ export class InvestigationResult extends StandardEntity {
   accidenInjured?: AccidenInjured | null;
 }
 export type InvestigationResultViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "investigationResult-view";
 export type InvestigationResultView<
   V extends InvestigationResultViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       InvestigationResult,
       | "id"
@@ -26,7 +26,7 @@ export type InvestigationResultView<
       | "employeeGuilt"
       | "employerguilt"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       InvestigationResult,
       | "id"

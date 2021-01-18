@@ -16,13 +16,13 @@ export class TestSection extends AbstractParentEntity {
   pointsPerQuestion?: number | null;
 }
 export type TestSectionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "testSection-for-test.browse"
   | "testSection.edit"
   | "testSection.with.questions";
-export type TestSectionView<V extends TestSectionViewName> = V extends "_local"
+export type TestSectionView<V extends TestSectionViewName> = V extends "_base"
   ? Pick<
       TestSection,
       | "id"
@@ -37,7 +37,7 @@ export type TestSectionView<V extends TestSectionViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       TestSection,
       | "id"

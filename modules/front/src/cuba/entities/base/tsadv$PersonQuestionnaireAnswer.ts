@@ -10,10 +10,10 @@ export class PersonQuestionnaireAnswer extends AbstractParentEntity {
   score?: number | null;
   textAnswer?: string | null;
 }
-export type PersonQuestionnaireAnswerViewName = "_minimal" | "_local" | "_base";
+export type PersonQuestionnaireAnswerViewName = "_base" | "_local" | "_minimal";
 export type PersonQuestionnaireAnswerView<
   V extends PersonQuestionnaireAnswerViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonQuestionnaireAnswer,
       | "id"
@@ -23,7 +23,7 @@ export type PersonQuestionnaireAnswerView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonQuestionnaireAnswer,
       | "id"

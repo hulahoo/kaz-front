@@ -2,87 +2,72 @@ import { HierarchyElement } from "./base$HierarchyElement";
 import { PositionGroupExt } from "./base$PositionGroupExt";
 import { OrganizationGroupExt } from "./base$OrganizationGroupExt";
 import { PersonGroupExt } from "./base$PersonGroupExt";
+import { HierarchyElementGroup } from "./tsadv_HierarchyElementGroup";
 export class HierarchyElementExt extends HierarchyElement {
   static NAME = "base$HierarchyElementExt";
   positionGroup?: PositionGroupExt | null;
   organizationGroup?: OrganizationGroupExt | null;
   personGroup?: PersonGroupExt | null;
   parent?: HierarchyElementExt | null;
+  parentGroup?: HierarchyElementGroup | null;
+  parentFromGroup?: HierarchyElementExt | null;
+  group?: HierarchyElementGroup | null;
+  hasChild?: boolean | null;
   name?: string | null;
 }
 export type HierarchyElementExtViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "hierarchyElement.full"
-  | "hierarchyElement.timecard"
-  | "hierarchyElement.browse"
-  | "hierarchyElement.lookup"
-  | "hierarchyElement.edit"
-  | "hierarchyElement.parent"
+  | "_local"
+  | "_minimal"
   | "hierarchyElement-with-assignments"
+  | "hierarchyElement.browse"
+  | "hierarchyElement.edit"
+  | "hierarchyElement.full"
+  | "hierarchyElement.lookup"
+  | "hierarchyElement.parent"
+  | "hierarchyElement.parent.minimal"
   | "hierarchyElement.position.tree"
-  | "hierarchyElement.parent.minimal";
+  | "hierarchyElement.timecard"
+  | "new.hierarchyElement.browse";
 export type HierarchyElementExtView<
   V extends HierarchyElementExtViewName
-> = V extends "_minimal"
-  ? Pick<HierarchyElementExt, "id">
+> = V extends "_base"
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "elementType"
+    >
   : V extends "_local"
   ? Pick<
       HierarchyElementExt,
       | "id"
-      | "name"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "elementType"
       | "startDate"
       | "endDate"
-      | "doNotCopy"
+      | "writeHistory"
+      | "elementType"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<HierarchyElementExt, "id">
+  : V extends "hierarchyElement-with-assignments"
   ? Pick<
       HierarchyElementExt,
       | "id"
-      | "name"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "elementType"
       | "startDate"
       | "endDate"
-      | "doNotCopy"
-    >
-  : V extends "hierarchyElement.full"
-  ? Pick<
-      HierarchyElementExt,
-      | "id"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      | "writeHistory"
       | "elementType"
-      | "startDate"
-      | "endDate"
-      | "doNotCopy"
-      | "positionGroup"
-      | "organizationGroup"
-      | "parent"
-      | "hierarchy"
-      | "name"
-    >
-  : V extends "hierarchyElement.timecard"
-  ? Pick<
-      HierarchyElementExt,
-      | "id"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "elementType"
-      | "startDate"
-      | "endDate"
-      | "doNotCopy"
       | "positionGroup"
       | "organizationGroup"
       | "parent"
@@ -92,32 +77,13 @@ export type HierarchyElementExtView<
   ? Pick<
       HierarchyElementExt,
       | "id"
-      | "name"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "elementType"
       | "startDate"
       | "endDate"
-      | "doNotCopy"
-      | "name"
-      | "organizationGroup"
-      | "positionGroup"
-      | "parent"
-      | "hierarchy"
-    >
-  : V extends "hierarchyElement.lookup"
-  ? Pick<
-      HierarchyElementExt,
-      | "id"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      | "writeHistory"
       | "elementType"
-      | "startDate"
-      | "endDate"
-      | "doNotCopy"
       | "positionGroup"
       | "organizationGroup"
       | "parent"
@@ -127,14 +93,46 @@ export type HierarchyElementExtView<
   ? Pick<
       HierarchyElementExt,
       | "id"
-      | "name"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "elementType"
       | "startDate"
       | "endDate"
-      | "doNotCopy"
+      | "writeHistory"
+      | "elementType"
+      | "positionGroup"
+      | "organizationGroup"
+      | "parent"
+      | "hierarchy"
+    >
+  : V extends "hierarchyElement.full"
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "elementType"
+      | "positionGroup"
+      | "organizationGroup"
+      | "parent"
+      | "hierarchy"
+      | "name"
+    >
+  : V extends "hierarchyElement.lookup"
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "elementType"
       | "positionGroup"
       | "organizationGroup"
       | "parent"
@@ -144,50 +142,17 @@ export type HierarchyElementExtView<
   ? Pick<
       HierarchyElementExt,
       | "id"
-      | "name"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "elementType"
       | "startDate"
       | "endDate"
-      | "doNotCopy"
+      | "writeHistory"
+      | "elementType"
       | "parent"
       | "hierarchy"
       | "positionGroup"
       | "organizationGroup"
-    >
-  : V extends "hierarchyElement-with-assignments"
-  ? Pick<
-      HierarchyElementExt,
-      | "id"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "elementType"
-      | "startDate"
-      | "endDate"
-      | "doNotCopy"
-      | "positionGroup"
-      | "organizationGroup"
-      | "parent"
-      | "name"
-    >
-  : V extends "hierarchyElement.position.tree"
-  ? Pick<
-      HierarchyElementExt,
-      | "id"
-      | "name"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "elementType"
-      | "startDate"
-      | "endDate"
-      | "doNotCopy"
-      | "positionGroup"
-      | "parent"
     >
   : V extends "hierarchyElement.parent.minimal"
   ? Pick<
@@ -198,5 +163,51 @@ export type HierarchyElementExtView<
       | "positionGroup"
       | "organizationGroup"
       | "elementType"
+    >
+  : V extends "hierarchyElement.position.tree"
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "elementType"
+      | "positionGroup"
+      | "parent"
+    >
+  : V extends "hierarchyElement.timecard"
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "elementType"
+      | "positionGroup"
+      | "organizationGroup"
+      | "parent"
+      | "name"
+    >
+  : V extends "new.hierarchyElement.browse"
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "elementType"
+      | "group"
+      | "parentGroup"
+      | "organizationGroup"
+      | "positionGroup"
     >
   : never;

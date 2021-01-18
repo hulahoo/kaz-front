@@ -10,15 +10,15 @@ export class PersonQuestionAnswer extends StandardEntity {
   date?: any | null;
 }
 export type PersonQuestionAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personQuestionAnswer.browse";
 export type PersonQuestionAnswerView<
   V extends PersonQuestionAnswerViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<PersonQuestionAnswer, "id" | "date">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<PersonQuestionAnswer, "id" | "date">
   : V extends "personQuestionAnswer.browse"
   ? Pick<

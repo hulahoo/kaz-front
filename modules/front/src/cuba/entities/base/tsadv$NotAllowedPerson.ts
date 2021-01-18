@@ -12,13 +12,13 @@ export class NotAllowedPerson extends AbstractParentEntity {
   harmfullFactors?: HarmfullFactors | null;
 }
 export type NotAllowedPersonViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "notAllowedPerson-view";
 export type NotAllowedPersonView<
   V extends NotAllowedPersonViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       NotAllowedPerson,
       | "id"
@@ -27,7 +27,7 @@ export type NotAllowedPersonView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       NotAllowedPerson,
       | "id"

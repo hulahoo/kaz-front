@@ -40,18 +40,34 @@ export class Interview extends AbstractParentEntity {
   groupOnCancellationCount?: number | null;
 }
 export type InterviewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "interview-view-withquestianare"
+  | "_local"
+  | "_minimal"
+  | "groupInterview.view"
   | "interview-for-jobrequest"
-  | "interview.view"
-  | "interview.miniView"
+  | "interview-view-withquestianare"
   | "interview.full"
-  | "scheduledInterview.view"
-  | "groupInterview.view";
-export type InterviewView<V extends InterviewViewName> = V extends "_minimal"
-  ? Pick<Interview, "id">
+  | "interview.miniView"
+  | "interview.view"
+  | "scheduledInterview.view";
+export type InterviewView<V extends InterviewViewName> = V extends "_base"
+  ? Pick<
+      Interview,
+      | "id"
+      | "interviewDate"
+      | "interviewStatus"
+      | "timeFrom"
+      | "timeTo"
+      | "sendInvitationToCandidate"
+      | "reason"
+      | "isScheduled"
+      | "maxCandidatesCount"
+      | "comment"
+      | "isGroup"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Interview,
@@ -70,7 +86,9 @@ export type InterviewView<V extends InterviewViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<Interview, "id">
+  : V extends "groupInterview.view"
   ? Pick<
       Interview,
       | "id"
@@ -87,16 +105,13 @@ export type InterviewView<V extends InterviewViewName> = V extends "_minimal"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-    >
-  : V extends "interview-view-withquestianare"
-  ? Pick<
-      Interview,
-      | "id"
-      | "jobRequest"
-      | "interviewDate"
-      | "interviewStatus"
+      | "requisitionHiringStep"
+      | "interviewDetails"
       | "questionnaires"
-      | "comment"
+      | "mainInterviewerPersonGroup"
+      | "place"
+      | "requisition"
+      | "jobRequest"
     >
   : V extends "interview-for-jobrequest"
   ? Pick<
@@ -113,6 +128,64 @@ export type InterviewView<V extends InterviewViewName> = V extends "_minimal"
       | "comment"
       | "questionnaires"
       | "mainInterviewerPersonGroup"
+    >
+  : V extends "interview-view-withquestianare"
+  ? Pick<
+      Interview,
+      | "id"
+      | "jobRequest"
+      | "interviewDate"
+      | "interviewStatus"
+      | "questionnaires"
+      | "comment"
+    >
+  : V extends "interview.full"
+  ? Pick<
+      Interview,
+      | "id"
+      | "interviewDate"
+      | "interviewStatus"
+      | "timeFrom"
+      | "timeTo"
+      | "sendInvitationToCandidate"
+      | "reason"
+      | "isScheduled"
+      | "maxCandidatesCount"
+      | "comment"
+      | "isGroup"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "jobRequest"
+      | "requisitionHiringStep"
+      | "mainInterviewerPersonGroup"
+      | "interviewReason"
+      | "requisition"
+      | "place"
+      | "groupInterview"
+    >
+  : V extends "interview.miniView"
+  ? Pick<
+      Interview,
+      | "id"
+      | "interviewDate"
+      | "interviewStatus"
+      | "timeFrom"
+      | "timeTo"
+      | "sendInvitationToCandidate"
+      | "reason"
+      | "isScheduled"
+      | "maxCandidatesCount"
+      | "comment"
+      | "isGroup"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "jobRequest"
+      | "requisitionHiringStep"
+      | "interviewReason"
+      | "place"
+      | "groupInterview"
     >
   : V extends "interview.view"
   ? Pick<
@@ -142,54 +215,6 @@ export type InterviewView<V extends InterviewViewName> = V extends "_minimal"
       | "questionnaires"
       | "attachment"
     >
-  : V extends "interview.miniView"
-  ? Pick<
-      Interview,
-      | "id"
-      | "interviewDate"
-      | "interviewStatus"
-      | "timeFrom"
-      | "timeTo"
-      | "sendInvitationToCandidate"
-      | "reason"
-      | "isScheduled"
-      | "maxCandidatesCount"
-      | "comment"
-      | "isGroup"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "jobRequest"
-      | "requisitionHiringStep"
-      | "interviewReason"
-      | "place"
-      | "groupInterview"
-    >
-  : V extends "interview.full"
-  ? Pick<
-      Interview,
-      | "id"
-      | "interviewDate"
-      | "interviewStatus"
-      | "timeFrom"
-      | "timeTo"
-      | "sendInvitationToCandidate"
-      | "reason"
-      | "isScheduled"
-      | "maxCandidatesCount"
-      | "comment"
-      | "isGroup"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "jobRequest"
-      | "requisitionHiringStep"
-      | "mainInterviewerPersonGroup"
-      | "interviewReason"
-      | "requisition"
-      | "place"
-      | "groupInterview"
-    >
   : V extends "scheduledInterview.view"
   ? Pick<
       Interview,
@@ -212,30 +237,5 @@ export type InterviewView<V extends InterviewViewName> = V extends "_minimal"
       | "requisition"
       | "interviewDetails"
       | "place"
-    >
-  : V extends "groupInterview.view"
-  ? Pick<
-      Interview,
-      | "id"
-      | "interviewDate"
-      | "interviewStatus"
-      | "timeFrom"
-      | "timeTo"
-      | "sendInvitationToCandidate"
-      | "reason"
-      | "isScheduled"
-      | "maxCandidatesCount"
-      | "comment"
-      | "isGroup"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requisitionHiringStep"
-      | "interviewDetails"
-      | "questionnaires"
-      | "mainInterviewerPersonGroup"
-      | "place"
-      | "requisition"
-      | "jobRequest"
     >
   : never;

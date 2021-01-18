@@ -1,6 +1,7 @@
-import {getMenuItems, RouteItem, SubMenu} from "@cuba-platform/react";
-import rootStore from "./app/store";
-import {MenuSubMenu, MenuRouteItem} from "./app/store/MenuStore";
+import { AssignedGoalManagement } from "./app/pages/AssignedGoals/DefaultGoal/AssignedGoalManagement";
+import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
+import { rootStore } from "./app/store";
+import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";
 
 export const menuItems = getMenuItems();
 
@@ -48,3 +49,31 @@ rootStore.menu.menuList.forEach((e: MenuSubMenu | MenuRouteItem) => {
 //
 // // Add sub menu item to menu config
 // menuItems.push(userSettingsSubMenu);
+//
+// menuItems.push({
+//   pathPattern: "/personContactManagement/:entityId?",
+//   menuLink: "/personContactManagement",
+//   component: PersonContactManagement,
+//   caption: "PersonContactManagement"
+// });
+//
+// menuItems.push({
+//   pathPattern: "/personDocumentManagement/:entityId?",
+//   menuLink: "/personDocumentManagement",
+//   component: PersonDocumentManagement,
+//   caption: "PersonDocumentManagement"
+// });
+
+// menuItems.push({
+//   pathPattern: "/personDocumentManagement/:entityId?",
+//   menuLink: "/personDocumentManagement",
+//   component: PersonDocumentManagement,
+//   caption: "PersonDocumentManagement"
+// });
+
+// menuItems.push({
+//   pathPattern: "/assignedPerformancePlanManagement/:entityId?",
+//   menuLink: "/assignedPerformancePlanManagement",
+//   component: AssignedPerformancePlanManagement,
+//   caption: "AssignedPerformancePlanManagement"
+// });

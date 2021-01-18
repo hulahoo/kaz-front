@@ -7,9 +7,9 @@ export class PersonPojo extends BaseUuidEntity {
   name?: string | null;
   employeeNumber?: string | null;
 }
-export type PersonPojoViewName = "_minimal" | "_local" | "_base";
-export type PersonPojoView<V extends PersonPojoViewName> = V extends "_minimal"
+export type PersonPojoViewName = "_base" | "_local" | "_minimal";
+export type PersonPojoView<V extends PersonPojoViewName> = V extends "_base"
   ? Pick<PersonPojo, "id" | "name">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonPojo, "id" | "name">
   : never;

@@ -12,24 +12,24 @@ export class SafetyPlanEvent extends StandardEntity {
   organization?: OrganizationGroupExt | null;
 }
 export type SafetyPlanEventViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "safetyPlanEvent-view";
 export type SafetyPlanEventView<
   V extends SafetyPlanEventViewName
-> = V extends "_minimal"
-  ? Pick<SafetyPlanEvent, "id" | "description">
+> = V extends "_base"
+  ? Pick<
+      SafetyPlanEvent,
+      "id" | "description" | "planName" | "dateFrom" | "dateTo" | "active"
+    >
   : V extends "_local"
   ? Pick<
       SafetyPlanEvent,
       "id" | "planName" | "description" | "dateFrom" | "dateTo" | "active"
     >
-  : V extends "_base"
-  ? Pick<
-      SafetyPlanEvent,
-      "id" | "description" | "planName" | "dateFrom" | "dateTo" | "active"
-    >
+  : V extends "_minimal"
+  ? Pick<SafetyPlanEvent, "id" | "description">
   : V extends "safetyPlanEvent-view"
   ? Pick<
       SafetyPlanEvent,

@@ -8,11 +8,11 @@ export class GoodsIssue extends AbstractParentEntity {
   order?: GoodsOrder | null;
 }
 export type GoodsIssueViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goodsIssue.edit";
-export type GoodsIssueView<V extends GoodsIssueViewName> = V extends "_local"
+export type GoodsIssueView<V extends GoodsIssueViewName> = V extends "_base"
   ? Pick<
       GoodsIssue,
       | "id"
@@ -21,7 +21,7 @@ export type GoodsIssueView<V extends GoodsIssueViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       GoodsIssue,
       | "id"

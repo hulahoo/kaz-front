@@ -1,10 +1,52 @@
-@import "/src/theme";
+@import "/src/theme-vars";
 
-.btn {
-//  margin: 16px;
-//  width: 256px;
-  font-weight: 600 !important;
+.button {
   font-size: 12px !important;
+  color: white !important;
+  border: 0 !important;
+  //padding: 12px 0 !important;
+  width: 256px;
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.button > *,
+.btn,
+.btn > * {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary {
+  background-color: @primary-1 !important;
+}
+
+.btn-primary > i.icon {
+  margin: 0 6px !important;
+}
+
+.btn-primary > i.icon svg {
+  fill: white !important;
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.btn-follow {
+  background-color: white !important;
+  border: 2px solid @follow-button-color !important;
+  color: @primary-2 !important;
+}
+
+.btn-follow:hover {
+  background-color: @follow-button-hover-color !important;
+}
+
+.btn-follow:active {
+  border-color: @follow-button-hover-color !important;
 }
 
 .ant-btn-primary {

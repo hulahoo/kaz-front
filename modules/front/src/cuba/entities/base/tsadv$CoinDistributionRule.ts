@@ -21,15 +21,24 @@ export class CoinDistributionRule extends StandardEntity {
   coins?: any | null;
 }
 export type CoinDistributionRuleViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "coinDistributionRule.browse"
   | "coinDistributionRule.edit";
 export type CoinDistributionRuleView<
   V extends CoinDistributionRuleViewName
-> = V extends "_minimal"
-  ? Pick<CoinDistributionRule, "id" | "name">
+> = V extends "_base"
+  ? Pick<
+      CoinDistributionRule,
+      | "id"
+      | "name"
+      | "description"
+      | "distributionFrequency"
+      | "zeroFrequency"
+      | "active"
+      | "coins"
+    >
   : V extends "_local"
   ? Pick<
       CoinDistributionRule,
@@ -41,17 +50,8 @@ export type CoinDistributionRuleView<
       | "active"
       | "coins"
     >
-  : V extends "_base"
-  ? Pick<
-      CoinDistributionRule,
-      | "id"
-      | "name"
-      | "description"
-      | "distributionFrequency"
-      | "zeroFrequency"
-      | "active"
-      | "coins"
-    >
+  : V extends "_minimal"
+  ? Pick<CoinDistributionRule, "id" | "name">
   : V extends "coinDistributionRule.browse"
   ? Pick<
       CoinDistributionRule,

@@ -11,15 +11,15 @@ export class RecognitionComment extends StandardEntity {
   recognition?: Recognition | null;
 }
 export type RecognitionCommentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "recognitionComment.edit";
 export type RecognitionCommentView<
   V extends RecognitionCommentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<RecognitionComment, "id" | "text" | "textEn" | "textRu">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<RecognitionComment, "id" | "text" | "textEn" | "textRu">
   : V extends "recognitionComment.edit"
   ? Pick<

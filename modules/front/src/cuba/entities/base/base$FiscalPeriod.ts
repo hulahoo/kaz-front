@@ -8,18 +8,16 @@ export class FiscalPeriod extends StandardEntity {
   endDate?: any | null;
 }
 export type FiscalPeriodViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "fiscalPeriod.browse";
-export type FiscalPeriodView<
-  V extends FiscalPeriodViewName
-> = V extends "_minimal"
-  ? Pick<FiscalPeriod, "id" | "name">
+export type FiscalPeriodView<V extends FiscalPeriodViewName> = V extends "_base"
+  ? Pick<FiscalPeriod, "id" | "name" | "startDate" | "endDate">
   : V extends "_local"
   ? Pick<FiscalPeriod, "id" | "name" | "startDate" | "endDate">
-  : V extends "_base"
-  ? Pick<FiscalPeriod, "id" | "name" | "startDate" | "endDate">
+  : V extends "_minimal"
+  ? Pick<FiscalPeriod, "id" | "name">
   : V extends "fiscalPeriod.browse"
   ? Pick<FiscalPeriod, "id" | "name" | "startDate" | "endDate" | "year">
   : never;

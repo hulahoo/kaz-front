@@ -8,15 +8,15 @@ export class AgreementDocument extends StandardEntity {
   agreement?: Agreement | null;
 }
 export type AgreementDocumentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "agreementDocument.view";
 export type AgreementDocumentView<
   V extends AgreementDocumentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<AgreementDocument, "id" | "description">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<AgreementDocument, "id" | "description">
   : V extends "agreementDocument.view"
   ? Pick<AgreementDocument, "id" | "description" | "file" | "agreement">

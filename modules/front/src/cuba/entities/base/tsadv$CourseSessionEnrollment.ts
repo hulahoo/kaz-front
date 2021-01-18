@@ -10,13 +10,13 @@ export class CourseSessionEnrollment extends AbstractParentEntity {
   comment?: string | null;
 }
 export type CourseSessionEnrollmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseSessionEnrollment.edit";
 export type CourseSessionEnrollmentView<
   V extends CourseSessionEnrollmentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseSessionEnrollment,
       | "id"
@@ -27,7 +27,7 @@ export type CourseSessionEnrollmentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseSessionEnrollment,
       | "id"

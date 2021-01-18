@@ -8,5 +8,5 @@ export class OrganizationTree extends BaseUuidEntity {
   hasChild?: boolean | null;
   organizationGroupExt?: OrganizationGroupExt | null;
 }
-export type OrganizationTreeViewName = "_minimal" | "_local" | "_base";
+export type OrganizationTreeViewName = "_base" | "_local" | "_minimal";
 export type OrganizationTreeView<V extends OrganizationTreeViewName> = never;

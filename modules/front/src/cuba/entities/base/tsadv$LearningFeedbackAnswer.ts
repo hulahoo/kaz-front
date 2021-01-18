@@ -13,13 +13,13 @@ export class LearningFeedbackAnswer extends AbstractParentEntity {
   answerLangValue?: string | null;
 }
 export type LearningFeedbackAnswerViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "learningFeedbackAnswer.edit";
 export type LearningFeedbackAnswerView<
   V extends LearningFeedbackAnswerViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LearningFeedbackAnswer,
       | "id"
@@ -35,7 +35,7 @@ export type LearningFeedbackAnswerView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LearningFeedbackAnswer,
       | "id"

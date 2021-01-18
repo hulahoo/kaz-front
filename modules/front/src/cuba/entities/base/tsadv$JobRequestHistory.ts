@@ -6,14 +6,21 @@ export class JobRequestHistory extends AbstractParentEntity {
   jobRequestStatus?: any | null;
 }
 export type JobRequestHistoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "jobRequestHistory.view";
 export type JobRequestHistoryView<
   V extends JobRequestHistoryViewName
-> = V extends "_minimal"
-  ? Pick<JobRequestHistory, "id">
+> = V extends "_base"
+  ? Pick<
+      JobRequestHistory,
+      | "id"
+      | "jobRequestStatus"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       JobRequestHistory,
@@ -23,15 +30,8 @@ export type JobRequestHistoryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      JobRequestHistory,
-      | "id"
-      | "jobRequestStatus"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<JobRequestHistory, "id">
   : V extends "jobRequestHistory.view"
   ? Pick<
       JobRequestHistory,

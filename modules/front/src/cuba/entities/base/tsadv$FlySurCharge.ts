@@ -15,13 +15,11 @@ export class FlySurCharge extends AbstractParentEntity {
   dateTo?: any | null;
 }
 export type FlySurChargeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "flySurCharge-view";
-export type FlySurChargeView<
-  V extends FlySurChargeViewName
-> = V extends "_local"
+export type FlySurChargeView<V extends FlySurChargeViewName> = V extends "_base"
   ? Pick<
       FlySurCharge,
       | "id"
@@ -37,7 +35,7 @@ export type FlySurChargeView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       FlySurCharge,
       | "id"

@@ -19,7 +19,7 @@ export class PivotTableDescription extends BaseUuidEntity {
   columnsProperties?: string | null;
   aggregationProperties?: string | null;
 }
-export type PivotTableDescriptionViewName = "_minimal" | "_local" | "_base";
+export type PivotTableDescriptionViewName = "_base" | "_local" | "_minimal";
 export type PivotTableDescriptionView<
   V extends PivotTableDescriptionViewName
 > = never;

@@ -7,18 +7,18 @@ export class CalibrationComission extends AbstractParentEntity {
   calibrationSession?: CalibrationSession | null;
 }
 export type CalibrationComissionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "calibrationComission.edit";
 export type CalibrationComissionView<
   V extends CalibrationComissionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CalibrationComission,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CalibrationComission,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

@@ -4,10 +4,10 @@ export class DicPartyAddressType extends AbstractSortableDictionary {
   partyType?: any | null;
   primary?: boolean | null;
 }
-export type DicPartyAddressTypeViewName = "_minimal" | "_local" | "_base";
+export type DicPartyAddressTypeViewName = "_base" | "_local" | "_minimal";
 export type DicPartyAddressTypeView<
   V extends DicPartyAddressTypeViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       DicPartyAddressType,
       | "id"
@@ -17,6 +17,23 @@ export type DicPartyAddressTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "partyType"
+      | "primary"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -46,7 +63,7 @@ export type DicPartyAddressTypeView<
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicPartyAddressType,
       | "id"
@@ -56,22 +73,5 @@ export type DicPartyAddressTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "partyType"
-      | "primary"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : never;

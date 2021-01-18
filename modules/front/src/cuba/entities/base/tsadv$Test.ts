@@ -25,14 +25,32 @@ export class Test extends AbstractParentEntity {
   course?: Course | null;
 }
 export type TestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "test.browse"
-  | "test.edit"
-  | "test.course.lms";
-export type TestView<V extends TestViewName> = V extends "_minimal"
-  ? Pick<Test, "id" | "name">
+  | "test.course.lms"
+  | "test.edit";
+export type TestView<V extends TestViewName> = V extends "_base"
+  ? Pick<
+      Test,
+      | "id"
+      | "name"
+      | "description"
+      | "active"
+      | "maxAttempt"
+      | "daysBetweenAttempts"
+      | "timer"
+      | "sectionOrder"
+      | "instruction"
+      | "targetScore"
+      | "showResults"
+      | "showSectionNewPage"
+      | "questionPerPage"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Test,
@@ -53,26 +71,8 @@ export type TestView<V extends TestViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Test,
-      | "id"
-      | "name"
-      | "description"
-      | "active"
-      | "maxAttempt"
-      | "daysBetweenAttempts"
-      | "timer"
-      | "sectionOrder"
-      | "instruction"
-      | "targetScore"
-      | "showResults"
-      | "showSectionNewPage"
-      | "questionPerPage"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Test, "id" | "name">
   : V extends "test.browse"
   ? Pick<
       Test,
@@ -98,27 +98,6 @@ export type TestView<V extends TestViewName> = V extends "_minimal"
       | "positionTest"
       | "course"
     >
-  : V extends "test.edit"
-  ? Pick<
-      Test,
-      | "id"
-      | "name"
-      | "description"
-      | "type"
-      | "active"
-      | "maxAttempt"
-      | "daysBetweenAttempts"
-      | "timer"
-      | "sectionOrder"
-      | "instruction"
-      | "targetScore"
-      | "showResults"
-      | "sections"
-      | "showSectionNewPage"
-      | "questionPerPage"
-      | "jobTest"
-      | "positionTest"
-    >
   : V extends "test.course.lms"
   ? Pick<
       Test,
@@ -139,5 +118,26 @@ export type TestView<V extends TestViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
       | "sections"
+    >
+  : V extends "test.edit"
+  ? Pick<
+      Test,
+      | "id"
+      | "name"
+      | "description"
+      | "type"
+      | "active"
+      | "maxAttempt"
+      | "daysBetweenAttempts"
+      | "timer"
+      | "sectionOrder"
+      | "instruction"
+      | "targetScore"
+      | "showResults"
+      | "sections"
+      | "showSectionNewPage"
+      | "questionPerPage"
+      | "jobTest"
+      | "positionTest"
     >
   : never;

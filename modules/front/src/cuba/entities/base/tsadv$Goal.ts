@@ -13,13 +13,23 @@ export class Goal extends AbstractParentEntity {
   endDate?: any | null;
 }
 export type GoalViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goal.browse"
   | "goal.edit";
-export type GoalView<V extends GoalViewName> = V extends "_minimal"
-  ? Pick<Goal, "id" | "goalName">
+export type GoalView<V extends GoalViewName> = V extends "_base"
+  ? Pick<
+      Goal,
+      | "id"
+      | "goalName"
+      | "successCriteria"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Goal,
@@ -32,18 +42,8 @@ export type GoalView<V extends GoalViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Goal,
-      | "id"
-      | "goalName"
-      | "successCriteria"
-      | "startDate"
-      | "endDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Goal, "id" | "goalName">
   : V extends "goal.browse"
   ? Pick<
       Goal,
@@ -62,10 +62,10 @@ export type GoalView<V extends GoalViewName> = V extends "_minimal"
       | "id"
       | "goalName"
       | "successCriteria"
+      | "library"
       | "measureType"
       | "uom"
       | "startDate"
       | "endDate"
-      | "library"
     >
   : never;

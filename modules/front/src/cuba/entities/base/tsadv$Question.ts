@@ -10,12 +10,12 @@ export class Question extends AbstractParentEntity {
   answers?: Answer[] | null;
 }
 export type QuestionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "question.edit"
   | "question.for.test.online";
-export type QuestionView<V extends QuestionViewName> = V extends "_local"
+export type QuestionView<V extends QuestionViewName> = V extends "_base"
   ? Pick<
       Question,
       | "id"
@@ -26,7 +26,7 @@ export type QuestionView<V extends QuestionViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Question,
       | "id"

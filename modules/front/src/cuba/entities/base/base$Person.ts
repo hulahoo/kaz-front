@@ -22,11 +22,33 @@ export class Person extends AbstractTimeBasedEntity {
   fullNameLatin?: string | null;
   fistLastNameLatin?: string | null;
 }
-export type PersonViewName = "_minimal" | "_local" | "_base";
-export type PersonView<V extends PersonViewName> = V extends "_minimal"
+export type PersonViewName = "_base" | "_local" | "_minimal";
+export type PersonView<V extends PersonViewName> = V extends "_base"
   ? Pick<
       Person,
-      "id" | "lastName" | "firstName" | "middleName" | "employeeNumber"
+      | "id"
+      | "lastName"
+      | "firstName"
+      | "middleName"
+      | "employeeNumber"
+      | "firstNameLatin"
+      | "middleNameLatin"
+      | "lastNameLatin"
+      | "hireDate"
+      | "nationalIdentifier"
+      | "dateOfBirth"
+      | "fullName"
+      | "firstLastName"
+      | "shortName"
+      | "fioWithEmployeeNumber"
+      | "fullNameLatin"
+      | "fistLastNameLatin"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
     >
   : V extends "_local"
   ? Pick<
@@ -55,31 +77,9 @@ export type PersonView<V extends PersonViewName> = V extends "_minimal"
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       Person,
-      | "id"
-      | "lastName"
-      | "firstName"
-      | "middleName"
-      | "employeeNumber"
-      | "firstNameLatin"
-      | "middleNameLatin"
-      | "lastNameLatin"
-      | "hireDate"
-      | "nationalIdentifier"
-      | "dateOfBirth"
-      | "fullName"
-      | "firstLastName"
-      | "shortName"
-      | "fioWithEmployeeNumber"
-      | "fullNameLatin"
-      | "fistLastNameLatin"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
+      "id" | "lastName" | "firstName" | "middleName" | "employeeNumber"
     >
   : never;

@@ -12,15 +12,24 @@ export class LearningPath extends AbstractTimeBasedEntity {
   courseCount?: any | null;
 }
 export type LearningPathViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "learningPath.browse"
   | "learningPath.edit";
-export type LearningPathView<
-  V extends LearningPathViewName
-> = V extends "_minimal"
-  ? Pick<LearningPath, "id" | "name">
+export type LearningPathView<V extends LearningPathViewName> = V extends "_base"
+  ? Pick<
+      LearningPath,
+      | "id"
+      | "name"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
   : V extends "_local"
   ? Pick<
       LearningPath,
@@ -34,19 +43,8 @@ export type LearningPathView<
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
-  ? Pick<
-      LearningPath,
-      | "id"
-      | "name"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
+  : V extends "_minimal"
+  ? Pick<LearningPath, "id" | "name">
   : V extends "learningPath.browse"
   ? Pick<
       LearningPath,

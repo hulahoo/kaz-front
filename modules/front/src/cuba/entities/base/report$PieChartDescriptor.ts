@@ -7,7 +7,7 @@ export class PieChartDescription extends AbstractChartDescription {
   colorField?: string | null;
   units?: string | null;
 }
-export type PieChartDescriptionViewName = "_minimal" | "_local" | "_base";
+export type PieChartDescriptionViewName = "_base" | "_local" | "_minimal";
 export type PieChartDescriptionView<
   V extends PieChartDescriptionViewName
 > = never;

@@ -9,16 +9,14 @@ export class CourseReview extends StandardEntity {
   text?: string | null;
 }
 export type CourseReviewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "courseReview.browse"
   | "courseReview.rate";
-export type CourseReviewView<
-  V extends CourseReviewViewName
-> = V extends "_local"
+export type CourseReviewView<V extends CourseReviewViewName> = V extends "_base"
   ? Pick<CourseReview, "id" | "rate" | "text">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<CourseReview, "id" | "rate" | "text">
   : V extends "courseReview.browse"
   ? Pick<CourseReview, "id" | "course" | "personGroup" | "rate" | "text">

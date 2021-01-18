@@ -17,16 +17,29 @@ export class RcQuestionnaire extends AbstractParentEntity {
   questions?: RcQuestionnaireQuestion[] | null;
 }
 export type RcQuestionnaireViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "rcQuestionnaire.view"
+  | "_local"
+  | "_minimal"
   | "rcQuestionnaire.lookup"
-  | "rcQuestionnaire.rest";
+  | "rcQuestionnaire.rest"
+  | "rcQuestionnaire.view";
 export type RcQuestionnaireView<
   V extends RcQuestionnaireViewName
-> = V extends "_minimal"
-  ? Pick<RcQuestionnaire, "id" | "name">
+> = V extends "_base"
+  ? Pick<
+      RcQuestionnaire,
+      | "id"
+      | "name"
+      | "name2"
+      | "name3"
+      | "name4"
+      | "name5"
+      | "passingScore"
+      | "instruction"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RcQuestionnaire,
@@ -42,22 +55,11 @@ export type RcQuestionnaireView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RcQuestionnaire,
-      | "id"
-      | "name"
-      | "name2"
-      | "name3"
-      | "name4"
-      | "name5"
-      | "passingScore"
-      | "instruction"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "rcQuestionnaire.view"
+  : V extends "_minimal"
+  ? Pick<RcQuestionnaire, "id" | "name">
+  : V extends "rcQuestionnaire.lookup"
+  ? Pick<RcQuestionnaire, "id" | "name" | "status" | "category" | "instruction">
+  : V extends "rcQuestionnaire.rest"
   ? Pick<
       RcQuestionnaire,
       | "id"
@@ -75,9 +77,7 @@ export type RcQuestionnaireView<
       | "category"
       | "questions"
     >
-  : V extends "rcQuestionnaire.lookup"
-  ? Pick<RcQuestionnaire, "id" | "name" | "status" | "category" | "instruction">
-  : V extends "rcQuestionnaire.rest"
+  : V extends "rcQuestionnaire.view"
   ? Pick<
       RcQuestionnaire,
       | "id"

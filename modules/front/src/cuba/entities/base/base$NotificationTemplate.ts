@@ -36,14 +36,49 @@ export class NotificationTemplate extends AbstractParentEntity {
   telegramTemplateLang5?: string | null;
 }
 export type NotificationTemplateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "notificationTemplate.view";
 export type NotificationTemplateView<
   V extends NotificationTemplateViewName
-> = V extends "_minimal"
-  ? Pick<NotificationTemplate, "id" | "name">
+> = V extends "_base"
+  ? Pick<
+      NotificationTemplate,
+      | "id"
+      | "name"
+      | "code"
+      | "description"
+      | "sqlQuery"
+      | "emailCaption"
+      | "emailTemplate"
+      | "smsTemplate"
+      | "telegramTemplate"
+      | "notificationType"
+      | "emailCaptionLang1"
+      | "emailCaptionLang2"
+      | "emailCaptionLang3"
+      | "emailCaptionLang4"
+      | "emailCaptionLang5"
+      | "emailTemplateLang1"
+      | "emailTemplateLang2"
+      | "emailTemplateLang3"
+      | "emailTemplateLang4"
+      | "emailTemplateLang5"
+      | "smsTemplateLang1"
+      | "smsTemplateLang2"
+      | "smsTemplateLang3"
+      | "smsTemplateLang4"
+      | "smsTemplateLang5"
+      | "telegramTemplateLang1"
+      | "telegramTemplateLang2"
+      | "telegramTemplateLang3"
+      | "telegramTemplateLang4"
+      | "telegramTemplateLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       NotificationTemplate,
@@ -81,43 +116,8 @@ export type NotificationTemplateView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      NotificationTemplate,
-      | "id"
-      | "name"
-      | "code"
-      | "description"
-      | "sqlQuery"
-      | "emailCaption"
-      | "emailTemplate"
-      | "smsTemplate"
-      | "telegramTemplate"
-      | "notificationType"
-      | "emailCaptionLang1"
-      | "emailCaptionLang2"
-      | "emailCaptionLang3"
-      | "emailCaptionLang4"
-      | "emailCaptionLang5"
-      | "emailTemplateLang1"
-      | "emailTemplateLang2"
-      | "emailTemplateLang3"
-      | "emailTemplateLang4"
-      | "emailTemplateLang5"
-      | "smsTemplateLang1"
-      | "smsTemplateLang2"
-      | "smsTemplateLang3"
-      | "smsTemplateLang4"
-      | "smsTemplateLang5"
-      | "telegramTemplateLang1"
-      | "telegramTemplateLang2"
-      | "telegramTemplateLang3"
-      | "telegramTemplateLang4"
-      | "telegramTemplateLang5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<NotificationTemplate, "id" | "name">
   : V extends "notificationTemplate.view"
   ? Pick<
       NotificationTemplate,

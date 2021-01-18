@@ -8,6 +8,7 @@ export class ScheduledTask extends BaseUuidEntity {
   deleteTs?: any | null;
   deletedBy?: string | null;
   definedBy?: any | null;
+  sysTenantId?: string | null;
   beanName?: string | null;
   methodName?: string | null;
   className?: string | null;
@@ -31,19 +32,44 @@ export class ScheduledTask extends BaseUuidEntity {
   description?: string | null;
   methodParametersString?: string | null;
 }
-export type ScheduledTaskViewName = "_minimal" | "_local" | "_base";
+export type ScheduledTaskViewName = "_base" | "_local" | "_minimal";
 export type ScheduledTaskView<
   V extends ScheduledTaskViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       ScheduledTask,
-      "id" | "beanName" | "methodName" | "className" | "scriptName"
+      | "id"
+      | "beanName"
+      | "methodName"
+      | "className"
+      | "scriptName"
+      | "definedBy"
+      | "sysTenantId"
+      | "userName"
+      | "singleton"
+      | "active"
+      | "period"
+      | "timeout"
+      | "startDate"
+      | "cron"
+      | "schedulingType"
+      | "timeFrame"
+      | "startDelay"
+      | "permittedServers"
+      | "logStart"
+      | "logFinish"
+      | "lastStartTime"
+      | "lastStartServer"
+      | "methodParamsXml"
+      | "description"
+      | "methodParametersString"
     >
   : V extends "_local"
   ? Pick<
       ScheduledTask,
       | "id"
       | "definedBy"
+      | "sysTenantId"
       | "beanName"
       | "methodName"
       | "className"
@@ -67,32 +93,9 @@ export type ScheduledTaskView<
       | "description"
       | "methodParametersString"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       ScheduledTask,
-      | "id"
-      | "beanName"
-      | "methodName"
-      | "className"
-      | "scriptName"
-      | "definedBy"
-      | "userName"
-      | "singleton"
-      | "active"
-      | "period"
-      | "timeout"
-      | "startDate"
-      | "cron"
-      | "schedulingType"
-      | "timeFrame"
-      | "startDelay"
-      | "permittedServers"
-      | "logStart"
-      | "logFinish"
-      | "lastStartTime"
-      | "lastStartServer"
-      | "methodParamsXml"
-      | "description"
-      | "methodParametersString"
+      "id" | "beanName" | "methodName" | "className" | "scriptName"
     >
   : never;

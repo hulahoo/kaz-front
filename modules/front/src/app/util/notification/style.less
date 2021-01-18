@@ -1,0 +1,21 @@
+@import '/src/theme-vars';
+
+.ant-notification-notice {
+  font-size: @default-font-size-header;
+  font-weight: 500;
+}
+
+.success-notification {
+  background-color: @success-color !important;
+  box-shadow: 6px 3px 24px rgb(18, 191, 102) !important;
+}
+.error-notification {
+  background-color: @error-color !important;
+  box-shadow: 6px 3px 24px rgba(224, 48, 48, 0.75) !important;
+}
+
+.ant-notification-notice-message,
+.ant-notification-notice-description,
+.ant-notification-notice .ant-notification-close-x svg {
+  color: #FFF !important;
+}

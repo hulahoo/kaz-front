@@ -11,20 +11,13 @@ export class Category extends StandardEntity {
   special?: string | null;
 }
 export type CategoryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "category.edit"
+  | "_local"
+  | "_minimal"
   | "category.defaultEdit"
+  | "category.edit"
   | "for.cache";
-export type CategoryView<V extends CategoryViewName> = V extends "_minimal"
-  ? Pick<Category, "id" | "localeName">
-  : V extends "_local"
-  ? Pick<
-      Category,
-      "id" | "name" | "entityType" | "isDefault" | "localeNames" | "special"
-    >
-  : V extends "_base"
+export type CategoryView<V extends CategoryViewName> = V extends "_base"
   ? Pick<
       Category,
       | "id"
@@ -35,6 +28,15 @@ export type CategoryView<V extends CategoryViewName> = V extends "_minimal"
       | "localeNames"
       | "special"
     >
+  : V extends "_local"
+  ? Pick<
+      Category,
+      "id" | "name" | "entityType" | "isDefault" | "localeNames" | "special"
+    >
+  : V extends "_minimal"
+  ? Pick<Category, "id" | "localeName">
+  : V extends "category.defaultEdit"
+  ? Pick<Category, "id" | "localeName" | "isDefault">
   : V extends "category.edit"
   ? Pick<
       Category,
@@ -46,8 +48,6 @@ export type CategoryView<V extends CategoryViewName> = V extends "_minimal"
       | "special"
       | "categoryAttrs"
     >
-  : V extends "category.defaultEdit"
-  ? Pick<Category, "id" | "localeName" | "isDefault">
   : V extends "for.cache"
   ? Pick<
       Category,

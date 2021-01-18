@@ -8,5 +8,5 @@ export class RcgQuestionPojo extends BaseUuidEntity {
   coins?: any | null;
   answers?: RcgQuestionAnswerPojo | null;
 }
-export type RcgQuestionPojoViewName = "_minimal" | "_local" | "_base";
+export type RcgQuestionPojoViewName = "_base" | "_local" | "_minimal";
 export type RcgQuestionPojoView<V extends RcgQuestionPojoViewName> = never;

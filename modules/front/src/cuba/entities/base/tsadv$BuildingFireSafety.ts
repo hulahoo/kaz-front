@@ -14,13 +14,13 @@ export class BuildingFireSafety extends AbstractParentEntity {
   buildingTechnicalInspections?: BuildingTechnicalInspections | null;
 }
 export type BuildingFireSafetyViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "buildingFireSafety-view";
 export type BuildingFireSafetyView<
   V extends BuildingFireSafetyViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       BuildingFireSafety,
       | "id"
@@ -30,7 +30,7 @@ export type BuildingFireSafetyView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BuildingFireSafety,
       | "id"

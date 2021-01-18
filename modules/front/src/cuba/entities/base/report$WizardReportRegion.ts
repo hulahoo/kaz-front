@@ -14,5 +14,5 @@ export class ReportRegion extends BaseUuidEntity {
   nameForBand?: string | null;
   nameForHeaderBand?: string | null;
 }
-export type ReportRegionViewName = "_minimal" | "_local" | "_base";
+export type ReportRegionViewName = "_base" | "_local" | "_minimal";
 export type ReportRegionView<V extends ReportRegionViewName> = never;

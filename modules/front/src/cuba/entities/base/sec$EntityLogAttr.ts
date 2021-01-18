@@ -15,5 +15,5 @@ export class EntityLogAttr extends BaseUuidEntity {
   locValue?: string | null;
   locOldValue?: string | null;
 }
-export type EntityLogAttrViewName = "_minimal" | "_local" | "_base";
+export type EntityLogAttrViewName = "_base" | "_local" | "_minimal";
 export type EntityLogAttrView<V extends EntityLogAttrViewName> = never;

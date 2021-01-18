@@ -19,12 +19,12 @@ export class SurCharge extends AbstractParentEntity {
   calculate?: string | null;
 }
 export type SurChargeViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "surCharge.browse"
   | "surCharge.card";
-export type SurChargeView<V extends SurChargeViewName> = V extends "_local"
+export type SurChargeView<V extends SurChargeViewName> = V extends "_base"
   ? Pick<
       SurCharge,
       | "id"
@@ -39,7 +39,7 @@ export type SurChargeView<V extends SurChargeViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SurCharge,
       | "id"

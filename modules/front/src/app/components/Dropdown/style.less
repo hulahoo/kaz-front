@@ -1,8 +1,15 @@
-@import '/src/theme';
+@import '/src/theme-vars';
 
 .ant-dropdown-trigger {
   margin: 0 !important;
-  width: @default-element-property-width;
+  //width: @default-element-property-width;
+}
+
+.default-type.ant-select {
+  font-weight: 500 !important;
+  font-size: @default-font-size !important;
+  color: @primary-2 !important;
+  width: 100%;
 }
 
 .ant-dropdown-trigger.default-type {
@@ -10,14 +17,14 @@
   justify-content: space-between;
   align-items: center;
   color: @primary-3;
-}
 
-.ant-dropdown-trigger.default-type > span {
-  font-size: @default-font-size;
+  > span {
+    color: @primary-3 !important;
+    font-size: @default-font-size;
+  }
 }
 
 .ant-dropdown-menu {
   max-height: 200px;
-  overflow-y: scroll;
   overflow-x: hidden;
 }

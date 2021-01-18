@@ -12,11 +12,11 @@ export class PersonEducationInt extends AbstractEntityInt {
   location?: string | null;
   bolashak?: boolean | null;
 }
-export type PersonEducationIntViewName = "_minimal" | "_local" | "_base";
+export type PersonEducationIntViewName = "_base" | "_local" | "_minimal";
 export type PersonEducationIntView<
   V extends PersonEducationIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PersonEducationInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonEducationInt, "id">
   : never;

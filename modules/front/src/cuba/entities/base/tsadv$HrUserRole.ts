@@ -1,6 +1,6 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { DicHrRole } from "./tsadv$DicHrRole";
-import { UserExt } from "./base$UserExt";
+import { UserExt } from "./tsadv$UserExt";
 export class HrUserRole extends AbstractParentEntity {
   static NAME = "tsadv$HrUserRole";
   role?: DicHrRole | null;
@@ -9,12 +9,20 @@ export class HrUserRole extends AbstractParentEntity {
   dateTo?: any | null;
 }
 export type HrUserRoleViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "hrUserRole.view";
-export type HrUserRoleView<V extends HrUserRoleViewName> = V extends "_minimal"
-  ? Pick<HrUserRole, "id">
+export type HrUserRoleView<V extends HrUserRoleViewName> = V extends "_base"
+  ? Pick<
+      HrUserRole,
+      | "id"
+      | "dateFrom"
+      | "dateTo"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       HrUserRole,
@@ -25,16 +33,8 @@ export type HrUserRoleView<V extends HrUserRoleViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      HrUserRole,
-      | "id"
-      | "dateFrom"
-      | "dateTo"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<HrUserRole, "id">
   : V extends "hrUserRole.view"
   ? Pick<
       HrUserRole,

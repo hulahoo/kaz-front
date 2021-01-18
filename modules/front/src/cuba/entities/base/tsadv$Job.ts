@@ -31,45 +31,13 @@ export class Job extends AbstractTimeBasedEntity {
   jobDescription?: string | null;
 }
 export type JobViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "job.edit"
   | "job.instruction"
   | "job.view";
-export type JobView<V extends JobViewName> = V extends "_minimal"
-  ? Pick<Job, "id" | "jobName">
-  : V extends "_local"
-  ? Pick<
-      Job,
-      | "id"
-      | "jobNameLang1"
-      | "jobNameLang2"
-      | "jobNameLang3"
-      | "jobNameLang4"
-      | "jobNameLang5"
-      | "instruction"
-      | "instructionName"
-      | "candidateRequirementsLang1"
-      | "candidateRequirementsLang2"
-      | "candidateRequirementsLang3"
-      | "candidateRequirementsLang4"
-      | "candidateRequirementsLang5"
-      | "jobDescriptionLang1"
-      | "jobDescriptionLang2"
-      | "jobDescriptionLang3"
-      | "jobDescriptionLang4"
-      | "jobDescriptionLang5"
-      | "candidateRequirements"
-      | "jobDescription"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
-  : V extends "_base"
+export type JobView<V extends JobViewName> = V extends "_base"
   ? Pick<
       Job,
       | "id"
@@ -100,6 +68,38 @@ export type JobView<V extends JobViewName> = V extends "_minimal"
       | "endDate"
       | "writeHistory"
     >
+  : V extends "_local"
+  ? Pick<
+      Job,
+      | "id"
+      | "jobNameLang1"
+      | "jobNameLang2"
+      | "jobNameLang3"
+      | "jobNameLang4"
+      | "jobNameLang5"
+      | "instruction"
+      | "instructionName"
+      | "candidateRequirementsLang1"
+      | "candidateRequirementsLang2"
+      | "candidateRequirementsLang3"
+      | "candidateRequirementsLang4"
+      | "candidateRequirementsLang5"
+      | "jobDescriptionLang1"
+      | "jobDescriptionLang2"
+      | "jobDescriptionLang3"
+      | "jobDescriptionLang4"
+      | "jobDescriptionLang5"
+      | "candidateRequirements"
+      | "jobDescription"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
+  : V extends "_minimal"
+  ? Pick<Job, "id" | "jobName">
   : V extends "job.edit"
   ? Pick<
       Job,
@@ -135,7 +135,10 @@ export type JobView<V extends JobViewName> = V extends "_minimal"
       | "jobCategory"
     >
   : V extends "job.instruction"
-  ? Pick<Job, "id" | "instruction" | "instructionName">
+  ? Pick<Job, "id" | "instruction" | "instructionName" | "employeeCategory">
   : V extends "job.view"
-  ? Pick<Job, "id" | "jobName" | "startDate" | "endDate">
+  ? Pick<
+      Job,
+      "id" | "jobName" | "startDate" | "endDate" | "employeeCategory" | "group"
+    >
   : never;

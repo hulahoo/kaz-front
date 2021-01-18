@@ -26,13 +26,13 @@ export class BuildingTechnicalInspections extends AbstractParentEntity {
   buildings?: Buildings | null;
 }
 export type BuildingTechnicalInspectionsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "buildingTechnicalInspections-view";
 export type BuildingTechnicalInspectionsView<
   V extends BuildingTechnicalInspectionsViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       BuildingTechnicalInspections,
       | "id"
@@ -50,7 +50,7 @@ export type BuildingTechnicalInspectionsView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       BuildingTechnicalInspections,
       | "id"

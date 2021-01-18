@@ -1,19 +1,18 @@
-import React, {ChangeEvent} from "react";
-import Button from "../Button/Button";
-import {ReactComponent as ArrowDownSvg} from "../../../resources/img/arrow-down.svg";
-import {Dropdown, Menu} from "antd";
+import React from "react";
+import {Select} from "antd";
 import {action, observable} from "mobx";
 import {observer} from "mobx-react";
-import {ClickParam} from "antd/lib/menu";
 
 export type MenuRaw = {
   id: string,
-  value: string
+  value: string,
+  render?: () => React.ReactNode
 }
 
 type DropdownProps = {
-  buttonName?: string,
-  menu: MenuRaw[]
+  selected?: string,
+  placeholder?: string,
+  menu?: MenuRaw[]
 }
 
 type DropdownHandlers = {
@@ -23,34 +22,30 @@ type DropdownHandlers = {
 @observer
 export default class extends React.Component<DropdownProps & DropdownHandlers> {
 
-  @observable buttonText: string | undefined = this.props.buttonName
+  @observable selected: string | undefined = this.props.selected
 
-  handleMenuClick = (e: ClickParam) => {
-    this.setButtonText(e.item.props.children);
-    if (this.props.handleMenuClick) {
-      this.props.handleMenuClick(e.key);
+  handleMenuClick = (value: string, option: React.ReactElement<HTMLLIElement>) => {
+    this.setSelected(value);
+    if (this.props.handleMenuClick && option.key) {
+      this.props.handleMenuClick(option.key.toString());
     }
   }
 
   render() {
-    const overlayMenu = <Menu onClick={this.handleMenuClick}>
-      {this.props.menu.map((m: MenuRaw) => <Menu.Item key={m.id}>
-          {m.value}
-        </Menu.Item>
-      )}
-    </Menu>
-
-    return <Dropdown trigger={['click']} className={"default-type"} overlay={overlayMenu}>
-      <Button>
-        {this.buttonText}
-        <i className="arrow-down"/>
-        <ArrowDownSvg/>
-      </Button>
-    </Dropdown>;
+    return <Select defaultValue={this.selected} className={"default-type"} onChange={this.handleMenuClick} placeholder={this.props.placeholder}>
+      {this.props.menu ? this.props.menu.map((m: MenuRaw) => {
+        return <Select.Option key={m.id}>
+            {m.value}
+          </Select.Option>
+        }
+      ) : <Select.Option key={"EMPTY"}>
+        "Список пуст"
+      </Select.Option>}
+    </Select>
   }
 
   @action
-  setButtonText = (value: string | undefined) => {
-      this.buttonText = value;
+  setSelected = (value: string | undefined) => {
+    this.selected = value;
   }
 }

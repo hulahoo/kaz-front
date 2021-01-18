@@ -7,18 +7,18 @@ export class RcgFeedbackAttachment extends AbstractParentEntity {
   rcgFeedback?: RcgFeedback | null;
 }
 export type RcgFeedbackAttachmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "rcgFeedbackAttachment.edit";
 export type RcgFeedbackAttachmentView<
   V extends RcgFeedbackAttachmentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       RcgFeedbackAttachment,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RcgFeedbackAttachment,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

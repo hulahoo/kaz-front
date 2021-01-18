@@ -1,13 +1,23 @@
 import React from "react";
+import {ButtonProps} from "antd/lib/button";
 import {Button} from "antd";
-import {ButtonProps} from "antd/es/button";
 
-export type ButtonComponentProps = {
-  child?: JSX.Element
+export type ButtonComponentProps =
+  ButtonProps
+    & {
+    child?: JSX.Element
+    buttonType: ButtonType
 }
 
-export default class extends React.Component<ButtonProps> {
-  render() {
-    return <Button {...this.props} className={(this.props.className ? this.props.className  + " btn" : "btn")}/>;
-  }
+export enum ButtonType {
+    PRIMARY = "primary",
+    FOLLOW = "follow"
+}
+
+export default class extends React.Component<ButtonComponentProps> {
+    render() {
+        const {buttonType, className, ...rest} = {...this.props};
+        return <Button
+            className={(className ? className + " button" : "button") + " " + "btn-" + buttonType} {...rest}/>;
+    }
 }

@@ -20,15 +20,26 @@ export class Recognition extends AbstractParentEntity {
   receiver?: PersonGroupExt | null;
 }
 export type RecognitionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "recognition.edit"
-  | "recognition.browse";
-export type RecognitionView<
-  V extends RecognitionViewName
-> = V extends "_minimal"
-  ? Pick<Recognition, "id" | "recognitionType">
+  | "_local"
+  | "_minimal"
+  | "recognition.browse"
+  | "recognition.edit";
+export type RecognitionView<V extends RecognitionViewName> = V extends "_base"
+  ? Pick<
+      Recognition,
+      | "id"
+      | "recognitionType"
+      | "notifyManager"
+      | "recognitionDate"
+      | "comment"
+      | "commentEn"
+      | "commentRu"
+      | "coins"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Recognition,
@@ -43,11 +54,12 @@ export type RecognitionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<Recognition, "id" | "recognitionType">
+  : V extends "recognition.browse"
   ? Pick<
       Recognition,
       | "id"
-      | "recognitionType"
       | "notifyManager"
       | "recognitionDate"
       | "comment"
@@ -57,6 +69,9 @@ export type RecognitionView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "recognitionType"
+      | "author"
+      | "receiver"
     >
   : V extends "recognition.edit"
   ? Pick<
@@ -77,22 +92,5 @@ export type RecognitionView<
       | "receiver"
       | "comments"
       | "likes"
-    >
-  : V extends "recognition.browse"
-  ? Pick<
-      Recognition,
-      | "id"
-      | "notifyManager"
-      | "recognitionDate"
-      | "comment"
-      | "commentEn"
-      | "commentRu"
-      | "coins"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "recognitionType"
-      | "author"
-      | "receiver"
     >
   : never;

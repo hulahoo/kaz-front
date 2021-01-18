@@ -19,16 +19,29 @@ export class Offer extends AbstractParentEntity {
   needBuisnessPartnerApprove?: boolean | null;
 }
 export type OfferViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "offer.rest"
-  | "offer.edit"
-  | "offer.browse"
+  | "_local"
+  | "_minimal"
   | "offer.bpm"
-  | "offer.for.requisition";
-export type OfferView<V extends OfferViewName> = V extends "_minimal"
-  ? Pick<Offer, "id" | "jobRequest">
+  | "offer.browse"
+  | "offer.edit"
+  | "offer.for.requisition"
+  | "offer.rest";
+export type OfferView<V extends OfferViewName> = V extends "_base"
+  ? Pick<
+      Offer,
+      | "id"
+      | "jobRequest"
+      | "candidateCommentary"
+      | "proposedSalary"
+      | "expireDate"
+      | "proposedStartDate"
+      | "status"
+      | "needBuisnessPartnerApprove"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Offer,
@@ -43,22 +56,9 @@ export type OfferView<V extends OfferViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Offer,
-      | "id"
-      | "jobRequest"
-      | "candidateCommentary"
-      | "proposedSalary"
-      | "expireDate"
-      | "proposedStartDate"
-      | "status"
-      | "needBuisnessPartnerApprove"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "offer.rest"
+  : V extends "_minimal"
+  ? Pick<Offer, "id" | "jobRequest">
+  : V extends "offer.bpm"
   ? Pick<
       Offer,
       | "id"
@@ -73,25 +73,6 @@ export type OfferView<V extends OfferViewName> = V extends "_minimal"
       | "integrationUserLogin"
       | "jobRequest"
       | "file"
-    >
-  : V extends "offer.edit"
-  ? Pick<
-      Offer,
-      | "id"
-      | "candidateCommentary"
-      | "proposedSalary"
-      | "expireDate"
-      | "proposedStartDate"
-      | "status"
-      | "needBuisnessPartnerApprove"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "file"
-      | "history"
-      | "jobRequest"
-      | "currency"
-      | "offerTemplate"
     >
   : V extends "offer.browse"
   ? Pick<
@@ -112,7 +93,28 @@ export type OfferView<V extends OfferViewName> = V extends "_minimal"
       | "file"
       | "history"
     >
-  : V extends "offer.bpm"
+  : V extends "offer.edit"
+  ? Pick<
+      Offer,
+      | "id"
+      | "candidateCommentary"
+      | "proposedSalary"
+      | "expireDate"
+      | "proposedStartDate"
+      | "status"
+      | "needBuisnessPartnerApprove"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "file"
+      | "history"
+      | "jobRequest"
+      | "currency"
+      | "offerTemplate"
+    >
+  : V extends "offer.for.requisition"
+  ? Pick<Offer, "id" | "jobRequest" | "status">
+  : V extends "offer.rest"
   ? Pick<
       Offer,
       | "id"
@@ -128,6 +130,4 @@ export type OfferView<V extends OfferViewName> = V extends "_minimal"
       | "jobRequest"
       | "file"
     >
-  : V extends "offer.for.requisition"
-  ? Pick<Offer, "id" | "jobRequest" | "status">
   : never;

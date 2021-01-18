@@ -9,13 +9,13 @@ export class PersonalProtectionViolation extends AbstractParentEntity {
   violationInfo?: string | null;
 }
 export type PersonalProtectionViolationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personalProtectionViolation.edit";
 export type PersonalProtectionViolationView<
   V extends PersonalProtectionViolationViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonalProtectionViolation,
       | "id"
@@ -25,7 +25,7 @@ export type PersonalProtectionViolationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PersonalProtectionViolation,
       | "id"

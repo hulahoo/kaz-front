@@ -14,16 +14,16 @@ export class LearningFeedbackQuestion extends AbstractParentEntity {
   questionLangValue?: string | null;
 }
 export type LearningFeedbackQuestionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "learningFeedbackQuestion.edit"
-  | "learningFeedbackQuestion.browse"
+  | "_local"
+  | "_minimal"
   | "course.feedback"
+  | "learningFeedbackQuestion.browse"
+  | "learningFeedbackQuestion.edit"
   | "question.with.answers";
 export type LearningFeedbackQuestionView<
   V extends LearningFeedbackQuestionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LearningFeedbackQuestion,
       | "id"
@@ -38,7 +38,27 @@ export type LearningFeedbackQuestionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
+  ? Pick<
+      LearningFeedbackQuestion,
+      | "id"
+      | "questionLangValue1"
+      | "questionLangValue2"
+      | "questionLangValue3"
+      | "questionLangValue4"
+      | "questionLangValue5"
+      | "questionType"
+      | "questionLangValue"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "course.feedback"
+  ? Pick<
+      LearningFeedbackQuestion,
+      "id" | "questionLangValue1" | "questionType" | "answers"
+    >
+  : V extends "learningFeedbackQuestion.browse"
   ? Pick<
       LearningFeedbackQuestion,
       | "id"
@@ -68,26 +88,6 @@ export type LearningFeedbackQuestionView<
       | "organizationBin"
       | "integrationUserLogin"
       | "answers"
-    >
-  : V extends "learningFeedbackQuestion.browse"
-  ? Pick<
-      LearningFeedbackQuestion,
-      | "id"
-      | "questionLangValue1"
-      | "questionLangValue2"
-      | "questionLangValue3"
-      | "questionLangValue4"
-      | "questionLangValue5"
-      | "questionType"
-      | "questionLangValue"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "course.feedback"
-  ? Pick<
-      LearningFeedbackQuestion,
-      "id" | "questionLangValue1" | "questionType" | "answers"
     >
   : V extends "question.with.answers"
   ? Pick<

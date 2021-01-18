@@ -8,13 +8,13 @@ export class AttestationOrganization extends AbstractParentEntity {
   includeChild?: boolean | null;
 }
 export type AttestationOrganizationViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "attestationOrganization-view";
 export type AttestationOrganizationView<
   V extends AttestationOrganizationViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AttestationOrganization,
       | "id"
@@ -23,7 +23,7 @@ export type AttestationOrganizationView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AttestationOrganization,
       | "id"

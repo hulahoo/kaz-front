@@ -19,11 +19,11 @@ export class RequisitionInt extends AbstractEntityInt {
   latitude?: any | null;
   longitude?: any | null;
 }
-export type RequisitionIntViewName = "_minimal" | "_local" | "_base";
+export type RequisitionIntViewName = "_base" | "_local" | "_minimal";
 export type RequisitionIntView<
   V extends RequisitionIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<RequisitionInt, "id" | "code">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<RequisitionInt, "id" | "code">
   : never;

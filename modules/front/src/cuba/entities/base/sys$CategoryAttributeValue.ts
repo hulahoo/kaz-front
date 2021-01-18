@@ -17,13 +17,13 @@ export class CategoryAttributeValue extends StandardEntity {
   parent?: CategoryAttributeValue | null;
 }
 export type CategoryAttributeValueViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "categoryAttributeValue";
 export type CategoryAttributeValueView<
   V extends CategoryAttributeValueViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CategoryAttributeValue,
       | "id"
@@ -36,7 +36,7 @@ export type CategoryAttributeValueView<
       | "dateValue"
       | "dateWithoutTimeValue"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CategoryAttributeValue,
       | "id"

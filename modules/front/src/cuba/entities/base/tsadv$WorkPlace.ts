@@ -12,22 +12,22 @@ export class WorkPlace extends AbstractParentEntity {
   job?: JobGroup | null;
 }
 export type WorkPlaceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "workPlace-view";
-export type WorkPlaceView<V extends WorkPlaceViewName> = V extends "_minimal"
-  ? Pick<WorkPlace, "id" | "name">
+export type WorkPlaceView<V extends WorkPlaceViewName> = V extends "_base"
+  ? Pick<
+      WorkPlace,
+      "id" | "name" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       WorkPlace,
       "id" | "name" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      WorkPlace,
-      "id" | "name" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<WorkPlace, "id" | "name">
   : V extends "workPlace-view"
   ? Pick<
       WorkPlace,

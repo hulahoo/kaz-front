@@ -4,20 +4,26 @@ import { PersonGroupExt } from "./base$PersonGroupExt";
 export class Retirement extends AbstractParentEntity {
   static NAME = "tsadv$Retirement";
   retirementType?: DicRetirementType | null;
+  isseuDocDate?: any | null;
+  startDateHistory?: any | null;
+  endDateHistory?: any | null;
   documentNumber?: string | null;
   dateFrom?: any | null;
   dateTo?: any | null;
   personGroupExt?: PersonGroupExt | null;
 }
 export type RetirementViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "retirement.all";
-export type RetirementView<V extends RetirementViewName> = V extends "_local"
+export type RetirementView<V extends RetirementViewName> = V extends "_base"
   ? Pick<
       Retirement,
       | "id"
+      | "isseuDocDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "documentNumber"
       | "dateFrom"
       | "dateTo"
@@ -25,10 +31,13 @@ export type RetirementView<V extends RetirementViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Retirement,
       | "id"
+      | "isseuDocDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "documentNumber"
       | "dateFrom"
       | "dateTo"
@@ -40,6 +49,9 @@ export type RetirementView<V extends RetirementViewName> = V extends "_local"
   ? Pick<
       Retirement,
       | "id"
+      | "isseuDocDate"
+      | "startDateHistory"
+      | "endDateHistory"
       | "documentNumber"
       | "dateFrom"
       | "dateTo"

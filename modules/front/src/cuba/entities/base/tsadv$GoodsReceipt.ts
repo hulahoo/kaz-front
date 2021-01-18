@@ -6,15 +6,13 @@ export class GoodsReceipt extends StandardEntity {
   quantity?: any | null;
 }
 export type GoodsReceiptViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goodsReceipt.edit";
-export type GoodsReceiptView<
-  V extends GoodsReceiptViewName
-> = V extends "_local"
+export type GoodsReceiptView<V extends GoodsReceiptViewName> = V extends "_base"
   ? Pick<GoodsReceipt, "id" | "quantity">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<GoodsReceipt, "id" | "quantity">
   : V extends "goodsReceipt.edit"
   ? Pick<GoodsReceipt, "id" | "quantity" | "goods">

@@ -10,14 +10,23 @@ export class StandardShift extends AbstractParentEntity {
   shiftDisplayDay?: number | null;
 }
 export type StandardShiftViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "standardShift.view";
 export type StandardShiftView<
   V extends StandardShiftViewName
-> = V extends "_minimal"
-  ? Pick<StandardShift, "id">
+> = V extends "_base"
+  ? Pick<
+      StandardShift,
+      | "id"
+      | "numberInShift"
+      | "shiftDisplay"
+      | "shiftDisplayDay"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       StandardShift,
@@ -29,17 +38,8 @@ export type StandardShiftView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      StandardShift,
-      | "id"
-      | "numberInShift"
-      | "shiftDisplay"
-      | "shiftDisplayDay"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<StandardShift, "id">
   : V extends "standardShift.view"
   ? Pick<
       StandardShift,

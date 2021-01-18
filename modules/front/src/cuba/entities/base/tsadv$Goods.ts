@@ -25,13 +25,33 @@ export class Goods extends AbstractParentEntity {
   description?: string | null;
 }
 export type GoodsViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goods.edit"
   | "goods.for.service";
-export type GoodsView<V extends GoodsViewName> = V extends "_minimal"
-  ? Pick<Goods, "id" | "name">
+export type GoodsView<V extends GoodsViewName> = V extends "_base"
+  ? Pick<
+      Goods,
+      | "id"
+      | "name"
+      | "nameLang1"
+      | "nameLang2"
+      | "nameLang3"
+      | "nameLang4"
+      | "nameLang5"
+      | "descriptionLang1"
+      | "descriptionLang2"
+      | "descriptionLang3"
+      | "descriptionLang4"
+      | "descriptionLang5"
+      | "price"
+      | "active"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Goods,
@@ -54,28 +74,8 @@ export type GoodsView<V extends GoodsViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Goods,
-      | "id"
-      | "name"
-      | "nameLang1"
-      | "nameLang2"
-      | "nameLang3"
-      | "nameLang4"
-      | "nameLang5"
-      | "descriptionLang1"
-      | "descriptionLang2"
-      | "descriptionLang3"
-      | "descriptionLang4"
-      | "descriptionLang5"
-      | "price"
-      | "active"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Goods, "id" | "name">
   : V extends "goods.edit"
   ? Pick<
       Goods,

@@ -17,15 +17,15 @@ export class TimecardHierarchy extends BaseUuidEntity {
   name?: string | null;
 }
 export type TimecardHierarchyViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "timecard-hierarchy"
   | "timecardHierarchy-full-view"
   | "timecardHierarchy-only-parent-view";
 export type TimecardHierarchyView<
   V extends TimecardHierarchyViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       TimecardHierarchy,
       | "id"
@@ -36,7 +36,7 @@ export type TimecardHierarchyView<
       | "level"
       | "name"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       TimecardHierarchy,
       | "id"

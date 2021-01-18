@@ -18,32 +18,14 @@ export class QuestionnaireQuestion extends AbstractParentEntity {
   answer?: QuestionAnswer[] | null;
 }
 export type QuestionnaireQuestionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "questionnaireQuestion.browse"
   | "questionnaireQuestion.edit";
 export type QuestionnaireQuestionView<
   V extends QuestionnaireQuestionViewName
-> = V extends "_minimal"
-  ? Pick<QuestionnaireQuestion, "id" | "questionText">
-  : V extends "_local"
-  ? Pick<
-      QuestionnaireQuestion,
-      | "id"
-      | "order"
-      | "questionTextLang1"
-      | "questionTextLang2"
-      | "questionTextLang3"
-      | "questionTextLang4"
-      | "questionTextLang5"
-      | "questionType"
-      | "score"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       QuestionnaireQuestion,
       | "id"
@@ -60,6 +42,24 @@ export type QuestionnaireQuestionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      QuestionnaireQuestion,
+      | "id"
+      | "order"
+      | "questionTextLang1"
+      | "questionTextLang2"
+      | "questionTextLang3"
+      | "questionTextLang4"
+      | "questionTextLang5"
+      | "questionType"
+      | "score"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<QuestionnaireQuestion, "id" | "questionText">
   : V extends "questionnaireQuestion.browse"
   ? Pick<
       QuestionnaireQuestion,

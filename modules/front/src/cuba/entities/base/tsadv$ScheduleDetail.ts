@@ -12,14 +12,25 @@ export class ScheduleDetail extends AbstractParentEntity {
   elementType?: DicScheduleElementType | null;
 }
 export type ScheduleDetailViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "scheduleDetail.view";
 export type ScheduleDetailView<
   V extends ScheduleDetailViewName
-> = V extends "_minimal"
-  ? Pick<ScheduleDetail, "id">
+> = V extends "_base"
+  ? Pick<
+      ScheduleDetail,
+      | "id"
+      | "day"
+      | "dayDate"
+      | "hours"
+      | "timeIn"
+      | "timeOut"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ScheduleDetail,
@@ -33,19 +44,8 @@ export type ScheduleDetailView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ScheduleDetail,
-      | "id"
-      | "day"
-      | "dayDate"
-      | "hours"
-      | "timeIn"
-      | "timeOut"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<ScheduleDetail, "id">
   : V extends "scheduleDetail.view"
   ? Pick<
       ScheduleDetail,

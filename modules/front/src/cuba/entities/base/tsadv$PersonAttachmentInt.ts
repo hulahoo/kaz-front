@@ -7,11 +7,11 @@ export class PersonAttachmentInt extends AbstractEntityInt {
   file?: any | null;
   description?: string | null;
 }
-export type PersonAttachmentIntViewName = "_minimal" | "_local" | "_base";
+export type PersonAttachmentIntViewName = "_base" | "_local" | "_minimal";
 export type PersonAttachmentIntView<
   V extends PersonAttachmentIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<PersonAttachmentInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<PersonAttachmentInt, "id">
   : never;

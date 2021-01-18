@@ -9,23 +9,11 @@ export class TradeUnion extends AbstractParentEntity {
   dicTradeUnion?: DicTradeUnion | null;
 }
 export type TradeUnionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "tradeUnionOnPersonCard";
-export type TradeUnionView<V extends TradeUnionViewName> = V extends "_minimal"
-  ? Pick<TradeUnion, "id" | "personGroup" | "dicTradeUnion">
-  : V extends "_local"
-  ? Pick<
-      TradeUnion,
-      | "id"
-      | "joingTradeUnion"
-      | "dateTo"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "_base"
+export type TradeUnionView<V extends TradeUnionViewName> = V extends "_base"
   ? Pick<
       TradeUnion,
       | "id"
@@ -37,6 +25,18 @@ export type TradeUnionView<V extends TradeUnionViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      TradeUnion,
+      | "id"
+      | "joingTradeUnion"
+      | "dateTo"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<TradeUnion, "id" | "personGroup" | "dicTradeUnion">
   : V extends "tradeUnionOnPersonCard"
   ? Pick<
       TradeUnion,

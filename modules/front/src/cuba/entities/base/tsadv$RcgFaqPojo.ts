@@ -6,9 +6,9 @@ export class RcgFaqPojo extends BaseUuidEntity {
   content?: string | null;
   code?: string | null;
 }
-export type RcgFaqPojoViewName = "_minimal" | "_local" | "_base";
-export type RcgFaqPojoView<V extends RcgFaqPojoViewName> = V extends "_minimal"
+export type RcgFaqPojoViewName = "_base" | "_local" | "_minimal";
+export type RcgFaqPojoView<V extends RcgFaqPojoViewName> = V extends "_base"
   ? Pick<RcgFaqPojo, "id" | "title">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<RcgFaqPojo, "id" | "title">
   : never;

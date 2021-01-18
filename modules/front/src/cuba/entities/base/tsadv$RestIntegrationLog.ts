@@ -9,10 +9,10 @@ export class RestIntegrationLog extends StandardEntity {
   success?: boolean | null;
   dateTime?: any | null;
 }
-export type RestIntegrationLogViewName = "_minimal" | "_local" | "_base";
+export type RestIntegrationLogViewName = "_base" | "_local" | "_minimal";
 export type RestIntegrationLogView<
   V extends RestIntegrationLogViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       RestIntegrationLog,
       | "id"
@@ -24,7 +24,7 @@ export type RestIntegrationLogView<
       | "success"
       | "dateTime"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       RestIntegrationLog,
       | "id"

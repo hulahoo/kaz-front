@@ -9,20 +9,13 @@ export class CandidateRequirement extends AbstractParentEntity {
   level?: RcAnswer | null;
 }
 export type CandidateRequirementViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "candidateRequirement-view";
 export type CandidateRequirementView<
   V extends CandidateRequirementViewName
-> = V extends "_minimal"
-  ? Pick<CandidateRequirement, "id" | "requirement">
-  : V extends "_local"
-  ? Pick<
-      CandidateRequirement,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       CandidateRequirement,
       | "id"
@@ -31,6 +24,13 @@ export type CandidateRequirementView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      CandidateRequirement,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<CandidateRequirement, "id" | "requirement">
   : V extends "candidateRequirement-view"
   ? Pick<
       CandidateRequirement,

@@ -6,9 +6,19 @@ export class CaseType extends AbstractParentEntity {
   language?: string | null;
   question?: string | null;
 }
-export type CaseTypeViewName = "_minimal" | "_local" | "_base";
-export type CaseTypeView<V extends CaseTypeViewName> = V extends "_minimal"
-  ? Pick<CaseType, "id" | "name">
+export type CaseTypeViewName = "_base" | "_local" | "_minimal";
+export type CaseTypeView<V extends CaseTypeViewName> = V extends "_base"
+  ? Pick<
+      CaseType,
+      | "id"
+      | "name"
+      | "code"
+      | "language"
+      | "question"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       CaseType,
@@ -21,16 +31,6 @@ export type CaseTypeView<V extends CaseTypeViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      CaseType,
-      | "id"
-      | "name"
-      | "code"
-      | "language"
-      | "question"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<CaseType, "id" | "name">
   : never;

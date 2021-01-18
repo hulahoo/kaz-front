@@ -17,15 +17,15 @@ export class WorkedHoursDetailed extends AbstractParentEntity {
   isNeedToCheckAndCreateAdditionalHours?: boolean | null;
 }
 export type WorkedHoursDetailedViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "workedHoursDetailed-view"
   | "workedHoursDetailed-with-parents"
   | "workedHoursDetailed-with-type";
 export type WorkedHoursDetailedView<
   V extends WorkedHoursDetailedViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       WorkedHoursDetailed,
       | "id"
@@ -40,7 +40,7 @@ export type WorkedHoursDetailedView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       WorkedHoursDetailed,
       | "id"

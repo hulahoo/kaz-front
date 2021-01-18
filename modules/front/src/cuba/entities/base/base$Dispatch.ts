@@ -13,14 +13,28 @@ export class Dispatch extends AbstractParentEntity {
   entityCaption?: string | null;
 }
 export type DispatchViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dispatch.browse"
   | "dispatch.edit"
   | "dispatch.send";
-export type DispatchView<V extends DispatchViewName> = V extends "_minimal"
-  ? Pick<Dispatch, "id" | "name">
+export type DispatchView<V extends DispatchViewName> = V extends "_base"
+  ? Pick<
+      Dispatch,
+      | "id"
+      | "name"
+      | "code"
+      | "description"
+      | "type"
+      | "entity"
+      | "dataJpql"
+      | "dataSql"
+      | "entityCaption"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Dispatch,
@@ -37,22 +51,8 @@ export type DispatchView<V extends DispatchViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Dispatch,
-      | "id"
-      | "name"
-      | "code"
-      | "description"
-      | "type"
-      | "entity"
-      | "dataJpql"
-      | "dataSql"
-      | "entityCaption"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Dispatch, "id" | "name">
   : V extends "dispatch.browse"
   ? Pick<
       Dispatch,

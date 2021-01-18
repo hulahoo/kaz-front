@@ -15,18 +15,29 @@ export class ContactInfo extends AbstractParentEntity {
   addressBookEntry?: AddressBook | null;
 }
 export type ContactInfoViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "contactInfo.edit"
-  | "contactInfo.view"
-  | "contactInfo.searchPartyByEmail"
   | "contactInfo.editAndUpdateAddressBook"
-  | "contactInfo.searchPartyByPhone";
-export type ContactInfoView<
-  V extends ContactInfoViewName
-> = V extends "_minimal"
-  ? Pick<ContactInfo, "id" | "type" | "value">
+  | "contactInfo.searchPartyByEmail"
+  | "contactInfo.searchPartyByPhone"
+  | "contactInfo.view";
+export type ContactInfoView<V extends ContactInfoViewName> = V extends "_base"
+  ? Pick<
+      ContactInfo,
+      | "id"
+      | "type"
+      | "value"
+      | "valueUnformatted"
+      | "active"
+      | "doNotDisturb"
+      | "silenceStartTime"
+      | "silenceEndTime"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ContactInfo,
@@ -41,21 +52,8 @@ export type ContactInfoView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ContactInfo,
-      | "id"
-      | "type"
-      | "value"
-      | "valueUnformatted"
-      | "active"
-      | "doNotDisturb"
-      | "silenceStartTime"
-      | "silenceEndTime"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<ContactInfo, "id" | "type" | "value">
   : V extends "contactInfo.edit"
   ? Pick<
       ContactInfo,
@@ -70,26 +68,6 @@ export type ContactInfoView<
       | "organizationBin"
       | "integrationUserLogin"
       | "type"
-    >
-  : V extends "contactInfo.view"
-  ? Pick<
-      ContactInfo,
-      | "id"
-      | "value"
-      | "valueUnformatted"
-      | "active"
-      | "doNotDisturb"
-      | "silenceStartTime"
-      | "silenceEndTime"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "type"
-    >
-  : V extends "contactInfo.searchPartyByEmail"
-  ? Pick<
-      ContactInfo,
-      "id" | "type" | "value" | "type" | "active" | "party" | "updatedBy"
     >
   : V extends "contactInfo.editAndUpdateAddressBook"
   ? Pick<
@@ -108,6 +86,26 @@ export type ContactInfoView<
       | "party"
       | "addressBookEntry"
     >
+  : V extends "contactInfo.searchPartyByEmail"
+  ? Pick<
+      ContactInfo,
+      "id" | "type" | "value" | "type" | "active" | "party" | "updatedBy"
+    >
   : V extends "contactInfo.searchPartyByPhone"
   ? Pick<ContactInfo, "id" | "value" | "active" | "party" | "updateTs">
+  : V extends "contactInfo.view"
+  ? Pick<
+      ContactInfo,
+      | "id"
+      | "value"
+      | "valueUnformatted"
+      | "active"
+      | "doNotDisturb"
+      | "silenceStartTime"
+      | "silenceEndTime"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "type"
+    >
   : never;

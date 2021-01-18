@@ -8,20 +8,13 @@ export class CompetenceTemplateDetail extends AbstractParentEntity {
   weight?: number | null;
 }
 export type CompetenceTemplateDetailViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "competenceTemplateDetail-view";
 export type CompetenceTemplateDetailView<
   V extends CompetenceTemplateDetailViewName
-> = V extends "_minimal"
-  ? Pick<CompetenceTemplateDetail, "id" | "competenceGroup">
-  : V extends "_local"
-  ? Pick<
-      CompetenceTemplateDetail,
-      "id" | "weight" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       CompetenceTemplateDetail,
       | "id"
@@ -31,6 +24,13 @@ export type CompetenceTemplateDetailView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_local"
+  ? Pick<
+      CompetenceTemplateDetail,
+      "id" | "weight" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "_minimal"
+  ? Pick<CompetenceTemplateDetail, "id" | "competenceGroup">
   : V extends "competenceTemplateDetail-view"
   ? Pick<
       CompetenceTemplateDetail,

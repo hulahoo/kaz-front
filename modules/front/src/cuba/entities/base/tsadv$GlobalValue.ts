@@ -8,11 +8,11 @@ export class GlobalValue extends AbstractTimeBasedEntity {
   group?: GlobalValueGroup | null;
 }
 export type GlobalValueViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "globalValue.edit";
-export type GlobalValueView<V extends GlobalValueViewName> = V extends "_local"
+export type GlobalValueView<V extends GlobalValueViewName> = V extends "_base"
   ? Pick<
       GlobalValue,
       | "id"
@@ -26,7 +26,7 @@ export type GlobalValueView<V extends GlobalValueViewName> = V extends "_local"
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       GlobalValue,
       | "id"

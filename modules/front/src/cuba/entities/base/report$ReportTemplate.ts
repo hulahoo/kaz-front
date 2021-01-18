@@ -15,16 +15,26 @@ export class ReportTemplate extends StandardEntity {
   content?: any | null;
 }
 export type ReportTemplateViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "template.edit";
 export type ReportTemplateView<
   V extends ReportTemplateViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       ReportTemplate,
-      "id" | "code" | "name" | "customDefinition" | "custom" | "alterable"
+      | "id"
+      | "code"
+      | "name"
+      | "customDefinition"
+      | "custom"
+      | "alterable"
+      | "reportOutputType"
+      | "groovy"
+      | "customDefinedBy"
+      | "outputNamePattern"
+      | "content"
     >
   : V extends "_local"
   ? Pick<
@@ -41,20 +51,10 @@ export type ReportTemplateView<
       | "name"
       | "content"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       ReportTemplate,
-      | "id"
-      | "code"
-      | "name"
-      | "customDefinition"
-      | "custom"
-      | "alterable"
-      | "reportOutputType"
-      | "groovy"
-      | "customDefinedBy"
-      | "outputNamePattern"
-      | "content"
+      "id" | "code" | "name" | "customDefinition" | "custom" | "alterable"
     >
   : V extends "template.edit"
   ? Pick<

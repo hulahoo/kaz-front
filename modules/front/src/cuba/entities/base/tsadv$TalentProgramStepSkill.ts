@@ -8,18 +8,18 @@ export class TalentProgramStepSkill extends StandardEntity {
   skill?: DicTalentProgramSkill | null;
 }
 export type TalentProgramStepSkillViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "talentProgramStepSkill-view";
 export type TalentProgramStepSkillView<
   V extends TalentProgramStepSkillViewName
-> = V extends "_minimal"
-  ? Pick<TalentProgramStepSkill, "id" | "talentProgramStep">
+> = V extends "_base"
+  ? Pick<TalentProgramStepSkill, "id" | "talentProgramStep" | "orderNumber">
   : V extends "_local"
   ? Pick<TalentProgramStepSkill, "id" | "orderNumber">
-  : V extends "_base"
-  ? Pick<TalentProgramStepSkill, "id" | "talentProgramStep" | "orderNumber">
+  : V extends "_minimal"
+  ? Pick<TalentProgramStepSkill, "id" | "talentProgramStep">
   : V extends "talentProgramStepSkill-view"
   ? Pick<
       TalentProgramStepSkill,

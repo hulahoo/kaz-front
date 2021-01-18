@@ -3,9 +3,9 @@ export class PropertyConditionDescriptor extends AbstractConditionDescriptor {
   static NAME = "sec$PropertyConditionDescriptor";
 }
 export type PropertyConditionDescriptorViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type PropertyConditionDescriptorView<
   V extends PropertyConditionDescriptorViewName
 > = never;

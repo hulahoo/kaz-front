@@ -7,7 +7,7 @@ export class MultiplePermissionTarget extends AbstractPermissionTarget {
   entityMetaClassName?: string | null;
   permissionsInfo?: string | null;
 }
-export type MultiplePermissionTargetViewName = "_minimal" | "_local" | "_base";
+export type MultiplePermissionTargetViewName = "_base" | "_local" | "_minimal";
 export type MultiplePermissionTargetView<
   V extends MultiplePermissionTargetViewName
 > = never;

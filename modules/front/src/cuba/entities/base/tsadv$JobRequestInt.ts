@@ -10,11 +10,11 @@ export class JobRequestInt extends AbstractEntityInt {
   source?: any | null;
   otherSource?: string | null;
 }
-export type JobRequestIntViewName = "_minimal" | "_local" | "_base";
+export type JobRequestIntViewName = "_base" | "_local" | "_minimal";
 export type JobRequestIntView<
   V extends JobRequestIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<JobRequestInt, "id">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<JobRequestInt, "id">
   : never;

@@ -7,15 +7,15 @@ export class OrganizationProperties extends StandardEntity {
   functionalCurrency?: DicCurrency | null;
 }
 export type OrganizationPropertiesViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "organizationProperties-view";
 export type OrganizationPropertiesView<
   V extends OrganizationPropertiesViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<OrganizationProperties, "id" | "organization">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<OrganizationProperties, "id" | "organization">
   : V extends "organizationProperties-view"
   ? Pick<OrganizationProperties, "id" | "organization" | "functionalCurrency">

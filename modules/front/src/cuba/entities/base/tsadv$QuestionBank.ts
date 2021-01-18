@@ -7,15 +7,21 @@ export class QuestionBank extends AbstractParentEntity {
   questions?: Question[] | null;
 }
 export type QuestionBankViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "questionBank.browse"
   | "questionBank.edit";
-export type QuestionBankView<
-  V extends QuestionBankViewName
-> = V extends "_minimal"
-  ? Pick<QuestionBank, "id" | "bankName">
+export type QuestionBankView<V extends QuestionBankViewName> = V extends "_base"
+  ? Pick<
+      QuestionBank,
+      | "id"
+      | "bankName"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       QuestionBank,
@@ -26,16 +32,8 @@ export type QuestionBankView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      QuestionBank,
-      | "id"
-      | "bankName"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<QuestionBank, "id" | "bankName">
   : V extends "questionBank.browse"
   ? Pick<QuestionBank, "id" | "bankName" | "description">
   : V extends "questionBank.edit"

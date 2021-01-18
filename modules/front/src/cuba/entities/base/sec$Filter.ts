@@ -8,22 +8,33 @@ export class FilterEntity extends StandardEntity {
   xml?: string | null;
   user?: User | null;
   globalDefault?: boolean | null;
+  sysTenantId?: string | null;
 }
-export type FilterEntityViewName = "_minimal" | "_local" | "_base" | "app";
-export type FilterEntityView<
-  V extends FilterEntityViewName
-> = V extends "_minimal"
-  ? Pick<FilterEntity, "id" | "name">
+export type FilterEntityViewName = "_base" | "_local" | "_minimal" | "app";
+export type FilterEntityView<V extends FilterEntityViewName> = V extends "_base"
+  ? Pick<
+      FilterEntity,
+      | "id"
+      | "name"
+      | "componentId"
+      | "code"
+      | "xml"
+      | "globalDefault"
+      | "sysTenantId"
+    >
   : V extends "_local"
   ? Pick<
       FilterEntity,
-      "id" | "componentId" | "name" | "code" | "xml" | "globalDefault"
+      | "id"
+      | "componentId"
+      | "name"
+      | "code"
+      | "xml"
+      | "globalDefault"
+      | "sysTenantId"
     >
-  : V extends "_base"
-  ? Pick<
-      FilterEntity,
-      "id" | "name" | "componentId" | "code" | "xml" | "globalDefault"
-    >
+  : V extends "_minimal"
+  ? Pick<FilterEntity, "id" | "name">
   : V extends "app"
   ? Pick<
       FilterEntity,

@@ -9,16 +9,16 @@ export class GradeSsView extends StandardEntity {
   maxStartDate?: any | null;
 }
 export type GradeSsViewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "gradeSsView-view";
-export type GradeSsViewView<V extends GradeSsViewViewName> = V extends "_local"
+export type GradeSsViewView<V extends GradeSsViewViewName> = V extends "_base"
   ? Pick<
       GradeSsView,
       "id" | "startDate" | "endDate" | "gradeName" | "maxStartDate"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       GradeSsView,
       "id" | "startDate" | "endDate" | "gradeName" | "maxStartDate"

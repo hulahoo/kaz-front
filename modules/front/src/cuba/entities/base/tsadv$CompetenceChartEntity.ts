@@ -10,7 +10,7 @@ export class CompetenceChartEntity extends BaseUuidEntity {
   assignmentScaleLevelName?: string | null;
   positionScaleLevelName?: string | null;
 }
-export type CompetenceChartEntityViewName = "_minimal" | "_local" | "_base";
+export type CompetenceChartEntityViewName = "_base" | "_local" | "_minimal";
 export type CompetenceChartEntityView<
   V extends CompetenceChartEntityViewName
 > = never;

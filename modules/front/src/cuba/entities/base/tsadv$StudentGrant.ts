@@ -14,13 +14,11 @@ export class StudentGrant extends AbstractParentEntity {
   personGroup?: PersonGroupExt | null;
 }
 export type StudentGrantViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "studentGrant.browse";
-export type StudentGrantView<
-  V extends StudentGrantViewName
-> = V extends "_local"
+export type StudentGrantView<V extends StudentGrantViewName> = V extends "_base"
   ? Pick<
       StudentGrant,
       | "id"
@@ -35,7 +33,7 @@ export type StudentGrantView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       StudentGrant,
       | "id"

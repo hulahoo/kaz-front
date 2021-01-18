@@ -14,14 +14,29 @@ export class CalendarHoliday extends AbstractParentEntity {
   transferEndDate?: any | null;
 }
 export type CalendarHolidayViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "calendarHoliday.view";
 export type CalendarHolidayView<
   V extends CalendarHolidayViewName
-> = V extends "_minimal"
-  ? Pick<CalendarHoliday, "id">
+> = V extends "_base"
+  ? Pick<
+      CalendarHoliday,
+      | "id"
+      | "name"
+      | "startDate"
+      | "endDate"
+      | "actionDateFrom"
+      | "actionDateTo"
+      | "state"
+      | "dayType"
+      | "transferStartDate"
+      | "transferEndDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       CalendarHoliday,
@@ -39,23 +54,8 @@ export type CalendarHolidayView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      CalendarHoliday,
-      | "id"
-      | "name"
-      | "startDate"
-      | "endDate"
-      | "actionDateFrom"
-      | "actionDateTo"
-      | "state"
-      | "dayType"
-      | "transferStartDate"
-      | "transferEndDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<CalendarHoliday, "id">
   : V extends "calendarHoliday.view"
   ? Pick<
       CalendarHoliday,

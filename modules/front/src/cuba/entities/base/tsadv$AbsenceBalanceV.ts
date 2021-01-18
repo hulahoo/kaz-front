@@ -3,7 +3,7 @@ import { PersonGroupExt } from "./base$PersonGroupExt";
 export class AbsenceBalanceV extends StandardEntity {
   static NAME = "tsadv$AbsenceBalanceV";
   personGroup?: PersonGroupExt | null;
-  legacyID?: string | null;
+  legacyId?: string | null;
   overallBalanceDays?: number | null;
   dateFrom?: any | null;
   dateTo?: any | null;
@@ -16,17 +16,17 @@ export class AbsenceBalanceV extends StandardEntity {
   longAbsenceDays?: number | null;
 }
 export type AbsenceBalanceVViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "absenceBalanceV.browse";
 export type AbsenceBalanceVView<
   V extends AbsenceBalanceVViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AbsenceBalanceV,
       | "id"
-      | "legacyID"
+      | "legacyId"
       | "overallBalanceDays"
       | "dateFrom"
       | "dateTo"
@@ -38,11 +38,11 @@ export type AbsenceBalanceVView<
       | "extraDaysLeft"
       | "longAbsenceDays"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AbsenceBalanceV,
       | "id"
-      | "legacyID"
+      | "legacyId"
       | "overallBalanceDays"
       | "dateFrom"
       | "dateTo"
@@ -58,7 +58,7 @@ export type AbsenceBalanceVView<
   ? Pick<
       AbsenceBalanceV,
       | "id"
-      | "legacyID"
+      | "legacyId"
       | "overallBalanceDays"
       | "dateFrom"
       | "dateTo"

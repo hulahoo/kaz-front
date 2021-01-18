@@ -30,81 +30,115 @@ export class PositionGroupExt extends PositionGroup {
   fullName?: string | null;
 }
 export type PositionGroupExtViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "position.analytic.update"
+  | "positionExt-receptionAssignment"
   | "positionGroup.browse"
-  | "positionGroup.for.notification"
-  | "positionGroup.list"
+  | "positionGroup.change.request"
   | "positionGroup.filter"
+  | "positionGroup.for.notification"
   | "positionGroup.forAssess"
+  | "positionGroup.list"
   | "positionGroup.scheduleView"
   | "positionGroup.timecard"
-  | "positionGroupExt.for.requisition"
-  | "positionGroupExtReqLookupPickerField"
-  | "positionGroup.change.request"
+  | "positionGroupExt-view"
   | "positionGroupExt.admin.approve"
-  | "positionGroupExt-view";
+  | "positionGroupExt.for.requisition"
+  | "positionGroupExtReqLookupPickerField";
 export type PositionGroupExtView<
   V extends PositionGroupExtViewName
-> = V extends "_minimal"
-  ? Pick<PositionGroupExt, "id">
+> = V extends "_base"
+  ? Pick<
+      PositionGroupExt,
+      | "id"
+      | "positionName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       PositionGroupExt,
-      | "id"
-      | "positionName"
-      | "fullName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<PositionGroupExt, "id" | "positionName">
+  : V extends "position.analytic.update"
+  ? Pick<PositionGroupExt, "id" | "positionName" | "analytics">
+  : V extends "positionExt-receptionAssignment"
   ? Pick<
       PositionGroupExt,
       | "id"
-      | "positionName"
-      | "fullName"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "list"
+      | "position"
+      | "analytics"
     >
-  : V extends "position.analytic.update"
-  ? Pick<PositionGroupExt, "id" | "analytics">
   : V extends "positionGroup.browse"
   ? Pick<PositionGroupExt, "id" | "list" | "position" | "cases" | "analytics">
+  : V extends "positionGroup.change.request"
+  ? Pick<
+      PositionGroupExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "position"
+    >
+  : V extends "positionGroup.filter"
+  ? Pick<PositionGroupExt, "id" | "list" | "position" | "analytics">
   : V extends "positionGroup.for.notification"
   ? Pick<PositionGroupExt, "id" | "list" | "position">
+  : V extends "positionGroup.forAssess"
+  ? Pick<
+      PositionGroupExt,
+      "id" | "positionName" | "competenceElements" | "analytics"
+    >
   : V extends "positionGroup.list"
   ? Pick<
       PositionGroupExt,
       "id" | "list" | "position" | "vacationConditionsList" | "analytics"
     >
-  : V extends "positionGroup.filter"
-  ? Pick<PositionGroupExt, "id" | "list" | "position" | "analytics">
-  : V extends "positionGroup.forAssess"
-  ? Pick<PositionGroupExt, "id" | "competenceElements" | "analytics">
   : V extends "positionGroup.scheduleView"
-  ? Pick<PositionGroupExt, "id" | "list" | "assignments">
+  ? Pick<PositionGroupExt, "id" | "positionName" | "list" | "assignments">
   : V extends "positionGroup.timecard"
   ? Pick<
       PositionGroupExt,
       | "id"
-      | "positionName"
-      | "fullName"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "position"
       | "assignments"
     >
+  : V extends "positionGroupExt-view"
+  ? Pick<
+      PositionGroupExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "fullName"
+    >
+  : V extends "positionGroupExt.admin.approve"
+  ? Pick<
+      PositionGroupExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "adminApprove"
+    >
   : V extends "positionGroupExt.for.requisition"
   ? Pick<
       PositionGroupExt,
       | "id"
-      | "positionName"
-      | "fullName"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -115,48 +149,11 @@ export type PositionGroupExtView<
   ? Pick<
       PositionGroupExt,
       | "id"
-      | "positionName"
-      | "fullName"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "list"
       | "position"
       | "analytics"
-    >
-  : V extends "positionGroup.change.request"
-  ? Pick<
-      PositionGroupExt,
-      | "id"
-      | "positionName"
-      | "fullName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "list"
-      | "position"
-    >
-  : V extends "positionGroupExt.admin.approve"
-  ? Pick<
-      PositionGroupExt,
-      | "id"
-      | "positionName"
-      | "fullName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "adminApprove"
-    >
-  : V extends "positionGroupExt-view"
-  ? Pick<
-      PositionGroupExt,
-      | "id"
-      | "positionName"
-      | "fullName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "list"
-      | "fullName"
     >
   : never;

@@ -9,15 +9,23 @@ export class RequisitionHiringStep extends AbstractParentEntity {
   order?: number | null;
 }
 export type RequisitionHiringStepViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "requisitionHiringStep.view"
-  | "requisition-hiring-step-for-filter";
+  | "_local"
+  | "_minimal"
+  | "requisition-hiring-step-for-filter"
+  | "requisitionHiringStep.view";
 export type RequisitionHiringStepView<
   V extends RequisitionHiringStepViewName
-> = V extends "_minimal"
-  ? Pick<RequisitionHiringStep, "id">
+> = V extends "_base"
+  ? Pick<
+      RequisitionHiringStep,
+      | "id"
+      | "required"
+      | "order"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       RequisitionHiringStep,
@@ -28,17 +36,9 @@ export type RequisitionHiringStepView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      RequisitionHiringStep,
-      | "id"
-      | "required"
-      | "order"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "requisitionHiringStep.view"
+  : V extends "_minimal"
+  ? Pick<RequisitionHiringStep, "id">
+  : V extends "requisition-hiring-step-for-filter"
   ? Pick<
       RequisitionHiringStep,
       | "id"
@@ -50,7 +50,7 @@ export type RequisitionHiringStepView<
       | "requisition"
       | "hiringStep"
     >
-  : V extends "requisition-hiring-step-for-filter"
+  : V extends "requisitionHiringStep.view"
   ? Pick<
       RequisitionHiringStep,
       | "id"

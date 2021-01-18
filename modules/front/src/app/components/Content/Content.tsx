@@ -3,7 +3,6 @@ import {RouteComponentProps} from "react-router-dom";
 import {inject, observer} from "mobx-react";
 import RootStore from "../../store/RootStore";
 import {RootStoreProp} from "../../store";
-import {ElementStore} from "../../store/SectionStore";
 
 @inject("rootStore")
 @observer

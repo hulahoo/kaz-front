@@ -20,30 +20,53 @@ export class User extends StandardEntity {
   active?: boolean | null;
   changePasswordAtNextLogon?: boolean | null;
   group?: Group | null;
+  groupNames?: string | null;
   userRoles?: UserRole[] | null;
   substitutions?: UserSubstitution[] | null;
   ipMask?: string | null;
+  sysTenantId?: string | null;
 }
 export type UserViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "app"
-  | "user.edit"
-  | "user.browse"
-  | "user.copySettings"
-  | "user.changepassw"
-  | "user.resetPassword"
-  | "user.locale"
-  | "user.check"
-  | "user.timeZone"
-  | "user.changePassword"
-  | "scheduling"
   | "group.browse"
+  | "scheduling"
+  | "user-view"
+  | "user.browse"
+  | "user.changePassword"
+  | "user.changepassw"
+  | "user.check"
+  | "user.copySettings"
+  | "user.edit"
+  | "user.locale"
   | "user.moveToGroup"
-  | "user-view";
-export type UserView<V extends UserViewName> = V extends "_minimal"
-  ? Pick<User, "id" | "login" | "name">
+  | "user.resetPassword"
+  | "user.timeZone";
+export type UserView<V extends UserViewName> = V extends "_base"
+  ? Pick<
+      User,
+      | "id"
+      | "login"
+      | "name"
+      | "loginLowerCase"
+      | "password"
+      | "passwordEncryption"
+      | "firstName"
+      | "lastName"
+      | "middleName"
+      | "position"
+      | "email"
+      | "language"
+      | "timeZone"
+      | "timeZoneAuto"
+      | "active"
+      | "changePasswordAtNextLogon"
+      | "groupNames"
+      | "ipMask"
+      | "sysTenantId"
+    >
   : V extends "_local"
   ? Pick<
       User,
@@ -63,32 +86,19 @@ export type UserView<V extends UserViewName> = V extends "_minimal"
       | "timeZoneAuto"
       | "active"
       | "changePasswordAtNextLogon"
+      | "groupNames"
       | "ipMask"
+      | "sysTenantId"
     >
-  : V extends "_base"
-  ? Pick<
-      User,
-      | "id"
-      | "login"
-      | "name"
-      | "loginLowerCase"
-      | "password"
-      | "passwordEncryption"
-      | "firstName"
-      | "lastName"
-      | "middleName"
-      | "position"
-      | "email"
-      | "language"
-      | "timeZone"
-      | "timeZoneAuto"
-      | "active"
-      | "changePasswordAtNextLogon"
-      | "ipMask"
-    >
+  : V extends "_minimal"
+  ? Pick<User, "id" | "login" | "name">
   : V extends "app"
   ? Pick<User, "id" | "login" | "name">
-  : V extends "user.edit"
+  : V extends "group.browse"
+  ? Pick<User, "id" | "name" | "login" | "group">
+  : V extends "scheduling"
+  ? Pick<User, "id" | "login" | "name">
+  : V extends "user-view"
   ? Pick<
       User,
       | "id"
@@ -107,10 +117,9 @@ export type UserView<V extends UserViewName> = V extends "_minimal"
       | "timeZoneAuto"
       | "active"
       | "changePasswordAtNextLogon"
+      | "groupNames"
       | "ipMask"
-      | "group"
-      | "userRoles"
-      | "substitutions"
+      | "sysTenantId"
     >
   : V extends "user.browse"
   ? Pick<
@@ -138,13 +147,49 @@ export type UserView<V extends UserViewName> = V extends "_minimal"
       | "timeZoneAuto"
       | "active"
       | "changePasswordAtNextLogon"
+      | "groupNames"
       | "ipMask"
+      | "sysTenantId"
       | "group"
     >
-  : V extends "user.copySettings"
-  ? Pick<User, "id" | "login" | "name" | "login" | "name">
+  : V extends "user.changePassword"
+  ? Pick<User, "id" | "password" | "changePasswordAtNextLogon">
   : V extends "user.changepassw"
   ? Pick<User, "id" | "password" | "changePasswordAtNextLogon">
+  : V extends "user.check"
+  ? Pick<User, "id" | "password">
+  : V extends "user.copySettings"
+  ? Pick<User, "id" | "login" | "name" | "login" | "name">
+  : V extends "user.edit"
+  ? Pick<
+      User,
+      | "id"
+      | "login"
+      | "loginLowerCase"
+      | "password"
+      | "passwordEncryption"
+      | "name"
+      | "firstName"
+      | "lastName"
+      | "middleName"
+      | "position"
+      | "email"
+      | "language"
+      | "timeZone"
+      | "timeZoneAuto"
+      | "active"
+      | "changePasswordAtNextLogon"
+      | "groupNames"
+      | "ipMask"
+      | "sysTenantId"
+      | "group"
+      | "userRoles"
+      | "substitutions"
+    >
+  : V extends "user.locale"
+  ? Pick<User, "id" | "login" | "name" | "language">
+  : V extends "user.moveToGroup"
+  ? Pick<User, "id" | "group">
   : V extends "user.resetPassword"
   ? Pick<
       User,
@@ -164,41 +209,10 @@ export type UserView<V extends UserViewName> = V extends "_minimal"
       | "timeZoneAuto"
       | "active"
       | "changePasswordAtNextLogon"
+      | "groupNames"
       | "ipMask"
+      | "sysTenantId"
     >
-  : V extends "user.locale"
-  ? Pick<User, "id" | "login" | "name" | "language">
-  : V extends "user.check"
-  ? Pick<User, "id" | "password">
   : V extends "user.timeZone"
   ? Pick<User, "id" | "timeZone" | "timeZoneAuto">
-  : V extends "user.changePassword"
-  ? Pick<User, "id" | "password" | "changePasswordAtNextLogon">
-  : V extends "scheduling"
-  ? Pick<User, "id" | "login" | "name">
-  : V extends "group.browse"
-  ? Pick<User, "id" | "name" | "login" | "group">
-  : V extends "user.moveToGroup"
-  ? Pick<User, "id" | "group">
-  : V extends "user-view"
-  ? Pick<
-      User,
-      | "id"
-      | "login"
-      | "loginLowerCase"
-      | "password"
-      | "passwordEncryption"
-      | "name"
-      | "firstName"
-      | "lastName"
-      | "middleName"
-      | "position"
-      | "email"
-      | "language"
-      | "timeZone"
-      | "timeZoneAuto"
-      | "active"
-      | "changePasswordAtNextLogon"
-      | "ipMask"
-    >
   : never;

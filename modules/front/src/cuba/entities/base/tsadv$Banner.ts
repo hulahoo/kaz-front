@@ -8,10 +8,10 @@ export class Banner extends StandardEntity {
   imageLang3?: FileDescriptor | null;
   active?: boolean | null;
 }
-export type BannerViewName = "_minimal" | "_local" | "_base" | "banner.edit";
-export type BannerView<V extends BannerViewName> = V extends "_local"
+export type BannerViewName = "_base" | "_local" | "_minimal" | "banner.edit";
+export type BannerView<V extends BannerViewName> = V extends "_base"
   ? Pick<Banner, "id" | "page" | "active">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<Banner, "id" | "page" | "active">
   : V extends "banner.edit"
   ? Pick<

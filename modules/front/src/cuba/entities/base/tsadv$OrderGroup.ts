@@ -6,22 +6,22 @@ export class OrderGroup extends AbstractGroup {
   order?: Order | null;
 }
 export type OrderGroupViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "orderGroup-view";
-export type OrderGroupView<V extends OrderGroupViewName> = V extends "_minimal"
-  ? Pick<OrderGroup, "id">
+export type OrderGroupView<V extends OrderGroupViewName> = V extends "_base"
+  ? Pick<
+      OrderGroup,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       OrderGroup,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      OrderGroup,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<OrderGroup, "id">
   : V extends "orderGroup-view"
   ? Pick<OrderGroup, "id" | "list" | "order">
   : never;

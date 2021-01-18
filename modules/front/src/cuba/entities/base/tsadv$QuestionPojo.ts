@@ -6,5 +6,5 @@ export class QuestionPojo extends BaseUuidEntity {
   answers?: AnswerPojo | null;
   type?: any | null;
 }
-export type QuestionPojoViewName = "_minimal" | "_local" | "_base";
+export type QuestionPojoViewName = "_base" | "_local" | "_minimal";
 export type QuestionPojoView<V extends QuestionPojoViewName> = never;

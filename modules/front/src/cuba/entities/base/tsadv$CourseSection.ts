@@ -17,20 +17,30 @@ export class CourseSection extends AbstractParentEntity {
   courseSectionAttempts?: CourseSectionAttempt[] | null;
 }
 export type CourseSectionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "courseSection.edit"
-  | "courseSection.object"
-  | "courseSection.minimal"
-  | "courseSection.for.status"
+  | "_local"
+  | "_minimal"
   | "course.section.for.start.online.section"
   | "course.section.format"
-  | "course.section.with.format.session";
+  | "course.section.with.format.session"
+  | "courseSection.edit"
+  | "courseSection.for.status"
+  | "courseSection.minimal"
+  | "courseSection.object";
 export type CourseSectionView<
   V extends CourseSectionViewName
-> = V extends "_minimal"
-  ? Pick<CourseSection, "id" | "sectionName">
+> = V extends "_base"
+  ? Pick<
+      CourseSection,
+      | "id"
+      | "sectionName"
+      | "mandatory"
+      | "order"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       CourseSection,
@@ -43,37 +53,8 @@ export type CourseSectionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      CourseSection,
-      | "id"
-      | "sectionName"
-      | "mandatory"
-      | "order"
-      | "description"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
-  : V extends "courseSection.edit"
-  ? Pick<
-      CourseSection,
-      | "id"
-      | "sectionName"
-      | "order"
-      | "format"
-      | "description"
-      | "sectionObject"
-      | "session"
-      | "course"
-      | "mandatory"
-    >
-  : V extends "courseSection.object"
-  ? Pick<CourseSection, "id" | "sectionObject">
-  : V extends "courseSection.minimal"
-  ? Pick<CourseSection, "id" | "course" | "format">
-  : V extends "courseSection.for.status"
-  ? Pick<CourseSection, "id" | "course" | "courseSectionAttempts">
+  : V extends "_minimal"
+  ? Pick<CourseSection, "id" | "sectionName">
   : V extends "course.section.for.start.online.section"
   ? Pick<CourseSection, "id" | "sectionName" | "sectionObject">
   : V extends "course.section.format"
@@ -105,4 +86,23 @@ export type CourseSectionView<
       | "sectionObject"
       | "course"
     >
+  : V extends "courseSection.edit"
+  ? Pick<
+      CourseSection,
+      | "id"
+      | "sectionName"
+      | "order"
+      | "format"
+      | "description"
+      | "sectionObject"
+      | "session"
+      | "course"
+      | "mandatory"
+    >
+  : V extends "courseSection.for.status"
+  ? Pick<CourseSection, "id" | "course" | "courseSectionAttempts">
+  : V extends "courseSection.minimal"
+  ? Pick<CourseSection, "id" | "course" | "format">
+  : V extends "courseSection.object"
+  ? Pick<CourseSection, "id" | "sectionObject">
   : never;

@@ -8,41 +8,8 @@ export class DicQuality extends AbstractDictionary {
   fullLangValue5?: string | null;
   fullLangValue?: string | null;
 }
-export type DicQualityViewName = "_minimal" | "_local" | "_base";
-export type DicQualityView<V extends DicQualityViewName> = V extends "_minimal"
-  ? Pick<DicQuality, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicQuality,
-      | "id"
-      | "fullLangValue1"
-      | "fullLangValue2"
-      | "fullLangValue3"
-      | "fullLangValue4"
-      | "fullLangValue5"
-      | "fullLangValue"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+export type DicQualityViewName = "_base" | "_local" | "_minimal";
+export type DicQualityView<V extends DicQualityViewName> = V extends "_base"
   ? Pick<
       DicQuality,
       | "id"
@@ -74,4 +41,37 @@ export type DicQualityView<V extends DicQualityViewName> = V extends "_minimal"
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicQuality,
+      | "id"
+      | "fullLangValue1"
+      | "fullLangValue2"
+      | "fullLangValue3"
+      | "fullLangValue4"
+      | "fullLangValue5"
+      | "fullLangValue"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicQuality, "id" | "langValue">
   : never;

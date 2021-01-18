@@ -34,14 +34,13 @@ export class Absence extends AbstractParentCategorizedEntity {
   useInBalance?: boolean | null;
 }
 export type AbsenceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "absence.view"
+  | "_local"
+  | "_minimal"
   | "absence-with-dynamic-attributes.view"
-  | "absence.viewForNotify"
+  | "absence.view"
   | "absence.viewForNotify";
-export type AbsenceView<V extends AbsenceViewName> = V extends "_minimal"
+export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
   ? Pick<
       Absence,
       | "id"
@@ -52,6 +51,13 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_minimal"
       | "notificationDate"
       | "order"
       | "type"
+      | "orderNum"
+      | "orderDate"
+      | "additionalDays"
+      | "legacyId"
+      | "periodStart"
+      | "periodEnd"
+      | "useInBalance"
     >
   : V extends "_local"
   ? Pick<
@@ -69,7 +75,7 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_minimal"
       | "periodEnd"
       | "useInBalance"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       Absence,
       | "id"
@@ -80,13 +86,27 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_minimal"
       | "notificationDate"
       | "order"
       | "type"
+    >
+  : V extends "absence-with-dynamic-attributes.view"
+  ? Pick<
+      Absence,
+      | "id"
+      | "notificationDate"
       | "orderNum"
       | "orderDate"
+      | "dateFrom"
+      | "dateTo"
+      | "absenceDays"
       | "additionalDays"
       | "legacyId"
       | "periodStart"
       | "periodEnd"
       | "useInBalance"
+      | "personGroup"
+      | "type"
+      | "category"
+      | "parentAbsence"
+      | "file"
     >
   : V extends "absence.view"
   ? Pick<
@@ -113,27 +133,7 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_minimal"
       | "category"
       | "file"
       | "absenceStatus"
-    >
-  : V extends "absence-with-dynamic-attributes.view"
-  ? Pick<
-      Absence,
-      | "id"
-      | "notificationDate"
-      | "orderNum"
-      | "orderDate"
-      | "dateFrom"
-      | "dateTo"
-      | "absenceDays"
-      | "additionalDays"
-      | "legacyId"
-      | "periodStart"
-      | "periodEnd"
-      | "useInBalance"
-      | "personGroup"
-      | "type"
-      | "category"
-      | "parentAbsence"
-      | "file"
+      | "order"
     >
   : V extends "absence.viewForNotify"
   ? Pick<
@@ -160,33 +160,7 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_minimal"
       | "category"
       | "file"
       | "absenceStatus"
-      | "personGroup"
-    >
-  : V extends "absence.viewForNotify"
-  ? Pick<
-      Absence,
-      | "id"
-      | "notificationDate"
-      | "orderNum"
-      | "orderDate"
-      | "dateFrom"
-      | "dateTo"
-      | "absenceDays"
-      | "additionalDays"
-      | "legacyId"
-      | "periodStart"
-      | "periodEnd"
-      | "useInBalance"
-      | "absenceRequest"
-      | "personGroup"
-      | "ordAssignment"
-      | "type"
-      | "vacationLink"
-      | "typeAndDate"
-      | "parentAbsence"
-      | "category"
-      | "file"
-      | "absenceStatus"
+      | "order"
       | "personGroup"
     >
   : never;

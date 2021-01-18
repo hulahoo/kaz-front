@@ -11,14 +11,24 @@ export class IndividualDevelopmentPlan extends AbstractParentEntity {
   idpDetail?: IdpDetail[] | null;
 }
 export type IndividualDevelopmentPlanViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "individualDevelopmentPlan.edit";
 export type IndividualDevelopmentPlanView<
   V extends IndividualDevelopmentPlanViewName
-> = V extends "_minimal"
-  ? Pick<IndividualDevelopmentPlan, "id" | "planName">
+> = V extends "_base"
+  ? Pick<
+      IndividualDevelopmentPlan,
+      | "id"
+      | "planName"
+      | "status"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       IndividualDevelopmentPlan,
@@ -31,18 +41,8 @@ export type IndividualDevelopmentPlanView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      IndividualDevelopmentPlan,
-      | "id"
-      | "planName"
-      | "status"
-      | "startDate"
-      | "endDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<IndividualDevelopmentPlan, "id" | "planName">
   : V extends "individualDevelopmentPlan.edit"
   ? Pick<
       IndividualDevelopmentPlan,

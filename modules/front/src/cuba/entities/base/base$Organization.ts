@@ -12,28 +12,8 @@ export class Organization extends AbstractTimeBasedEntity {
   location?: DicLocation | null;
   type?: DicOrgType | null;
 }
-export type OrganizationViewName = "_minimal" | "_local" | "_base";
-export type OrganizationView<
-  V extends OrganizationViewName
-> = V extends "_minimal"
-  ? Pick<Organization, "id" | "organizationName">
-  : V extends "_local"
-  ? Pick<
-      Organization,
-      | "id"
-      | "organizationNameLang1"
-      | "organizationNameLang2"
-      | "organizationNameLang3"
-      | "organizationNameLang4"
-      | "organizationNameLang5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
-  : V extends "_base"
+export type OrganizationViewName = "_base" | "_local" | "_minimal";
+export type OrganizationView<V extends OrganizationViewName> = V extends "_base"
   ? Pick<
       Organization,
       | "id"
@@ -50,4 +30,22 @@ export type OrganizationView<
       | "endDate"
       | "writeHistory"
     >
+  : V extends "_local"
+  ? Pick<
+      Organization,
+      | "id"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
+  : V extends "_minimal"
+  ? Pick<Organization, "id" | "organizationName">
   : never;

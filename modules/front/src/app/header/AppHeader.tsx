@@ -7,7 +7,7 @@ import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {LanguageSwitcher} from "../../i18n/LanguageSwitcher";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Input from "../components/Input/Input";
-import UserPanel from "../UserPanel/UserPanel";
+import UserPanel from "./UserPanel/UserPanel";
 import CommonComponentHoc from "../hoc/CommonComponent/CommonComponentHoc";
 import {ChangeEvent} from "react";
 

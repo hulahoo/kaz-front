@@ -7,18 +7,18 @@ export class QuestionInSection extends AbstractParentEntity {
   question?: Question | null;
 }
 export type QuestionInSectionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "questionInSection.browse";
 export type QuestionInSectionView<
   V extends QuestionInSectionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       QuestionInSection,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       QuestionInSection,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"

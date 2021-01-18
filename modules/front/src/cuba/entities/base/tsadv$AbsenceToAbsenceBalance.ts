@@ -9,18 +9,18 @@ export class AbsenceToAbsenceBalance extends StandardEntity {
   absenceDays?: number | null;
 }
 export type AbsenceToAbsenceBalanceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "absenceToAbsenceBalance.view";
 export type AbsenceToAbsenceBalanceView<
   V extends AbsenceToAbsenceBalanceViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AbsenceToAbsenceBalance,
       "id" | "additionalAbsenceDays" | "absenceDays"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AbsenceToAbsenceBalance,
       "id" | "additionalAbsenceDays" | "absenceDays"

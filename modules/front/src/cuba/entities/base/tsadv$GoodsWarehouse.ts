@@ -6,13 +6,13 @@ export class GoodsWarehouse extends AbstractParentEntity {
   quantity?: any | null;
 }
 export type GoodsWarehouseViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "goodsWarehouse.edit";
 export type GoodsWarehouseView<
   V extends GoodsWarehouseViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       GoodsWarehouse,
       | "id"
@@ -21,7 +21,7 @@ export type GoodsWarehouseView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       GoodsWarehouse,
       | "id"

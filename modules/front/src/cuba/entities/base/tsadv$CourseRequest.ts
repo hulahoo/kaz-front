@@ -16,10 +16,10 @@ export class CourseRequest extends AbstractParentEntity {
   courseName?: string | null;
   budgetSum?: any | null;
 }
-export type CourseRequestViewName = "_minimal" | "_local" | "_base";
+export type CourseRequestViewName = "_base" | "_local" | "_minimal";
 export type CourseRequestView<
   V extends CourseRequestViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CourseRequest,
       | "id"
@@ -31,7 +31,7 @@ export type CourseRequestView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CourseRequest,
       | "id"

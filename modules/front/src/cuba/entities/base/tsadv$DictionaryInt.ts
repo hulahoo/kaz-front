@@ -5,11 +5,11 @@ export class DictionaryInt extends AbstractEntityInt {
   name?: string | null;
   competenceTypeCode?: string | null;
 }
-export type DictionaryIntViewName = "_minimal" | "_local" | "_base";
+export type DictionaryIntViewName = "_base" | "_local" | "_minimal";
 export type DictionaryIntView<
   V extends DictionaryIntViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<DictionaryInt, "id" | "code">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<DictionaryInt, "id" | "code">
   : never;

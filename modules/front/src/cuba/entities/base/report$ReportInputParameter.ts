@@ -25,11 +25,11 @@ export class ReportInputParameter extends BaseUuidEntity {
   defaultDateIsCurrent?: boolean | null;
   locName?: string | null;
 }
-export type ReportInputParameterViewName = "_minimal" | "_local" | "_base";
+export type ReportInputParameterViewName = "_base" | "_local" | "_minimal";
 export type ReportInputParameterView<
   V extends ReportInputParameterViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<ReportInputParameter, "id" | "locName">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<ReportInputParameter, "id" | "locName">
   : never;

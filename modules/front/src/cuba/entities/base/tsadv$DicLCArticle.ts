@@ -6,41 +6,8 @@ export class DicLCArticle extends AbstractDictionary {
   subItem?: string | null;
   attribute?: any | null;
 }
-export type DicLCArticleViewName = "_minimal" | "_local" | "_base";
-export type DicLCArticleView<
-  V extends DicLCArticleViewName
-> = V extends "_minimal"
-  ? Pick<DicLCArticle, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicLCArticle,
-      | "id"
-      | "article"
-      | "item"
-      | "subItem"
-      | "attribute"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+export type DicLCArticleViewName = "_base" | "_local" | "_minimal";
+export type DicLCArticleView<V extends DicLCArticleViewName> = V extends "_base"
   ? Pick<
       DicLCArticle,
       | "id"
@@ -70,4 +37,35 @@ export type DicLCArticleView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicLCArticle,
+      | "id"
+      | "article"
+      | "item"
+      | "subItem"
+      | "attribute"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicLCArticle, "id" | "langValue">
   : never;

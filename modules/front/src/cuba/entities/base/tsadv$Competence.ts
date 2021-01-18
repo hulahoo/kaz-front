@@ -18,31 +18,12 @@ export class Competence extends AbstractTimeBasedEntity {
   isRcAvailable?: boolean | null;
 }
 export type CompetenceViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "competence-view"
   | "competence.edit";
-export type CompetenceView<V extends CompetenceViewName> = V extends "_minimal"
-  ? Pick<Competence, "id" | "competenceName">
-  : V extends "_local"
-  ? Pick<
-      Competence,
-      | "id"
-      | "competenceNameLang1"
-      | "competenceNameLang2"
-      | "competenceNameLang3"
-      | "competenceNameLang4"
-      | "competenceNameLang5"
-      | "isRcAvailable"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-    >
-  : V extends "_base"
+export type CompetenceView<V extends CompetenceViewName> = V extends "_base"
   ? Pick<
       Competence,
       | "id"
@@ -60,6 +41,25 @@ export type CompetenceView<V extends CompetenceViewName> = V extends "_minimal"
       | "endDate"
       | "writeHistory"
     >
+  : V extends "_local"
+  ? Pick<
+      Competence,
+      | "id"
+      | "competenceNameLang1"
+      | "competenceNameLang2"
+      | "competenceNameLang3"
+      | "competenceNameLang4"
+      | "competenceNameLang5"
+      | "isRcAvailable"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+    >
+  : V extends "_minimal"
+  ? Pick<Competence, "id" | "competenceName">
   : V extends "competence-view"
   ? Pick<
       Competence,

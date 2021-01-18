@@ -22,13 +22,13 @@ export class AssessmentParticipant extends AbstractParentEntity {
   overallComment?: string | null;
 }
 export type AssessmentParticipantViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "assessmentParticipant.browse";
 export type AssessmentParticipantView<
   V extends AssessmentParticipantViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       AssessmentParticipant,
       | "id"
@@ -40,7 +40,7 @@ export type AssessmentParticipantView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       AssessmentParticipant,
       | "id"

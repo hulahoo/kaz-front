@@ -4,6 +4,7 @@ export class ScheduledExecution extends BaseUuidEntity {
   static NAME = "sys$ScheduledExecution";
   createTs?: any | null;
   createdBy?: string | null;
+  sysTenantId?: string | null;
   task?: ScheduledTask | null;
   server?: string | null;
   startTime?: any | null;
@@ -11,17 +12,29 @@ export class ScheduledExecution extends BaseUuidEntity {
   result?: string | null;
   durationSec?: any | null;
 }
-export type ScheduledExecutionViewName = "_minimal" | "_local" | "_base";
+export type ScheduledExecutionViewName = "_base" | "_local" | "_minimal";
 export type ScheduledExecutionView<
   V extends ScheduledExecutionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       ScheduledExecution,
-      "id" | "server" | "startTime" | "finishTime" | "result" | "durationSec"
+      | "id"
+      | "sysTenantId"
+      | "server"
+      | "startTime"
+      | "finishTime"
+      | "result"
+      | "durationSec"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       ScheduledExecution,
-      "id" | "server" | "startTime" | "finishTime" | "result" | "durationSec"
+      | "id"
+      | "sysTenantId"
+      | "server"
+      | "startTime"
+      | "finishTime"
+      | "result"
+      | "durationSec"
     >
   : never;

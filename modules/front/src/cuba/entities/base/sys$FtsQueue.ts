@@ -13,8 +13,8 @@ export class FtsQueue extends BaseUuidEntity {
   indexingHost?: string | null;
   fake?: boolean | null;
 }
-export type FtsQueueViewName = "_minimal" | "_local" | "_base";
-export type FtsQueueView<V extends FtsQueueViewName> = V extends "_local"
+export type FtsQueueViewName = "_base" | "_local" | "_minimal";
+export type FtsQueueView<V extends FtsQueueViewName> = V extends "_base"
   ? Pick<
       FtsQueue,
       | "id"
@@ -28,7 +28,7 @@ export type FtsQueueView<V extends FtsQueueViewName> = V extends "_local"
       | "indexingHost"
       | "fake"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       FtsQueue,
       | "id"

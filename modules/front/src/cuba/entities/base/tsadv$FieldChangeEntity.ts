@@ -5,5 +5,5 @@ export class FieldChangeEntity extends BaseUuidEntity {
   oldValue?: string | null;
   newValue?: string | null;
 }
-export type FieldChangeEntityViewName = "_minimal" | "_local" | "_base";
+export type FieldChangeEntityViewName = "_base" | "_local" | "_minimal";
 export type FieldChangeEntityView<V extends FieldChangeEntityViewName> = never;

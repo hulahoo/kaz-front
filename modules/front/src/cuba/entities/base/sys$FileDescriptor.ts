@@ -5,16 +5,23 @@ export class FileDescriptor extends StandardEntity {
   extension?: string | null;
   size?: any | null;
   createDate?: any | null;
+  sysTenantId?: string | null;
 }
-export type FileDescriptorViewName = "_minimal" | "_local" | "_base" | "browse";
+export type FileDescriptorViewName = "_base" | "_local" | "_minimal" | "browse";
 export type FileDescriptorView<
   V extends FileDescriptorViewName
-> = V extends "_minimal"
-  ? Pick<FileDescriptor, "id" | "name" | "createDate" | "extension">
+> = V extends "_base"
+  ? Pick<
+      FileDescriptor,
+      "id" | "name" | "createDate" | "extension" | "size" | "sysTenantId"
+    >
   : V extends "_local"
-  ? Pick<FileDescriptor, "id" | "name" | "extension" | "size" | "createDate">
-  : V extends "_base"
-  ? Pick<FileDescriptor, "id" | "name" | "createDate" | "extension" | "size">
+  ? Pick<
+      FileDescriptor,
+      "id" | "name" | "extension" | "size" | "createDate" | "sysTenantId"
+    >
+  : V extends "_minimal"
+  ? Pick<FileDescriptor, "id" | "name" | "createDate" | "extension">
   : V extends "browse"
   ? Pick<FileDescriptor, "id" | "name" | "extension" | "size" | "createDate">
   : never;

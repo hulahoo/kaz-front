@@ -20,14 +20,29 @@ export class ScheduleSummary extends AbstractParentEntity {
   shiftName?: string | null;
 }
 export type ScheduleSummaryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "scheduleSummary.view";
 export type ScheduleSummaryView<
   V extends ScheduleSummaryViewName
-> = V extends "_minimal"
-  ? Pick<ScheduleSummary, "id">
+> = V extends "_base"
+  ? Pick<
+      ScheduleSummary,
+      | "id"
+      | "day"
+      | "dayDate"
+      | "hours"
+      | "baseHours"
+      | "startTime"
+      | "endTime"
+      | "correctionFlag"
+      | "displayValue"
+      | "shiftName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ScheduleSummary,
@@ -45,23 +60,8 @@ export type ScheduleSummaryView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ScheduleSummary,
-      | "id"
-      | "day"
-      | "dayDate"
-      | "hours"
-      | "baseHours"
-      | "startTime"
-      | "endTime"
-      | "correctionFlag"
-      | "displayValue"
-      | "shiftName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<ScheduleSummary, "id">
   : V extends "scheduleSummary.view"
   ? Pick<
       ScheduleSummary,

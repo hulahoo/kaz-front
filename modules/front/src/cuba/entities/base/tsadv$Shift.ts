@@ -9,9 +9,20 @@ export class Shift extends AbstractParentEntity {
   dateTo?: any | null;
   details?: ShiftDetail[] | null;
 }
-export type ShiftViewName = "_minimal" | "_local" | "_base" | "shift.view";
-export type ShiftView<V extends ShiftViewName> = V extends "_minimal"
-  ? Pick<Shift, "id">
+export type ShiftViewName = "_base" | "_local" | "_minimal" | "shift.view";
+export type ShiftView<V extends ShiftViewName> = V extends "_base"
+  ? Pick<
+      Shift,
+      | "id"
+      | "name"
+      | "code"
+      | "description"
+      | "dateFrom"
+      | "dateTo"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Shift,
@@ -25,19 +36,8 @@ export type ShiftView<V extends ShiftViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Shift,
-      | "id"
-      | "name"
-      | "code"
-      | "description"
-      | "dateFrom"
-      | "dateTo"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Shift, "id">
   : V extends "shift.view"
   ? Pick<
       Shift,

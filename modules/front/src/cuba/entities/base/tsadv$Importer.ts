@@ -4,9 +4,9 @@ export class Importer extends BaseUuidEntity {
   beanName?: string | null;
   description?: string | null;
 }
-export type ImporterViewName = "_minimal" | "_local" | "_base";
-export type ImporterView<V extends ImporterViewName> = V extends "_minimal"
+export type ImporterViewName = "_base" | "_local" | "_minimal";
+export type ImporterView<V extends ImporterViewName> = V extends "_base"
   ? Pick<Importer, "id" | "beanName" | "description">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<Importer, "id" | "beanName" | "description">
   : never;

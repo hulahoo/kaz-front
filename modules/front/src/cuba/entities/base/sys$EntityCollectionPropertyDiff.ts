@@ -3,9 +3,9 @@ export class EntityCollectionPropertyDiff extends EntityPropertyDiff {
   static NAME = "sys$EntityCollectionPropertyDiff";
 }
 export type EntityCollectionPropertyDiffViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type EntityCollectionPropertyDiffView<
   V extends EntityCollectionPropertyDiffViewName
 > = never;

@@ -13,11 +13,9 @@ export class NomineePojo extends BaseUuidEntity {
   personAwardId?: string | null;
   employeeNumber?: string | null;
 }
-export type NomineePojoViewName = "_minimal" | "_local" | "_base";
-export type NomineePojoView<
-  V extends NomineePojoViewName
-> = V extends "_minimal"
+export type NomineePojoViewName = "_base" | "_local" | "_minimal";
+export type NomineePojoView<V extends NomineePojoViewName> = V extends "_base"
   ? Pick<NomineePojo, "id" | "description">
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<NomineePojo, "id" | "description">
   : never;

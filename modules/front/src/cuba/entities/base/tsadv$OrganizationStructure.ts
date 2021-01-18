@@ -18,14 +18,14 @@ export class OrganizationStructure extends StandardEntity {
   level?: number | null;
 }
 export type OrganizationStructureViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "organizationStructure.for.requisition"
-  | "organizationStructure.for.orgService";
+  | "_local"
+  | "_minimal"
+  | "organizationStructure.for.orgService"
+  | "organizationStructure.for.requisition";
 export type OrganizationStructureView<
   V extends OrganizationStructureViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       OrganizationStructure,
       | "id"
@@ -38,7 +38,7 @@ export type OrganizationStructureView<
       | "path"
       | "level"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       OrganizationStructure,
       | "id"
@@ -50,6 +50,11 @@ export type OrganizationStructureView<
       | "endDate"
       | "path"
       | "level"
+    >
+  : V extends "organizationStructure.for.orgService"
+  ? Pick<
+      OrganizationStructure,
+      "id" | "organizationGroup" | "pathOrgName1" | "startDate" | "endDate"
     >
   : V extends "organizationStructure.for.requisition"
   ? Pick<
@@ -65,10 +70,5 @@ export type OrganizationStructureView<
       | "level"
       | "organizationGroup"
       | "parentOrganizationGroup"
-    >
-  : V extends "organizationStructure.for.orgService"
-  ? Pick<
-      OrganizationStructure,
-      "id" | "organizationGroup" | "pathOrgName1" | "startDate" | "endDate"
     >
   : never;

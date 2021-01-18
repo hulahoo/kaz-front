@@ -9,13 +9,13 @@ export class JobGroupGoalLink extends AbstractParentEntity {
   goal?: Goal | null;
 }
 export type JobGroupGoalLinkViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "jobGroupGoalLink.edit";
 export type JobGroupGoalLinkView<
   V extends JobGroupGoalLinkViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       JobGroupGoalLink,
       | "id"
@@ -25,7 +25,7 @@ export type JobGroupGoalLinkView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       JobGroupGoalLink,
       | "id"

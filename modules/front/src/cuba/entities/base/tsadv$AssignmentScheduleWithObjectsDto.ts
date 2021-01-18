@@ -5,9 +5,9 @@ export class AssignmentScheduleWithObjectsDto extends BaseUuidEntity {
   assignmentSchedule?: AssignmentSchedule | null;
 }
 export type AssignmentScheduleWithObjectsDtoViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type AssignmentScheduleWithObjectsDtoView<
   V extends AssignmentScheduleWithObjectsDtoViewName
 > = never;

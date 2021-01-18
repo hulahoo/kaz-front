@@ -14,11 +14,27 @@ export class ImportLogRecord extends AbstractParentEntity {
   linkEntityName?: string | null;
   linkEntityId?: any | null;
 }
-export type ImportLogRecordViewName = "_minimal" | "_local" | "_base";
+export type ImportLogRecordViewName = "_base" | "_local" | "_minimal";
 export type ImportLogRecordView<
   V extends ImportLogRecordViewName
-> = V extends "_minimal"
-  ? Pick<ImportLogRecord, "id" | "level" | "message">
+> = V extends "_base"
+  ? Pick<
+      ImportLogRecord,
+      | "id"
+      | "level"
+      | "message"
+      | "fullName"
+      | "userMessage"
+      | "success"
+      | "time"
+      | "stacktrace"
+      | "linkScreen"
+      | "linkEntityName"
+      | "linkEntityId"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ImportLogRecord,
@@ -37,22 +53,6 @@ export type ImportLogRecordView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ImportLogRecord,
-      | "id"
-      | "level"
-      | "message"
-      | "fullName"
-      | "userMessage"
-      | "success"
-      | "time"
-      | "stacktrace"
-      | "linkScreen"
-      | "linkEntityName"
-      | "linkEntityId"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<ImportLogRecord, "id" | "level" | "message">
   : never;

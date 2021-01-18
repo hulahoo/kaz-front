@@ -1,9 +1,7 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { UserExt } from "./base$UserExt";
+import { UserExt } from "./tsadv$UserExt";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { BaseUuidEntity } from "./sys$BaseUuidEntity";
-import { ProcDefinition } from "./bpm$ProcDefinition";
-import { ProcInstance } from "./bpm$ProcInstance";
 export class ProcInstanceV extends StandardEntity {
   static NAME = "tsadv$ProcInstanceV";
   requestType?: string | null;
@@ -25,36 +23,15 @@ export class ProcInstanceV extends StandardEntity {
   detailRu?: string | null;
   detailEn?: string | null;
   detail?: string | null;
-  procDefinition?: ProcDefinition | null;
-  procInstance?: ProcInstance | null;
 }
 export type ProcInstanceVViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "procInstanceV-view";
 export type ProcInstanceVView<
   V extends ProcInstanceVViewName
-> = V extends "_minimal"
-  ? Pick<ProcInstanceV, "id" | "requestType" | "requestNumber">
-  : V extends "_local"
-  ? Pick<
-      ProcInstanceV,
-      | "id"
-      | "processRu"
-      | "processEn"
-      | "entityName"
-      | "entityId"
-      | "requestNumber"
-      | "active"
-      | "startDate"
-      | "endDate"
-      | "effectiveDate"
-      | "cancelled"
-      | "detailRu"
-      | "detailEn"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       ProcInstanceV,
       | "id"
@@ -72,6 +49,25 @@ export type ProcInstanceVView<
       | "detailRu"
       | "detailEn"
     >
+  : V extends "_local"
+  ? Pick<
+      ProcInstanceV,
+      | "id"
+      | "processRu"
+      | "processEn"
+      | "entityName"
+      | "entityId"
+      | "requestNumber"
+      | "active"
+      | "startDate"
+      | "endDate"
+      | "effectiveDate"
+      | "cancelled"
+      | "detailRu"
+      | "detailEn"
+    >
+  : V extends "_minimal"
+  ? Pick<ProcInstanceV, "id" | "requestType" | "requestNumber">
   : V extends "procInstanceV-view"
   ? Pick<
       ProcInstanceV,

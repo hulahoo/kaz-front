@@ -21,14 +21,14 @@ export class Salary extends AbstractTimeBasedEntity {
   type?: any | null;
 }
 export type SalaryViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "salary-for-salary-request.view"
-  | "salary.view"
+  | "salary.browse"
   | "salary.order.view"
-  | "salary.browse";
-export type SalaryView<V extends SalaryViewName> = V extends "_local"
+  | "salary.view";
+export type SalaryView<V extends SalaryViewName> = V extends "_base"
   ? Pick<
       Salary,
       | "id"
@@ -42,7 +42,7 @@ export type SalaryView<V extends SalaryViewName> = V extends "_local"
       | "endDate"
       | "writeHistory"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Salary,
       | "id"
@@ -69,24 +69,21 @@ export type SalaryView<V extends SalaryViewName> = V extends "_local"
       | "type"
       | "endDate"
     >
-  : V extends "salary.view"
+  : V extends "salary.browse"
   ? Pick<
       Salary,
       | "id"
-      | "updatedBy"
       | "amount"
-      | "currency"
       | "netGross"
-      | "reason"
-      | "assignmentGroup"
-      | "endDate"
-      | "startDate"
-      | "orderGroup"
-      | "agreement"
-      | "ordAssignment"
       | "type"
-      | "salaryRequest"
       | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "assignmentGroup"
+      | "currency"
     >
   : V extends "salary.order.view"
   ? Pick<
@@ -105,20 +102,23 @@ export type SalaryView<V extends SalaryViewName> = V extends "_local"
       | "currency"
       | "ordAssignment"
     >
-  : V extends "salary.browse"
+  : V extends "salary.view"
   ? Pick<
       Salary,
       | "id"
+      | "updatedBy"
       | "amount"
-      | "netGross"
-      | "type"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-      | "assignmentGroup"
       | "currency"
+      | "netGross"
+      | "reason"
+      | "assignmentGroup"
+      | "endDate"
+      | "startDate"
+      | "orderGroup"
+      | "agreement"
+      | "ordAssignment"
+      | "type"
+      | "salaryRequest"
+      | "legacyId"
     >
   : never;

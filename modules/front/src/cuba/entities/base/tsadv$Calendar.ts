@@ -11,12 +11,22 @@ export class Calendar extends AbstractParentEntity {
   orgAnalytics?: OrgAnalytics | null;
 }
 export type CalendarViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "calendar.view";
-export type CalendarView<V extends CalendarViewName> = V extends "_minimal"
-  ? Pick<Calendar, "id">
+export type CalendarView<V extends CalendarViewName> = V extends "_base"
+  ? Pick<
+      Calendar,
+      | "id"
+      | "calendar"
+      | "description"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Calendar,
@@ -29,18 +39,8 @@ export type CalendarView<V extends CalendarViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Calendar,
-      | "id"
-      | "calendar"
-      | "description"
-      | "startDate"
-      | "endDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Calendar, "id">
   : V extends "calendar.view"
   ? Pick<
       Calendar,

@@ -18,13 +18,13 @@ export class PositionStructure extends AbstractParentEntity {
   posEndDate?: any | null;
 }
 export type PositionStructureViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "positionStructure.view";
 export type PositionStructureView<
   V extends PositionStructureViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PositionStructure,
       | "id"
@@ -41,7 +41,7 @@ export type PositionStructureView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PositionStructure,
       | "id"

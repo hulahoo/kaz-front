@@ -10,16 +10,16 @@ export class CertificationEnrollment extends AbstractParentEntity {
   status?: any | null;
 }
 export type CertificationEnrollmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "certificationEnrollment.browse"
   | "certificationEnrollment.edit"
   | "certificationEnrollment.schedule"
   | "certificationEnrollment.ss.browse";
 export type CertificationEnrollmentView<
   V extends CertificationEnrollmentViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       CertificationEnrollment,
       | "id"
@@ -30,7 +30,7 @@ export type CertificationEnrollmentView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       CertificationEnrollment,
       | "id"

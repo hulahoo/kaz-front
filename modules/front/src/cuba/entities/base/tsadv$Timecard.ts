@@ -64,5 +64,5 @@ export class Timecard extends BaseUuidEntity {
   downtime?: number | null;
   quarantine?: number | null;
 }
-export type TimecardViewName = "_minimal" | "_local" | "_base";
+export type TimecardViewName = "_base" | "_local" | "_minimal";
 export type TimecardView<V extends TimecardViewName> = never;

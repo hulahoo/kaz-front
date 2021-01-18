@@ -8,6 +8,7 @@ export class UserSessionEntity extends BaseUuidEntity {
   since?: any | null;
   lastUsedTs?: any | null;
   system?: boolean | null;
+  sysTenantId?: string | null;
 }
-export type UserSessionEntityViewName = "_minimal" | "_local" | "_base";
+export type UserSessionEntityViewName = "_base" | "_local" | "_minimal";
 export type UserSessionEntityView<V extends UserSessionEntityViewName> = never;

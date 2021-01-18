@@ -6,21 +6,32 @@ export class GradeGroup extends AbstractGroup {
   grade?: Grade | null;
 }
 export type GradeGroupViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
+  | "gradeGroup-receptionAssignment"
   | "gradeGroup.browse";
-export type GradeGroupView<V extends GradeGroupViewName> = V extends "_minimal"
-  ? Pick<GradeGroup, "id" | "grade">
+export type GradeGroupView<V extends GradeGroupViewName> = V extends "_base"
+  ? Pick<
+      GradeGroup,
+      "id" | "grade" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       GradeGroup,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
+  ? Pick<GradeGroup, "id" | "grade">
+  : V extends "gradeGroup-receptionAssignment"
   ? Pick<
       GradeGroup,
-      "id" | "grade" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "grade"
     >
   : V extends "gradeGroup.browse"
   ? Pick<

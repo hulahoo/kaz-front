@@ -18,14 +18,14 @@ export class PersonCoinLog extends StandardEntity {
   coinDistributionRule?: CoinDistributionRule | null;
 }
 export type PersonCoinLogViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "personCoinLog.receipt"
-  | "personCoinLog.issue";
+  | "_local"
+  | "_minimal"
+  | "personCoinLog.issue"
+  | "personCoinLog.receipt";
 export type PersonCoinLogView<
   V extends PersonCoinLogViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PersonCoinLog,
       | "id"
@@ -36,7 +36,18 @@ export type PersonCoinLogView<
       | "date"
       | "quantity"
     >
-  : V extends "_base"
+  : V extends "_local"
+  ? Pick<
+      PersonCoinLog,
+      | "id"
+      | "comment"
+      | "coinType"
+      | "actionType"
+      | "operationType"
+      | "date"
+      | "quantity"
+    >
+  : V extends "personCoinLog.issue"
   ? Pick<
       PersonCoinLog,
       | "id"
@@ -58,16 +69,5 @@ export type PersonCoinLogView<
       | "date"
       | "quantity"
       | "recognition"
-    >
-  : V extends "personCoinLog.issue"
-  ? Pick<
-      PersonCoinLog,
-      | "id"
-      | "comment"
-      | "coinType"
-      | "actionType"
-      | "operationType"
-      | "date"
-      | "quantity"
     >
   : never;

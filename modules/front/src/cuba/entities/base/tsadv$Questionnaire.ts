@@ -25,15 +25,33 @@ export class Questionnaire extends AbstractParentEntity {
   questionnaireNameLang5?: string | null;
 }
 export type QuestionnaireViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "questionnaire.browse"
   | "questionnaire.edit";
 export type QuestionnaireView<
   V extends QuestionnaireViewName
-> = V extends "_minimal"
-  ? Pick<Questionnaire, "id" | "questionnaireNameLang1">
+> = V extends "_base"
+  ? Pick<
+      Questionnaire,
+      | "id"
+      | "questionnaireNameLang1"
+      | "descriptionLang1"
+      | "descriptionLang3"
+      | "descriptionLang4"
+      | "descriptionLang5"
+      | "descriptionLang2"
+      | "startDate"
+      | "endDate"
+      | "questionnaireNameLang2"
+      | "questionnaireNameLang3"
+      | "questionnaireNameLang4"
+      | "questionnaireNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Questionnaire,
@@ -54,26 +72,8 @@ export type QuestionnaireView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Questionnaire,
-      | "id"
-      | "questionnaireNameLang1"
-      | "descriptionLang1"
-      | "descriptionLang3"
-      | "descriptionLang4"
-      | "descriptionLang5"
-      | "descriptionLang2"
-      | "startDate"
-      | "endDate"
-      | "questionnaireNameLang2"
-      | "questionnaireNameLang3"
-      | "questionnaireNameLang4"
-      | "questionnaireNameLang5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Questionnaire, "id" | "questionnaireNameLang1">
   : V extends "questionnaire.browse"
   ? Pick<
       Questionnaire,

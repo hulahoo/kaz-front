@@ -9,13 +9,13 @@ export class SanitaryHygieneEvent extends AbstractParentEntity {
   occupationalMedicine?: OccupationalMedicine | null;
 }
 export type SanitaryHygieneEventViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "sanitaryHygieneEvent-view";
 export type SanitaryHygieneEventView<
   V extends SanitaryHygieneEventViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       SanitaryHygieneEvent,
       | "id"
@@ -25,7 +25,7 @@ export type SanitaryHygieneEventView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SanitaryHygieneEvent,
       | "id"

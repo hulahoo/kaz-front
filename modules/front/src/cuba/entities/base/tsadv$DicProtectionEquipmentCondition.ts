@@ -3,39 +3,12 @@ export class DicProtectionEquipmentCondition extends AbstractDictionary {
   static NAME = "tsadv$DicProtectionEquipmentCondition";
 }
 export type DicProtectionEquipmentConditionViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type DicProtectionEquipmentConditionView<
   V extends DicProtectionEquipmentConditionViewName
-> = V extends "_minimal"
-  ? Pick<DicProtectionEquipmentCondition, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicProtectionEquipmentCondition,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DicProtectionEquipmentCondition,
       | "id"
@@ -61,4 +34,31 @@ export type DicProtectionEquipmentConditionView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicProtectionEquipmentCondition,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicProtectionEquipmentCondition, "id" | "langValue">
   : never;

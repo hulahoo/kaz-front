@@ -3,9 +3,9 @@ export class DynamicAttributesCondition extends AbstractCondition {
   static NAME = "sec$DynamicAttributesCondition";
 }
 export type DynamicAttributesConditionViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type DynamicAttributesConditionView<
   V extends DynamicAttributesConditionViewName
 > = never;

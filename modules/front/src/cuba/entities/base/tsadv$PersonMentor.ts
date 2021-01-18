@@ -10,15 +10,13 @@ export class PersonMentor extends StandardEntity {
   organizationGroup?: OrganizationGroupExt | null;
 }
 export type PersonMentorViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "personMentor.edit";
-export type PersonMentorView<
-  V extends PersonMentorViewName
-> = V extends "_local"
+export type PersonMentorView<V extends PersonMentorViewName> = V extends "_base"
   ? Pick<PersonMentor, "id" | "startDate" | "endDate">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<PersonMentor, "id" | "startDate" | "endDate">
   : V extends "personMentor.edit"
   ? Pick<

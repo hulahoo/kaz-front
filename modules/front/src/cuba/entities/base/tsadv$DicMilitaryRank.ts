@@ -7,40 +7,13 @@ export class DicMilitaryRank extends AbstractDictionary {
   categoryComposition?: DicTroopsStructure | null;
 }
 export type DicMilitaryRankViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "dicMilitaryRank-view";
 export type DicMilitaryRankView<
   V extends DicMilitaryRankViewName
-> = V extends "_minimal"
-  ? Pick<DicMilitaryRank, "id" | "langValue">
-  : V extends "_local"
-  ? Pick<
-      DicMilitaryRank,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-    >
-  : V extends "_base"
+> = V extends "_base"
   ? Pick<
       DicMilitaryRank,
       | "id"
@@ -66,6 +39,33 @@ export type DicMilitaryRankView<
       | "isDefault"
       | "order"
     >
+  : V extends "_local"
+  ? Pick<
+      DicMilitaryRank,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+    >
+  : V extends "_minimal"
+  ? Pick<DicMilitaryRank, "id" | "langValue">
   : V extends "dicMilitaryRank-view"
   ? Pick<
       DicMilitaryRank,

@@ -12,15 +12,26 @@ export class MyTeam extends BaseUuidEntity {
   fioWithEmployeeNumber?: string | null;
 }
 export type MyTeamViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "myTeam.view"
-  | "myTeam-parent.view";
-export type MyTeamView<V extends MyTeamViewName> = V extends "_local"
+  | "_local"
+  | "_minimal"
+  | "myTeam-parent.view"
+  | "myTeam.view";
+export type MyTeamView<V extends MyTeamViewName> = V extends "_base"
   ? Pick<MyTeam, "id" | "personPath" | "managerFlag" | "fioWithEmployeeNumber">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<MyTeam, "id" | "personPath" | "managerFlag" | "fioWithEmployeeNumber">
+  : V extends "myTeam-parent.view"
+  ? Pick<
+      MyTeam,
+      | "id"
+      | "personPath"
+      | "managerFlag"
+      | "fioWithEmployeeNumber"
+      | "personGroup"
+      | "positionGroup"
+      | "parent"
+    >
   : V extends "myTeam.view"
   ? Pick<
       MyTeam,
@@ -32,16 +43,5 @@ export type MyTeamView<V extends MyTeamViewName> = V extends "_local"
       | "positionGroup"
       | "parent"
       | "fioWithEmployeeNumber"
-    >
-  : V extends "myTeam-parent.view"
-  ? Pick<
-      MyTeam,
-      | "id"
-      | "personPath"
-      | "managerFlag"
-      | "fioWithEmployeeNumber"
-      | "personGroup"
-      | "positionGroup"
-      | "parent"
     >
   : never;

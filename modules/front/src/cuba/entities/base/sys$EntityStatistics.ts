@@ -12,10 +12,10 @@ export class EntityStatistics extends BaseUuidEntity {
   lazyCollectionThreshold?: number | null;
   lookupScreenThreshold?: number | null;
 }
-export type EntityStatisticsViewName = "_minimal" | "_local" | "_base";
+export type EntityStatisticsViewName = "_base" | "_local" | "_minimal";
 export type EntityStatisticsView<
   V extends EntityStatisticsViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       EntityStatistics,
       | "id"
@@ -26,7 +26,7 @@ export type EntityStatisticsView<
       | "lazyCollectionThreshold"
       | "lookupScreenThreshold"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       EntityStatistics,
       | "id"

@@ -11,13 +11,13 @@ export class LearningObject extends AbstractParentEntity {
   text?: string | null;
 }
 export type LearningObjectViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "learningObject.browse";
 export type LearningObjectView<
   V extends LearningObjectViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LearningObject,
       | "id"
@@ -31,7 +31,7 @@ export type LearningObjectView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LearningObject,
       | "id"

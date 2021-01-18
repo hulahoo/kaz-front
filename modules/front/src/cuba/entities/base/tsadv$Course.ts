@@ -26,15 +26,28 @@ export class Course extends AbstractParentEntity {
   learningType?: DicLearningType | null;
 }
 export type CourseViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "course.browse"
   | "course.edit"
-  | "course.tree"
-  | "course.edit.new";
-export type CourseView<V extends CourseViewName> = V extends "_minimal"
-  ? Pick<Course, "id" | "name">
+  | "course.edit.new"
+  | "course.tree";
+export type CourseView<V extends CourseViewName> = V extends "_base"
+  ? Pick<
+      Course,
+      | "id"
+      | "name"
+      | "description"
+      | "logo"
+      | "targetAudience"
+      | "activeFlag"
+      | "shortDescription"
+      | "selfEnrollment"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       Course,
@@ -50,21 +63,8 @@ export type CourseView<V extends CourseViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      Course,
-      | "id"
-      | "name"
-      | "description"
-      | "logo"
-      | "targetAudience"
-      | "activeFlag"
-      | "shortDescription"
-      | "selfEnrollment"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<Course, "id" | "name">
   : V extends "course.browse"
   ? Pick<
       Course,
@@ -96,21 +96,6 @@ export type CourseView<V extends CourseViewName> = V extends "_minimal"
       | "preRequisition"
       | "selfEnrollment"
     >
-  : V extends "course.tree"
-  ? Pick<
-      Course,
-      | "id"
-      | "name"
-      | "description"
-      | "logo"
-      | "category"
-      | "targetAudience"
-      | "activeFlag"
-      | "sections"
-      | "shortDescription"
-      | "competences"
-      | "selfEnrollment"
-    >
   : V extends "course.edit.new"
   ? Pick<
       Course,
@@ -130,5 +115,20 @@ export type CourseView<V extends CourseViewName> = V extends "_minimal"
       | "learningType"
       | "party"
       | "feedbackTemplates"
+    >
+  : V extends "course.tree"
+  ? Pick<
+      Course,
+      | "id"
+      | "name"
+      | "description"
+      | "logo"
+      | "category"
+      | "targetAudience"
+      | "activeFlag"
+      | "sections"
+      | "shortDescription"
+      | "competences"
+      | "selfEnrollment"
     >
   : never;

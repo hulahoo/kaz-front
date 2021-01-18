@@ -12,8 +12,8 @@ export class Education extends AbstractParentEntity {
   qualification?: string | null;
   educationType?: DicEducationType | null;
 }
-export type EducationViewName = "_minimal" | "_local" | "_base";
-export type EducationView<V extends EducationViewName> = V extends "_minimal"
+export type EducationViewName = "_base" | "_local" | "_minimal";
+export type EducationView<V extends EducationViewName> = V extends "_base"
   ? Pick<
       Education,
       | "id"
@@ -25,6 +25,9 @@ export type EducationView<V extends EducationViewName> = V extends "_minimal"
       | "qualification"
       | "scholl"
       | "specialization"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : V extends "_local"
   ? Pick<
@@ -40,7 +43,7 @@ export type EducationView<V extends EducationViewName> = V extends "_minimal"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       Education,
       | "id"
@@ -52,8 +55,5 @@ export type EducationView<V extends EducationViewName> = V extends "_minimal"
       | "qualification"
       | "scholl"
       | "specialization"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
     >
   : never;

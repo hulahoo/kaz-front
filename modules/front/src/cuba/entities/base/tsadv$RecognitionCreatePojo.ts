@@ -9,7 +9,7 @@ export class RecognitionCreatePojo extends BaseUuidEntity {
   notifyManager?: boolean | null;
   comment?: string | null;
 }
-export type RecognitionCreatePojoViewName = "_minimal" | "_local" | "_base";
+export type RecognitionCreatePojoViewName = "_base" | "_local" | "_minimal";
 export type RecognitionCreatePojoView<
   V extends RecognitionCreatePojoViewName
 > = never;

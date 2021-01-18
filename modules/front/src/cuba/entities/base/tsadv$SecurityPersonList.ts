@@ -8,23 +8,23 @@ export class SecurityPersonList extends StandardEntity {
   transactionDate?: any | null;
 }
 export type SecurityPersonListViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "securityPersonList-view"
-  | "securityPersonList-edit";
+  | "_local"
+  | "_minimal"
+  | "securityPersonList-edit"
+  | "securityPersonList-view";
 export type SecurityPersonListView<
   V extends SecurityPersonListViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<SecurityPersonList, "id" | "transactionDate">
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<SecurityPersonList, "id" | "transactionDate">
-  : V extends "securityPersonList-view"
+  : V extends "securityPersonList-edit"
   ? Pick<
       SecurityPersonList,
       "id" | "securityGroup" | "personGroup" | "transactionDate"
     >
-  : V extends "securityPersonList-edit"
+  : V extends "securityPersonList-view"
   ? Pick<
       SecurityPersonList,
       "id" | "securityGroup" | "personGroup" | "transactionDate"

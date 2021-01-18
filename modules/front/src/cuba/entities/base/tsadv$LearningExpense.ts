@@ -17,13 +17,13 @@ export class LearningExpense extends AbstractParentEntity {
   personLearningHistory?: PersonLearningHistory | null;
 }
 export type LearningExpenseViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "learningExpense.edit";
 export type LearningExpenseView<
   V extends LearningExpenseViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LearningExpense,
       | "id"
@@ -33,7 +33,7 @@ export type LearningExpenseView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LearningExpense,
       | "id"

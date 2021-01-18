@@ -5,7 +5,7 @@ export class UiPermissionTarget extends AbstractPermissionTarget {
   screen?: string | null;
   component?: string | null;
 }
-export type UiPermissionTargetViewName = "_minimal" | "_local" | "_base";
+export type UiPermissionTargetViewName = "_base" | "_local" | "_minimal";
 export type UiPermissionTargetView<
   V extends UiPermissionTargetViewName
 > = never;

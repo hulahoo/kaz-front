@@ -10,14 +10,23 @@ export class ImportScenario extends AbstractParentEntity {
   log?: ImportLog[] | null;
 }
 export type ImportScenarioViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "importScenario.view";
 export type ImportScenarioView<
   V extends ImportScenarioViewName
-> = V extends "_minimal"
-  ? Pick<ImportScenario, "id" | "name">
+> = V extends "_base"
+  ? Pick<
+      ImportScenario,
+      | "id"
+      | "name"
+      | "comment"
+      | "importerBeanName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       ImportScenario,
@@ -29,17 +38,8 @@ export type ImportScenarioView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      ImportScenario,
-      | "id"
-      | "name"
-      | "comment"
-      | "importerBeanName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<ImportScenario, "id" | "name">
   : V extends "importScenario.view"
   ? Pick<
       ImportScenario,

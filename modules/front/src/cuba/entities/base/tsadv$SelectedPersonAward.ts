@@ -13,13 +13,13 @@ export class SelectedPersonAward extends StandardEntity {
   awarded?: boolean | null;
 }
 export type SelectedPersonAwardViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "selectedPersonAward.edit";
 export type SelectedPersonAwardView<
   V extends SelectedPersonAwardViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       SelectedPersonAward,
       | "id"
@@ -30,7 +30,7 @@ export type SelectedPersonAwardView<
       | "descriptionLangValue5"
       | "awarded"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       SelectedPersonAward,
       | "id"

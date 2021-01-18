@@ -12,10 +12,10 @@ export class ImportHistoryLog extends StandardEntity {
   level?: any | null;
   importHistory?: ImportHistory | null;
 }
-export type ImportHistoryLogViewName = "_minimal" | "_local" | "_base";
+export type ImportHistoryLogViewName = "_base" | "_local" | "_minimal";
 export type ImportHistoryLogView<
   V extends ImportHistoryLogViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       ImportHistoryLog,
       | "id"
@@ -28,7 +28,7 @@ export type ImportHistoryLogView<
       | "entitiesProcessed"
       | "level"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       ImportHistoryLog,
       | "id"

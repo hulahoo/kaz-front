@@ -16,17 +16,33 @@ export class PerformancePlan extends AbstractParentEntity {
   jobs?: JobGroup[] | null;
   accessibilityStartDate?: any | null;
   accessibilityEndDate?: any | null;
+  performancePlanNameKz?: string | null;
+  performancePlanNameEn?: string | null;
 }
 export type PerformancePlanViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "performancePlan.browse"
   | "performancePlan.edit";
 export type PerformancePlanView<
   V extends PerformancePlanViewName
-> = V extends "_minimal"
-  ? Pick<PerformancePlan, "id" | "performancePlanName">
+> = V extends "_base"
+  ? Pick<
+      PerformancePlan,
+      | "id"
+      | "performancePlanName"
+      | "description"
+      | "startDate"
+      | "endDate"
+      | "accessibilityStartDate"
+      | "accessibilityEndDate"
+      | "performancePlanNameKz"
+      | "performancePlanNameEn"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       PerformancePlan,
@@ -37,24 +53,14 @@ export type PerformancePlanView<
       | "endDate"
       | "accessibilityStartDate"
       | "accessibilityEndDate"
+      | "performancePlanNameKz"
+      | "performancePlanNameEn"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      PerformancePlan,
-      | "id"
-      | "performancePlanName"
-      | "description"
-      | "startDate"
-      | "endDate"
-      | "accessibilityStartDate"
-      | "accessibilityEndDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<PerformancePlan, "id" | "performancePlanName">
   : V extends "performancePlan.browse"
   ? Pick<
       PerformancePlan,
@@ -62,9 +68,11 @@ export type PerformancePlanView<
       | "performancePlanName"
       | "previousPlan"
       | "description"
+      | "administratorPersonGroup"
       | "startDate"
       | "endDate"
-      | "administratorPersonGroup"
+      | "accessibilityStartDate"
+      | "accessibilityEndDate"
     >
   : V extends "performancePlan.edit"
   ? Pick<
@@ -73,13 +81,15 @@ export type PerformancePlanView<
       | "performancePlanName"
       | "previousPlan"
       | "description"
+      | "administratorPersonGroup"
       | "startDate"
       | "endDate"
-      | "administratorPersonGroup"
       | "organizations"
       | "positions"
       | "jobs"
-      | "accessibilityEndDate"
       | "accessibilityStartDate"
+      | "accessibilityEndDate"
+      | "performancePlanNameKz"
+      | "performancePlanNameEn"
     >
   : never;

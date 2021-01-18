@@ -3,12 +3,12 @@ export class DicPersonIdentityDocumentType extends AbstractSortableDictionary {
   static NAME = "base$DicPersonIdentityDocumentType";
 }
 export type DicPersonIdentityDocumentTypeViewName =
-  | "_minimal"
+  | "_base"
   | "_local"
-  | "_base";
+  | "_minimal";
 export type DicPersonIdentityDocumentTypeView<
   V extends DicPersonIdentityDocumentTypeViewName
-> = V extends "_minimal"
+> = V extends "_base"
   ? Pick<
       DicPersonIdentityDocumentType,
       | "id"
@@ -18,6 +18,21 @@ export type DicPersonIdentityDocumentTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "description1"
+      | "description2"
+      | "description3"
+      | "description4"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
     >
   : V extends "_local"
   ? Pick<
@@ -45,7 +60,7 @@ export type DicPersonIdentityDocumentTypeView<
       | "order"
       | "languageValue"
     >
-  : V extends "_base"
+  : V extends "_minimal"
   ? Pick<
       DicPersonIdentityDocumentType,
       | "id"
@@ -55,20 +70,5 @@ export type DicPersonIdentityDocumentTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "description1"
-      | "description2"
-      | "description3"
-      | "description4"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
     >
   : never;

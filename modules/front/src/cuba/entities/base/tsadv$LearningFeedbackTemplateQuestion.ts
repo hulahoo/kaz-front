@@ -8,18 +8,18 @@ export class LearningFeedbackTemplateQuestion extends AbstractParentEntity {
   order?: number | null;
 }
 export type LearningFeedbackTemplateQuestionViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "learningFeedbackTemplateQuestion.edit";
 export type LearningFeedbackTemplateQuestionView<
   V extends LearningFeedbackTemplateQuestionViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       LearningFeedbackTemplateQuestion,
       "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       LearningFeedbackTemplateQuestion,
       "id" | "order" | "legacyId" | "organizationBin" | "integrationUserLogin"

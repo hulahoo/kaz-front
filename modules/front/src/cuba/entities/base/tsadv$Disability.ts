@@ -11,13 +11,17 @@ export class Disability extends AbstractParentEntity {
   dateFrom?: any | null;
   dateTo?: any | null;
   personGroupExt?: PersonGroupExt | null;
+  haveDisability?: any | null;
+  group?: string | null;
+  startDateHistory?: any | null;
+  endDateHistory?: any | null;
 }
 export type DisabilityViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "disability.all";
-export type DisabilityView<V extends DisabilityViewName> = V extends "_local"
+export type DisabilityView<V extends DisabilityViewName> = V extends "_base"
   ? Pick<
       Disability,
       | "id"
@@ -25,11 +29,15 @@ export type DisabilityView<V extends DisabilityViewName> = V extends "_local"
       | "attachment"
       | "dateFrom"
       | "dateTo"
+      | "haveDisability"
+      | "group"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Disability,
       | "id"
@@ -37,6 +45,10 @@ export type DisabilityView<V extends DisabilityViewName> = V extends "_local"
       | "attachment"
       | "dateFrom"
       | "dateTo"
+      | "haveDisability"
+      | "group"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -56,6 +68,10 @@ export type DisabilityView<V extends DisabilityViewName> = V extends "_local"
       | "attachment"
       | "dateFrom"
       | "dateTo"
+      | "haveDisability"
+      | "group"
+      | "startDateHistory"
+      | "endDateHistory"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

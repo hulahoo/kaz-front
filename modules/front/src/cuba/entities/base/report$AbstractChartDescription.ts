@@ -4,7 +4,7 @@ export class AbstractChartDescription extends BaseUuidEntity {
   showLegend?: boolean | null;
   customJsonConfig?: string | null;
 }
-export type AbstractChartDescriptionViewName = "_minimal" | "_local" | "_base";
+export type AbstractChartDescriptionViewName = "_base" | "_local" | "_minimal";
 export type AbstractChartDescriptionView<
   V extends AbstractChartDescriptionViewName
 > = never;

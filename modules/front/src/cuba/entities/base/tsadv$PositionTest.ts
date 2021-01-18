@@ -10,13 +10,11 @@ export class PositionTest extends AbstractParentEntity {
   endDate?: any | null;
 }
 export type PositionTestViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "positionTest.edit";
-export type PositionTestView<
-  V extends PositionTestViewName
-> = V extends "_local"
+export type PositionTestView<V extends PositionTestViewName> = V extends "_base"
   ? Pick<
       PositionTest,
       | "id"
@@ -27,7 +25,7 @@ export type PositionTestView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PositionTest,
       | "id"

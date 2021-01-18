@@ -24,15 +24,15 @@ export class Assessment extends AbstractParentEntity {
   formattedGoalRating?: string | null;
 }
 export type AssessmentViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
-  | "assessmentForCard"
-  | "assessment.scrum.competence"
-  | "assessment.matrix"
+  | "_local"
+  | "_minimal"
   | "assessment.create"
-  | "assessment.view";
-export type AssessmentView<V extends AssessmentViewName> = V extends "_local"
+  | "assessment.matrix"
+  | "assessment.scrum.competence"
+  | "assessment.view"
+  | "assessmentForCard";
+export type AssessmentView<V extends AssessmentViewName> = V extends "_base"
   ? Pick<
       Assessment,
       | "id"
@@ -50,7 +50,7 @@ export type AssessmentView<V extends AssessmentViewName> = V extends "_local"
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       Assessment,
       | "id"
@@ -67,6 +67,57 @@ export type AssessmentView<V extends AssessmentViewName> = V extends "_local"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "assessment.create"
+  ? Pick<
+      Assessment,
+      | "id"
+      | "assessmentParticipant"
+      | "assessmentName"
+      | "template"
+      | "startDate"
+      | "endDate"
+      | "status"
+      | "employeePersonGroup"
+    >
+  : V extends "assessment.matrix"
+  ? Pick<
+      Assessment,
+      | "id"
+      | "employeePersonGroup"
+      | "performance"
+      | "potential"
+      | "riskOfLoss"
+      | "impactOfLoss"
+      | "template"
+      | "goalRating"
+      | "competenceRating"
+      | "overalRating"
+    >
+  : V extends "assessment.scrum.competence"
+  ? Pick<
+      Assessment,
+      "id" | "employeePersonGroup" | "competenceRating" | "goalRating"
+    >
+  : V extends "assessment.view"
+  ? Pick<
+      Assessment,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "goalRating"
+      | "competenceRating"
+      | "overalRating"
+      | "performance"
+      | "potential"
+      | "riskOfLoss"
+      | "impactOfLoss"
+      | "assessmentName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "template"
+      | "employeePersonGroup"
     >
   : V extends "assessmentForCard"
   ? Pick<
@@ -88,57 +139,6 @@ export type AssessmentView<V extends AssessmentViewName> = V extends "_local"
       | "template"
       | "assessmentParticipant"
       | "status"
-      | "employeePersonGroup"
-    >
-  : V extends "assessment.scrum.competence"
-  ? Pick<
-      Assessment,
-      "id" | "employeePersonGroup" | "competenceRating" | "goalRating"
-    >
-  : V extends "assessment.matrix"
-  ? Pick<
-      Assessment,
-      | "id"
-      | "employeePersonGroup"
-      | "performance"
-      | "potential"
-      | "riskOfLoss"
-      | "impactOfLoss"
-      | "template"
-      | "goalRating"
-      | "competenceRating"
-      | "overalRating"
-    >
-  : V extends "assessment.create"
-  ? Pick<
-      Assessment,
-      | "id"
-      | "assessmentParticipant"
-      | "assessmentName"
-      | "template"
-      | "startDate"
-      | "endDate"
-      | "status"
-      | "employeePersonGroup"
-    >
-  : V extends "assessment.view"
-  ? Pick<
-      Assessment,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "goalRating"
-      | "competenceRating"
-      | "overalRating"
-      | "performance"
-      | "potential"
-      | "riskOfLoss"
-      | "impactOfLoss"
-      | "assessmentName"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "template"
       | "employeePersonGroup"
     >
   : never;

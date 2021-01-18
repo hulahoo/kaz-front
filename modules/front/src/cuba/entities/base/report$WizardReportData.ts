@@ -15,5 +15,5 @@ export class ReportData extends BaseUuidEntity {
   outputFileType?: any | null;
   reportRegions?: ReportRegion[] | null;
 }
-export type ReportDataViewName = "_minimal" | "_local" | "_base";
+export type ReportDataViewName = "_base" | "_local" | "_minimal";
 export type ReportDataView<V extends ReportDataViewName> = never;

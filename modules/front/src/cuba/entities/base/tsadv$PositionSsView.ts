@@ -18,13 +18,13 @@ export class PositionSsView extends StandardEntity {
   costCenter?: string | null;
 }
 export type PositionSsViewViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "positionSsView-view";
 export type PositionSsViewView<
   V extends PositionSsViewViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       PositionSsView,
       | "id"
@@ -37,7 +37,7 @@ export type PositionSsViewView<
       | "fte"
       | "costCenter"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       PositionSsView,
       | "id"

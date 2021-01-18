@@ -6,25 +6,25 @@ export class CompetenceGroup extends AbstractGroup {
   competence?: Competence | null;
 }
 export type CompetenceGroupViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "competenceGroup.browse"
   | "competenceGroup.reserve";
 export type CompetenceGroupView<
   V extends CompetenceGroupViewName
-> = V extends "_minimal"
-  ? Pick<CompetenceGroup, "id">
+> = V extends "_base"
+  ? Pick<
+      CompetenceGroup,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
   : V extends "_local"
   ? Pick<
       CompetenceGroup,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "_base"
-  ? Pick<
-      CompetenceGroup,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
-    >
+  : V extends "_minimal"
+  ? Pick<CompetenceGroup, "id">
   : V extends "competenceGroup.browse"
   ? Pick<
       CompetenceGroup,

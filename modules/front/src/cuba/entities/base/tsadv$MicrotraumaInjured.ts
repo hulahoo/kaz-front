@@ -11,13 +11,13 @@ export class MicrotraumaInjured extends AbstractParentEntity {
   microtraum?: Microtraum | null;
 }
 export type MicrotraumaInjuredViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "microtraumaInjured-view";
 export type MicrotraumaInjuredView<
   V extends MicrotraumaInjuredViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       MicrotraumaInjured,
       | "id"
@@ -27,7 +27,7 @@ export type MicrotraumaInjuredView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       MicrotraumaInjured,
       | "id"

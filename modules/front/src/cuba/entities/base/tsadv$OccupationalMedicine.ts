@@ -12,13 +12,13 @@ export class OccupationalMedicine extends AbstractParentEntity {
   entryDate?: any | null;
 }
 export type OccupationalMedicineViewName =
-  | "_minimal"
-  | "_local"
   | "_base"
+  | "_local"
+  | "_minimal"
   | "occupationalMedicine-view";
 export type OccupationalMedicineView<
   V extends OccupationalMedicineViewName
-> = V extends "_local"
+> = V extends "_base"
   ? Pick<
       OccupationalMedicine,
       | "id"
@@ -27,7 +27,7 @@ export type OccupationalMedicineView<
       | "organizationBin"
       | "integrationUserLogin"
     >
-  : V extends "_base"
+  : V extends "_local"
   ? Pick<
       OccupationalMedicine,
       | "id"

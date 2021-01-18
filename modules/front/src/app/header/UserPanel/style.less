@@ -1,0 +1,76 @@
+@import '/src/theme-vars';
+
+.user-panel {
+  padding-right: 5%;
+}
+
+.user-panel > * {
+  margin-right: 12px !important;
+}
+
+.user-panel .ant-dropdown-link {
+  color: @primary-5 !important;
+  font-weight: 500;
+}
+
+.user-panel .ant-dropdown-link .anticon-down {
+  color: @primary-5 !important;
+  font-weight: 500;
+}
+
+.ant-layout-header .app-header .user-panel {
+  color: #FFF !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ant-layout-header .app-header .user-panel .notifications-icon-container {
+  height: 48px !important;
+  width: 48px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.ant-layout-header .app-header .user-panel .notifications {
+  height: 24px;
+  width: 24px;
+  fill: #FFF !important;
+}
+
+.ant-layout-header .app-header .user-panel .notifications-icon-container:hover .notifications {
+  fill: @primary-3 !important;
+}
+
+.ant-layout-header .app-header .user-panel .notifications-icon-container.ant-dropdown-open {
+  background-color: #FFF;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+}
+
+.ant-layout-header .app-header .user-panel .notifications-icon-container.ant-dropdown-open::after {
+  content:'';
+  position: absolute;
+  background-color: #FFF;
+  width: 100%;
+  height: 10px;
+  top: 100%;
+  left:0;
+}
+
+.ant-layout-header .app-header .user-panel .notifications-icon-container.ant-dropdown-open .notifications {
+  fill: @primary-1 !important;
+}
+
+.ant-layout-header .app-header .user-panel img.user-img {
+  border-radius: 50%;
+  height: 36px;
+  width: 36px;
+  margin-right: 15px;
+}
+
+.ant-layout-header .app-header .user-panel a {
+  width: auto !important;
+}

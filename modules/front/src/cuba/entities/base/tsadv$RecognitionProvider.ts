@@ -9,11 +9,21 @@ export class RecognitionProvider extends StandardEntity {
   addressLang2?: string | null;
   addressLang3?: string | null;
 }
-export type RecognitionProviderViewName = "_minimal" | "_local" | "_base";
+export type RecognitionProviderViewName = "_base" | "_local" | "_minimal";
 export type RecognitionProviderView<
   V extends RecognitionProviderViewName
-> = V extends "_minimal"
-  ? Pick<RecognitionProvider, "id" | "addressLang1">
+> = V extends "_base"
+  ? Pick<
+      RecognitionProvider,
+      | "id"
+      | "addressLang1"
+      | "providerNameLang1"
+      | "providerNameLang2"
+      | "providerNameLang3"
+      | "contactInfo"
+      | "addressLang2"
+      | "addressLang3"
+    >
   : V extends "_local"
   ? Pick<
       RecognitionProvider,
@@ -26,16 +36,6 @@ export type RecognitionProviderView<
       | "addressLang2"
       | "addressLang3"
     >
-  : V extends "_base"
-  ? Pick<
-      RecognitionProvider,
-      | "id"
-      | "addressLang1"
-      | "providerNameLang1"
-      | "providerNameLang2"
-      | "providerNameLang3"
-      | "contactInfo"
-      | "addressLang2"
-      | "addressLang3"
-    >
+  : V extends "_minimal"
+  ? Pick<RecognitionProvider, "id" | "addressLang1">
   : never;
