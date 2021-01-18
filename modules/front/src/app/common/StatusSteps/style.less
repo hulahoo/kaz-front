@@ -2,13 +2,17 @@
 
 @steps-nav-active-color: transparent !important;
 
-.ant-steps-item-process,
-.ant-steps-item-wait {
+.ant-steps-item {
   > .ant-steps-item-container {
     > .ant-steps-item-content {
       > .ant-steps-item-description {
         font-weight: 600;
         color: @primary-2 !important;
+      }
+
+      > .ant-steps-item-title {
+        font-weight: 700;
+        font-size: 24px;
       }
     }
   }
@@ -20,8 +24,6 @@
     > .ant-steps-item-content {
       > .ant-steps-item-title {
         color: @primary-1 !important;
-        font-weight: 700;
-        font-size: 24px;
       }
     }
   }
@@ -32,6 +34,18 @@
     > .ant-steps-item-content {
       > .ant-steps-item-title {
         color: @primary-7 !important;
+        font-weight: 700;
+        font-size: 24px;
+      }
+    }
+  }
+}
+
+.ant-steps-item-finish {
+  > .ant-steps-item-container {
+    > .ant-steps-item-content {
+      > .ant-steps-item-title {
+        color: @success-color !important;
         font-weight: 700;
         font-size: 24px;
       }

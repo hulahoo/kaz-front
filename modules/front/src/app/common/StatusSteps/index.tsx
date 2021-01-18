@@ -1,17 +1,25 @@
 import React from 'react';
 import {Steps} from "antd";
 
-class StatusSteps extends React.Component {
+export type StatusStepProp = {
+  title?: React.ReactNode,
+  description?: React.ReactNode,
+  icon?: React.ReactNode
+}
+
+type Props = {
+  steps?: StatusStepProp[],
+  currentIndex?: number,
+}
+
+class StatusSteps extends React.Component<Props> {
   render() {
-    const { Step } = Steps;
+    const {Step} = Steps;
+    const {steps, currentIndex} = this.props;
     return (
       <div>
-        <Steps type={"navigation"}>
-          <Step title={1} description={"Постановка"} icon={<></>}/>
-          <Step title={2} description={"Согласование"} icon={<></>}/>
-          <Step title={3} description={"Самооценка"} icon={<></>}/>
-          <Step title={4} description={"Оценка"} icon={<></>}/>
-          <Step title={5} description={"Завершено"} icon={<></>}/>
+        <Steps type={"navigation"} current={currentIndex}>
+          {steps ? steps.map(s => <Step icon={<></>} {...s}/>) : <></>}
         </Steps>
       </div>
     );

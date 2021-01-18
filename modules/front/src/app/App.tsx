@@ -33,6 +33,10 @@ import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentMan
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
 import {observable} from "mobx";
+import {AssignedGoal} from "../cuba/entities/base/tsadv$AssignedGoal";
+import AssignedGoalList from "./pages/AssignedGoals/DefaultGoal/AssignedGoalList";
+import AssignedGoalEdit from "./pages/AssignedGoals/DefaultGoal/AssignedGoalEdit";
+import {AssignedGoalManagement} from "./pages/AssignedGoals/DefaultGoal/AssignedGoalManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -84,7 +88,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
               )}
             </Menu>
           </Layout.Sider>
-          <Layout style={{padding: "40px"}}>
+          <Layout>
             <Layout.Content>
               <Switch>
                 <Route exact={true} path="/" component={HomePage}/>
@@ -95,7 +99,8 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 {/*<Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>*/}
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
-                <Route path= "/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
+                <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/create/default" component={AssignedGoalManagement}/>
               </Switch>
             </Layout.Content>
           </Layout>

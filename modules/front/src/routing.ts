@@ -1,7 +1,4 @@
-import { AssignedPerformancePlanManagement } from "./app/pages/Kpi/AssignedPerformancePlanManagement";
-import { PersonDocumentManagement } from "./app/pages/PersonDocument/PersonDocumentManagement";
-import { PersonContactManagement } from "./app/pages/PersonContact/PersonContactManagement";
-import { PersonalDataRequestManagement } from "./app/pages/PersonalDataRequest/PersonalDataRequestManagement";
+import { AssignedGoalManagement } from "./app/pages/AssignedGoals/DefaultGoal/AssignedGoalManagement";
 import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
 import { rootStore } from "./app/store";
 import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";

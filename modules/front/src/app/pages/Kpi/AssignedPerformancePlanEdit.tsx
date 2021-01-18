@@ -1,26 +1,22 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Button, Card, Form, message} from "antd";
+import {Alert, Card, Col, Form, message, Row} from "antd";
 import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {IReactionDisposer, observable, reaction, toJS} from "mobx";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {injectIntl, WrappedComponentProps} from "react-intl";
+import GoalForm from './GoalForm';
 
 import {
-  collection,
-  Field,
-  instance,
-  withLocalizedForm,
-  extractServerValidationErrors,
-  constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText
+  collection,
+  constructFieldsWithErrors,
+  extractServerValidationErrors,
+  instance,
+  MultilineText,
+  withLocalizedForm
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
@@ -30,8 +26,19 @@ import {PerformancePlan} from "../../../cuba/entities/base/tsadv$PerformancePlan
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import Page from "../../hoc/PageContentHoc";
 import {RootStoreProp} from "../../store";
-import LoadingPage from "../LoadingPage";
 import FormContainer from "../../common/FormContainer";
+import {ReadonlyField} from "../../components/ReadonlyField";
+import Section from "../../hoc/Section";
+import StatusSteps, {StatusStepProp} from "../../common/StatusSteps";
+import DropdownButton from "../../components/Dropdown/DropdownButton";
+import {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
+import Button, {ButtonType} from "../../components/Button/Button";
+
+enum StatusPerformancePlan {
+  DRAFT = "DRAFT",
+  COMPLETED = "COMPLETED",
+  ASSESSMENT = "ASSESSMENT"
+}
 
 type Props = FormComponentProps & EditorProps;
 
@@ -64,17 +71,12 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
   reactionDisposer: IReactionDisposer;
 
   fields = [
-    "result",
-
-    "gzp",
 
     "status",
 
     "startDate",
 
     "endDate",
-
-    "kpiScore",
 
     "assignedPerson",
 
@@ -148,122 +150,163 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 
     const {status} = this.dataInstance;
 
+    const statusSteps: StatusStepProp[] = [];
+
+    let i = 1;
+    for (let StatusStep in StatusPerformancePlan) {
+      statusSteps.push({
+        title: i,
+        description: this.props.intl.formatMessage({id: 'StatusPerformancePlan.' + StatusPerformancePlan[StatusStep]})
+      });
+      i++;
+    }
+
+    const goalCreatePathUrl = AssignedPerformancePlanManagement.PATH + "/" + this.props.entityId + "/goal/create/";
+    const createGoalsMenu: MenuRaw[] = [{
+      id: goalCreatePathUrl + "default",
+      value: this.props.intl.formatMessage({id: "newGoal"})
+    }, {
+      id: goalCreatePathUrl + "library",
+      value: this.props.intl.formatMessage({id: "fromLibrary"})
+    }, {id: goalCreatePathUrl + "cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
+
     return (
       <Page
         pageName={this.props.intl.formatMessage({id: 'page.kpi'}, {"name": status === 'DONE' ? this.dataInstance.item!.performancePlan!.performancePlanName : ""})}>
-        <Card className="narrow-layout large-section section-container">
-          <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "employeeInfo"})}</div>
-          <Form onSubmit={this.handleSubmit} layout="vertical">
-            <FormContainer>
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="assignedPerson"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                optionsContainer={this.assignedPersonsDc}
-                getFieldDecoratorOpts={{
-                  rules: [{required: true}]
-                }}
-              />
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="result"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
+        <Card className="narrow-layout" actions={[<Button buttonType={ButtonType.FOLLOW}>Закрыть</Button>, <Button buttonType={ButtonType.PRIMARY}>Сохранить</Button>]} bordered={false}>
+          <div className={"large-section section-container"}>
+            <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "employeeInfo"})}</div>
+            <Form onSubmit={this.handleSubmit} layout="vertical">
+              <FormContainer>
+                <Row className={"form-row"}>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="assignedPerson"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}, className: 'disabled'}}
+                      optionsContainer={this.assignedPersonsDc}
+                      getFieldDecoratorOpts={{
+                        rules: [{required: true}]
+                      }}/>
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="assigned_by"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}}}
+                      optionsContainer={this.assigned_bysDc}
+                      getFieldDecoratorOpts={{}}
+                    />
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="assignedPerson"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}}}
+                      optionsContainer={this.assignedPersonsDc}
+                      getFieldDecoratorOpts={{
+                        rules: [{required: true}]
+                      }}
+                    />
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="assignedPerson"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}}}
+                      optionsContainer={this.assignedPersonsDc}
+                      getFieldDecoratorOpts={{
+                        rules: [{required: true}]
+                      }}
+                    />
+                  </Col>
+                </Row>
+                <Row className={"form-row"}>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="startDate"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}}}
+                      getFieldDecoratorOpts={{}}
+                    />
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="endDate"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}}}
+                      getFieldDecoratorOpts={{}}
+                    />
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="assignedPerson"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}}}
+                      optionsContainer={this.assignedPersonsDc}
+                      getFieldDecoratorOpts={{
+                        rules: [{required: true}]
+                      }}
+                    />
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="assignedPerson"
+                      form={this.props.form}
+                      formItemOpts={{style: {marginBottom: "12px"}}}
+                      optionsContainer={this.assignedPersonsDc}
+                      getFieldDecoratorOpts={{
+                        rules: [{required: true}]
+                      }}
+                    />
+                  </Col>
+                </Row>
+                {this.globalErrors.length > 0 && (
+                  <Alert
+                    message={<MultilineText lines={toJS(this.globalErrors)}/>}
+                    type="error"
+                    style={{marginBottom: "24px"}}
+                  />
+                )}
 
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="gzp"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
-
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="status"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
-
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="startDate"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
-
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="endDate"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
-
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="kpiScore"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
-
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="extraPoint"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
-
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="finalScore"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{}}
-              />
-
-              <Field
-                entityName={AssignedPerformancePlan.NAME}
-                propertyName="assigned_by"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                optionsContainer={this.assigned_bysDc}
-                getFieldDecoratorOpts={{}}
-              />
-
-              {this.globalErrors.length > 0 && (
-                <Alert
-                  message={<MultilineText lines={toJS(this.globalErrors)}/>}
-                  type="error"
-                  style={{marginBottom: "24px"}}
-                />
-              )}
-
-              <Form.Item style={{textAlign: "center"}}>
-                <Link to={AssignedPerformancePlanManagement.PATH}>
-                  <Button htmlType="button">
-                    <FormattedMessage id="management.editor.cancel"/>
-                  </Button>
-                </Link>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={status !== "DONE" && status !== "ERROR"}
-                  loading={status === "LOADING"}
-                  style={{marginLeft: "8px"}}
-                >
-                  <FormattedMessage id="management.editor.submit"/>
-                </Button>
-              </Form.Item>
-            </FormContainer>
-          </Form>
+                {/*<Form.Item style={{textAlign: "center"}}>*/}
+                {/*  <Link to={AssignedPerformancePlanManagement.PATH}>*/}
+                {/*    <Button htmlType="button">*/}
+                {/*      <FormattedMessage id="management.editor.cancel"/>*/}
+                {/*    </Button>*/}
+                {/*  </Link>*/}
+                {/*  <Button*/}
+                {/*    type="primary"*/}
+                {/*    htmlType="submit"*/}
+                {/*    disabled={status !== "DONE" && status !== "ERROR"}*/}
+                {/*    loading={status === "LOADING"}*/}
+                {/*    style={{marginLeft: "8px"}}*/}
+                {/*  >*/}
+                {/*    <FormattedMessage id="management.editor.submit"/>*/}
+                {/*  </Button>*/}
+                {/*</Form.Item>*/}
+              </FormContainer>
+            </Form>
+          </div>
+          <Section size={"large"}>
+            <StatusSteps steps={statusSteps}
+                         currentIndex={this.dataInstance.item ? Object.keys(StatusPerformancePlan).indexOf(this.dataInstance.item.status) : undefined}/>
+          </Section>
+          <Section size={"large"} visible={false}>
+            <DropdownButton menu={createGoalsMenu}
+                            buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
+          </Section>
+          <Section size={"large"} sectionName={"Цели"}>
+            <GoalForm assignedPerformancePlanId={this.props.entityId}/>
+          </Section>
         </Card>
       </Page>
     );
@@ -293,16 +336,23 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 }
 
 export default injectIntl(
-  withLocalizedForm<EditorProps>({
+  withLocalizedForm
+
+  <
+  EditorProps
+  > ({
     onValuesChange: (props: any, changedValues: any) => {
       // Reset server-side errors when field is edited
       Object.keys(changedValues).forEach((fieldName: string) => {
-        props.form.setFields({
-          [fieldName]: {
-            value: changedValues[fieldName]
-          }
-        });
-      });
+          props.form.setFields({
+            [fieldName]: {
+              value: changedValues[fieldName]
+            }
+          });
+        }
+      );
     }
-  })(AssignedPerformancePlanEditComponent)
-);
+  })
+  (AssignedPerformancePlanEditComponent)
+)
+;

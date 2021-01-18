@@ -135,7 +135,10 @@
   "form.validation.required": "Поле {fieldName} является обязательным.",
   "employeeInfo": "Информация о сотруднике",
   "addGoal": "Добавить цель",
-  "newGoal": "Новая цель",
+  "newGoal": "Индивидуальная цель",
   "fromLibrary": "Из библиотеки",
-  "cascade": "Каскадировать"
+  "cascade": "Каскадировать",
+  "StatusPerformancePlan.DRAFT": "Черновик",
+  "StatusPerformancePlan.COMPLETED": "Завершено",
+  "StatusPerformancePlan.ASSESSMENT": "Оценка"
 }

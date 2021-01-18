@@ -1,10 +1,9 @@
 import React from 'react';
 import Section from "../../../hoc/Section";
-import EmployeeInformation from "./KpiTable/EmployeeInformation";
 import StatusSteps from "../../../common/StatusSteps";
 import PageContentHoc from "../../../hoc/PageContentHoc";
 import Button, {ButtonType} from "../../../components/Button/Button";
-import KpiTable from "./KpiTable";
+import KpiTable from "../../Kpi/GoalForm";
 import Dropdown from "../../../components/Dropdown/Dropdown";
 import DropdownButton from "../../../components/Dropdown/DropdownButton";
 import {MenuRaw} from "../../../components/Dropdown/DefaultDropdown";
@@ -28,13 +27,13 @@ class KpiPageContent extends React.Component<RootStoreProp & WrappedComponentPro
 
     return (<>
         <Section size={"large"} sectionName={this.props.intl.formatMessage({id: "employeeInformation"})}>
-          <EmployeeInformation/>
+          {/*<EmployeeInformation/>*/}
         </Section>
         <Section size={"large"}>
           <StatusSteps/>
         </Section>
         <Section size={"large"}>
-          <KpiTable/>
+          {/*<KpiTable/>*/}
         </Section>
         <Section size={"large"}>
           <DropdownButton menu={createGoalsMenu}

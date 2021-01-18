@@ -1,13 +1,13 @@
 import React from 'react';
 import {Tabs} from "antd";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import RatingTable from "./RatingTable";
+import AssignedGoalList from "../../AssignedGoals/DefaultGoal/AssignedGoalList";
 
-class KpiTable extends React.Component<WrappedComponentProps> {
+type Props = {
+  assignedPerformancePlanId: string;
+}
 
-  componentDidMount(): void {
-
-  }
+class GoalForm extends React.Component<Props & WrappedComponentProps> {
 
   render() {
     const {TabPane} = Tabs;
@@ -15,7 +15,7 @@ class KpiTable extends React.Component<WrappedComponentProps> {
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="1">
-          <RatingTable />
+          <AssignedGoalList assignedPerformancePlanId={this.props.assignedPerformancePlanId}/>
         </TabPane>
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.approvers"})} key="2">
           <div>
@@ -34,4 +34,4 @@ class KpiTable extends React.Component<WrappedComponentProps> {
   }
 }
 
-export default injectIntl(KpiTable);
+export default injectIntl(GoalForm);

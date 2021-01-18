@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Modal} from "antd";
+import {Card, Modal} from "antd";
 
 import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 
@@ -83,13 +83,15 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
     ];
 
     return (
-      <DataTable
-        dataCollection={this.dataCollection}
-        fields={this.fields}
-        onRowSelectionChange={this.handleRowSelectionChange}
-        hideSelectionColumn={true}
-        buttons={buttons}
-      />
+      <Card bordered={false}>
+        <DataTable
+          dataCollection={this.dataCollection}
+          fields={this.fields}
+          onRowSelectionChange={this.handleRowSelectionChange}
+          hideSelectionColumn={true}
+          buttons={buttons}
+        />
+      </Card>
     );
   }
 
