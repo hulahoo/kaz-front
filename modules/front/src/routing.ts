@@ -1,4 +1,4 @@
-import { AssignedGoalManagement } from "./app/pages/AssignedGoals/DefaultGoal/AssignedGoalManagement";
+import { AssignedGoalManagement } from "./app/pages/AssignedGoals/IndividualGoal/AssignedGoalManagement";
 import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
 import { rootStore } from "./app/store";
 import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";

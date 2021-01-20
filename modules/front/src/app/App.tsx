@@ -30,7 +30,7 @@ import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalD
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
-import {AssignedGoalManagement} from "./pages/AssignedGoals/DefaultGoal/AssignedGoalManagement";
+import {AssignedGoalManagement} from "./pages/AssignedGoals/IndividualGoal/AssignedGoalManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -94,7 +94,8 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
                 <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
-                <Route exact={true} path="/kpi/:appId/goal/create/default" component={AssignedGoalManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/create/individual" component={AssignedGoalManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/create/library" component={AssignedGoalManagement}/>
               </Switch>
             </Layout.Content>
           </Layout>

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Col, Form, message, Row} from "antd";
+import {Alert, Card, Col, Form, InputNumber, message, Row} from "antd";
 import {observer} from "mobx-react";
 import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect} from "react-router-dom";
@@ -36,7 +36,7 @@ type EditorProps = {
 };
 
 @observer
-class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentProps> {
+class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponentProps> {
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
     loadImmediately: false
@@ -69,7 +69,6 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (err) {
-
         Notification.error({
           message: this.props.intl.formatMessage({
             id: "management.editor.validationError"
@@ -154,9 +153,10 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     getFieldDecoratorOpts={{
-                      rules: [
-                        {type: "number", message: 'Вес цели должен быть числом!'}
-                      ]
+                      rules: [{
+                        pattern: /^[0-9]+$/,
+                        message: 'Вес должен быть числом!'
+                      }]
                     }}
                   />
                 </Col>
@@ -226,8 +226,6 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
     if (this.props.entityId !== 'new') {
       this.dataInstance.load(this.props.entityId);
     } else {
-      console.log(this.props.assignedPerformancePlanId);
-
       const assignedPerformancePlan = new AssignedPerformancePlan();
       assignedPerformancePlan.id = this.props.assignedPerformancePlanId;
 
@@ -265,5 +263,5 @@ export default injectIntl(
         });
       });
     }
-  })(DefaultAssignedGoalEdit)
+  })(IndividualAssignedGoalEdit)
 );

@@ -4,16 +4,16 @@ import {Alert, Card, Col, Form, message, Row} from "antd";
 import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Redirect} from "react-router-dom";
-import {IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {Link, Redirect} from "react-router-dom";
+import {IReactionDisposer, observable, reaction, runInAction, toJS} from "mobx";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import GoalForm from './GoalForm';
 
 import {
   clearFieldErrors,
   collection,
-  constructFieldsWithErrors,
-  extractServerValidationErrors,
+  constructFieldsWithErrors, DataCollectionStore,
+  extractServerValidationErrors, Field, getCubaREST,
   instance,
   MultilineText,
   withLocalizedForm
@@ -33,6 +33,9 @@ import StatusSteps, {StatusStepProp} from "../../common/StatusSteps";
 import DropdownButton from "../../components/Dropdown/DropdownButton";
 import {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
 import Button, {ButtonType} from "../../components/Button/Button";
+import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
+import moment from "moment";
+import {log} from "util";
 
 enum StatusPerformancePlan {
   DRAFT = "DRAFT",
@@ -54,15 +57,13 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     {view: "assignedPerformancePlan-myKpi-edit", loadImmediately: false}
   );
 
+  currentUserAssignment: DataCollectionStore<AssignmentExt>;
+
   performancePlansDc = collection<PerformancePlan>(PerformancePlan.NAME, {
-    view: "_minimal"
+    view: "_local"
   });
 
   assignedPersonsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal"
-  });
-
-  assigned_bysDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_minimal"
   });
 
@@ -73,6 +74,10 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
   fields = [
 
     "status",
+
+    "currentAssignment",
+
+    "personalPlan",
 
     "startDate",
 
@@ -151,7 +156,6 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     const {status} = this.dataInstance;
 
     const statusSteps: StatusStepProp[] = [];
-
     let i = 1;
     for (let StatusStep in StatusPerformancePlan) {
       statusSteps.push({
@@ -163,17 +167,28 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 
     const goalCreatePathUrl = AssignedPerformancePlanManagement.PATH + "/" + this.props.entityId + "/goal/create/";
     const createGoalsMenu: MenuRaw[] = [{
-      id: goalCreatePathUrl + "default",
+      id: goalCreatePathUrl + "individual",
       value: this.props.intl.formatMessage({id: "newGoal"})
     }, {
       id: goalCreatePathUrl + "library",
       value: this.props.intl.formatMessage({id: "fromLibrary"})
     }, {id: goalCreatePathUrl + "cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
 
+    console.log(this.props.form.getFieldsValue());
+
     return (
       <Page
         pageName={this.props.intl.formatMessage({id: 'page.kpi'}, {"name": status === 'DONE' ? this.dataInstance.item!.performancePlan!.performancePlanName : ""})}>
-        <Card className="narrow-layout" actions={[<Button buttonType={ButtonType.FOLLOW}>Закрыть</Button>, <Button buttonType={ButtonType.PRIMARY}>Сохранить</Button>]} bordered={false}>
+        <Card className="narrow-layout" actions={[
+          <Link to={AssignedPerformancePlanManagement.PATH}>
+            <Button buttonType={ButtonType.FOLLOW}>Закрыть</Button>
+          </Link>,
+          <Link to={AssignedPerformancePlanManagement.PATH}>
+            <Button buttonType={ButtonType.FOLLOW}>Отправить на согласование</Button>
+          </Link>,
+          <Link to={AssignedPerformancePlanManagement.PATH}>
+            <Button buttonType={ButtonType.PRIMARY}>Сохранить</Button>
+          </Link>]} bordered={false}>
           <div className={"large-section section-container"}>
             <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "employeeInfo"})}</div>
             <Form onSubmit={this.handleSubmit} layout="vertical">
@@ -185,42 +200,38 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                       propertyName="assignedPerson"
                       form={this.props.form}
                       formItemOpts={{style: {marginBottom: "12px"}, className: 'disabled'}}
-                      optionsContainer={this.assignedPersonsDc}
-                      getFieldDecoratorOpts={{
-                        rules: [{required: true}]
-                      }}/>
+                      optionsContainer={this.assignedPersonsDc}/>
                   </Col>
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={AssignedPerformancePlan.NAME}
-                      propertyName="assigned_by"
+                      propertyName="currentAssignment.jobGroup.jobNameLang1"
                       form={this.props.form}
-                      formItemOpts={{style: {marginBottom: "12px"}}}
-                      optionsContainer={this.assigned_bysDc}
-                      getFieldDecoratorOpts={{}}
-                    />
-                  </Col>
-                  <Col md={24} lg={6}>
-                    <ReadonlyField
-                      entityName={AssignedPerformancePlan.NAME}
-                      propertyName="assignedPerson"
-                      form={this.props.form}
-                      formItemOpts={{style: {marginBottom: "12px"}}}
-                      optionsContainer={this.assignedPersonsDc}
-                      getFieldDecoratorOpts={{
-                        rules: [{required: true}]
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
+                        label: this.props.intl.formatMessage({id: "jobGroup"})
                       }}
                     />
                   </Col>
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={AssignedPerformancePlan.NAME}
-                      propertyName="assignedPerson"
+                      propertyName="currentAssignment.organizationGroup.organizationNameLang1"
                       form={this.props.form}
-                      formItemOpts={{style: {marginBottom: "12px"}}}
-                      optionsContainer={this.assignedPersonsDc}
-                      getFieldDecoratorOpts={{
-                        rules: [{required: true}]
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
+                        label: this.props.intl.formatMessage({id: "organizationGroup"})
+                      }}
+                    />
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="currentAssignment.organizationGroup.organization.organizationNameLang1"
+                      form={this.props.form}
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
+                        label: this.props.intl.formatMessage({id: "organization"})
                       }}
                     />
                   </Col>
@@ -228,43 +239,31 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                 <Row className={"form-row"}>
                   <Col md={24} lg={6}>
                     <ReadonlyField
-                      entityName={AssignedPerformancePlan.NAME}
+                      entityName={PerformancePlan.NAME}
                       propertyName="startDate"
                       form={this.props.form}
-                      formItemOpts={{style: {marginBottom: "12px"}}}
-                      getFieldDecoratorOpts={{}}
-                    />
-                  </Col>
-                  <Col md={24} lg={6}>
-                    <ReadonlyField
-                      entityName={AssignedPerformancePlan.NAME}
-                      propertyName="endDate"
-                      form={this.props.form}
-                      formItemOpts={{style: {marginBottom: "12px"}}}
-                      getFieldDecoratorOpts={{}}
-                    />
-                  </Col>
-                  <Col md={24} lg={6}>
-                    <ReadonlyField
-                      entityName={AssignedPerformancePlan.NAME}
-                      propertyName="assignedPerson"
-                      form={this.props.form}
-                      formItemOpts={{style: {marginBottom: "12px"}}}
-                      optionsContainer={this.assignedPersonsDc}
-                      getFieldDecoratorOpts={{
-                        rules: [{required: true}]
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
                       }}
                     />
                   </Col>
-                  <Col md={24} lg={6}>
+                  <Col md={24} lg= {6}>
                     <ReadonlyField
-                      entityName={AssignedPerformancePlan.NAME}
-                      propertyName="assignedPerson"
+                      entityName={PerformancePlan.NAME}
+                      propertyName="endDate"
                       form={this.props.form}
-                      formItemOpts={{style: {marginBottom: "12px"}}}
-                      optionsContainer={this.assignedPersonsDc}
-                      getFieldDecoratorOpts={{
-                        rules: [{required: true}]
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
+                      }}
+                    />
+                  </Col>
+                  <Col md={24} lg= {6}>
+                    <ReadonlyField
+                      entityName={PerformancePlan.NAME}
+                      propertyName="endDate"
+                      form={this.props.form}
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
                       }}
                     />
                   </Col>
@@ -276,23 +275,6 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                     style={{marginBottom: "24px"}}
                   />
                 )}
-
-                {/*<Form.Item style={{textAlign: "center"}}>*/}
-                {/*  <Link to={AssignedPerformancePlanManagement.PATH}>*/}
-                {/*    <Button htmlType="button">*/}
-                {/*      <FormattedMessage id="management.editor.cancel"/>*/}
-                {/*    </Button>*/}
-                {/*  </Link>*/}
-                {/*  <Button*/}
-                {/*    type="primary"*/}
-                {/*    htmlType="submit"*/}
-                {/*    disabled={status !== "DONE" && status !== "ERROR"}*/}
-                {/*    loading={status === "LOADING"}*/}
-                {/*    style={{marginLeft: "8px"}}*/}
-                {/*  >*/}
-                {/*    <FormattedMessage id="management.editor.submit"/>*/}
-                {/*  </Button>*/}
-                {/*</Form.Item>*/}
               </FormContainer>
             </Form>
           </div>
@@ -313,16 +295,14 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
   }
 
   componentDidMount() {
-    if (this.props.entityId !== AssignedPerformancePlanManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
-    } else {
-      this.dataInstance.setItem(new AssignedPerformancePlan());
-    }
+    this.loadInstanceData();
     this.reactionDisposer = reaction(
       () => {
-        return this.dataInstance.item;
+        console.log('1');
+        return this.dataInstance.item
       },
       () => {
+        console.log('2');
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );
@@ -333,18 +313,39 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
   componentWillUnmount() {
     this.reactionDisposer();
   }
+
+  loadInstanceData = () => {
+    if (this.props.entityId !== AssignedPerformancePlanManagement.NEW_SUBPATH) {
+      this.dataInstance.load(this.props.entityId);
+    } else {
+      this.dataInstance.setItem(new AssignedPerformancePlan());
+    }
+  };
+
+  get entitiesLoadOptions() {
+    const loadOptions = {
+      view: this.currentUserAssignment.view,
+    } as any;
+    if (this.currentUserAssignment.sort) {
+      loadOptions.sort = this.currentUserAssignment.sort;
+    }
+    if (this.currentUserAssignment.limit !== null && this.currentUserAssignment.limit !== undefined) {
+      loadOptions.limit = this.currentUserAssignment.limit;
+    }
+    if (this.currentUserAssignment.offset !== null && this.currentUserAssignment.offset !== undefined) {
+      loadOptions.offset = this.currentUserAssignment.offset;
+    }
+    return loadOptions;
+  }
 }
 
 export default injectIntl(
-  withLocalizedForm
-
-  <
-  EditorProps
-  > ({
+  withLocalizedForm<EditorProps>({
     onValuesChange: (props: any, changedValues: any) => {
       // Reset server-side errors when field is edited
       Object.keys(changedValues).forEach((fieldName: string) => {
-          props.form.setFields({
+        console.log('3');
+        props.form.setFields({
             [fieldName]: {
               value: changedValues[fieldName]
             }
@@ -354,5 +355,4 @@ export default injectIntl(
     }
   })
   (AssignedPerformancePlanEditComponent)
-)
-;
+);

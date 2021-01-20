@@ -1,7 +1,7 @@
 import React from 'react';
 import {Tabs} from "antd";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import AssignedGoalList from "../../AssignedGoals/DefaultGoal/AssignedGoalList";
+import AssignedGoalList from "../../AssignedGoals/IndividualGoal/AssignedGoalList";
 
 type Props = {
   assignedPerformancePlanId: string;

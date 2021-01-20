@@ -22,13 +22,13 @@ import {
 
 import "../../../app/App.css";
 
-import {PersonalDataRequest} from "../../../cuba/entities/base/tsadv$PersonalDataRequest";
 import {RootStoreProp} from "../../store";
 import {restQueries} from "../../../cuba/queries";
 import Notification from "../../util/notification/Notification";
 import PersonContactList from "../PersonContact/PersonContactList";
 import PersonDocumentList from "../PersonDocument/PersonDocumentList";
 import Button, {ButtonType} from "../../components/Button/Button";
+import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 
 type Props = FormComponentProps;
 
@@ -37,7 +37,7 @@ type Props = FormComponentProps;
 @observer
 class PersonalDataRequestEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
 
-  dataInstance = instance<PersonalDataRequest>(PersonalDataRequest.NAME, {
+  dataInstance = instance<PersonExt>(PersonExt.NAME, {
     view: "_local",
     loadImmediately: false
   });
@@ -48,8 +48,6 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
 
   fields = [
     "lastName",
-
-    "requestNumber",
 
     "firstName",
 
@@ -140,33 +138,27 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
                 <Row type={"flex"} className={"data-form"}>
                   <Col md={24} sm={24} lg={8}>
                     <Field
-                      entityName={PersonalDataRequest.NAME}
+                      entityName={PersonExt.NAME}
                       propertyName="lastName"
                       form={this.props.form}
                       getFieldDecoratorOpts={{}}
                     />
                     <Field
-                      entityName={PersonalDataRequest.NAME}
+                      entityName={PersonExt.NAME}
                       propertyName="lastNameLatin"
-                      form={this.props.form}
-                      getFieldDecoratorOpts={{}}
-                    />
-                    <Field
-                      entityName={PersonalDataRequest.NAME}
-                      propertyName="requestNumber"
                       form={this.props.form}
                       getFieldDecoratorOpts={{}}
                     />
                   </Col>
                   <Col md={24} sm={24} lg={8}>
                     <Field
-                      entityName={PersonalDataRequest.NAME}
+                      entityName={PersonExt.NAME}
                       propertyName="firstName"
                       form={this.props.form}
                       getFieldDecoratorOpts={{}}
                     />
                     <Field
-                      entityName={PersonalDataRequest.NAME}
+                      entityName={PersonExt.NAME}
                       propertyName="firstNameLatin"
                       form={this.props.form}
                       getFieldDecoratorOpts={{}}
@@ -174,20 +166,20 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
                   </Col>
                   <Col md={24} sm={24} lg={8}>
                     <Field
-                      entityName={PersonalDataRequest.NAME}
+                      entityName={PersonExt.NAME}
                       propertyName="middleName"
                       form={this.props.form}
                       getFieldDecoratorOpts={{}}
                     />
                     <Field
-                      entityName={PersonalDataRequest.NAME}
+                      entityName={PersonExt.NAME}
                       propertyName="middleNameLatin"
                       form={this.props.form}
                       getFieldDecoratorOpts={{}}
                     />
 
                     <Field
-                      entityName={PersonalDataRequest.NAME}
+                      entityName={PersonExt.NAME}
                       propertyName="dateOfBirth"
                       form={this.props.form}
                       getFieldDecoratorOpts={{}}
@@ -229,7 +221,7 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
   }
 
   componentDidMount() {
-    const userId = this.props.rootStore!.userInfo.id!;
+    const userId = this.props.rootStore!.userInfo.personGroupId!;
     if (userId !== PersonalDataRequestManagement.NEW_SUBPATH) {
       restQueries.myProfile(userId).then(response => {
         runInAction(() => {
@@ -238,9 +230,8 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
         });
       }).catch(reason => {
       });
-      // this.dataInstance.load(id);
     } else {
-      this.dataInstance.setItem(new PersonalDataRequest());
+      this.dataInstance.setItem(new PersonExt());
     }
     this.reactionDisposer = reaction(
       () => {

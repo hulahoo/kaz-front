@@ -79,56 +79,12 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   };
 
   render() {
-    // const buttons = [
-    //   <Link
-    //     to={
-    //       AssignedGoalManagement.PATH + "/" + AssignedGoalManagement.NEW_SUBPATH
-    //     }
-    //     key="create"
-    //   >
-    //     <Button
-    //       htmlType="button"
-    //       style={{margin: "0 12px 12px 0"}}
-    //       type="primary"
-    //       icon="plus"
-    //     >
-    //       <span>
-    //         <FormattedMessage id="management.browser.create"/>
-    //       </span>
-    //     </Button>
-    //   </Link>,
-    //   <Link
-    //     to={AssignedGoalManagement.PATH + "/" + this.selectedRowKey}
-    //     key="edit"
-    //   >
-    //     <Button
-    //       htmlType="button"
-    //       style={{margin: "0 12px 12px 0"}}
-    //       disabled={!this.selectedRowKey}
-    //       type="default"
-    //     >
-    //       <FormattedMessage id="management.browser.edit"/>
-    //     </Button>
-    //   </Link>,
-    //   <Button
-    //     htmlType="button"
-    //     style={{margin: "0 12px 12px 0"}}
-    //     disabled={!this.selectedRowKey}
-    //     onClick={this.deleteSelectedRow}
-    //     key="remove"
-    //     type="default"
-    //   >
-    //     <FormattedMessage id="management.browser.remove"/>
-    //   </Button>
-    // ];
-
     return (
       <DataTable
         dataCollection={this.dataCollection}
         fields={this.fields}
         onRowSelectionChange={this.handleRowSelectionChange}
         hideSelectionColumn={true}
-        // buttons={buttons}
       />
     );
   }
