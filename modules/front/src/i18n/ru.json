@@ -103,7 +103,7 @@
   "placeholder.employee": "Введите ФИО сотрудника",
   "positionGroup": "Штатная единица",
   "placeholder.positionGroup": "Введите штатную единицу",
-  "organization": "Подразделение",
+  "organization": "Организация",
   "placeholder.organization": "Введите подразделение",
   "company": "Компания",
   "placeholder.company": "Введите компанию",
@@ -140,5 +140,9 @@
   "cascade": "Каскадировать",
   "StatusPerformancePlan.DRAFT": "Черновик",
   "StatusPerformancePlan.COMPLETED": "Завершено",
-  "StatusPerformancePlan.ASSESSMENT": "Оценка"
+  "StatusPerformancePlan.ASSESSMENT": "Оценка",
+  "organizationGroup": "Подразделение",
+  "jobGroup":  "Должность",
+  "personalPlan.startDate": "Дата с",
+  "personalPlan.endDate": "Дата по"
 }

@@ -4,13 +4,13 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Modal, Button} from "antd";
+import {Modal, Button, Table, Tag, Icon} from "antd";
 
 import {
   collection,
   injectMainStore,
   MainStoreInjected,
-  DataTable
+  DataTable, Msg
 } from "@cuba-platform/react";
 
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
@@ -21,7 +21,7 @@ import {
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
-import {RootStoreProp} from "../../../store";
+import Column from "antd/es/table/Column";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -79,57 +79,51 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   };
 
   render() {
-    // const buttons = [
-    //   <Link
-    //     to={
-    //       AssignedGoalManagement.PATH + "/" + AssignedGoalManagement.NEW_SUBPATH
-    //     }
-    //     key="create"
-    //   >
-    //     <Button
-    //       htmlType="button"
-    //       style={{margin: "0 12px 12px 0"}}
-    //       type="primary"
-    //       icon="plus"
-    //     >
-    //       <span>
-    //         <FormattedMessage id="management.browser.create"/>
-    //       </span>
-    //     </Button>
-    //   </Link>,
-    //   <Link
-    //     to={AssignedGoalManagement.PATH + "/" + this.selectedRowKey}
-    //     key="edit"
-    //   >
-    //     <Button
-    //       htmlType="button"
-    //       style={{margin: "0 12px 12px 0"}}
-    //       disabled={!this.selectedRowKey}
-    //       type="default"
-    //     >
-    //       <FormattedMessage id="management.browser.edit"/>
-    //     </Button>
-    //   </Link>,
-    //   <Button
-    //     htmlType="button"
-    //     style={{margin: "0 12px 12px 0"}}
-    //     disabled={!this.selectedRowKey}
-    //     onClick={this.deleteSelectedRow}
-    //     key="remove"
-    //     type="default"
-    //   >
-    //     <FormattedMessage id="management.browser.remove"/>
-    //   </Button>
-    // ];
-
     return (
-      <DataTable
-        dataCollection={this.dataCollection}
-        fields={this.fields}
-        onRowSelectionChange={this.handleRowSelectionChange}
-        hideSelectionColumn={true}
-        // buttons={buttons}
-      />
+      <Table dataSource={this.dataCollection.items.length > 0 ? this.dataCollection.items : []} pagination={false}
+             size="default" bordered={false} rowKey="id">
+        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
+                dataIndex="category.langValue1"
+                key="category"
+                sorter={(a: AssignedGoal, b: AssignedGoal) =>
+                  a.category!.langValue1!.localeCompare(b.category!.langValue1!)
+                }/>
+        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='goalString'/>}
+                dataIndex="goalString"
+                key="goalString"
+                sorter={(a: AssignedGoal, b: AssignedGoal) =>
+                  a.goalString!.localeCompare(b.goalString!)
+                }/>
+        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+                dataIndex="weight"
+                key="weight"
+                sorter={(a: AssignedGoal, b: AssignedGoal) => {
+                  return (a.weight! as number) - (b.weight! as number)
+                }}/>
+        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='startDate'/>}
+                dataIndex="startDate"
+                key="startDate"
+                sorter={(a: AssignedGoal, b: AssignedGoal) =>
+                  a.startDate!.localeCompare(b.startDate!)
+                }/>
+        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='endDate'/>}
+                dataIndex="endDate"
+                key="endDate"
+                sorter={(a: AssignedGoal, b: AssignedGoal) =>
+                  a.endDate!.localeCompare(b.endDate!)
+                }/>
+        <Column
+          title=""
+          key="action"
+          render={ag => (
+            <Button type="link"
+                    style={{padding: 0}}
+                    onClick={() => this.showDeletionDialog(ag)}>
+              <Icon type="delete" style={{fontSize: '18px', cursor: 'pointer'}}/>
+            </Button>
+          )}
+        />
+      </Table>
     );
   }
 

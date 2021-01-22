@@ -1,6 +1,7 @@
 import { StandardEntity } from "./sys$StandardEntity";
 import { PerformancePlan } from "./tsadv$PerformancePlan";
 import { PersonGroupExt } from "./base$PersonGroupExt";
+import {AssignmentExt} from "./base$AssignmentExt";
 export class AssignedPerformancePlan extends StandardEntity {
   static NAME = "tsadv$AssignedPerformancePlan";
   performancePlan?: PerformancePlan | null;

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { observer } from "mobx-react";
-import DefaultAssignedGoalEdit from "./DefaultAssignedGoalEdit";
+import IndividualAssignedGoalEdit from "./IndividualAssignedGoalEdit";
 
 type Props = RouteComponentProps<{ entityId?: string }>;
 
@@ -15,7 +15,7 @@ export class AssignedGoalManagement extends React.Component<Props> {
     return (
       <>
         {appId ? (
-          <DefaultAssignedGoalEdit assignedPerformancePlanId={appId} entityId={"new"}/>
+          <IndividualAssignedGoalEdit assignedPerformancePlanId={appId} entityId={"new"}/>
         ) : (
           {/*<AssignedGoalList />*/}
         )}

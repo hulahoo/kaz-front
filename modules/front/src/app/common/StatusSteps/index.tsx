@@ -19,7 +19,7 @@ class StatusSteps extends React.Component<Props> {
     return (
       <div>
         <Steps type={"navigation"} current={currentIndex}>
-          {steps ? steps.map(s => <Step icon={<></>} {...s}/>) : <></>}
+          {steps ? steps.map((s, i) => <Step icon={<></>} {...s} key={i}/>) : <></>}
         </Steps>
       </div>
     );

@@ -33,11 +33,11 @@ export default class RootStore {
 
   createChangePasswordStore = () => {
     this.changePassword = new ChangePasswordStore(this);
-  }
+  };
 
   createKpiStore = (appId: string) => {
     this.kpiEditStore = new KpiStore(this, appId);
-  }
+  };
 
   createDefaultGoalStore = () => {
     this.goalStore = new DefaultGoalStore(this);
