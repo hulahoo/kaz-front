@@ -7,7 +7,7 @@ import {NavLink} from "react-router-dom";
 
 interface DropdownButtonProps {
   buttonText?: string,
-  menu:  MenuRaw[];
+  menu: MenuRaw[];
   buttonStyle?: React.CSSProperties
 }
 
@@ -15,7 +15,7 @@ class DropdownButton extends React.Component<DropdownButtonProps> {
   render() {
     const menuOverlay = <Menu className={"button-dropdown"}>
       {(this.props.menu as MenuRaw[]).map((m: MenuRaw) =>
-        <Menu.Item>
+        <Menu.Item key={m.id}>
           {m.render ? m.render :
             <NavLink to={m.id}>
               {m.value}

@@ -140,6 +140,16 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
                 <Col md={24} lg={8}>
                   <Field
                     entityName={AssignedGoal.NAME}
+                    propertyName="category"
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    optionsContainer={this.categorysDc}
+                    getFieldDecoratorOpts={{}}
+                  />
+                </Col>
+                <Col md={24} lg={8}>
+                  <Field
+                    entityName={AssignedGoal.NAME}
                     propertyName="goalString"
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
@@ -158,16 +168,6 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
                         message: 'Вес должен быть числом!'
                       }]
                     }}
-                  />
-                </Col>
-                <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="category"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    optionsContainer={this.categorysDc}
-                    getFieldDecoratorOpts={{}}
                   />
                 </Col>
               </Row>

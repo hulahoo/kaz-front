@@ -8,7 +8,7 @@ import Centered from "./common/Centered";
 import AppHeader from "./header/AppHeader";
 import {NavLink, Route, Switch} from "react-router-dom";
 import HomePage from "./home/HomePage";
-import {menuItems} from "../routing";
+import {getRouteList, menuItems} from "../routing";
 import {
   injectMainStore,
   MainStoreInjected,
@@ -21,7 +21,7 @@ import {
   IntlFormatters,
   WrappedComponentProps
 } from "react-intl";
-import IconRender from '../resources/icons/menu/index';
+import {getMenuIcon} from '../resources/icons/menu';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
@@ -31,6 +31,7 @@ import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentMan
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
 import {AssignedGoalManagement} from "./pages/AssignedGoals/IndividualGoal/AssignedGoalManagement";
+import {LearningHistory} from "./pages/LearningHistory";
 
 @injectMainStore
 @inject("rootStore")
@@ -88,7 +89,6 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
-                {/*<Route exact={true} path="/kpi/:id" component={KpiEditPage}/>*/}
                 <Route path="/my-profile" component={PersonalDataRequestEditPage}/>
                 {/*<Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>*/}
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
@@ -96,6 +96,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/create/individual" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/create/library" component={AssignedGoalManagement}/>
+                <Route exact={true} path="/learning-history" component={LearningHistory}/>
+                {getRouteList().map((route) =>{
+                  return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>}
+                )}
               </Switch>
             </Layout.Content>
           </Layout>
@@ -114,13 +118,13 @@ function menuItem(
   if ((item as any).items != null) {
     //recursively walk through sub menus
     const menuSubMenu: MenuSubMenu = item as MenuSubMenu;
-    const MenuIcon = IconRender.get(menuSubMenu.id);
+    const MenuIcon = getMenuIcon(menuSubMenu.id);
     return (
       <Menu.SubMenu
         key={keyString}
         title={
           <span>
-            <Icon component={MenuIcon}/>
+            <img src={MenuIcon} className={"ant-menu-item-icon"}/>
             <span>{item.caption}</span>
           </span>
         }>
@@ -133,30 +137,15 @@ function menuItem(
 
   // Route Item
   const menuRouteItem: MenuRouteItem = item as MenuRouteItem;
-  const MenuIcon = IconRender.get(menuRouteItem.id);
+  const MenuIcon = getMenuIcon(menuRouteItem.id);
+
   return (
     <Menu.Item key={keyString}>
+      <img src={MenuIcon} className={"ant-menu-item-icon"}/>
       <NavLink to={menuRouteItem.menuLink}>
-        <Icon component={MenuIcon}/>
         {item.caption}
       </NavLink>
     </Menu.Item>
-  );
-}
-
-function collectRouteItems(items: Array<RouteItem | SubMenu>): RouteItem[] {
-  return items.reduce(
-    (acc, curr) => {
-      if ((curr as SubMenu).items == null) {
-        // Route item
-        acc.push(curr as RouteItem);
-      } else {
-        // Items from sub menu
-        acc.push(...collectRouteItems((curr as SubMenu).items));
-      }
-      return acc;
-    },
-    [] as Array<RouteItem>
   );
 }
 

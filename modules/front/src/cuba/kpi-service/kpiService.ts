@@ -29,6 +29,16 @@ export const kpiService = {
     });
 
   },
+  myKpiList1: async (params?: DefaultRestParams, fetchOpts?: FetchOptions): Promise<string> => {
+    const a:Promise<string> = getCubaREST()!.invokeService(
+      "tsadv_KpiService",
+      "loadUsersPerformancePlans",
+      {...params},
+      fetchOpts
+    );
+    const b:string = await a.then((response:string) => "123");
+    return b;
+  },
   myKpiListCount: (params?: DefaultRestParams, fetchOpts?: FetchOptions): Promise<number> => {
     return getCubaREST()!.invokeService(
       "tsadv_KpiService",
