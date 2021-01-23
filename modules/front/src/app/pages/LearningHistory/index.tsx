@@ -1,9 +1,7 @@
 import React from 'react';
-import {collection, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
-import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
+import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
-import {SerializedEntity} from "@cuba-platform/rest";
-import {Icon, Table} from "antd";
+import {Table} from "antd";
 import Column from "antd/es/table/Column";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {inject, observer} from "mobx-react";
@@ -14,24 +12,18 @@ import Section from "../../hoc/Section";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {Link} from "react-router-dom";
 import {ReactComponent as ExcelSvg} from '../../../resources/icons/excel.svg';
+import {CourseTrainer} from "../../../cuba/entities/base/tsadv$CourseTrainer";
+import {Course} from "../../../cuba/entities/base/tsadv$Course";
+import {restServices} from "../../../cuba/services";
+import moment from "moment";
 
 @inject("rootStore")
 @injectMainStore
 @observer
 export class LearningHistory extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
-  dataCollection = collection<Enrollment>(Enrollment.NAME, {
-    view: "enrollment-learning-history",
-    filter: {
-      conditions: [{
-        property: "personGroup.id",
-        operator: "=",
-        // value: this.props.rootStore!.userInfo.personGroupId!
-        value: "47ecc3eb-cbef-c40e-eab2-32c45d6da880"
-      }]
-    },
-    sort: "-date"
-  });
+  @observable
+  dataCollection: Course[] = [];
 
   fields = [
     "rowNumber",
@@ -54,28 +46,44 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
       <Page pageName={"История обучения"}>
         <Section visible={false} size={"large"}>
           <div className={"button-group"}>
-            <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg style={{width: '14px'}}/>Скачать в формате EXCEL</Button>
+            <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg style={{width: '14px'}}/>Скачать
+              в формате EXCEL</Button>
             <Button buttonType={ButtonType.FOLLOW}>Скачать все сертификаты</Button>
           </div>
-          <Table dataSource={this.dataCollection.items.length > 0 ? this.dataCollection.items : []} pagination={false}
+          <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
                  size="default" bordered={false} rowKey="id">
-            <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='rowNumber'/>}
+            <Column title={<>№</>}
                     dataIndex="rowNumber"
                     key="rowNumber" render={(text, record, index) => {
               return <span>{index + 1}</span>
             }}/>
-            <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
-                    dataIndex="category"
+            <Column title={<>Период</>}
+                    dataIndex="period"
                     key="period" render={(text, record, index) => {
-              return (record as Enrollment).course!.category!.langValue1
+              return moment((record as Course).sections![0].session![0].startDate).format('DD.MM.yyyy') + ' - ' + moment((record as Course).sections![0].session![0].endDate).format('DD.MM.yyyy')
+            }}/>
+            <Column title={<Msg entityName={Enrollment.NAME} propertyName='course'/>}
+                    dataIndex="course"
+                    key="course" render={(text, record) => {
+              return (record as Course).name!
+            }}/>
+            <Column title={<Msg entityName={CourseTrainer.NAME} propertyName='trainer'/>}
+                    dataIndex="trainer"
+                    key="trainer" render={(text, record) => {
+              return (record as Course).sections!.map(s => s.session!.filter(ss => ss.trainer != undefined).map(ss => ss.trainer!.trainerFullName).join(', '));
+            }}/>
+            <Column title={<>Результат теста</>}
+                    dataIndex="test"
+                    key="test" render={(text, record) => {
+              return (record as Course).sections!.map(s => s.session!.filter(ss => ss.trainer != undefined).map(ss => ss.trainer!.trainerFullName).join(', '));
             }}/>
             <Column
-              title=""
+              title={<>Сертификат</>}
               key="action"
               render={ag => (
-                <Link type="link"
+                <Link type="link" target={"_blank"}
                       style={{padding: 0}} to={"/"}>
-                  Скачать формат Excel
+                  Просмотр
                 </Link>
               )}
             />
@@ -85,16 +93,10 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
     );
   }
 
-  getRecordById(id: string): SerializedEntity<AssignedGoal> {
-    const record:
-      | SerializedEntity<AssignedGoal>
-      | undefined = this.dataCollection.items.find(record => record.id === id);
-
-    if (!record) {
-      throw new Error("Cannot find entity with id " + id);
-    }
-
-    return record;
+  componentDidMount(): void {
+    restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
+      this.dataCollection = c
+    })
   }
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {

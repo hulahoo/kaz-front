@@ -16,7 +16,7 @@ import {ChangeEvent} from "react";
 class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProps> {
   render() {
     const SearchComponent = CommonComponentHoc(
-      <Input
+      <Input className={"search-input"}
         placeholder={this.props.intl.formatMessage({id: "search"}) + " ..."}
         prefix={<Icon type="search"/>}
         autoComplete={'off'}/>, {wrapperStyles: {style: {"margin": "16px 0"}}});

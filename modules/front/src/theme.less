@@ -124,7 +124,11 @@ img.ant-menu-item-icon {
 
 .button-icon {
   display: flex !important;
-  align-items: center  !important;
+  align-items: center !important;
+
+  > svg {
+    margin: 3px;
+  }
 }
 
 .button-group {
@@ -134,5 +138,28 @@ img.ant-menu-item-icon {
 
   > *:not(:last-child) {
     margin-right: 10px;
+  }
+}
+
+@media (max-width: 636px) {
+  .additional-panel {
+    display: none !important;
+  }
+}
+
+//TABLE
+.ant-table-thead {
+  > tr {
+    > th {
+      font-weight: 600 !important;
+    }
+  }
+}
+
+.ant-table-tbody {
+  > tr {
+    > td {
+      font-weight: 500 !important;
+    }
   }
 }
