@@ -1,0 +1,52 @@
+.carousel-courses-wrapper {
+  position: relative;
+}
+
+.carousel-button {
+  position: absolute !important;
+  top: 30% !important;
+}
+
+.carousel-prev-button {
+  left: 15px;
+}
+
+.carousel-next-button {
+  right: 15px;
+}
+
+.carousel-courses {
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 1.6rem;
+  grid-auto-columns: calc((100% - (6 - 1) * 1.6rem) / 6);
+  overflow: auto;
+  overflow-x: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-snap-stop: always;
+}
+
+
+@media (max-width: 1900px) {
+  .carousel-courses {
+    grid-auto-columns: calc((100% - (6 - 1) * 1.6rem) / 6);
+  }
+}
+
+@media (max-width: 1750px) {
+  .carousel-courses {
+    grid-auto-columns: calc((100% - (5 - 1) * 1.6rem) / 5);
+  }
+}
+
+@media (max-width: 1600px) {
+  .carousel-courses {
+    grid-auto-columns: calc((100% - (4 - 1) * 1.6rem) / 4);
+  }
+}
+
+@media (max-width: 1250px) {
+  .carousel-courses {
+    grid-auto-columns: calc((100% - (3 - 1) * 1.6rem) / 3);
+  }
+}

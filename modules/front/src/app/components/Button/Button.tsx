@@ -6,7 +6,7 @@ export type ButtonComponentProps =
   ButtonProps
     & {
     child?: JSX.Element
-    buttonType: ButtonType
+    buttonType?: ButtonType
 }
 
 export enum ButtonType {
@@ -18,6 +18,6 @@ export default class extends React.Component<ButtonComponentProps> {
     render() {
         const {buttonType, className, ...rest} = {...this.props};
         return <Button
-            className={(className ? className + " button" : "button") + " " + "btn-" + buttonType} {...rest}/>;
+            className={(className ? className + " button" : "button") + " " + (buttonType ? "btn-" + buttonType : "")} {...rest}/>;
     }
 }

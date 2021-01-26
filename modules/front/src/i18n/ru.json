@@ -144,5 +144,7 @@
   "organizationGroup": "Подразделение",
   "jobGroup":  "Должность",
   "personalPlan.startDate": "Дата с",
-  "personalPlan.endDate": "Дата по"
+  "personalPlan.endDate": "Дата по",
+  "course.certificate.true": "выдается",
+  "course.certificate.false": "не выдается"
 }

@@ -12,7 +12,10 @@
 @import "/src/app/header/UserPanel/style";
 @import "/src/app/header/UserPanel/Notification/NotificationDropdown/style";
 @import "/src/app/components/Table/style";
+@import "/src/app/components/CourseCard/style";
 @import "/src/app/common/StatusSteps/style";
+@import "/src/app/components/CourseCarousel/style";
+@import "/src/app/pages/Course/style";
 
 .additional-panel {
   display: flex;
@@ -103,6 +106,7 @@
 
 .page-body {
   width: 100%;
+  padding: 0 40px;
 }
 
 .ant-card-body {
@@ -124,7 +128,11 @@ img.ant-menu-item-icon {
 
 .button-icon {
   display: flex !important;
-  align-items: center  !important;
+  align-items: center !important;
+
+  > svg {
+    margin: 3px;
+  }
 }
 
 .button-group {
@@ -135,4 +143,55 @@ img.ant-menu-item-icon {
   > *:not(:last-child) {
     margin-right: 10px;
   }
+}
+
+@media (max-width: 636px) {
+  .additional-panel {
+    display: none !important;
+  }
+}
+
+//TABLE
+.ant-table-thead {
+  > tr {
+    > th {
+      font-weight: 600 !important;
+    }
+  }
+}
+
+.ant-table-tbody {
+  > tr {
+    > td {
+      font-weight: 500 !important;
+    }
+  }
+}
+
+.centered-flex-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.default-link {
+  color: @primary-1;
+  text-decoration: underline;
+}
+.default-font {
+  font-size: 14px !important;
+  color: @primary-2
+}
+//RATE
+@rate-star-color: @primary-1 !important;
+
+.header-default {
+  font-size: 18px;
+  font-weight: 600;
+  color: @primary-2;
+}
+
+.large-text {
+  color: #005487 !important;
+  font-weight: 700;
 }
