@@ -1,6 +1,6 @@
 import {action, observable, runInAction} from "mobx";
 import {default as React} from "react";
-import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
@@ -17,27 +17,17 @@ type Props = {
   entityId: string;
 };
 
+type RateRenderMeta = {
+  rate: React.ReactNode,
+  finished: number
+}
+
 @inject("rootStore")
 @injectMainStore
 @observer
 class CourseEdit extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
 
-  rateList = [{
-    rate: <Rate disabled value={5}/>,
-    finished: 40
-  }, {
-    rate: <Rate disabled value={4}/>,
-    finished: 30
-  }, {
-    rate: <Rate disabled value={3}/>,
-    finished: 10
-  }, {
-    rate: <Rate disabled value={2}/>,
-    finished: 5
-  }, {
-    rate: <Rate disabled value={1}/>,
-    finished: 5
-  }];
+  rateList: RateRenderMeta[] = [];
 
   @observable
   dataInstance: CourseInfo;
@@ -68,7 +58,10 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
 
   showTrainerInfo = (trainerId: string) => {
     restServices.courseService.courseTrainerInfo({trainerId: trainerId}).then(response => {
-      this.selectedTrainer = response;
+      getCubaREST()!.getFile(response.image.id).then(blob => {
+        response.image.blob = URL.createObjectURL(blob);
+        this.selectedTrainer = response;
+      });
 
       this.setVisibleTrainerModal(true);
     });
@@ -97,7 +90,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                 <div className={"course-info-rate form-item"} style={{marginTop: '32px'}}>
                   <><Rate className={"rate-container"} value={this.dataInstance.avgRate} allowHalf disabled
                           onChange={this.changeRate}/>
-                    (90 оценок)
+                    ({this.dataInstance.rateReviewCount} оценок)
                   </>
                 </div>
                 <div className={"course-info-feedback"}>
@@ -112,7 +105,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                     <Col style={{display: 'inline-block'}}>
                       <Form.Item label={"Отзывов о курсе"} className={"form-item"}
                                  key='finished'>{
-                        <span>100</span>
+                        <span>{this.dataInstance.comments.length}</span>
                       }
                       </Form.Item>
                     </Col>
@@ -180,8 +173,8 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
             <Row type={"flex"}>
               <Col span={6} className={"centered-flex-container"}>
                 <div className={"large-rate centered-flex-container"}>
-                  <span className={"large-text"}>4.5</span>
-                  <Rate allowHalf disabled value={4.5}/>
+                  <span className={"large-text"}>{this.dataInstance.avgRate}</span>
+                  <Rate allowHalf disabled value={this.dataInstance.avgRate}/>
                   <span className="default-font">Рейтинг курса</span>
                 </div>
               </Col>
@@ -201,25 +194,27 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                 />
               </Col>
             </Row>
-            <Row>
-              <List itemLayout="horizontal"
-                    dataSource={this.dataInstance.comments}
-                    renderItem={item => (
-                      <List.Item
-                        style={{backgroundColor: "#F3F3F3", margin: '5px 0', borderRadius: '4px', border: 'none'}}>
-                        <List.Item.Meta
-                          style={{margin: '0 5px'}}
-                          title={<div className={"comment-header"}
-                                      style={{display: 'flex', justifyContent: "space-between"}}>
-                            <div className="comment-name">{item.user}</div>
-                            <div className="comment-date">{moment(item.date).format('DD.MM.yyyy')}</div>
-                          </div>}
-                          description={item.comment}
-                        />
-                      </List.Item>
-                    )}
-              />
-            </Row>
+            {this.dataInstance && this.dataInstance.comments.length > 0
+              ? <Row>
+                <List itemLayout="horizontal"
+                      dataSource={this.dataInstance.comments}
+                      renderItem={item => (
+                        <List.Item
+                          style={{backgroundColor: "#F3F3F3", margin: '5px 0', borderRadius: '4px', border: 'none'}}>
+                          <List.Item.Meta
+                            style={{margin: '0 5px'}}
+                            title={<div className={"comment-header"}
+                                        style={{display: 'flex', justifyContent: "space-between"}}>
+                              <div className="comment-name default-font">{item.user}</div>
+                              <div className="comment-date">{moment(item.date).format('DD.MM.yyyy')}</div>
+                            </div>}
+                            description={<span className="default-font">{item.comment}</span>}
+                          />
+                        </List.Item>
+                      )}
+                />
+              </Row>
+              : <> </>}
           </Section>
         </div>
         {this.selectedTrainer ? <Modal
@@ -233,8 +228,8 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
               <Row style={{marginTop: '20px'}} type={"flex"} justify="center">
                 <Col sm={7} xs={24} style={{'display': 'flex', 'align-items': 'center'}}>
                   <div className="course-trainer-modal-image">
-                    {this.selectedTrainer.image ? <img alt={this.dataInstance.logo}
-                                                       src={this.selectedTrainer.image}/> :
+                    {this.selectedTrainer.image ? <img alt={this.selectedTrainer.fullName}
+                                                       src={this.selectedTrainer.image.blob}/> :
                       <img alt={this.dataInstance.logo}
                            src={require("../../../resources/img/default-user.svg")}/>}
                   </div>
@@ -290,6 +285,15 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
     restServices.courseService.courseInfo({courseId: this.props.entityId}).then(courseInfo => {
       runInAction(() => {
         this.dataInstance = courseInfo;
+
+        for (let i = 5; i > 0; i--) {
+          const rateCount = this.dataInstance.rating.find(r => r.key === i);
+
+          this.rateList.push({
+            rate: <Rate disabled value={i}/>,
+            finished: rateCount ? rateCount.value : 0
+          })
+        }
       })
     })
   }

@@ -105,4 +105,6 @@ export type CourseInfo = {
   logo: any
   comments: any[]
   isIssuedCertificate: boolean
+  rateReviewCount: number
+  rating: any[]
 }
