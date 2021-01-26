@@ -15,6 +15,7 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
 import Button, {ButtonType} from "../../components/Button/Button";
 import Section from "../../hoc/Section";
+import Page from "../../hoc/PageContentHoc";
 
 @injectMainStore
 @inject("rootStore")
@@ -84,15 +85,17 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
     ];
 
     return (
-      <Section visible={false} size={"large"}>
-        <DataTable
-          dataCollection={this.dataCollection}
-          fields={this.fields}
-          onRowSelectionChange={this.handleRowSelectionChange}
-          hideSelectionColumn={true}
-          buttons={buttons}
-        />
-      </Section>
+      <Page>
+        <Section visible={false} size={"large"}>
+          <DataTable
+            dataCollection={this.dataCollection}
+            fields={this.fields}
+            onRowSelectionChange={this.handleRowSelectionChange}
+            hideSelectionColumn={true}
+            buttons={buttons}
+          />
+        </Section>
+      </Page>
     );
   }
 

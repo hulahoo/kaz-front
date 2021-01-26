@@ -54,8 +54,8 @@ export default class MenuStore {
           {
             id: "course-catalog",
             caption: "Каталог курсов",
-            menuLink: "/courses",
-            pathPattern: "/courses",
+            menuLink: "/course",
+            pathPattern: "/course",
             component: null
           },
           {id: "calendar", caption: "Каледнарь", menuLink: "/calendar", pathPattern: "/calendar", component: null},

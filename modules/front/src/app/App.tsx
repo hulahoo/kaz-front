@@ -32,6 +32,7 @@ import {PersonContactManagement} from "./pages/PersonContact/PersonContactManage
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
 import {AssignedGoalManagement} from "./pages/AssignedGoals/IndividualGoal/AssignedGoalManagement";
 import {LearningHistory} from "./pages/LearningHistory";
+import {CourseManagement} from "./pages/Course/CourseManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -97,9 +98,11 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/kpi/:appId/goal/create/individual" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/create/library" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/learning-history" component={LearningHistory}/>
-                {getRouteList().map((route) =>{
-                  return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>}
-                )}
+                <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
+                {/*{getRouteList().map((route) => {*/}
+                {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
+                {/*  }*/}
+                {/*)}*/}
               </Switch>
             </Layout.Content>
           </Layout>

@@ -48,7 +48,6 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
           <div className={"button-group"}>
             <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg style={{width: '14px'}}/>Скачать
               в формате EXCEL</Button>
-            <Button buttonType={ButtonType.FOLLOW}>Скачать все сертификаты</Button>
           </div>
           <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
                  size="default" bordered={false} rowKey="id">
@@ -81,10 +80,10 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
               title={<>Сертификат</>}
               key="action"
               render={ag => (
-                <Link type="link" target={"_blank"}
-                      style={{padding: 0}} to={"/"}>
+                <a style={{padding: 0}} href={"/files/c25098eb-a310-a1e6-b775-b44e5ee13fe2"}
+                   download={(ag as Course).name! + ".pdf"}>
                   Просмотр
-                </Link>
+                </a>
               )}
             />
           </Table>
@@ -93,8 +92,10 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
     );
   }
 
+  // "47ecc3eb-cbef-c40e-eab2-32c45d6da880"
   componentDidMount(): void {
-    restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
+    // restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
+    restServices.learningService.learningHistory({personGroupId: "47ecc3eb-cbef-c40e-eab2-32c45d6da880"}).then((c) => {
       this.dataCollection = c
     })
   }
