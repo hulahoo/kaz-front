@@ -58,11 +58,19 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
 
   showTrainerInfo = (trainerId: string) => {
     restServices.courseService.courseTrainerInfo({trainerId: trainerId}).then(response => {
-      getCubaREST()!.getFile(response.image.id).then(blob => {
-        response.image.blob = URL.createObjectURL(blob);
-        this.selectedTrainer = response;
-      });
-
+      this.selectedTrainer = response;
+      if (response.image) {
+        getCubaREST()!.getFile(response.image.id).then(blob => {
+          runInAction(() => {
+            this.selectedTrainer = {
+              ...this.selectedTrainer,
+              image:{
+                blob: URL.createObjectURL(blob)
+              }
+            }
+          })
+        });
+      }
       this.setVisibleTrainerModal(true);
     });
   };
