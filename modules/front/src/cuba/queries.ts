@@ -5,6 +5,8 @@ import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 import {AssignmentExt} from "./entities/base/base$AssignmentExt";
 import moment from "moment";
 import {PersonExt} from "./entities/base/base$PersonExt";
+import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -32,6 +34,11 @@ export var restQueries = {
       currentDate: moment.now()
     }).then(response => {
       return response[0]
+    })
+  },
+  kpiAssignedGoals: (appId: string): Promise<SerializedEntity<AssignedGoal>[]> => {
+    return getCubaREST()!.query<AssignedGoal>(AssignedGoal.NAME, "kpiAssignedGoals", {
+      appId: appId,
     })
   }
 };
