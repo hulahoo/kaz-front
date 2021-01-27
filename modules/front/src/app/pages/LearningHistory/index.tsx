@@ -1,5 +1,5 @@
 import React from 'react';
-import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
 import {Table} from "antd";
 import Column from "antd/es/table/Column";
@@ -41,6 +41,12 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
 
   @observable selectedRowKey: string | undefined;
 
+  previewCertificate = (fileId: string) => {
+    getCubaREST()!.getFile(fileId).then(responseBlob => {
+      window.open(URL.createObjectURL(responseBlob), "_blank");
+    })
+  };
+
   render() {
     return (
       <Page pageName={"История обучения"}>
@@ -80,11 +86,10 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
               title={<>Сертификат</>}
               key="action"
               render={ag => (
-                <a style={{padding: 0}} href={"/files/c25098eb-a310-a1e6-b775-b44e5ee13fe2"}
-                   download={(ag as Course).name! + ".pdf"}>
-                  Просмотр
+                <a style={{padding: 0}} onClick={() => this.previewCertificate("c25098eb-a310-a1e6-b775-b44e5ee13fe2")}>
+                Просмотр
                 </a>
-              )}
+                )}
             />
           </Table>
         </Section>
@@ -92,7 +97,6 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
     );
   }
 
-  // "47ecc3eb-cbef-c40e-eab2-32c45d6da880"
   componentDidMount(): void {
     // restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
     restServices.learningService.learningHistory({personGroupId: "47ecc3eb-cbef-c40e-eab2-32c45d6da880"}).then((c) => {
