@@ -12,8 +12,8 @@ import {
   collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
-  Field,
-  instance,
+  Field, getCubaREST, injectMainStore,
+  instance, MainStoreInjected, Msg,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -36,7 +36,8 @@ type EditorProps = {
 };
 
 @observer
-class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponentProps> {
+@injectMainStore
+class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponentProps & MainStoreInjected> {
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
     loadImmediately: false
@@ -76,52 +77,84 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
         });
         return;
       }
-      this.dataInstance
-        .update(this.props.form.getFieldsValue(this.fields))
-        .then(() => {
-          Notification.success({
-            message: this.props.intl.formatMessage({id: "management.editor.success"})
+
+      getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
+        conditions: [
+          {
+            property: "assignedPerformancePlan",
+            operator: "=",
+            value: this.props.assignedPerformancePlanId
+          }]
+      }, {view: "assigned-goal-weight"}).then((otherGoals) => {
+        const otherGoalsWeights: number = otherGoals.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0);
+        const weightInput = Number(this.props.form.getFieldValue("weight"));
+
+        if ((otherGoalsWeights + weightInput) > 100) {
+          Notification.error({
+            message: this.props.intl.formatMessage({
+              id: "goal.validation.error.totalWeightSum"
+            }, {totalSumWeight: otherGoalsWeights + weightInput})
           });
-          this.updated = true;
-        })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
-
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-
-                Notification.error({
-                  message: this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                });
-              } else {
-
-                Notification.error({
-                  message: this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                });
-              }
+          return;
+        }
+        this.dataInstance
+          .update(this.props.form.getFieldsValue(this.fields))
+          .then(() => {
+            Notification.success({
+              message: this.props.intl.formatMessage({id: "goal.management.editor.success"})
             });
-          } else {
-            Notification.error({
-              message: this.props.intl.formatMessage({id: "management.editor.error"})
-            });
-          }
-        });
+            this.updated = true;
+          })
+          .catch((e: any) => {
+            if (e.response && typeof e.response.json === "function") {
+              e.response.json().then((response: any) => {
+                clearFieldErrors(this.props.form);
+                const {
+                  globalErrors,
+                  fieldErrors
+                } = extractServerValidationErrors(response);
+                this.globalErrors = globalErrors;
+                if (fieldErrors.size > 0) {
+                  this.props.form.setFields(
+                    constructFieldsWithErrors(fieldErrors, this.props.form)
+                  );
+                }
+
+                if (fieldErrors.size > 0 || globalErrors.length > 0) {
+
+                  Notification.error({
+                    message: this.props.intl.formatMessage({
+                      id: "management.editor.validationError"
+                    })
+                  });
+                } else {
+
+                  Notification.error({
+                    message: this.props.intl.formatMessage({
+                      id: "management.editor.error"
+                    })
+                  });
+                }
+              });
+            } else {
+              Notification.error({
+                message: this.props.intl.formatMessage({id: "management.editor.error"})
+              });
+            }
+          });
+      });
     });
+  };
+
+  checkWeightRange = (rule: any, value: any, callback: any) => {
+    const messages = this.props.mainStore!.messages!;
+    if (value <= 0) {
+      callback(this.props.intl.formatMessage({id: "form.validation.number.min"}, {
+        fieldName: messages[AssignedGoal.NAME + '.' + 'weight'],
+        value: 1
+      }));
+    }
+    callback();
   };
 
   render() {
@@ -129,6 +162,7 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
       return <Redirect to={"/kpi/" + this.props.assignedPerformancePlanId}/>;
     }
 
+    const messages = this.props.mainStore!.messages!;
     const {status} = this.dataInstance;
 
     return (
@@ -157,38 +191,20 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
                   />
                 </Col>
                 <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="weight"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{
+                  <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+                             key='weight'
+                             style={{marginBottom: '12px'}}>{
+                    this.props.form.getFieldDecorator('weight', {
                       rules: [{
-                        pattern: /^[0-9]+$/,
-                        message: 'Вес должен быть числом!'
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'weight']})
+                      }, {
+                        validator: this.checkWeightRange
                       }]
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row className={"form-row"}>
-                <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="startDate"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{}}
-                  />
-                </Col>
-                <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="endDate"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{}}
-                  />
+                    })(
+                      <InputNumber/>
+                    )}
+                  </Form.Item>
                 </Col>
               </Row>
               {this.globalErrors.length > 0 && (

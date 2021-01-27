@@ -1,48 +1,38 @@
 import * as React from "react";
 import {observer} from "mobx-react";
-import {Link} from "react-router-dom";
 
-import {observable} from "mobx";
+import {action, observable, runInAction} from "mobx";
 
 import {Modal, Button, Table, Tag, Icon} from "antd";
 
 import {
-  collection,
+  collection, getCubaREST,
   injectMainStore,
   MainStoreInjected,
-  DataTable, Msg
+  Msg
 } from "@cuba-platform/react";
 
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
-import {AssignedGoalManagement} from "./AssignedGoalManagement";
 import {
-  FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
 import Column from "antd/es/table/Column";
+import {restQueries} from "../../../../cuba/queries";
+import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 
 type Props = {
   assignedPerformancePlanId: string;
+  setTotalWeight?: (totalWeight: number) => void
 }
 
 @injectMainStore
 @observer
 class AssignedGoalList extends React.Component<MainStoreInjected & WrappedComponentProps & Props> {
-  dataCollection = collection<AssignedGoal>(AssignedGoal.NAME, {
-    view: "assignedGoal-portal-kpi-create-default",
-    filter: {
-      conditions: [
-        {
-          property: "assignedPerformancePlan",
-          operator: "=",
-          value: this.props.assignedPerformancePlanId
-        }
-      ]
-    },
-    sort: "-updateTs"
-  });
+
+  @observable
+  dataCollection: SerializedEntity<AssignedGoal>[] = [];
 
   fields = [
     "category",
@@ -73,14 +63,32 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
       onOk: () => {
         this.selectedRowKey = undefined;
 
-        return this.dataCollection.delete(e);
+        return this.deleteGoal(e);
       }
     });
   };
 
+  deleteGoal = (e: SerializedEntity<AssignedGoal>) => {
+    if (e == null || e.id == null) {
+      throw new Error('Unable to delete entity without ID');
+    }
+    getCubaREST()!.deleteEntity(AssignedGoal.NAME, e.id)
+      .then(action(() => {
+        this.load();
+      }))
+      .catch(action(() => {
+      }));
+  };
+
+
   render() {
+    //TODO: переписать
+    if (this.dataCollection.length > 0 && this.props.setTotalWeight) {
+      this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
+    }
+
     return (
-      <Table dataSource={this.dataCollection.items.length > 0 ? this.dataCollection.items : []} pagination={false}
+      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
              size="default" bordered={false} rowKey="id">
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
                 dataIndex="category.langValue1"
@@ -100,18 +108,12 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 sorter={(a: AssignedGoal, b: AssignedGoal) => {
                   return (a.weight! as number) - (b.weight! as number)
                 }}/>
-        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='startDate'/>}
-                dataIndex="startDate"
-                key="startDate"
-                sorter={(a: AssignedGoal, b: AssignedGoal) =>
-                  a.startDate!.localeCompare(b.startDate!)
-                }/>
-        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='endDate'/>}
-                dataIndex="endDate"
-                key="endDate"
-                sorter={(a: AssignedGoal, b: AssignedGoal) =>
-                  a.endDate!.localeCompare(b.endDate!)
-                }/>
+        <Column title={<Msg entityName={Goal.NAME} propertyName='successCriteria'/>}
+                dataIndex="goal.successCriteria"
+                key="successCriteria"
+                sorter={(a: AssignedGoal, b: AssignedGoal) => {
+                  return a.goal!.successCriteria!.localeCompare(b.goal!.successCriteria!)
+                }}/>
         <Column
           title=""
           key="action"
@@ -127,10 +129,22 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
     );
   }
 
+  componentDidMount(): void {
+    this.load();
+  }
+
+  load = () => {
+    restQueries.kpiAssignedGoals(this.props.assignedPerformancePlanId).then(ag => {
+      runInAction(() => {
+        this.dataCollection = ag
+      })
+    });
+  }
+
   getRecordById(id: string): SerializedEntity<AssignedGoal> {
     const record:
       | SerializedEntity<AssignedGoal>
-      | undefined = this.dataCollection.items.find(record => record.id === id);
+      | undefined = this.dataCollection.find(record => record.id === id);
 
     if (!record) {
       throw new Error("Cannot find entity with id " + id);

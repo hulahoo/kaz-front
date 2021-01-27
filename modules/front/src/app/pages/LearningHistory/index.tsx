@@ -49,11 +49,10 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
 
   render() {
     return (
-      <Page pageName={"История обучения"}>
+      <Page pageName={this.props.intl.formatMessage({id: "learningHistory"})}>
         <Section visible={false} size={"large"}>
           <div className={"button-group"}>
-            <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg style={{width: '14px'}}/>Скачать
-              в формате EXCEL</Button>
+            <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg style={{width: '14px'}}/>{this.props.intl.formatMessage({id: "learningHistory.certificate.downloadExcel"})}</Button>
           </div>
           <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
                  size="default" bordered={false} rowKey="id">
@@ -62,7 +61,7 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
                     key="rowNumber" render={(text, record, index) => {
               return <span>{index + 1}</span>
             }}/>
-            <Column title={<>Период</>}
+            <Column title={<>{this.props.intl.formatMessage({id: "period"})}</>}
                     dataIndex="period"
                     key="period" render={(text, record, index) => {
               return moment((record as Course).sections![0].session![0].startDate).format('DD.MM.yyyy') + ' - ' + moment((record as Course).sections![0].session![0].endDate).format('DD.MM.yyyy')
@@ -77,13 +76,13 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
                     key="trainer" render={(text, record) => {
               return (record as Course).sections!.map(s => s.session!.filter(ss => ss.trainer != undefined).map(ss => ss.trainer!.trainerFullName).join(', '));
             }}/>
-            <Column title={<>Результат теста</>}
+            <Column title={<>{this.props.intl.formatMessage({id: "learningHistory.testResult"})}</>}
                     dataIndex="test"
                     key="test" render={(text, record) => {
               return (record as Course).sections!.map(s => s.session!.filter(ss => ss.trainer != undefined).map(ss => ss.trainer!.trainerFullName).join(', '));
             }}/>
             <Column
-              title={<>Сертификат</>}
+              title={<>{this.props.intl.formatMessage({id: "learningHistory.certificate"})}</>}
               key="action"
               render={ag => (
                 <a style={{padding: 0}} onClick={() => this.previewCertificate("c25098eb-a310-a1e6-b775-b44e5ee13fe2")}>
