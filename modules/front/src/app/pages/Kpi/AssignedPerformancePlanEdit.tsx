@@ -12,7 +12,7 @@ import GoalForm from './GoalForm';
 import {
   clearFieldErrors,
   constructFieldsWithErrors,
-  extractServerValidationErrors, injectMainStore, MainStoreInjected, Msg,
+  extractServerValidationErrors, getCubaREST, injectMainStore, MainStoreInjected, Msg,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -35,6 +35,8 @@ import {queryInstance} from "../../util/QueryDataInstanceStore";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
 import {EnumValueInfo} from "@cuba-platform/rest/dist-node/model";
+import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
+import Notification from "../../util/notification/Notification";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -138,7 +140,29 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
   @action
   setTotalWeight = (value: number) => {
     this.totalWeight = value;
-  }
+  };
+
+  sendOnApprove = () => {
+    getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
+      conditions: [
+        {
+          property: "assignedPerformancePlan",
+          operator: "=",
+          value: this.props.entityId
+        }]
+    }, {view: "assigned-goal-weight"}).then((otherGoals) => {
+      const otherGoalsWeights: number = otherGoals.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0);
+
+      if (otherGoalsWeights > 100) {
+        Notification.error({
+          message: this.props.intl.formatMessage({
+            id: "goal.validation.error.totalWeightSum"
+          }, {totalSumWeight: otherGoalsWeights})
+        });
+        return;
+      }
+    });
+  };
 
   render() {
     if (this.updated) {
@@ -171,9 +195,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
           <Link to={AssignedPerformancePlanManagement.PATH}>
             <Button buttonType={ButtonType.FOLLOW}>Закрыть</Button>
           </Link>,
-          <Link to={AssignedPerformancePlanManagement.PATH}>
-            <Button buttonType={ButtonType.FOLLOW}>Отправить на согласование</Button>
-          </Link>,
+          <Button buttonType={ButtonType.FOLLOW} onClick={this.sendOnApprove}>Отправить на согласование</Button>,
           <Link to={AssignedPerformancePlanManagement.PATH}>
             <Button buttonType={ButtonType.PRIMARY}>Сохранить</Button>
           </Link>]} bordered={false}>

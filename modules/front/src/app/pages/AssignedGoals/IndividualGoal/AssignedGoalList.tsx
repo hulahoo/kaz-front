@@ -98,37 +98,62 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
                 dataIndex="key"
                 key="key"
-                sorter={(a: AssignedGoal, b: AssignedGoal) =>
-                  a.category!.langValue1!.localeCompare(b.category!.langValue1!)
-                }/>
+                sorter={(a: any, b: any) => {
+                  if (a.key) {
+                    return a.key.localeCompare(b.key);
+                  }
+                  return a;
+                }}/>
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='goalString'/>}
                 dataIndex="goalString"
                 key="goalString"
-                sorter={(a: AssignedGoal, b: AssignedGoal) =>
-                  a.goalString!.localeCompare(b.goalString!)
-                }/>
+                sorter={(a: any, b: any) => {
+                  if (a.key) {
+                    return a;
+                  }
+                  return a.goalString.localeCompare(b.goalString);
+                }}/>
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
                 dataIndex="weight"
                 key="weight"
-                sorter={(a: AssignedGoal, b: AssignedGoal) => {
-                  return (a.weight! as number) - (b.weight! as number)
+                sorter={(a: any, b: any) => {
+                  if (a.key) {
+                    return a;
+                  }
+                  return a.weight - b.weight;
                 }}/>
         <Column title={<Msg entityName={Goal.NAME} propertyName='successCriteria'/>}
                 dataIndex="goal.successCriteria"
                 key="successCriteria"
-                sorter={(a: AssignedGoal, b: AssignedGoal) => {
-                  return a.goal!.successCriteria!.localeCompare(b.goal!.successCriteria!)
+                sorter={(a: any, b: any) => {
+                  if (a.key) {
+                    return a;
+                  }
+                  if (a.goal && b.goal) {
+                    if (a.goal.successCriteria && b.goal.successCriteria) {
+                      return a.goal.successCriteria.localeCompare(b.goal.successCriteria)
+                    } else if (a.goal.successCriteria) {
+                      return 1;
+                    } else if (b.goal.successCriteria) {
+                      return -1;
+                    }
+                  } else if (a.goal!) {
+                    return 1;
+                  } else if (b.goal!) {
+                    return -1;
+                  }
+                  return 0
                 }}/>
         <Column
           title=""
           key="action"
-          render={ag => (
-            <Button type="link"
-                    style={{padding: 0}}
-                    onClick={() => this.showDeletionDialog(ag)}>
+          render={ag => {
+            return ag.children ? <></> : <Button type="link"
+                                                 style={{padding: 0}}
+                                                 onClick={() => this.showDeletionDialog(ag)}>
               <Icon type="delete" style={{fontSize: '18px', cursor: 'pointer'}}/>
             </Button>
-          )}
+          }}
         />
       </Table>
     );

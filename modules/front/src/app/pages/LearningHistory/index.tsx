@@ -16,11 +16,12 @@ import {CourseTrainer} from "../../../cuba/entities/base/tsadv$CourseTrainer";
 import {Course} from "../../../cuba/entities/base/tsadv$Course";
 import {restServices} from "../../../cuba/services";
 import moment from "moment";
+import {RouteComponentProps, withRouter} from "react-router";
 
-@inject("rootStore")
 @injectMainStore
+@inject("rootStore")
 @observer
-export class LearningHistory extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+class LearningHistory extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
 
   @observable
   dataCollection: Course[] = [];
@@ -48,6 +49,7 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
   };
 
   render() {
+    console.log(this.props);
     return (
       <Page pageName={this.props.intl.formatMessage({id: "learningHistory"})}>
         <Section visible={false} size={"large"}>
@@ -98,9 +100,8 @@ export class LearningHistory extends React.Component<MainStoreInjected & Wrapped
 
   componentDidMount(): void {
     // restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
-    restServices.learningService.learningHistory({personGroupId: "47ecc3eb-cbef-c40e-eab2-32c45d6da880"}).then((c) => {
-      this.dataCollection = c
-    })
+    //   this.dataCollection = c
+    // })
   }
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
