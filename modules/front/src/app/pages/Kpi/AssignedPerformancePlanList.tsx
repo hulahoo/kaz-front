@@ -24,6 +24,7 @@ import Page from "../../hoc/PageContentHoc";
 import Column from "antd/es/table/Column";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {PerformancePlan} from "../../../cuba/entities/base/tsadv$PerformancePlan";
+import moment from "moment";
 
 @injectMainStore
 @inject("rootStore")
@@ -46,8 +47,6 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
     "status",
 
     "startDate",
-
-    "endDate"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -87,25 +86,12 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
                 {(record.performancePlan! as SerializedEntity<PerformancePlan>)._instanceName}
               </Link>
             }}/>
-            {this.fields.map(f => <Column title={<Msg entityName={AssignedPerformancePlan.NAME} propertyName={f}/>}
-                                          dataIndex={f}
-                                          key={f} render={(text, record, index) => {
-              const propertyInfo = getPropertyInfoNN(f, AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!);
-              if (propertyInfo.type === 'boolean') {
-                return (React.createElement(Checkbox, {checked: text, disabled: true}));
-              } else if (propertyInfo.attributeType === 'ENUM') {
-                return (EnumCell(text, propertyInfo, this.props.mainStore!));
-              } else {
-                return (React.createElement("div", null, text));
-              }
-            }}/>)}
+            <Column title={this.props.intl.formatMessage({id: "assessmentPeriod"})}
+                    dataIndex={"endDate"}
+                    key={"endDate"} render={(text, record, index) => {
+              return (React.createElement("div", null, moment(text).format("YYYY")));
+            }}/>
           </Table>
-          {/*<DataTable*/}
-          {/*  dataCollection={this.dataCollection}*/}
-          {/*  fields={this.fields}*/}
-          {/*  onRowSelectionChange={this.handleRowSelectionChange}*/}
-          {/*  hideSelectionColumn={true}*/}
-          {/*/>*/}
         </Section>
       </Page>
     );
