@@ -78,71 +78,51 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
         return;
       }
 
-      getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
-        conditions: [
-          {
-            property: "assignedPerformancePlan",
-            operator: "=",
-            value: this.props.assignedPerformancePlanId
-          }]
-      }, {view: "assigned-goal-weight"}).then((otherGoals) => {
-        const otherGoalsWeights: number = otherGoals.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0);
-        const weightInput = Number(this.props.form.getFieldValue("weight"));
-
-        if ((otherGoalsWeights + weightInput) > 100) {
-          Notification.error({
-            message: this.props.intl.formatMessage({
-              id: "goal.validation.error.totalWeightSum"
-            }, {totalSumWeight: otherGoalsWeights + weightInput})
+      this.dataInstance
+        .update(this.props.form.getFieldsValue(this.fields))
+        .then(() => {
+          Notification.success({
+            message: this.props.intl.formatMessage({id: "goal.management.editor.success"})
           });
-          return;
-        }
-        this.dataInstance
-          .update(this.props.form.getFieldsValue(this.fields))
-          .then(() => {
-            Notification.success({
-              message: this.props.intl.formatMessage({id: "goal.management.editor.success"})
+          this.updated = true;
+        })
+        .catch((e: any) => {
+          if (e.response && typeof e.response.json === "function") {
+            e.response.json().then((response: any) => {
+              clearFieldErrors(this.props.form);
+              const {
+                globalErrors,
+                fieldErrors
+              } = extractServerValidationErrors(response);
+              this.globalErrors = globalErrors;
+              if (fieldErrors.size > 0) {
+                this.props.form.setFields(
+                  constructFieldsWithErrors(fieldErrors, this.props.form)
+                );
+              }
+
+              if (fieldErrors.size > 0 || globalErrors.length > 0) {
+
+                Notification.error({
+                  message: this.props.intl.formatMessage({
+                    id: "management.editor.validationError"
+                  })
+                });
+              } else {
+
+                Notification.error({
+                  message: this.props.intl.formatMessage({
+                    id: "management.editor.error"
+                  })
+                });
+              }
             });
-            this.updated = true;
-          })
-          .catch((e: any) => {
-            if (e.response && typeof e.response.json === "function") {
-              e.response.json().then((response: any) => {
-                clearFieldErrors(this.props.form);
-                const {
-                  globalErrors,
-                  fieldErrors
-                } = extractServerValidationErrors(response);
-                this.globalErrors = globalErrors;
-                if (fieldErrors.size > 0) {
-                  this.props.form.setFields(
-                    constructFieldsWithErrors(fieldErrors, this.props.form)
-                  );
-                }
-
-                if (fieldErrors.size > 0 || globalErrors.length > 0) {
-
-                  Notification.error({
-                    message: this.props.intl.formatMessage({
-                      id: "management.editor.validationError"
-                    })
-                  });
-                } else {
-
-                  Notification.error({
-                    message: this.props.intl.formatMessage({
-                      id: "management.editor.error"
-                    })
-                  });
-                }
-              });
-            } else {
-              Notification.error({
-                message: this.props.intl.formatMessage({id: "management.editor.error"})
-              });
-            }
-          });
-      });
+          } else {
+            Notification.error({
+              message: this.props.intl.formatMessage({id: "management.editor.error"})
+            });
+          }
+        });
     });
   };
 
@@ -167,9 +147,24 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
 
     return (
       <Page pageName={"Создание индивидуальной цели"}>
-        <Card className="narrow-layout" bordered={false}>
-          <Section size={"large"}>
-            <Form onSubmit={this.handleSubmit} layout="vertical">
+        <Form onSubmit={this.handleSubmit} layout="vertical">
+          <Card className="narrow-layout" bordered={false} actions={[
+            <Link to={"/kpi/" + this.props.assignedPerformancePlanId}>
+              <Button buttonType={ButtonType.FOLLOW}>
+                <FormattedMessage id="management.editor.cancel"/>
+              </Button>
+            </Link>,
+            <Button
+              buttonType={ButtonType.PRIMARY}
+              htmlType="submit"
+              disabled={status !== "DONE" && status !== "ERROR" && status !== "CLEAN"}
+              loading={status === "LOADING"}
+              style={{marginLeft: "8px"}}
+            >
+              <FormattedMessage id="management.editor.submit"/>
+            </Button>
+          ]}>
+            <Section size={"large"}>
               <Row className={"form-row"}>
                 <Col md={24} lg={8}>
                   <Field
@@ -214,26 +209,9 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
                   style={{marginBottom: "24px"}}
                 />
               )}
-
-              <Form.Item style={{textAlign: "center"}}>
-                <Link to={"/kpi/" + this.props.assignedPerformancePlanId}>
-                  <Button buttonType={ButtonType.FOLLOW}>
-                    <FormattedMessage id="management.editor.cancel"/>
-                  </Button>
-                </Link>
-                <Button
-                  buttonType={ButtonType.PRIMARY}
-                  htmlType="submit"
-                  disabled={status !== "DONE" && status !== "ERROR" && status !== "CLEAN"}
-                  loading={status === "LOADING"}
-                  style={{marginLeft: "8px"}}
-                >
-                  <FormattedMessage id="management.editor.submit"/>
-                </Button>
-              </Form.Item>
-            </Form>
-          </Section>
-        </Card>
+            </Section>
+          </Card>
+        </Form>
       </Page>
     );
   }

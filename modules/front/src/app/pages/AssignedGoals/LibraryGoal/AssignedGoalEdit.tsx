@@ -1,26 +1,24 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Button, Card, Col, DatePicker, Form, InputNumber, message, Row, Select} from "antd";
+import {Alert, Card, Col, Form, InputNumber, message, Row, Select} from "antd";
 import {observer} from "mobx-react";
-import {LibraryAssignedGoalManagement} from "./LibraryAssignedGoalManagement";
-import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect} from "react-router-dom";
 import {IReactionDisposer, observable, reaction, toJS} from "mobx";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
-  collection,
-  Field,
-  instance,
-  withLocalizedForm,
-  extractServerValidationErrors,
-  constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText, Msg, DataCollectionStore, getCubaREST, injectMainStore, MainStoreInjected
+  collection,
+  constructFieldsWithErrors,
+  DataCollectionStore,
+  extractServerValidationErrors,
+  Field,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
+  Msg,
+  MultilineText,
+  withLocalizedForm
 } from "@cuba-platform/react";
 
 import "../../../../app/App.css";
@@ -31,6 +29,8 @@ import {GoalLibrary} from "../../../../cuba/entities/base/tsadv$GoalLibrary";
 import Section from "../../../hoc/Section";
 import Page from "../../../hoc/PageContentHoc";
 import Notification from "../../../util/notification/Notification";
+import {FormComponentProps} from "antd/es/form";
+import Button, {ButtonType} from "../../../components/Button/Button";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -78,76 +78,55 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
         return;
       }
 
-      getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
-        conditions: [
-          {
-            property: "assignedPerformancePlan",
-            operator: "=",
-            value: this.props.entityId
-          }]
-      }, {view: "assigned-goal-weight"}).then((otherGoals) => {
-        const otherGoalsWeights: number = otherGoals.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0);
-        const weightInput = Number(this.props.form.getFieldValue("weight"));
-
-        if ((otherGoalsWeights + weightInput) > 100) {
-          Notification.error({
-            message: this.props.intl.formatMessage({
-              id: "goal.validation.error.totalWeightSum"
-            }, {totalSumWeight: otherGoalsWeights + weightInput})
+      const fieldsValue = this.props.form.getFieldsValue(this.fields);
+      this.dataInstance
+        .update({
+          ...fieldsValue,
+          assignedPerformancePlan: {
+            id: this.props.entityId
+          }
+        })
+        .then(() => {
+          Notification.success({
+            message: this.props.intl.formatMessage({id: "goal.management.editor.success"})
           });
-          return;
-        }
+          this.updated = true;
+        })
+        .catch((e: any) => {
+          if (e.response && typeof e.response.json === "function") {
+            e.response.json().then((response: any) => {
+              clearFieldErrors(this.props.form);
+              const {
+                globalErrors,
+                fieldErrors
+              } = extractServerValidationErrors(response);
+              this.globalErrors = globalErrors;
+              if (fieldErrors.size > 0) {
+                this.props.form.setFields(
+                  constructFieldsWithErrors(fieldErrors, this.props.form)
+                );
+              }
 
-        const fieldsValue = this.props.form.getFieldsValue(this.fields);
-        this.dataInstance
-          .update({
-            ...fieldsValue,
-            assignedPerformancePlan: {
-              id: this.props.entityId
-            }
-          })
-          .then(() => {
-            Notification.success({
-              message: this.props.intl.formatMessage({id: "goal.management.editor.success"})
+              if (fieldErrors.size > 0 || globalErrors.length > 0) {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.validationError"
+                  })
+                );
+              } else {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.error"
+                  })
+                );
+              }
             });
-            this.updated = true;
-          })
-          .catch((e: any) => {
-            if (e.response && typeof e.response.json === "function") {
-              e.response.json().then((response: any) => {
-                clearFieldErrors(this.props.form);
-                const {
-                  globalErrors,
-                  fieldErrors
-                } = extractServerValidationErrors(response);
-                this.globalErrors = globalErrors;
-                if (fieldErrors.size > 0) {
-                  this.props.form.setFields(
-                    constructFieldsWithErrors(fieldErrors, this.props.form)
-                  );
-                }
-
-                if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                  message.error(
-                    this.props.intl.formatMessage({
-                      id: "management.editor.validationError"
-                    })
-                  );
-                } else {
-                  message.error(
-                    this.props.intl.formatMessage({
-                      id: "management.editor.error"
-                    })
-                  );
-                }
-              });
-            } else {
-              message.error(
-                this.props.intl.formatMessage({id: "management.editor.error"})
-              );
-            }
-          });
-      });
+          } else {
+            message.error(
+              this.props.intl.formatMessage({id: "management.editor.error"})
+            );
+          }
+        });
     });
   };
 
@@ -194,9 +173,25 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
 
     return (
       <Page pageName={"Создание цели из библиотеки"}>
-        <Card className="narrow-layout" bordered={false}>
-          <Section size={"large"}>
-            <Form onSubmit={this.handleSubmit} layout="vertical">
+        <Form onSubmit={this.handleSubmit} layout="vertical">
+          <Card className="narrow-layout card-actions-container" actions={
+            [
+              <Link to={"/kpi/" + this.props.entityId}>
+                <Button htmlType="button" buttonType={ButtonType.FOLLOW}>
+                  <FormattedMessage id="management.editor.cancel"/>
+                </Button>
+              </Link>,
+              <Button buttonType={ButtonType.PRIMARY}
+                      type="primary"
+                      htmlType="submit"
+                      disabled={status !== "DONE" && status !== "ERROR"}
+                      loading={status === "LOADING"}
+                      style={{marginLeft: "8px"}}
+              ><FormattedMessage id="management.editor.submit"/>
+              </Button>
+            ]
+          } bordered={false}>
+            <Section size={"large"}>
               <Row className={"form-row"}>
                 <Col md={24} lg={8}>
                   <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goalLibrary'/>}
@@ -230,7 +225,7 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
                 <Col md={24} lg={8}>
                   <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
                              key='weight'
-                             style={{marginBottom: '12px'}}>{
+                             style={{marginBottom: '12px'}} className={"button-actions-group"}>{
                     this.props.form.getFieldDecorator('weight', {
                       rules: [{
                         required: true,
@@ -266,26 +261,9 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
                   style={{marginBottom: "24px"}}
                 />
               )}
-
-              <Form.Item style={{textAlign: "center"}}>
-                <Link to={"/kpi/" + this.props.entityId}>
-                  <Button htmlType="button">
-                    <FormattedMessage id="management.editor.cancel"/>
-                  </Button>
-                </Link>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  disabled={status !== "DONE" && status !== "ERROR"}
-                  loading={status === "LOADING"}
-                  style={{marginLeft: "8px"}}
-                >
-                  <FormattedMessage id="management.editor.submit"/>
-                </Button>
-              </Form.Item>
-            </Form>
-          </Section>
-        </Card>
+            </Section>
+          </Card>
+        </Form>
       </Page>
     );
   }
