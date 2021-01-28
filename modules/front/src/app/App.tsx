@@ -32,7 +32,7 @@ import {PersonContactManagement} from "./pages/PersonContact/PersonContactManage
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
 import {AssignedGoalManagement} from "./pages/AssignedGoals/IndividualGoal/AssignedGoalManagement";
 import {LibraryAssignedGoalManagement} from "./pages/AssignedGoals/LibraryGoal/LibraryAssignedGoalManagement";
-import {LearningHistory} from "./pages/LearningHistory";
+import LearningHistory from "./pages/LearningHistory";
 import {CourseManagement} from "./pages/Course/CourseManagement";
 
 @injectMainStore

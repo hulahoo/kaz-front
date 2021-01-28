@@ -35,8 +35,8 @@ type EditorProps = {
   assignedPerformancePlanId: string;
 };
 
-@observer
 @injectMainStore
+@observer
 class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponentProps & MainStoreInjected> {
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
@@ -49,6 +49,7 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
 
   @observable
   updated = false;
+
   reactionDisposer: IReactionDisposer;
 
   fields = [
@@ -148,7 +149,7 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
     return (
       <Page pageName={"Создание индивидуальной цели"}>
         <Form onSubmit={this.handleSubmit} layout="vertical">
-          <Card className="narrow-layout" bordered={false} actions={[
+          <Card className="narrow-layout card-actions-container" actions={[
             <Link to={"/kpi/" + this.props.assignedPerformancePlanId}>
               <Button buttonType={ButtonType.FOLLOW}>
                 <FormattedMessage id="management.editor.cancel"/>
@@ -163,7 +164,7 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
             >
               <FormattedMessage id="management.editor.submit"/>
             </Button>
-          ]}>
+          ]} bordered={false}>
             <Section size={"large"}>
               <Row className={"form-row"}>
                 <Col md={24} lg={8}>
