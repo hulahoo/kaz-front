@@ -31,6 +31,7 @@ import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentMan
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
 import {AssignedGoalManagement} from "./pages/AssignedGoals/IndividualGoal/AssignedGoalManagement";
+import {LibraryAssignedGoalManagement} from "./pages/AssignedGoals/LibraryGoal/LibraryAssignedGoalManagement";
 import {LearningHistory} from "./pages/LearningHistory";
 import {CourseManagement} from "./pages/Course/CourseManagement";
 
@@ -96,7 +97,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
                 <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/create/individual" component={AssignedGoalManagement}/>
-                <Route exact={true} path="/kpi/:appId/goal/create/library" component={AssignedGoalManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/create/library" component={LibraryAssignedGoalManagement}/>
                 <Route exact={true} path="/learning-history" component={LearningHistory}/>
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
                 {/*{getRouteList().map((route) => {*/}

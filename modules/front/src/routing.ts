@@ -1,5 +1,3 @@
-import { MyEducation } from "./app/pages/Tdc/MyEducation";
-import { AssignedGoalManagement } from "./app/pages/AssignedGoals/IndividualGoal/AssignedGoalManagement";
 import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
 import { rootStore } from "./app/store";
 import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";
@@ -10,13 +8,15 @@ rootStore.menu.menuList.forEach((e: MenuSubMenu | MenuRouteItem) => {
   menuItems.push(e);
 });
 
-function flattenRoutes(routes?: Array<MenuRouteItem | MenuSubMenu>): Array<MenuRouteItem> {
+function flattenRoutes(
+  routes?: Array<MenuRouteItem | MenuSubMenu>
+): Array<MenuRouteItem> {
   const list: Array<MenuRouteItem> = [];
   if (!routes) {
     return list;
   }
   for (let route of routes) {
-    if ((route as MenuSubMenu).items ) {
+    if ((route as MenuSubMenu).items) {
       list.push(...flattenRoutes((route as MenuSubMenu).items));
     } else {
       list.push(route as MenuRouteItem);
@@ -28,3 +28,4 @@ function flattenRoutes(routes?: Array<MenuRouteItem | MenuSubMenu>): Array<MenuR
 export function getRouteList() {
   return flattenRoutes(rootStore.menu.menuList);
 }
+

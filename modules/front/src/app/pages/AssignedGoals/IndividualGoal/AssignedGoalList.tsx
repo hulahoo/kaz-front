@@ -3,10 +3,10 @@ import {observer} from "mobx-react";
 
 import {action, observable, runInAction} from "mobx";
 
-import {Modal, Button, Table, Tag, Icon} from "antd";
+import {Modal, Button, Table, Icon} from "antd";
 
 import {
-  collection, getCubaREST,
+  getCubaREST,
   injectMainStore,
   MainStoreInjected,
   Msg
@@ -19,8 +19,8 @@ import {
   WrappedComponentProps
 } from "react-intl";
 import Column from "antd/es/table/Column";
-import {restQueries} from "../../../../cuba/queries";
 import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
+import {restServices} from "../../../../cuba/services";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -32,7 +32,7 @@ type Props = {
 class AssignedGoalList extends React.Component<MainStoreInjected & WrappedComponentProps & Props> {
 
   @observable
-  dataCollection: SerializedEntity<AssignedGoal>[] = [];
+  dataCollection: any[] = [];
 
   fields = [
     "category",
@@ -84,15 +84,20 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   render() {
     //TODO: переписать
     if (this.dataCollection.length > 0 && this.props.setTotalWeight) {
-      this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
+      this.props.setTotalWeight(
+        this.dataCollection.map((e: any) => {
+          return e.children
+        }).map(g => g.map((g: AssignedGoal) => g.weight)
+          .reduce((v1: number, v2: number) => v1 + v2, 0))
+          .reduce((i1, i2) => i1 + i2, 0));
     }
 
     return (
-      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
+      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false} indentSize={0}
              size="default" bordered={false} rowKey="id">
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
-                dataIndex="category.langValue1"
-                key="category"
+                dataIndex="key"
+                key="key"
                 sorter={(a: AssignedGoal, b: AssignedGoal) =>
                   a.category!.langValue1!.localeCompare(b.category!.langValue1!)
                 }/>
@@ -134,31 +139,20 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   load = () => {
-    restQueries.kpiAssignedGoals(this.props.assignedPerformancePlanId).then(ag => {
+    restServices.kpiService.kpiAssignedGoals({appId: this.props.assignedPerformancePlanId}).then(response => {
       runInAction(() => {
-        this.dataCollection = ag
+        this.dataCollection = response.map(pm => {
+          return {
+            key: pm.key,
+            children: pm.value
+          }
+        });
       })
     });
-  }
-
-  getRecordById(id: string): SerializedEntity<AssignedGoal> {
-    const record:
-      | SerializedEntity<AssignedGoal>
-      | undefined = this.dataCollection.find(record => record.id === id);
-
-    if (!record) {
-      throw new Error("Cannot find entity with id " + id);
-    }
-
-    return record;
-  }
+  };
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
     this.selectedRowKey = selectedRowKeys[0];
-  };
-
-  deleteSelectedRow = () => {
-    this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
   };
 }
 

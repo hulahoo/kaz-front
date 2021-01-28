@@ -1,8 +1,9 @@
-import {FetchOptions} from "@cuba-platform/rest";
+import {FetchOptions, SerializedEntity} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {SortOrder} from "antd/lib/table/interface";
 import {Course} from "./entities/base/tsadv$Course";
 import moment from "moment";
+import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -24,6 +25,11 @@ export type CourseTrainerInfo = {
   courseCount?: number,
   image?: any,
   comments?: any[],
+}
+
+export type PairModel<K, V> = {
+  key: K,
+  value: V
 }
 
 export const restServices = {
@@ -88,6 +94,15 @@ export const restServices = {
       ).then((response: string) => {
         return JSON.parse(response);
       });
+    }
+  },
+  kpiService: {
+    kpiAssignedGoals: (params: { appId: string }): Promise<PairModel<string, SerializedEntity<AssignedGoal>[]>[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_KpiService",
+        "kpiAssignedGoals",
+        {...params}
+      ).then((response: string) => JSON.parse(response));
     }
   }
 };

@@ -91,7 +91,6 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
                                           dataIndex={f}
                                           key={f} render={(text, record, index) => {
               const propertyInfo = getPropertyInfoNN(f, AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!);
-              console.log(propertyInfo);
               if (propertyInfo.type === 'boolean') {
                 return (React.createElement(Checkbox, {checked: text, disabled: true}));
               } else if (propertyInfo.attributeType === 'ENUM') {
