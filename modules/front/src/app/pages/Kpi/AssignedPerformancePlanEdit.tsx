@@ -157,7 +157,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
         Notification.error({
           message: this.props.intl.formatMessage({
             id: "goal.validation.error.totalWeightSum"
-          }, {totalSumWeight: otherGoalsWeights})
+          })
         });
         return;
       }

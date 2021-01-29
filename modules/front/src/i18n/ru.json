@@ -154,6 +154,6 @@
   "learningHistory.certificate": "Скачать в формате EXCEL",
   "period": "Период",
   "goal.management.editor.success": "Цель успешно сохранена",
-  "goal.validation.error.totalWeightSum": "Общая сумма всех весов целей, равна {totalSumWeight}",
+  "goal.validation.error.totalWeightSum": "Общий вес целей должен быть равен 100%",
   "assessmentPeriod":"Период оценки"
 }
