@@ -26,6 +26,8 @@ export class Course extends AbstractParentEntity {
   completed?: boolean | null;
   learningType?: DicLearningType | null;
   courseTrainers?: CourseTrainer[] | null;
+  educationPeriod?: number | any;
+  educationDuration?: number | any;
 }
 export type CourseViewName =
   | "_base"
