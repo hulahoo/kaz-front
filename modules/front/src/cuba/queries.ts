@@ -7,6 +7,7 @@ import moment from "moment";
 import {PersonExt} from "./entities/base/base$PersonExt";
 import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
+import {DicCategory} from "./entities/base/tsadv$DicCategory";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -39,6 +40,11 @@ export var restQueries = {
   kpiAssignedGoals: (appId: string): Promise<SerializedEntity<AssignedGoal>[]> => {
     return getCubaREST()!.query<AssignedGoal>(AssignedGoal.NAME, "kpiAssignedGoals", {
       appId: appId,
+    })
+  },
+  searchCourses: (courseName: string): Promise<SerializedEntity<DicCategory>[]> => {
+    return getCubaREST()!.query<DicCategory>(DicCategory.NAME, "searchCourses", {
+      courseName: courseName,
     })
   }
 };

@@ -54,7 +54,9 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
       <Page pageName={this.props.intl.formatMessage({id: "learningHistory"})}>
         <Section visible={false} size={"large"}>
           <div className={"button-group"}>
-            <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg style={{width: '14px'}}/>{this.props.intl.formatMessage({id: "learningHistory.certificate.downloadExcel"})}</Button>
+            <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg
+              style={{width: '14px'}}/>{this.props.intl.formatMessage({id: "learningHistory.certificate.downloadExcel"})}
+            </Button>
           </div>
           <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
                  size="default" bordered={false} rowKey="id">
@@ -76,7 +78,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             <Column title={<Msg entityName={CourseTrainer.NAME} propertyName='trainer'/>}
                     dataIndex="trainer"
                     key="trainer" render={(text, record) => {
-              return (record as Course).sections!.map(s => s.session!.filter(ss => ss.trainer != undefined).map(ss => ss.trainer!.trainerFullName).join(', '));
+              return (record as Course).courseTrainers!.map(ct => ct.trainer!.trainerFullName).map(t => <div>{t}</div>);
             }}/>
             <Column title={<>{this.props.intl.formatMessage({id: "learningHistory.testResult"})}</>}
                     dataIndex="test"
@@ -88,9 +90,9 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
               key="action"
               render={ag => (
                 <a style={{padding: 0}} onClick={() => this.previewCertificate("c25098eb-a310-a1e6-b775-b44e5ee13fe2")}>
-                Просмотр
+                  Просмотр
                 </a>
-                )}
+              )}
             />
           </Table>
         </Section>
@@ -99,9 +101,9 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
   }
 
   componentDidMount(): void {
-    // restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
-    //   this.dataCollection = c
-    // })
+    restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
+      this.dataCollection = c
+    })
   }
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {

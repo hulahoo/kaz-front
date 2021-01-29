@@ -122,4 +122,8 @@ export type CourseInfo = {
   isIssuedCertificate: boolean
   rateReviewCount: number
   rating: any[]
+  isOnline: boolean
+  description: string
+  educationPeriod: number
+  educationDuration: number
 }
