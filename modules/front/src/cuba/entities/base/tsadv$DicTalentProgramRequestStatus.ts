@@ -5,7 +5,9 @@ export class DicTalentProgramRequestStatus extends AbstractDictionary {
 export type DicTalentProgramRequestStatusViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicTalentProgramRequestStatus-browse"
+  | "dicTalentProgramRequestStatus-edit";
 export type DicTalentProgramRequestStatusView<
   V extends DicTalentProgramRequestStatusViewName
 > = V extends "_base"
@@ -13,18 +15,18 @@ export type DicTalentProgramRequestStatusView<
       DicTalentProgramRequestStatus,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -60,5 +62,66 @@ export type DicTalentProgramRequestStatusView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicTalentProgramRequestStatus, "id" | "langValue">
+  ? Pick<
+      DicTalentProgramRequestStatus,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicTalentProgramRequestStatus-browse"
+  ? Pick<
+      DicTalentProgramRequestStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicTalentProgramRequestStatus-edit"
+  ? Pick<
+      DicTalentProgramRequestStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

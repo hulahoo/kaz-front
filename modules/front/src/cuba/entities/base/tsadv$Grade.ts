@@ -5,6 +5,7 @@ export class Grade extends AbstractTimeBasedEntity {
   gradeName?: string | null;
   recognitionNominate?: boolean | null;
   group?: GradeGroup | null;
+  bonusPercent?: any | null;
 }
 export type GradeViewName = "_base" | "_local" | "_minimal" | "grade.edit";
 export type GradeView<V extends GradeViewName> = V extends "_base"
@@ -13,6 +14,7 @@ export type GradeView<V extends GradeViewName> = V extends "_base"
       | "id"
       | "gradeName"
       | "recognitionNominate"
+      | "bonusPercent"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -26,6 +28,7 @@ export type GradeView<V extends GradeViewName> = V extends "_base"
       | "id"
       | "gradeName"
       | "recognitionNominate"
+      | "bonusPercent"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -41,6 +44,7 @@ export type GradeView<V extends GradeViewName> = V extends "_base"
       | "id"
       | "gradeName"
       | "recognitionNominate"
+      | "bonusPercent"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

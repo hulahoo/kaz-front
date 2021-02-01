@@ -4,4 +4,5 @@ export class AbstractBprocRequest extends AbstractParentEntity {
   requestNumber?: any | null;
   status?: DicRequestStatus | null;
   requestDate?: any | null;
+  comment?: string | null;
 }

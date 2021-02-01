@@ -5,7 +5,9 @@ export class DicRcQuestionAccessibility extends AbstractDictionary {
 export type DicRcQuestionAccessibilityViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicRcQuestionAccessibility-browse"
+  | "dicRcQuestionAccessibility-edit";
 export type DicRcQuestionAccessibilityView<
   V extends DicRcQuestionAccessibilityViewName
 > = V extends "_base"
@@ -61,4 +63,56 @@ export type DicRcQuestionAccessibilityView<
     >
   : V extends "_minimal"
   ? Pick<DicRcQuestionAccessibility, "id" | "langValue">
+  : V extends "dicRcQuestionAccessibility-browse"
+  ? Pick<
+      DicRcQuestionAccessibility,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicRcQuestionAccessibility-edit"
+  ? Pick<
+      DicRcQuestionAccessibility,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicJobCategory extends AbstractDictionary {
   static NAME = "tsadv$DicJobCategory";
 }
-export type DicJobCategoryViewName = "_base" | "_local" | "_minimal";
+export type DicJobCategoryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicJobCategory-browse"
+  | "dicJobCategory-edit";
 export type DicJobCategoryView<
   V extends DicJobCategoryViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicJobCategoryView<
       DicJobCategory,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicJobCategoryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicJobCategory, "id" | "langValue">
+  ? Pick<
+      DicJobCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicJobCategory-browse"
+  ? Pick<
+      DicJobCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicJobCategory-edit"
+  ? Pick<
+      DicJobCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

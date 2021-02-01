@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicRequiredEducation extends AbstractDictionary {
   static NAME = "tsadv$DicRequiredEducation";
 }
-export type DicRequiredEducationViewName = "_base" | "_local" | "_minimal";
+export type DicRequiredEducationViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicRequiredEducation-browse"
+  | "dicRequiredEducation-edit";
 export type DicRequiredEducationView<
   V extends DicRequiredEducationViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicRequiredEducationView<
       DicRequiredEducation,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicRequiredEducationView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicRequiredEducation, "id" | "langValue">
+  ? Pick<
+      DicRequiredEducation,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicRequiredEducation-browse"
+  ? Pick<
+      DicRequiredEducation,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicRequiredEducation-edit"
+  ? Pick<
+      DicRequiredEducation,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

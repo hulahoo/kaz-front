@@ -101,6 +101,7 @@ export type DicRegionView<V extends DicRegionViewName> = V extends "_base"
       | "order"
       | "languageValue"
       | "country"
+      | "company"
     >
   : V extends "dicRegion.full"
   ? Pick<
@@ -129,5 +130,6 @@ export type DicRegionView<V extends DicRegionViewName> = V extends "_base"
       | "languageValue"
       | "cities"
       | "country"
+      | "company"
     >
   : never;

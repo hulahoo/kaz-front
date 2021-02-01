@@ -5,7 +5,9 @@ export class DicRcQuestionnaireCategory extends AbstractDictionary {
 export type DicRcQuestionnaireCategoryViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicRcQuestionnaireCategory-browse"
+  | "dicRcQuestionnaireCategory-edit";
 export type DicRcQuestionnaireCategoryView<
   V extends DicRcQuestionnaireCategoryViewName
 > = V extends "_base"
@@ -61,4 +63,56 @@ export type DicRcQuestionnaireCategoryView<
     >
   : V extends "_minimal"
   ? Pick<DicRcQuestionnaireCategory, "id" | "langValue">
+  : V extends "dicRcQuestionnaireCategory-browse"
+  ? Pick<
+      DicRcQuestionnaireCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicRcQuestionnaireCategory-edit"
+  ? Pick<
+      DicRcQuestionnaireCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

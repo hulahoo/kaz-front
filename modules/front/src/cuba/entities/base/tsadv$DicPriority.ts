@@ -2,24 +2,29 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicPriority extends AbstractDictionary {
   static NAME = "tsadv$DicPriority";
 }
-export type DicPriorityViewName = "_base" | "_local" | "_minimal";
+export type DicPriorityViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicPriority-browse"
+  | "dicPriority-edit";
 export type DicPriorityView<V extends DicPriorityViewName> = V extends "_base"
   ? Pick<
       DicPriority,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -55,5 +60,66 @@ export type DicPriorityView<V extends DicPriorityViewName> = V extends "_base"
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicPriority, "id" | "langValue">
+  ? Pick<
+      DicPriority,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicPriority-browse"
+  ? Pick<
+      DicPriority,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicPriority-edit"
+  ? Pick<
+      DicPriority,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

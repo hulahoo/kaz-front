@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicOrderReason extends AbstractDictionary {
   static NAME = "tsadv$DicOrderReason";
 }
-export type DicOrderReasonViewName = "_base" | "_local" | "_minimal";
+export type DicOrderReasonViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicOrderReason-browse"
+  | "dicOrderReason-edit";
 export type DicOrderReasonView<
   V extends DicOrderReasonViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicOrderReasonView<
     >
   : V extends "_minimal"
   ? Pick<DicOrderReason, "id" | "langValue">
+  : V extends "dicOrderReason-browse"
+  ? Pick<
+      DicOrderReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicOrderReason-edit"
+  ? Pick<
+      DicOrderReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

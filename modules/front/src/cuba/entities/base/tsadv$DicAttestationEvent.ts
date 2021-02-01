@@ -89,5 +89,6 @@ export type DicAttestationEventView<
       | "isDefault"
       | "order"
       | "dicAttestationResult"
+      | "company"
     >
   : never;

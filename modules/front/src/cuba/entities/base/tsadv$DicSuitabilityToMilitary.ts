@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicSuitabilityToMilitary extends AbstractDictionary {
   static NAME = "tsadv$DicSuitabilityToMilitary";
 }
-export type DicSuitabilityToMilitaryViewName = "_base" | "_local" | "_minimal";
+export type DicSuitabilityToMilitaryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicSuitabilityToMilitary-browse"
+  | "dicSuitabilityToMilitary-edit";
 export type DicSuitabilityToMilitaryView<
   V extends DicSuitabilityToMilitaryViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicSuitabilityToMilitaryView<
       DicSuitabilityToMilitary,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicSuitabilityToMilitaryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicSuitabilityToMilitary, "id" | "langValue">
+  ? Pick<
+      DicSuitabilityToMilitary,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicSuitabilityToMilitary-browse"
+  ? Pick<
+      DicSuitabilityToMilitary,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicSuitabilityToMilitary-edit"
+  ? Pick<
+      DicSuitabilityToMilitary,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

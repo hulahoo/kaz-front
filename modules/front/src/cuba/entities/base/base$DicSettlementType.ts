@@ -7,7 +7,12 @@ export class DicSettlementType extends AbstractDictionary {
   shortNameLang4?: string | null;
   shortNameLang5?: string | null;
 }
-export type DicSettlementTypeViewName = "_base" | "_local" | "_minimal";
+export type DicSettlementTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicSettlementType-browse"
+  | "dicSettlementType-edit";
 export type DicSettlementTypeView<
   V extends DicSettlementTypeViewName
 > = V extends "_base"
@@ -15,6 +20,11 @@ export type DicSettlementTypeView<
       DicSettlementType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "shortNameLang1"
       | "shortNameLang2"
       | "shortNameLang3"
@@ -23,15 +33,10 @@ export type DicSettlementTypeView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -72,5 +77,76 @@ export type DicSettlementTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicSettlementType, "id" | "langValue">
+  ? Pick<
+      DicSettlementType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicSettlementType-browse"
+  ? Pick<
+      DicSettlementType,
+      | "id"
+      | "shortNameLang1"
+      | "shortNameLang2"
+      | "shortNameLang3"
+      | "shortNameLang4"
+      | "shortNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicSettlementType-edit"
+  ? Pick<
+      DicSettlementType,
+      | "id"
+      | "shortNameLang1"
+      | "shortNameLang2"
+      | "shortNameLang3"
+      | "shortNameLang4"
+      | "shortNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

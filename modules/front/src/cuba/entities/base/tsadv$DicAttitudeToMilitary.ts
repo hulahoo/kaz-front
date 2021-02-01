@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAttitudeToMilitary extends AbstractDictionary {
   static NAME = "tsadv$DicAttitudeToMilitary";
 }
-export type DicAttitudeToMilitaryViewName = "_base" | "_local" | "_minimal";
+export type DicAttitudeToMilitaryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAttitudeToMilitary-browse"
+  | "dicAttitudeToMilitary-edit";
 export type DicAttitudeToMilitaryView<
   V extends DicAttitudeToMilitaryViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicAttitudeToMilitaryView<
       DicAttitudeToMilitary,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicAttitudeToMilitaryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicAttitudeToMilitary, "id" | "langValue">
+  ? Pick<
+      DicAttitudeToMilitary,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicAttitudeToMilitary-browse"
+  ? Pick<
+      DicAttitudeToMilitary,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAttitudeToMilitary-edit"
+  ? Pick<
+      DicAttitudeToMilitary,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

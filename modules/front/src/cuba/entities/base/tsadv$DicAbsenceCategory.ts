@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAbsenceCategory extends AbstractDictionary {
   static NAME = "tsadv$DicAbsenceCategory";
 }
-export type DicAbsenceCategoryViewName = "_base" | "_local" | "_minimal";
+export type DicAbsenceCategoryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAbsenceCategory-browse"
+  | "dicAbsenceCategory-edit";
 export type DicAbsenceCategoryView<
   V extends DicAbsenceCategoryViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicAbsenceCategoryView<
     >
   : V extends "_minimal"
   ? Pick<DicAbsenceCategory, "id" | "langValue">
+  : V extends "dicAbsenceCategory-browse"
+  ? Pick<
+      DicAbsenceCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAbsenceCategory-edit"
+  ? Pick<
+      DicAbsenceCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

@@ -2,7 +2,12 @@ import { AbstractSortableDictionary } from "./AbstractSortableDictionary";
 export class DicClientStatus extends AbstractSortableDictionary {
   static NAME = "base$DicClientStatus";
 }
-export type DicClientStatusViewName = "_base" | "_local" | "_minimal";
+export type DicClientStatusViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicClientStatus-browse"
+  | "dicClientStatus-edit";
 export type DicClientStatusView<
   V extends DicClientStatusViewName
 > = V extends "_base"
@@ -67,5 +72,59 @@ export type DicClientStatusView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+    >
+  : V extends "dicClientStatus-browse"
+  ? Pick<
+      DicClientStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
+    >
+  : V extends "dicClientStatus-edit"
+  ? Pick<
+      DicClientStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
     >
   : never;

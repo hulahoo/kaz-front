@@ -10,6 +10,7 @@ export type DicMilitaryRankViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicMilitaryRank-edit"
   | "dicMilitaryRank-view";
 export type DicMilitaryRankView<
   V extends DicMilitaryRankViewName
@@ -18,18 +19,18 @@ export type DicMilitaryRankView<
       DicMilitaryRank,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -65,7 +66,42 @@ export type DicMilitaryRankView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicMilitaryRank, "id" | "langValue">
+  ? Pick<
+      DicMilitaryRank,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicMilitaryRank-edit"
+  ? Pick<
+      DicMilitaryRank,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicMilitaryRank-view"
   ? Pick<
       DicMilitaryRank,

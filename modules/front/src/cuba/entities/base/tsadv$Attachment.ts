@@ -12,6 +12,7 @@ import { SanitaryHygieneEvent } from "./tsadv$SanitaryHygieneEvent";
 import { HarmfullFactors } from "./tsadv$HarmfullFactors";
 import { NotAllowedPerson } from "./tsadv$NotAllowedPerson";
 import { MedicalInspection } from "./tsadv$MedicalInspection";
+import { InsuranceContract } from "./tsadv$InsuranceContract";
 export class Attachment extends AbstractParentEntity {
   static NAME = "tsadv$Attachment";
   attachment?: FileDescriptor | null;
@@ -27,6 +28,7 @@ export class Attachment extends AbstractParentEntity {
   harmfullFactors?: HarmfullFactors | null;
   notAllowedPerson?: NotAllowedPerson | null;
   medicalInspection?: MedicalInspection | null;
+  insuranceContract?: InsuranceContract | null;
 }
 export type AttachmentViewName =
   | "_base"

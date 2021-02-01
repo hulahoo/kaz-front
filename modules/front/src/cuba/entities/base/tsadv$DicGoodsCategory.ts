@@ -15,18 +15,18 @@ export type DicGoodsCategoryView<
       DicGoodsCategory,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -62,12 +62,26 @@ export type DicGoodsCategoryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicGoodsCategory, "id" | "langValue">
+  ? Pick<
+      DicGoodsCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicGoodsCategory.edit"
   ? Pick<
       DicGoodsCategory,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "langValue1"
       | "langValue2"
       | "langValue3"

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicInterviewStatus extends AbstractDictionary {
   static NAME = "tsadv$DicInterviewStatus";
 }
-export type DicInterviewStatusViewName = "_base" | "_local" | "_minimal";
+export type DicInterviewStatusViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicInterviewStatus-browse"
+  | "dicInterviewStatus-edit";
 export type DicInterviewStatusView<
   V extends DicInterviewStatusViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicInterviewStatusView<
     >
   : V extends "_minimal"
   ? Pick<DicInterviewStatus, "id" | "langValue">
+  : V extends "dicInterviewStatus-browse"
+  ? Pick<
+      DicInterviewStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicInterviewStatus-edit"
+  ? Pick<
+      DicInterviewStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

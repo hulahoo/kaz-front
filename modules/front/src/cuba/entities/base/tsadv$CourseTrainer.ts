@@ -12,6 +12,7 @@ export type CourseTrainerViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "course-trainer-person-fullname"
   | "courseTrainer.edit";
 export type CourseTrainerView<
   V extends CourseTrainerViewName
@@ -35,6 +36,8 @@ export type CourseTrainerView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "course-trainer-person-fullname"
+  ? Pick<CourseTrainer, "id" | "trainer">
   : V extends "courseTrainer.edit"
   ? Pick<
       CourseTrainer,

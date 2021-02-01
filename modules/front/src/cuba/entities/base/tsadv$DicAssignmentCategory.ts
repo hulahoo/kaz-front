@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAssignmentCategory extends AbstractDictionary {
   static NAME = "tsadv$DicAssignmentCategory";
 }
-export type DicAssignmentCategoryViewName = "_base" | "_local" | "_minimal";
+export type DicAssignmentCategoryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAssignmentCategory-browse"
+  | "dicAssignmentCategory-edit";
 export type DicAssignmentCategoryView<
   V extends DicAssignmentCategoryViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicAssignmentCategoryView<
       DicAssignmentCategory,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicAssignmentCategoryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicAssignmentCategory, "id" | "langValue">
+  ? Pick<
+      DicAssignmentCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicAssignmentCategory-browse"
+  ? Pick<
+      DicAssignmentCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAssignmentCategory-edit"
+  ? Pick<
+      DicAssignmentCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

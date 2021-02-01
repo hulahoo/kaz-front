@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAcceptedAction extends AbstractDictionary {
   static NAME = "tsadv$DicAcceptedAction";
 }
-export type DicAcceptedActionViewName = "_base" | "_local" | "_minimal";
+export type DicAcceptedActionViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAcceptedAction-browse"
+  | "dicAcceptedAction-view";
 export type DicAcceptedActionView<
   V extends DicAcceptedActionViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicAcceptedActionView<
       DicAcceptedAction,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicAcceptedActionView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicAcceptedAction, "id" | "langValue">
+  ? Pick<
+      DicAcceptedAction,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicAcceptedAction-browse"
+  ? Pick<
+      DicAcceptedAction,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAcceptedAction-view"
+  ? Pick<
+      DicAcceptedAction,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

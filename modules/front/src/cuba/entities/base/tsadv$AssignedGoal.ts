@@ -36,6 +36,10 @@ export type AssignedGoalViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "assigned-goal-weight"
+  | "assignedGoal-library"
+  | "assignedGoal-portal-kpi-create-default"
+  | "assignedGoal-view"
   | "assignedGoal.assess"
   | "assignedGoal.browse"
   | "assignedGoal.edit"
@@ -78,6 +82,39 @@ export type AssignedGoalView<V extends AssignedGoalViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<AssignedGoal, "id" | "goalString">
+  : V extends "assigned-goal-weight"
+  ? Pick<AssignedGoal, "id" | "goalString" | "weight">
+  : V extends "assignedGoal-library"
+  ? Pick<AssignedGoal, "id" | "goalString" | "goal" | "weight" | "goalLibrary">
+  : V extends "assignedGoal-portal-kpi-create-default"
+  ? Pick<
+      AssignedGoal,
+      | "id"
+      | "targetValue"
+      | "actualValue"
+      | "successCritetia"
+      | "startDate"
+      | "endDate"
+      | "weight"
+      | "goalString"
+      | "goalType"
+      | "result"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "category"
+      | "goal"
+    >
+  : V extends "assignedGoal-view"
+  ? Pick<
+      AssignedGoal,
+      | "id"
+      | "goalString"
+      | "goal"
+      | "weight"
+      | "assignedPerformancePlan"
+      | "goalLibrary"
+    >
   : V extends "assignedGoal.assess"
   ? Pick<AssignedGoal, "id" | "goalString" | "personGroup" | "weight">
   : V extends "assignedGoal.browse"

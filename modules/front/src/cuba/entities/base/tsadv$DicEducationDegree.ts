@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicEducationDegree extends AbstractDictionary {
   static NAME = "tsadv$DicEducationDegree";
 }
-export type DicEducationDegreeViewName = "_base" | "_local" | "_minimal";
+export type DicEducationDegreeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicEducationDegree-browse"
+  | "dicEducationDegree-edit";
 export type DicEducationDegreeView<
   V extends DicEducationDegreeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicEducationDegreeView<
       DicEducationDegree,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicEducationDegreeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicEducationDegree, "id" | "langValue">
+  ? Pick<
+      DicEducationDegree,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicEducationDegree-browse"
+  ? Pick<
+      DicEducationDegree,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicEducationDegree-edit"
+  ? Pick<
+      DicEducationDegree,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

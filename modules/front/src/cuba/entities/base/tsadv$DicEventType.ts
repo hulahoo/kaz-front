@@ -2,24 +2,29 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicEventType extends AbstractDictionary {
   static NAME = "tsadv$DicEventType";
 }
-export type DicEventTypeViewName = "_base" | "_local" | "_minimal";
+export type DicEventTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicEventType-browse"
+  | "dicEventType-edit";
 export type DicEventTypeView<V extends DicEventTypeViewName> = V extends "_base"
   ? Pick<
       DicEventType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -55,5 +60,66 @@ export type DicEventTypeView<V extends DicEventTypeViewName> = V extends "_base"
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicEventType, "id" | "langValue">
+  ? Pick<
+      DicEventType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicEventType-browse"
+  ? Pick<
+      DicEventType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicEventType-edit"
+  ? Pick<
+      DicEventType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

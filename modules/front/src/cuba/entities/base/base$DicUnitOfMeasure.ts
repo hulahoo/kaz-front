@@ -9,6 +9,7 @@ export type DicUnitOfMeasureViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicUnitOfMeasure-edit"
   | "dicUnitOfMeasure.view";
 export type DicUnitOfMeasureView<
   V extends DicUnitOfMeasureViewName
@@ -71,6 +72,35 @@ export type DicUnitOfMeasureView<
     >
   : V extends "_minimal"
   ? Pick<DicUnitOfMeasure, "id" | "description">
+  : V extends "dicUnitOfMeasure-edit"
+  ? Pick<
+      DicUnitOfMeasure,
+      | "id"
+      | "isBasic"
+      | "rate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
+    >
   : V extends "dicUnitOfMeasure.view"
   ? Pick<
       DicUnitOfMeasure,
@@ -99,5 +129,6 @@ export type DicUnitOfMeasureView<
       | "order"
       | "languageValue"
       | "basicUOM"
+      | "company"
     >
   : never;

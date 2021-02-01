@@ -10,18 +10,18 @@ export type DicOffenceTypeView<
       DicOffenceType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +57,14 @@ export type DicOffenceTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicOffenceType, "id" | "langValue">
+  ? Pick<
+      DicOffenceType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : never;

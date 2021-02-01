@@ -2,7 +2,12 @@ import { AbstractSortableDictionary } from "./AbstractSortableDictionary";
 export class DicIndustry extends AbstractSortableDictionary {
   static NAME = "base$DicIndustry";
 }
-export type DicIndustryViewName = "_base" | "_local" | "_minimal";
+export type DicIndustryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicIndustry-browse"
+  | "dicIndustry-edit";
 export type DicIndustryView<V extends DicIndustryViewName> = V extends "_base"
   ? Pick<
       DicIndustry,
@@ -65,5 +70,59 @@ export type DicIndustryView<V extends DicIndustryViewName> = V extends "_base"
       | "langValue3"
       | "langValue4"
       | "langValue5"
+    >
+  : V extends "dicIndustry-browse"
+  ? Pick<
+      DicIndustry,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
+    >
+  : V extends "dicIndustry-edit"
+  ? Pick<
+      DicIndustry,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
     >
   : never;

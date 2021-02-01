@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicExchangeRateType extends AbstractDictionary {
   static NAME = "base$DicExchangeRateType";
 }
-export type DicExchangeRateTypeViewName = "_base" | "_local" | "_minimal";
+export type DicExchangeRateTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicExchangeRateType-browse"
+  | "dicExchangeRateType-edit";
 export type DicExchangeRateTypeView<
   V extends DicExchangeRateTypeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicExchangeRateTypeView<
       DicExchangeRateType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicExchangeRateTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicExchangeRateType, "id" | "langValue">
+  ? Pick<
+      DicExchangeRateType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicExchangeRateType-browse"
+  ? Pick<
+      DicExchangeRateType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicExchangeRateType-edit"
+  ? Pick<
+      DicExchangeRateType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

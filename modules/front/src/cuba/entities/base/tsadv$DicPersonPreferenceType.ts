@@ -3,7 +3,12 @@ export class DicPersonPreferenceType extends AbstractDictionary {
   static NAME = "tsadv$DicPersonPreferenceType";
   coins?: any | null;
 }
-export type DicPersonPreferenceTypeViewName = "_base" | "_local" | "_minimal";
+export type DicPersonPreferenceTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicPersonPreferenceType-browse"
+  | "dicPersonPreferenceType-edit";
 export type DicPersonPreferenceTypeView<
   V extends DicPersonPreferenceTypeViewName
 > = V extends "_base"
@@ -11,19 +16,19 @@ export type DicPersonPreferenceTypeView<
       DicPersonPreferenceType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "coins"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -60,5 +65,68 @@ export type DicPersonPreferenceTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicPersonPreferenceType, "id" | "langValue">
+  ? Pick<
+      DicPersonPreferenceType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicPersonPreferenceType-browse"
+  ? Pick<
+      DicPersonPreferenceType,
+      | "id"
+      | "coins"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicPersonPreferenceType-edit"
+  ? Pick<
+      DicPersonPreferenceType,
+      | "id"
+      | "coins"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

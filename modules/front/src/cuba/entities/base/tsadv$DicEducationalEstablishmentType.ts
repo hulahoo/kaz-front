@@ -5,7 +5,9 @@ export class DicEducationalEstablishmentType extends AbstractDictionary {
 export type DicEducationalEstablishmentTypeViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicEducationalEstablishmentType-browse"
+  | "dicEducationalEstablishmentType-edit";
 export type DicEducationalEstablishmentTypeView<
   V extends DicEducationalEstablishmentTypeViewName
 > = V extends "_base"
@@ -13,18 +15,18 @@ export type DicEducationalEstablishmentTypeView<
       DicEducationalEstablishmentType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -60,5 +62,66 @@ export type DicEducationalEstablishmentTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicEducationalEstablishmentType, "id" | "langValue">
+  ? Pick<
+      DicEducationalEstablishmentType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicEducationalEstablishmentType-browse"
+  ? Pick<
+      DicEducationalEstablishmentType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicEducationalEstablishmentType-edit"
+  ? Pick<
+      DicEducationalEstablishmentType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

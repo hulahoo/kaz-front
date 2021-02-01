@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicJobRequestStatus extends AbstractDictionary {
   static NAME = "tsadv$DicJobRequestStatus";
 }
-export type DicJobRequestStatusViewName = "_base" | "_local" | "_minimal";
+export type DicJobRequestStatusViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicJobRequestStatus-browse"
+  | "dicJobRequestStatus-edit";
 export type DicJobRequestStatusView<
   V extends DicJobRequestStatusViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicJobRequestStatusView<
     >
   : V extends "_minimal"
   ? Pick<DicJobRequestStatus, "id" | "langValue">
+  : V extends "dicJobRequestStatus-browse"
+  ? Pick<
+      DicJobRequestStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicJobRequestStatus-edit"
+  ? Pick<
+      DicJobRequestStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

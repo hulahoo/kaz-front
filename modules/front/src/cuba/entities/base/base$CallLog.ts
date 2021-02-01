@@ -71,7 +71,6 @@ export type CallLogView<V extends CallLogViewName> = V extends "_base"
       | "clientId"
       | "duration"
       | "billableSeconds"
-      | "description"
     >
   : V extends "_minimal"
   ? Pick<CallLog, "id" | "description">

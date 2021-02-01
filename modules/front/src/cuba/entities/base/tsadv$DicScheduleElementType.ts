@@ -11,7 +11,12 @@ export class DicScheduleElementType extends AbstractDictionary {
   displayOnTimecardEditScreen?: boolean | null;
   shortName?: string | null;
 }
-export type DicScheduleElementTypeViewName = "_base" | "_local" | "_minimal";
+export type DicScheduleElementTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicScheduleElementType-browse"
+  | "dicScheduleElementType-edit";
 export type DicScheduleElementTypeView<
   V extends DicScheduleElementTypeViewName
 > = V extends "_base"
@@ -19,6 +24,11 @@ export type DicScheduleElementTypeView<
       DicScheduleElementType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "shortName1"
       | "shortName2"
       | "shortName3"
@@ -31,15 +41,10 @@ export type DicScheduleElementTypeView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -84,5 +89,84 @@ export type DicScheduleElementTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicScheduleElementType, "id" | "langValue">
+  ? Pick<
+      DicScheduleElementType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicScheduleElementType-browse"
+  ? Pick<
+      DicScheduleElementType,
+      | "id"
+      | "shortName1"
+      | "shortName2"
+      | "shortName3"
+      | "shortName4"
+      | "shortName5"
+      | "timeFrom"
+      | "timeTo"
+      | "displayOnTimecardEditScreen"
+      | "shortName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicScheduleElementType-edit"
+  ? Pick<
+      DicScheduleElementType,
+      | "id"
+      | "shortName1"
+      | "shortName2"
+      | "shortName3"
+      | "shortName4"
+      | "shortName5"
+      | "timeFrom"
+      | "timeTo"
+      | "displayOnTimecardEditScreen"
+      | "shortName"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

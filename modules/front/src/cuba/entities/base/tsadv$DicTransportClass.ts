@@ -16,18 +16,18 @@ export type DicTransportClassView<
       DicTransportClass,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -63,7 +63,16 @@ export type DicTransportClassView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicTransportClass, "id" | "langValue">
+  ? Pick<
+      DicTransportClass,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicTransportClass.all"
   ? Pick<
       DicTransportClass,

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicFireSafetyCategory extends AbstractDictionary {
   static NAME = "tsadv$DicFireSafetyCategory";
 }
-export type DicFireSafetyCategoryViewName = "_base" | "_local" | "_minimal";
+export type DicFireSafetyCategoryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicFireSafetyCategory-browse"
+  | "dicFireSafetyCategory-edit";
 export type DicFireSafetyCategoryView<
   V extends DicFireSafetyCategoryViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicFireSafetyCategoryView<
       DicFireSafetyCategory,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicFireSafetyCategoryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicFireSafetyCategory, "id" | "langValue">
+  ? Pick<
+      DicFireSafetyCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicFireSafetyCategory-browse"
+  ? Pick<
+      DicFireSafetyCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicFireSafetyCategory-edit"
+  ? Pick<
+      DicFireSafetyCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

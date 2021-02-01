@@ -5,7 +5,9 @@ export class DicQuestionnaireQuestionSection extends AbstractDictionary {
 export type DicQuestionnaireQuestionSectionViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicQuestionnaireQuestionSection-browse"
+  | "dicQuestionnaireQuestionSection-edit";
 export type DicQuestionnaireQuestionSectionView<
   V extends DicQuestionnaireQuestionSectionViewName
 > = V extends "_base"
@@ -13,18 +15,18 @@ export type DicQuestionnaireQuestionSectionView<
       DicQuestionnaireQuestionSection,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -60,5 +62,66 @@ export type DicQuestionnaireQuestionSectionView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicQuestionnaireQuestionSection, "id" | "langValue">
+  ? Pick<
+      DicQuestionnaireQuestionSection,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicQuestionnaireQuestionSection-browse"
+  ? Pick<
+      DicQuestionnaireQuestionSection,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicQuestionnaireQuestionSection-edit"
+  ? Pick<
+      DicQuestionnaireQuestionSection,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;
