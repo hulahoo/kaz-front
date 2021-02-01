@@ -4,17 +4,27 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Card, Modal} from "antd";
+import {Card, Checkbox, Modal, Table} from "antd";
 
-import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {
+  collection,
+  getEnumCaption,
+  getPropertyInfoNN,
+  injectMainStore, MainStore,
+  MainStoreInjected,
+  Msg
+} from "@cuba-platform/react";
 
 import {AssignedPerformancePlan} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
-import {SerializedEntity} from "@cuba-platform/rest";
-import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {MetaPropertyInfo, SerializedEntity} from "@cuba-platform/rest";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
-import Button, {ButtonType} from "../../components/Button/Button";
 import Section from "../../hoc/Section";
+import Page from "../../hoc/PageContentHoc";
+import Column from "antd/es/table/Column";
+import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
+import {PerformancePlan} from "../../../cuba/entities/base/tsadv$PerformancePlan";
+import moment from "moment";
 
 @injectMainStore
 @inject("rootStore")
@@ -34,13 +44,9 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
   );
 
   fields = [
-    "performancePlan",
-
     "status",
 
     "startDate",
-
-    "endDate"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -66,33 +72,28 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
   };
 
   render() {
-    const buttons = [
-      <Link
-        to={AssignedPerformancePlanManagement.PATH + "/" + this.selectedRowKey}
-        key="edit"
-      >
-        <Button
-          buttonType={ButtonType.FOLLOW}
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          disabled={!this.selectedRowKey}
-          type="default"
-        >
-          <FormattedMessage id="management.browser.edit"/>
-        </Button>
-      </Link>
-    ];
-
     return (
-      <Section visible={false} size={"large"}>
-        <DataTable
-          dataCollection={this.dataCollection}
-          fields={this.fields}
-          onRowSelectionChange={this.handleRowSelectionChange}
-          hideSelectionColumn={true}
-          buttons={buttons}
-        />
-      </Section>
+      <Page>
+        <Section visible={false} size={"large"}>
+          <Table dataSource={this.dataCollection.items} pagination={false}
+                 size="default" bordered={false} rowKey="id">
+            <Column title={<Msg entityName={AssignedPerformancePlan.NAME} propertyName={"performancePlan"}/>}
+                    dataIndex={"performancePlan"}
+                    key={"performancePlan"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
+              return <Link
+                to={AssignedPerformancePlanManagement.PATH + "/" + record.id}
+                key="edit">
+                {(record.performancePlan! as SerializedEntity<PerformancePlan>)._instanceName}
+              </Link>
+            }}/>
+            <Column title={this.props.intl.formatMessage({id: "assessmentPeriod"})}
+                    dataIndex={"endDate"}
+                    key={"endDate"} render={(text, record, index) => {
+              return (React.createElement("div", null, moment(text).format("YYYY")));
+            }}/>
+          </Table>
+        </Section>
+      </Page>
     );
   }
 
@@ -116,6 +117,15 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
     this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
   };
 }
+
+const EnumCell = (text: string, propertyInfo: MetaPropertyInfo, mainStore: MainStore) => {
+  const caption = getEnumCaption(text, propertyInfo, mainStore.enums!);
+  if (caption) {
+    return (React.createElement("div", null, caption));
+  } else {
+    return React.createElement("div", null);
+  }
+};
 
 const AssignedPerformancePlanList = injectIntl(
   AssignedPerformancePlanListComponent

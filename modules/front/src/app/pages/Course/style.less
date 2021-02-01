@@ -1,0 +1,126 @@
+@import "/src/theme-vars";
+
+.carousel-courses-wrapper {
+  position: relative;
+}
+
+.carousel-button {
+  position: absolute !important;
+  top: 30% !important;
+}
+
+.carousel-prev-button {
+  left: 15px;
+}
+
+.carousel-next-button {
+  right: 15px;
+}
+
+.carousel-courses {
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 1.6rem;
+  grid-auto-columns: calc((100% - (6 - 1) * 1.6rem) / 6);
+  overflow: auto;
+  overflow-x: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-snap-stop: always;
+}
+
+.course-info-container {
+  .course-name {
+    font-size: 32px !important;
+    font-weight: 600;
+    color: @primary-2;
+  }
+}
+
+.course-info-image {
+  img {
+    border-radius: 4px;
+    width: 100%;
+    height: 267px;
+  }
+}
+
+.form-item,
+.form-item.ant-form-item {
+  margin: 0 32px 32px 0;
+  font-weight: 500;
+  color: @primary-2;
+
+  .ant-form-item-control-wrapper {
+    margin-top: 7px;
+
+    .ant-form-item-control {
+      line-height: 1.5;
+
+      > .ant-form-item-children {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.form-item-container {
+  display: inline-block;
+}
+
+.course-trainer-modal-image {
+  width: 100%;
+
+  > img {
+    width: 100%;
+  }
+}
+
+.centered-text {
+  text-align: center;
+}
+
+.large-rate {
+  font-size: 40px;
+  flex-direction: column;
+
+  .ant-rate {
+    font-size: 40px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .rates-list {
+    .ant-list-item:not(:last-child) {
+      border-bottom: 1px solid #CBCBCB;
+    }
+  }
+
+  @media (max-width: 1900px) {
+    .carousel-courses {
+      grid-auto-columns: calc((100% - (6 - 1) * 1.6rem) / 6);
+    }
+  }
+
+  @media (max-width: 1750px) {
+    .carousel-courses {
+      grid-auto-columns: calc((100% - (5 - 1) * 1.6rem) / 5);
+    }
+  }
+
+  @media (max-width: 1600px) {
+    .carousel-courses {
+      grid-auto-columns: calc((100% - (4 - 1) * 1.6rem) / 4);
+    }
+  }
+
+  @media (max-width: 1250px) {
+    .carousel-courses {
+      grid-auto-columns: calc((100% - (3 - 1) * 1.6rem) / 3);
+    }
+  }
+}
+
+.comment-date {
+  font-size: 12px;
+  color: @primary-3;
+}

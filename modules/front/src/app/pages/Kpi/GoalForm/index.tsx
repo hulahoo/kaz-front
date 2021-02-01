@@ -1,10 +1,11 @@
 import React from 'react';
 import {Tabs} from "antd";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import AssignedGoalList from "../../AssignedGoals/DefaultGoal/AssignedGoalList";
+import AssignedGoalList from "../../AssignedGoals/IndividualGoal/AssignedGoalList";
 
 type Props = {
   assignedPerformancePlanId: string;
+  setTotalWeight?: (totalWeight: number) => void
 }
 
 class GoalForm extends React.Component<Props & WrappedComponentProps> {
@@ -15,7 +16,7 @@ class GoalForm extends React.Component<Props & WrappedComponentProps> {
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="1">
-          <AssignedGoalList assignedPerformancePlanId={this.props.assignedPerformancePlanId}/>
+          <AssignedGoalList assignedPerformancePlanId={this.props.assignedPerformancePlanId} setTotalWeight={this.props.setTotalWeight}/>
         </TabPane>
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.approvers"})} key="2">
           <div>

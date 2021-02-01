@@ -1,7 +1,9 @@
 import { AbstractDictionary } from "./AbstractDictionary";
+import {Course} from "./tsadv$Course";
 export class DicCategory extends AbstractDictionary {
   static NAME = "tsadv$DicCategory";
   parentCategory?: DicCategory | null;
+  courses?: Course[] | null;
   image?: any | null;
 }
 export type DicCategoryViewName =

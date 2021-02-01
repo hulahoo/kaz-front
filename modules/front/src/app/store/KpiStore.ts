@@ -60,7 +60,7 @@ export default class KpiStore {
 
   loadKpi = () => {
     kpiService.edit().then((r: KpiState) => this.setState(r));
-  }
+  };
 
   loadRating = () => {
     kpiService.goals().then(data => this.setRating(data));

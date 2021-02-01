@@ -6,6 +6,7 @@ import { CourseSection } from "./tsadv$CourseSection";
 import { CourseCompetence } from "./tsadv$CourseCompetence";
 import { CoursePreRequisition } from "./tsadv$CoursePreRequisition";
 import { DicLearningType } from "./tsadv$DicLearningType";
+import {CourseTrainer} from "./tsadv$CourseTrainer";
 export class Course extends AbstractParentEntity {
   static NAME = "tsadv$Course";
   name?: string | null;
@@ -24,6 +25,9 @@ export class Course extends AbstractParentEntity {
   selfEnrollment?: boolean | null;
   completed?: boolean | null;
   learningType?: DicLearningType | null;
+  courseTrainers?: CourseTrainer[] | null;
+  educationPeriod?: number | any;
+  educationDuration?: number | any;
 }
 export type CourseViewName =
   | "_base"

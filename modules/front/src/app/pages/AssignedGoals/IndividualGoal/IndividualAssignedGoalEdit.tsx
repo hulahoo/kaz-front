@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Col, Form, message, Row} from "antd";
+import {Alert, Card, Col, Form, InputNumber, message, Row} from "antd";
 import {observer} from "mobx-react";
 import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect} from "react-router-dom";
@@ -12,8 +12,8 @@ import {
   collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
-  Field,
-  instance,
+  Field, getCubaREST, injectMainStore,
+  instance, MainStoreInjected, Msg,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -35,8 +35,9 @@ type EditorProps = {
   assignedPerformancePlanId: string;
 };
 
+@injectMainStore
 @observer
-class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentProps> {
+class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponentProps & MainStoreInjected> {
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
     loadImmediately: false
@@ -48,6 +49,7 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
 
   @observable
   updated = false;
+
   reactionDisposer: IReactionDisposer;
 
   fields = [
@@ -69,7 +71,6 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (err) {
-
         Notification.error({
           message: this.props.intl.formatMessage({
             id: "management.editor.validationError"
@@ -77,11 +78,12 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
         });
         return;
       }
+
       this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
           Notification.success({
-            message: this.props.intl.formatMessage({id: "management.editor.success"})
+            message: this.props.intl.formatMessage({id: "goal.management.editor.success"})
           });
           this.updated = true;
         })
@@ -125,41 +127,46 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
     });
   };
 
+  checkWeightRange = (rule: any, value: any, callback: any) => {
+    const messages = this.props.mainStore!.messages!;
+    if (value <= 0) {
+      callback(this.props.intl.formatMessage({id: "form.validation.number.min"}, {
+        fieldName: messages[AssignedGoal.NAME + '.' + 'weight'],
+        value: 1
+      }));
+    }
+    callback();
+  };
+
   render() {
     if (this.updated) {
       return <Redirect to={"/kpi/" + this.props.assignedPerformancePlanId}/>;
     }
 
+    const messages = this.props.mainStore!.messages!;
     const {status} = this.dataInstance;
 
     return (
       <Page pageName={"Создание индивидуальной цели"}>
-        <Card className="narrow-layout" bordered={false}>
-          <Section size={"large"}>
-            <Form onSubmit={this.handleSubmit} layout="vertical">
+        <Form onSubmit={this.handleSubmit} layout="vertical">
+          <Card className="narrow-layout card-actions-container" actions={[
+            <Link to={"/kpi/" + this.props.assignedPerformancePlanId}>
+              <Button buttonType={ButtonType.FOLLOW}>
+                <FormattedMessage id="management.editor.cancel"/>
+              </Button>
+            </Link>,
+            <Button
+              buttonType={ButtonType.PRIMARY}
+              htmlType="submit"
+              disabled={status !== "DONE" && status !== "ERROR" && status !== "CLEAN"}
+              loading={status === "LOADING"}
+              style={{marginLeft: "8px"}}
+            >
+              <FormattedMessage id="management.editor.submit"/>
+            </Button>
+          ]} bordered={false}>
+            <Section size={"large"}>
               <Row className={"form-row"}>
-                <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="goalString"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{}}
-                  />
-                </Col>
-                <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="weight"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{
-                      rules: [
-                        {type: "number", message: 'Вес цели должен быть числом!'}
-                      ]
-                    }}
-                  />
-                </Col>
                 <Col md={24} lg={8}>
                   <Field
                     entityName={AssignedGoal.NAME}
@@ -170,25 +177,30 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
                     getFieldDecoratorOpts={{}}
                   />
                 </Col>
-              </Row>
-              <Row className={"form-row"}>
                 <Col md={24} lg={8}>
                   <Field
                     entityName={AssignedGoal.NAME}
-                    propertyName="startDate"
+                    propertyName="goalString"
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     getFieldDecoratorOpts={{}}
                   />
                 </Col>
                 <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="endDate"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{}}
-                  />
+                  <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+                             key='weight'
+                             style={{marginBottom: '12px'}}>{
+                    this.props.form.getFieldDecorator('weight', {
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'weight']})
+                      }, {
+                        validator: this.checkWeightRange
+                      }]
+                    })(
+                      <InputNumber/>
+                    )}
+                  </Form.Item>
                 </Col>
               </Row>
               {this.globalErrors.length > 0 && (
@@ -198,26 +210,9 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
                   style={{marginBottom: "24px"}}
                 />
               )}
-
-              <Form.Item style={{textAlign: "center"}}>
-                <Link to={"/kpi/" + this.props.assignedPerformancePlanId}>
-                  <Button buttonType={ButtonType.FOLLOW}>
-                    <FormattedMessage id="management.editor.cancel"/>
-                  </Button>
-                </Link>
-                <Button
-                  buttonType={ButtonType.PRIMARY}
-                  htmlType="submit"
-                  disabled={status !== "DONE" && status !== "ERROR" && status !== "CLEAN"}
-                  loading={status === "LOADING"}
-                  style={{marginLeft: "8px"}}
-                >
-                  <FormattedMessage id="management.editor.submit"/>
-                </Button>
-              </Form.Item>
-            </Form>
-          </Section>
-        </Card>
+            </Section>
+          </Card>
+        </Form>
       </Page>
     );
   }
@@ -226,8 +221,6 @@ class DefaultAssignedGoalEdit extends React.Component<Props & WrappedComponentPr
     if (this.props.entityId !== 'new') {
       this.dataInstance.load(this.props.entityId);
     } else {
-      console.log(this.props.assignedPerformancePlanId);
-
       const assignedPerformancePlan = new AssignedPerformancePlan();
       assignedPerformancePlan.id = this.props.assignedPerformancePlanId;
 
@@ -265,5 +258,5 @@ export default injectIntl(
         });
       });
     }
-  })(DefaultAssignedGoalEdit)
+  })(IndividualAssignedGoalEdit)
 );
