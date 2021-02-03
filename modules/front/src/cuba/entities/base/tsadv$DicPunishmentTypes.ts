@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicPunishmentTypes extends AbstractDictionary {
   static NAME = "tsadv$DicPunishmentTypes";
 }
-export type DicPunishmentTypesViewName = "_base" | "_local" | "_minimal";
+export type DicPunishmentTypesViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicPunishmentTypes-browse"
+  | "dicPunishmentTypes-edit";
 export type DicPunishmentTypesView<
   V extends DicPunishmentTypesViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicPunishmentTypesView<
       DicPunishmentTypes,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicPunishmentTypesView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicPunishmentTypes, "id" | "langValue">
+  ? Pick<
+      DicPunishmentTypes,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicPunishmentTypes-browse"
+  ? Pick<
+      DicPunishmentTypes,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicPunishmentTypes-edit"
+  ? Pick<
+      DicPunishmentTypes,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

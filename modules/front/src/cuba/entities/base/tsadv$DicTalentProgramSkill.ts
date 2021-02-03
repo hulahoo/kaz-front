@@ -4,7 +4,12 @@ export class DicTalentProgramSkill extends AbstractDictionary {
   static NAME = "tsadv$DicTalentProgramSkill";
   talentProgramStepSkill?: TalentProgramStepSkill | null;
 }
-export type DicTalentProgramSkillViewName = "_base" | "_local" | "_minimal";
+export type DicTalentProgramSkillViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicTalentProgramSkill-browse"
+  | "dicTalentProgramSkill-edit";
 export type DicTalentProgramSkillView<
   V extends DicTalentProgramSkillViewName
 > = V extends "_base"
@@ -60,4 +65,56 @@ export type DicTalentProgramSkillView<
     >
   : V extends "_minimal"
   ? Pick<DicTalentProgramSkill, "id" | "langValue">
+  : V extends "dicTalentProgramSkill-browse"
+  ? Pick<
+      DicTalentProgramSkill,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicTalentProgramSkill-edit"
+  ? Pick<
+      DicTalentProgramSkill,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

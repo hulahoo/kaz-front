@@ -5,7 +5,9 @@ export class DicLearningFeedbackQuestionType extends AbstractDictionary {
 export type DicLearningFeedbackQuestionTypeViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicLearningFeedbackQuestionType-browse"
+  | "dicLearningFeedbackQuestionType-edit";
 export type DicLearningFeedbackQuestionTypeView<
   V extends DicLearningFeedbackQuestionTypeViewName
 > = V extends "_base"
@@ -13,18 +15,18 @@ export type DicLearningFeedbackQuestionTypeView<
       DicLearningFeedbackQuestionType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -60,5 +62,66 @@ export type DicLearningFeedbackQuestionTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicLearningFeedbackQuestionType, "id" | "langValue">
+  ? Pick<
+      DicLearningFeedbackQuestionType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicLearningFeedbackQuestionType-browse"
+  ? Pick<
+      DicLearningFeedbackQuestionType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicLearningFeedbackQuestionType-edit"
+  ? Pick<
+      DicLearningFeedbackQuestionType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

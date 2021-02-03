@@ -6,6 +6,8 @@ export type DicRelationshipTypeViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicRelationshipType-browse"
+  | "dicRelationshipType-edit"
   | "dicRelationshipType-view";
 export type DicRelationshipTypeView<
   V extends DicRelationshipTypeViewName
@@ -62,6 +64,58 @@ export type DicRelationshipTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicRelationshipType, "id" | "langValue">
+  : V extends "dicRelationshipType-browse"
+  ? Pick<
+      DicRelationshipType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicRelationshipType-edit"
+  ? Pick<
+      DicRelationshipType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicRelationshipType-view"
   ? Pick<
       DicRelationshipType,

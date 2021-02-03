@@ -1,8 +1,10 @@
 import { AbstractGroup } from "./AbstractGroup";
 import { Grade } from "./tsadv$Grade";
+import { DicCompany } from "./base_DicCompany";
 export class GradeGroup extends AbstractGroup {
   static NAME = "tsadv$GradeGroup";
   list?: Grade[] | null;
+  company?: DicCompany | null;
   grade?: Grade | null;
 }
 export type GradeGroupViewName =
@@ -41,6 +43,7 @@ export type GradeGroupView<V extends GradeGroupViewName> = V extends "_base"
       | "organizationBin"
       | "integrationUserLogin"
       | "list"
+      | "company"
       | "grade"
     >
   : never;

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicHiringMemberType extends AbstractDictionary {
   static NAME = "tsadv$DicHiringMemberType";
 }
-export type DicHiringMemberTypeViewName = "_base" | "_local" | "_minimal";
+export type DicHiringMemberTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicHiringMemberType-browse"
+  | "dicHiringMemberType-edit";
 export type DicHiringMemberTypeView<
   V extends DicHiringMemberTypeViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicHiringMemberTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicHiringMemberType, "id" | "langValue">
+  : V extends "dicHiringMemberType-browse"
+  ? Pick<
+      DicHiringMemberType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicHiringMemberType-edit"
+  ? Pick<
+      DicHiringMemberType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

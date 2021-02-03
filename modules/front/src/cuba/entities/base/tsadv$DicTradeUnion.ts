@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicTradeUnion extends AbstractDictionary {
   static NAME = "tsadv$DicTradeUnion";
 }
-export type DicTradeUnionViewName = "_base" | "_local" | "_minimal";
+export type DicTradeUnionViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicTradeUnion-browse"
+  | "dicTradeUnion-edit";
 export type DicTradeUnionView<
   V extends DicTradeUnionViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicTradeUnionView<
     >
   : V extends "_minimal"
   ? Pick<DicTradeUnion, "id" | "langValue">
+  : V extends "dicTradeUnion-browse"
+  ? Pick<
+      DicTradeUnion,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicTradeUnion-edit"
+  ? Pick<
+      DicTradeUnion,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

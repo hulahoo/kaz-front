@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAttestationResult extends AbstractDictionary {
   static NAME = "tsadv$DicAttestationResult";
 }
-export type DicAttestationResultViewName = "_base" | "_local" | "_minimal";
+export type DicAttestationResultViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAttestationResult-browse"
+  | "dicAttestationResult-edit";
 export type DicAttestationResultView<
   V extends DicAttestationResultViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicAttestationResultView<
     >
   : V extends "_minimal"
   ? Pick<DicAttestationResult, "id" | "langValue">
+  : V extends "dicAttestationResult-browse"
+  ? Pick<
+      DicAttestationResult,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAttestationResult-edit"
+  ? Pick<
+      DicAttestationResult,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

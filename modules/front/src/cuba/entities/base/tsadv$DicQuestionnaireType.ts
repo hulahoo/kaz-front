@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicQuestionnaireType extends AbstractDictionary {
   static NAME = "tsadv$DicQuestionnaireType";
 }
-export type DicQuestionnaireTypeViewName = "_base" | "_local" | "_minimal";
+export type DicQuestionnaireTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicQuestionnaireType-browse"
+  | "dicQuestionnaireType-edit";
 export type DicQuestionnaireTypeView<
   V extends DicQuestionnaireTypeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicQuestionnaireTypeView<
       DicQuestionnaireType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicQuestionnaireTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicQuestionnaireType, "id" | "langValue">
+  ? Pick<
+      DicQuestionnaireType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicQuestionnaireType-browse"
+  ? Pick<
+      DicQuestionnaireType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicQuestionnaireType-edit"
+  ? Pick<
+      DicQuestionnaireType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

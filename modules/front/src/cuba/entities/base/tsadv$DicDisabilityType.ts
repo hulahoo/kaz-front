@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicDisabilityType extends AbstractDictionary {
   static NAME = "tsadv$DicDisabilityType";
 }
-export type DicDisabilityTypeViewName = "_base" | "_local" | "_minimal";
+export type DicDisabilityTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicDisabilityType-browse"
+  | "dicDisabilityType-edit";
 export type DicDisabilityTypeView<
   V extends DicDisabilityTypeViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicDisabilityTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicDisabilityType, "id" | "langValue">
+  : V extends "dicDisabilityType-browse"
+  ? Pick<
+      DicDisabilityType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicDisabilityType-edit"
+  ? Pick<
+      DicDisabilityType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

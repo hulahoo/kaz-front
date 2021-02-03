@@ -8,6 +8,7 @@ import {PersonExt} from "./entities/base/base$PersonExt";
 import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {DicCategory} from "./entities/base/tsadv$DicCategory";
+import {Enrollment} from "./entities/base/tsadv$Enrollment";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -45,6 +46,11 @@ export var restQueries = {
   searchCourses: (courseName: string): Promise<SerializedEntity<DicCategory>[]> => {
     return getCubaREST()!.query<DicCategory>(DicCategory.NAME, "searchCourses", {
       courseName: courseName,
+    })
+  },
+  enrollment: (id: string): Promise<SerializedEntity<Enrollment>[]> => {
+    return getCubaREST()!.query<Enrollment>(Enrollment.NAME, "enrollment", {
+      id: id,
     })
   }
 };

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicContactPersonType extends AbstractDictionary {
   static NAME = "tsadv$DicContactPersonType";
 }
-export type DicContactPersonTypeViewName = "_base" | "_local" | "_minimal";
+export type DicContactPersonTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicContactPersonType-browse"
+  | "dicContactPersonType-edit";
 export type DicContactPersonTypeView<
   V extends DicContactPersonTypeViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicContactPersonTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicContactPersonType, "id" | "langValue">
+  : V extends "dicContactPersonType-browse"
+  ? Pick<
+      DicContactPersonType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicContactPersonType-edit"
+  ? Pick<
+      DicContactPersonType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

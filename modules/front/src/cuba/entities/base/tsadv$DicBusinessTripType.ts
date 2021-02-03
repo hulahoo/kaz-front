@@ -9,6 +9,8 @@ export type DicBusinessTripTypeViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicBusinessTripType-browse"
+  | "dicBusinessTripType-edit"
   | "dicBusinessTripType-view";
 export type DicBusinessTripTypeView<
   V extends DicBusinessTripTypeViewName
@@ -71,6 +73,64 @@ export type DicBusinessTripTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicBusinessTripType, "id" | "langValue">
+  : V extends "dicBusinessTripType-browse"
+  ? Pick<
+      DicBusinessTripType,
+      | "id"
+      | "timesheetCode"
+      | "timecardWeekendCode"
+      | "workingDay"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicBusinessTripType-edit"
+  ? Pick<
+      DicBusinessTripType,
+      | "id"
+      | "timesheetCode"
+      | "timecardWeekendCode"
+      | "workingDay"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicBusinessTripType-view"
   ? Pick<
       DicBusinessTripType,

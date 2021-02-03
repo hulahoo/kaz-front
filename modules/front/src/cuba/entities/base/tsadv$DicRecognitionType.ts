@@ -19,20 +19,20 @@ export type DicRecognitionTypeView<
       DicRecognitionType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "coins"
       | "allowCoinsEdit"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -70,7 +70,16 @@ export type DicRecognitionTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicRecognitionType, "id" | "langValue">
+  ? Pick<
+      DicRecognitionType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicRecognitionType.edit"
   ? Pick<
       DicRecognitionType,

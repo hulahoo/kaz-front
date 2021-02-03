@@ -2,24 +2,29 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicUdo extends AbstractDictionary {
   static NAME = "tsadv$DicUdo";
 }
-export type DicUdoViewName = "_base" | "_local" | "_minimal";
+export type DicUdoViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicUdo-browse"
+  | "dicUdo-edit";
 export type DicUdoView<V extends DicUdoViewName> = V extends "_base"
   ? Pick<
       DicUdo,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -55,5 +60,66 @@ export type DicUdoView<V extends DicUdoViewName> = V extends "_base"
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicUdo, "id" | "langValue">
+  ? Pick<
+      DicUdo,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicUdo-browse"
+  ? Pick<
+      DicUdo,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicUdo-edit"
+  ? Pick<
+      DicUdo,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

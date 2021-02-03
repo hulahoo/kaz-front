@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicActionLikeType extends AbstractDictionary {
   static NAME = "tsadv$DicActionLikeType";
 }
-export type DicActionLikeTypeViewName = "_base" | "_local" | "_minimal";
+export type DicActionLikeTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicActionLikeType-browse"
+  | "dicActionLikeType-edit";
 export type DicActionLikeTypeView<
   V extends DicActionLikeTypeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicActionLikeTypeView<
       DicActionLikeType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicActionLikeTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicActionLikeType, "id" | "langValue">
+  ? Pick<
+      DicActionLikeType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicActionLikeType-browse"
+  ? Pick<
+      DicActionLikeType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicActionLikeType-edit"
+  ? Pick<
+      DicActionLikeType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

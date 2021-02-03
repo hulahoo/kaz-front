@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicScheduleType extends AbstractDictionary {
   static NAME = "tsadv$DicScheduleType";
 }
-export type DicScheduleTypeViewName = "_base" | "_local" | "_minimal";
+export type DicScheduleTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicScheduleType-browse"
+  | "dicScheduleType-edit";
 export type DicScheduleTypeView<
   V extends DicScheduleTypeViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicScheduleTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicScheduleType, "id" | "langValue">
+  : V extends "dicScheduleType-browse"
+  ? Pick<
+      DicScheduleType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicScheduleType-edit"
+  ? Pick<
+      DicScheduleType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

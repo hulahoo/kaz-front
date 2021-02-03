@@ -6,6 +6,8 @@ export type DicNationalityViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicNationality-browse"
+  | "dicNationality-edit"
   | "dicNationality.all";
 export type DicNationalityView<
   V extends DicNationalityViewName
@@ -62,6 +64,58 @@ export type DicNationalityView<
     >
   : V extends "_minimal"
   ? Pick<DicNationality, "id" | "langValue">
+  : V extends "dicNationality-browse"
+  ? Pick<
+      DicNationality,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicNationality-edit"
+  ? Pick<
+      DicNationality,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicNationality.all"
   ? Pick<
       DicNationality,

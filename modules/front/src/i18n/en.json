@@ -11,6 +11,7 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.EnrollmentManagement": "EnrollmentManagement",
   "router.AssignedGoalManagement": "AssignedGoalManagement",
   "router.AssignedPerformancePlanManagement": "AssignedPerformancePlanManagement",
   "router.PersonDocumentManagement": "PersonDocumentManagement",

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicTroopsStructure extends AbstractDictionary {
   static NAME = "tsadv$DicTroopsStructure";
 }
-export type DicTroopsStructureViewName = "_base" | "_local" | "_minimal";
+export type DicTroopsStructureViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicTroopsStructure-browse"
+  | "dicTroopsStructure-edit";
 export type DicTroopsStructureView<
   V extends DicTroopsStructureViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicTroopsStructureView<
       DicTroopsStructure,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicTroopsStructureView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicTroopsStructure, "id" | "langValue">
+  ? Pick<
+      DicTroopsStructure,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicTroopsStructure-browse"
+  ? Pick<
+      DicTroopsStructure,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicTroopsStructure-edit"
+  ? Pick<
+      DicTroopsStructure,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

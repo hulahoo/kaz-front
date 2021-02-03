@@ -15,7 +15,8 @@ export type PersonContactViewName =
   | "_minimal"
   | "personContact.card"
   | "personContact.edit"
-  | "personContact.full";
+  | "personContact.full"
+  | "portal.my-profile";
 export type PersonContactView<
   V extends PersonContactViewName
 > = V extends "_base"
@@ -70,5 +71,17 @@ export type PersonContactView<
       | "integrationUserLogin"
       | "type"
       | "personGroup"
+    >
+  : V extends "portal.my-profile"
+  ? Pick<
+      PersonContact,
+      | "id"
+      | "contactValue"
+      | "endDate"
+      | "startDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "type"
     >
   : never;

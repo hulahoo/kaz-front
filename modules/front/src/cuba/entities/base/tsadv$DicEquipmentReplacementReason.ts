@@ -5,7 +5,9 @@ export class DicEquipmentReplacementReason extends AbstractDictionary {
 export type DicEquipmentReplacementReasonViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicEquipmentReplacementReason-browse"
+  | "dicEquipmentReplacementReason-edit";
 export type DicEquipmentReplacementReasonView<
   V extends DicEquipmentReplacementReasonViewName
 > = V extends "_base"
@@ -13,18 +15,18 @@ export type DicEquipmentReplacementReasonView<
       DicEquipmentReplacementReason,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -60,5 +62,66 @@ export type DicEquipmentReplacementReasonView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicEquipmentReplacementReason, "id" | "langValue">
+  ? Pick<
+      DicEquipmentReplacementReason,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicEquipmentReplacementReason-browse"
+  ? Pick<
+      DicEquipmentReplacementReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicEquipmentReplacementReason-edit"
+  ? Pick<
+      DicEquipmentReplacementReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

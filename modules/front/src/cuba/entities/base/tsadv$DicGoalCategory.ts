@@ -6,6 +6,7 @@ export type DicGoalCategoryViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicGoalCategory-browse"
   | "dicGoalCategory.browse";
 export type DicGoalCategoryView<
   V extends DicGoalCategoryViewName
@@ -62,15 +63,46 @@ export type DicGoalCategoryView<
     >
   : V extends "_minimal"
   ? Pick<DicGoalCategory, "id" | "langValue">
+  : V extends "dicGoalCategory-browse"
+  ? Pick<
+      DicGoalCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicGoalCategory.browse"
   ? Pick<
       DicGoalCategory,
       | "id"
+      | "company"
       | "langValue1"
+      | "order"
       | "langValue2"
       | "langValue3"
       | "langValue4"
       | "langValue5"
+      | "code"
       | "isSystemRecord"
+      | "startDate"
+      | "endDate"
     >
   : never;

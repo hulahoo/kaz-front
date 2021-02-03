@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicRegisterCategory extends AbstractDictionary {
   static NAME = "tsadv$DicRegisterCategory";
 }
-export type DicRegisterCategoryViewName = "_base" | "_local" | "_minimal";
+export type DicRegisterCategoryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicRegisterCategory-browse"
+  | "dicRegisterCategory-edit";
 export type DicRegisterCategoryView<
   V extends DicRegisterCategoryViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicRegisterCategoryView<
       DicRegisterCategory,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicRegisterCategoryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicRegisterCategory, "id" | "langValue">
+  ? Pick<
+      DicRegisterCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicRegisterCategory-browse"
+  ? Pick<
+      DicRegisterCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicRegisterCategory-edit"
+  ? Pick<
+      DicRegisterCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

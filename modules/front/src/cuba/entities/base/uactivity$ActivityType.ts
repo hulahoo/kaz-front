@@ -15,19 +15,19 @@ export type ActivityTypeView<V extends ActivityTypeViewName> = V extends "_base"
       ActivityType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "screen"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -64,7 +64,16 @@ export type ActivityTypeView<V extends ActivityTypeViewName> = V extends "_base"
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<ActivityType, "id" | "langValue">
+  ? Pick<
+      ActivityType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "activityType.edit"
   ? Pick<
       ActivityType,
@@ -91,5 +100,6 @@ export type ActivityTypeView<V extends ActivityTypeViewName> = V extends "_base"
       | "isDefault"
       | "order"
       | "windowProperty"
+      | "company"
     >
   : never;

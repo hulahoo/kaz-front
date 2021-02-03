@@ -6,6 +6,7 @@ export type DicMeasureTypeViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicMeasureType-browse"
   | "dicMeasureType.browse";
 export type DicMeasureTypeView<
   V extends DicMeasureTypeViewName
@@ -62,6 +63,32 @@ export type DicMeasureTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicMeasureType, "id" | "langValue">
+  : V extends "dicMeasureType-browse"
+  ? Pick<
+      DicMeasureType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicMeasureType.browse"
   ? Pick<
       DicMeasureType,

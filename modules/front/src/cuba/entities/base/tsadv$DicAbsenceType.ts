@@ -3,6 +3,7 @@ import { DicAbsenceCategory } from "./tsadv$DicAbsenceCategory";
 export class DicAbsenceType extends AbstractDictionary {
   static NAME = "tsadv$DicAbsenceType";
   useInSelfService?: boolean | null;
+  availableToManager?: boolean | null;
   vacationDurationType?: any | null;
   elmaTransfer?: boolean | null;
   useInBalance?: boolean | null;
@@ -31,6 +32,7 @@ export type DicAbsenceTypeView<
       | "langValue"
       | "description"
       | "useInSelfService"
+      | "availableToManager"
       | "vacationDurationType"
       | "elmaTransfer"
       | "useInBalance"
@@ -69,6 +71,7 @@ export type DicAbsenceTypeView<
       DicAbsenceType,
       | "id"
       | "useInSelfService"
+      | "availableToManager"
       | "vacationDurationType"
       | "elmaTransfer"
       | "useInBalance"
@@ -109,6 +112,7 @@ export type DicAbsenceTypeView<
       DicAbsenceType,
       | "id"
       | "useInSelfService"
+      | "availableToManager"
       | "vacationDurationType"
       | "elmaTransfer"
       | "useInBalance"
@@ -142,5 +146,6 @@ export type DicAbsenceTypeView<
       | "isDefault"
       | "order"
       | "absenceCategory"
+      | "company"
     >
   : never;

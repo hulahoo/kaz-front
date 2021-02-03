@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAccommodationType extends AbstractDictionary {
   static NAME = "tsadv$DicAccommodationType";
 }
-export type DicAccommodationTypeViewName = "_base" | "_local" | "_minimal";
+export type DicAccommodationTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAccommodationType-browse"
+  | "dicAccommodationType-edit";
 export type DicAccommodationTypeView<
   V extends DicAccommodationTypeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicAccommodationTypeView<
       DicAccommodationType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicAccommodationTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicAccommodationType, "id" | "langValue">
+  ? Pick<
+      DicAccommodationType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicAccommodationType-browse"
+  ? Pick<
+      DicAccommodationType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAccommodationType-edit"
+  ? Pick<
+      DicAccommodationType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

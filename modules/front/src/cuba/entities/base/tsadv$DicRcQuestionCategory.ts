@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicRcQuestionCategory extends AbstractDictionary {
   static NAME = "tsadv$DicRcQuestionCategory";
 }
-export type DicRcQuestionCategoryViewName = "_base" | "_local" | "_minimal";
+export type DicRcQuestionCategoryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicRcQuestionCategory-browse"
+  | "dicRcQuestionCategory-edit";
 export type DicRcQuestionCategoryView<
   V extends DicRcQuestionCategoryViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicRcQuestionCategoryView<
     >
   : V extends "_minimal"
   ? Pick<DicRcQuestionCategory, "id" | "langValue">
+  : V extends "dicRcQuestionCategory-browse"
+  ? Pick<
+      DicRcQuestionCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicRcQuestionCategory-edit"
+  ? Pick<
+      DicRcQuestionCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

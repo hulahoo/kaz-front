@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicMilitaryType extends AbstractDictionary {
   static NAME = "tsadv$DicMilitaryType";
 }
-export type DicMilitaryTypeViewName = "_base" | "_local" | "_minimal";
+export type DicMilitaryTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicMilitaryType-browse"
+  | "dicMilitaryType-edit";
 export type DicMilitaryTypeView<
   V extends DicMilitaryTypeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicMilitaryTypeView<
       DicMilitaryType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicMilitaryTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicMilitaryType, "id" | "langValue">
+  ? Pick<
+      DicMilitaryType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicMilitaryType-browse"
+  ? Pick<
+      DicMilitaryType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicMilitaryType-edit"
+  ? Pick<
+      DicMilitaryType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

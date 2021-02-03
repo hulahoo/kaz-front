@@ -102,7 +102,7 @@ export type PositionGroupExtView<
   : V extends "positionGroup.list"
   ? Pick<
       PositionGroupExt,
-      "id" | "list" | "position" | "vacationConditionsList" | "analytics"
+      "id" | "list" | "vacationConditionsList" | "analytics" | "position"
     >
   : V extends "positionGroup.scheduleView"
   ? Pick<PositionGroupExt, "id" | "positionName" | "list" | "assignments">

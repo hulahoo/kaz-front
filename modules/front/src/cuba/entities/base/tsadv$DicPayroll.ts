@@ -6,6 +6,8 @@ export type DicPayrollViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicPayroll-browse"
+  | "dicPayroll-edit"
   | "dicPayroll.view";
 export type DicPayrollView<V extends DicPayrollViewName> = V extends "_base"
   ? Pick<
@@ -60,6 +62,58 @@ export type DicPayrollView<V extends DicPayrollViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<DicPayroll, "id" | "langValue">
+  : V extends "dicPayroll-browse"
+  ? Pick<
+      DicPayroll,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicPayroll-edit"
+  ? Pick<
+      DicPayroll,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicPayroll.view"
   ? Pick<DicPayroll, "id" | "langValue" | "langValue1">
   : never;

@@ -5,7 +5,9 @@ export class DicPersonIdentityDocumentType extends AbstractSortableDictionary {
 export type DicPersonIdentityDocumentTypeViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicPersonIdentityDocumentType-browse"
+  | "dicPersonIdentityDocumentType-edit";
 export type DicPersonIdentityDocumentTypeView<
   V extends DicPersonIdentityDocumentTypeViewName
 > = V extends "_base"
@@ -70,5 +72,59 @@ export type DicPersonIdentityDocumentTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+    >
+  : V extends "dicPersonIdentityDocumentType-browse"
+  ? Pick<
+      DicPersonIdentityDocumentType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
+    >
+  : V extends "dicPersonIdentityDocumentType-edit"
+  ? Pick<
+      DicPersonIdentityDocumentType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
     >
   : never;

@@ -7,6 +7,8 @@ export type DicPersonTypeViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicPersonType-browse"
+  | "dicPersonType-edit"
   | "dicPersonType.all";
 export type DicPersonTypeView<
   V extends DicPersonTypeViewName
@@ -65,6 +67,60 @@ export type DicPersonTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicPersonType, "id" | "langValue">
+  : V extends "dicPersonType-browse"
+  ? Pick<
+      DicPersonType,
+      | "id"
+      | "sortOrder"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicPersonType-edit"
+  ? Pick<
+      DicPersonType,
+      | "id"
+      | "sortOrder"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicPersonType.all"
   ? Pick<
       DicPersonType,

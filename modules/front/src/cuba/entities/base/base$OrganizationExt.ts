@@ -1,12 +1,10 @@
 import { Organization } from "./base$Organization";
 import { OrganizationGroupExt } from "./base$OrganizationGroupExt";
-import { DicCompany } from "./tsadv$DicCompany";
 import { DicCostCenter } from "./tsadv$DicCostCenter";
 import { DicPayroll } from "./tsadv$DicPayroll";
 export class OrganizationExt extends Organization {
   static NAME = "base$OrganizationExt";
   group?: OrganizationGroupExt | null;
-  company?: DicCompany | null;
   costCenter?: DicCostCenter | null;
   payroll?: DicPayroll | null;
   internal?: boolean | null;
@@ -68,11 +66,10 @@ export type OrganizationExtView<
       OrganizationExt,
       | "id"
       | "organizationName"
-      | "payroll"
-      | "company"
       | "group"
-      | "location"
       | "costCenter"
+      | "payroll"
+      | "location"
       | "type"
     >
   : V extends "organization.lookup"

@@ -25,11 +25,11 @@ export type PersonDocumentViewName =
   | "_base"
   | "_local"
   | "_minimal"
-  | "personDocument-view"
   | "personDocument.card"
   | "personDocument.edit"
   | "personDocument.forNotification"
-  | "personDocument.full";
+  | "personDocument.full"
+  | "portal.my-profile";
 export type PersonDocumentView<
   V extends PersonDocumentViewName
 > = V extends "_base"
@@ -63,24 +63,6 @@ export type PersonDocumentView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-    >
-  : V extends "personDocument-view"
-  ? Pick<
-      PersonDocument,
-      | "id"
-      | "issueDate"
-      | "startDate"
-      | "endDate"
-      | "expiredDate"
-      | "issuedBy"
-      | "description"
-      | "documentNumber"
-      | "series"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "documentType"
-      | "file"
     >
   : V extends "personDocument.card"
   ? Pick<
@@ -151,5 +133,25 @@ export type PersonDocumentView<
       | "documentType"
       | "personGroup"
       | "status"
+    >
+  : V extends "portal.my-profile"
+  ? Pick<
+      PersonDocument,
+      | "id"
+      | "issueDate"
+      | "startDate"
+      | "endDate"
+      | "expiredDate"
+      | "issuedBy"
+      | "description"
+      | "documentNumber"
+      | "series"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "documentType"
+      | "issuingAuthority"
+      | "status"
+      | "file"
     >
   : never;

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicDismissalStatus extends AbstractDictionary {
   static NAME = "tsadv$DicDismissalStatus";
 }
-export type DicDismissalStatusViewName = "_base" | "_local" | "_minimal";
+export type DicDismissalStatusViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicDismissalStatus-browse"
+  | "dicDismissalStatus-edit";
 export type DicDismissalStatusView<
   V extends DicDismissalStatusViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicDismissalStatusView<
       DicDismissalStatus,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicDismissalStatusView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicDismissalStatus, "id" | "langValue">
+  ? Pick<
+      DicDismissalStatus,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicDismissalStatus-browse"
+  ? Pick<
+      DicDismissalStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicDismissalStatus-edit"
+  ? Pick<
+      DicDismissalStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

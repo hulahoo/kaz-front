@@ -118,6 +118,7 @@ export type PersonGroupExtViewName =
   | "personGroupExt.for.requisition.edit"
   | "personGroupExt.for.requisition.optionDs"
   | "personGroupExt.lookup.for.attestation"
+  | "personGroupExt.mobile"
   | "personGroupExt.rcg.feedback"
   | "personGroupExt.rcg.like"
   | "personGroupExt.responsibleEmployee"
@@ -459,7 +460,10 @@ export type PersonGroupExtView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "personDocuments"
+      | "assignments"
       | "list"
+      | "addresses"
     >
   : V extends "personGroupExt-view-for-requisition-edit"
   ? Pick<
@@ -557,6 +561,8 @@ export type PersonGroupExtView<
       | "assignments"
       | "currentAssignment"
     >
+  : V extends "personGroupExt.mobile"
+  ? Pick<PersonGroupExt, "id" | "person" | "assignments" | "person">
   : V extends "personGroupExt.rcg.feedback"
   ? Pick<
       PersonGroupExt,

@@ -2,7 +2,12 @@ import { AbstractSortableDictionary } from "./AbstractSortableDictionary";
 export class DicSex extends AbstractSortableDictionary {
   static NAME = "base$DicSex";
 }
-export type DicSexViewName = "_base" | "_local" | "_minimal";
+export type DicSexViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicSex-browse"
+  | "dicSex-edit";
 export type DicSexView<V extends DicSexViewName> = V extends "_base"
   ? Pick<
       DicSex,
@@ -65,5 +70,59 @@ export type DicSexView<V extends DicSexViewName> = V extends "_base"
       | "langValue3"
       | "langValue4"
       | "langValue5"
+    >
+  : V extends "dicSex-browse"
+  ? Pick<
+      DicSex,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
+    >
+  : V extends "dicSex-edit"
+  ? Pick<
+      DicSex,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
     >
   : never;

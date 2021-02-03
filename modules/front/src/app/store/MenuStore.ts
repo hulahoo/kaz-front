@@ -62,8 +62,8 @@ export default class MenuStore {
           {
             id: "my-courses",
             caption: "Мои курсы",
-            menuLink: "/my-courses",
-            pathPattern: "/my-courses",
+            menuLink: "/my-course",
+            pathPattern: "/my-course",
             component: null,
           },
           {
