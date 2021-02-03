@@ -34,6 +34,7 @@ import {AssignedGoalManagement} from "./pages/AssignedGoals/IndividualGoal/Assig
 import {LibraryAssignedGoalManagement} from "./pages/AssignedGoals/LibraryGoal/LibraryAssignedGoalManagement";
 import LearningHistory from "./pages/LearningHistory";
 import {CourseManagement} from "./pages/Course/CourseManagement";
+import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -100,6 +101,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/kpi/:appId/goal/create/library" component={LibraryAssignedGoalManagement}/>
                 <Route exact={true} path="/learning-history" component={LearningHistory}/>
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
+                <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

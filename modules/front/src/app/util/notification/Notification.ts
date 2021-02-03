@@ -7,7 +7,7 @@ export default new class {
   }
 
   info = (arg: ArgsProps) => {
-    notification.open({...arg, className: "info-notification"})
+    notification.info({...arg, className: "info-notification"})
   }
 
   success = (arg: ArgsProps) => {

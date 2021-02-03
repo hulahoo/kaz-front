@@ -9,9 +9,21 @@
   background-color: @success-color !important;
   box-shadow: 6px 3px 24px rgb(18, 191, 102) !important;
 }
+
 .error-notification {
   background-color: @error-color !important;
   box-shadow: 6px 3px 24px rgba(224, 48, 48, 0.75) !important;
+}
+
+.info-notification {
+  background-color: @follow-button-color !important;
+  box-shadow: 6px 3px 24px rgba(255, 241, 181, 0.75) !important;
+
+  .ant-notification-notice-with-icon {
+    .ant-notification-notice-icon-info {
+      color: #FFF;
+    }
+  }
 }
 
 .ant-notification-notice-message,

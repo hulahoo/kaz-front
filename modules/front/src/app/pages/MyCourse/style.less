@@ -1,0 +1,81 @@
+@import "/src/theme-vars";
+
+
+.course-logo {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .play-icon {
+    color: #fff;
+    font-size: 100px;
+
+    position: absolute;
+    cursor: pointer;
+  }
+
+  .play-icon:hover {
+    font-size: 130px;
+  }
+
+  .play-icon:active {
+    color: @primary-4;
+  }
+}
+
+.course-section-item {
+  border: 2px solid @border-color;
+  border-radius: @default-border-radius;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center !important;
+
+  .ant-list-item-meta-avatar {
+    margin-left: 10px;
+  }
+
+  .ant-list-item-meta-title {
+    margin: 14px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .done {
+      position: absolute;
+      left: 0;
+    }
+  }
+}
+
+.ant-modal-body .modal-body {
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.course-section-item.selected {
+  border-color: @primary-1;
+}
+
+
+.course-section-item:hover {
+  border-color: @primary-4;
+}
+
+.course-section-item:active {
+  border-color: @primary-3;
+}
+
+.course-section-item-feedback {
+  border-color: @follow-button-color;
+}
+
+.course-section-item-feedback:hover {
+  border-color: @follow-button-hover-color;
+}
