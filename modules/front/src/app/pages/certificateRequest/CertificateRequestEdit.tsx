@@ -226,6 +226,7 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                                                       isValidatedSuccess={() => this.isValidatedSuccess}
                                                       processInstanceData={this.processInstanceData}
                                                       isStartForm={this.isStartForm}
+                                                      redirectPath={CertificateRequestManagement.PATH}
                                                       processDefinitionKey={'certificateRequest'}
                                                       task={this.activeTask}/> : null;
     return (
@@ -332,7 +333,7 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                   entityName={CertificateRequest.NAME}
                   propertyName="numberOfCopy"
                   form={this.props.form}
-                  // disabled={isDraft}
+                  disabled={isDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
@@ -362,34 +363,7 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                       <FormattedMessage id="management.editor.cancel"/>
                     </Button>
                   </Link>
-                  <Button
-                    buttonType={ButtonType.PRIMARY}
-                    htmlType="submit"
-                    disabled={status !== "DONE" && status !== "ERROR"}
-                    loading={status === "LOADING"}
-                    style={{marginLeft: "8px"}}
-                  >
-                    <FormattedMessage id="management.editor.submit"/>
-                  </Button>
                 </Form.Item>
-
-                {/*<Form.Item style={{textAlign: "center"}}>*/}
-                {/*  <Link to={CertificateRequestManagement.PATH}>*/}
-                {/*    <Button htmlType="button">*/}
-                {/*      <FormattedMessage id="management.editor.cancel"/>*/}
-                {/*    </Button>*/}
-                {/*  </Link>*/}
-                {/*  <Button*/}
-                {/*    type="primary"*/}
-                {/*    htmlType="submit"*/}
-                {/*    disabled={status !== "DONE" && status !== "ERROR"}*/}
-                {/*    loading={status === "LOADING"}*/}
-                {/*    style={{marginLeft: "8px"}}*/}
-                {/*  >*/}
-                {/*    <FormattedMessage id="management.editor.submit"/>*/}
-                {/*  </Button>*/}
-
-                {/*</Form.Item>*/}
               </Form>
             </Card>
 
@@ -413,11 +387,12 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
               this.tasks = tasks;
               this.activeTask = tasks.find(task => !task.endTime) as ExtTaskData;
 
-              restServices.bprocFormService.getTaskFormData({taskId: this.activeTask.id!})
-                .then(formData => {
-                  this.formData = formData;
-                  this.isStartForm = false;
-                });
+              if (this.activeTask)
+                restServices.bprocFormService.getTaskFormData({taskId: this.activeTask.id!})
+                  .then(formData => {
+                    this.formData = formData;
+                    this.isStartForm = false;
+                  });
             })
         } else {
           restServices.bprocService.getStartFormData({processDefinitionKey: 'certificateRequest'})

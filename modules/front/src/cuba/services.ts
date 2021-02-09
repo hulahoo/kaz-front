@@ -203,6 +203,24 @@ export const restServices = {
         );
       }
     },
+    bprocRuntimeService: {
+      startProcessInstanceByKey: (param: { processDefinitionKey: string, businessKey: string, variables: Map<string, any> }): Promise<void> => {
+        return getCubaREST()!.invokeService(
+          "bproc_BprocRuntimeService",
+          "startProcessInstanceByKey",
+          {...param}
+        );
+      }
+    },
+    bprocTaskService: {
+      completeWithOutcome: (param: { taskData: ExtTaskData, outcomeId: string, processVariables: Map<string, any> }): Promise<void> => {
+        return getCubaREST()!.invokeService(
+          "bproc_BprocTaskService",
+          "completeWithOutcome",
+          {...param}
+        );
+      }
+    },
     fileDownload: {
       download: (fileId: string) => {
         return getCubaREST()!.getFile(fileId)
