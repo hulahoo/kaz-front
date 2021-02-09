@@ -1,10 +1,13 @@
 import React from 'react';
-import {Spin, Statistic} from "antd";
+import {Card, Icon, Modal, Spin, Statistic} from "antd";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {restServices} from "../../../cuba/services";
 import {observable, runInAction} from "mobx";
 import {observer} from "mobx-react";
-import Question from "./Question";
+import QuestionBlock from "./QuestionBlock";
+import Button, {ButtonType} from "../Button/Button";
+import Notification from "../../util/notification/Notification";
+import {rootStore} from "../../store";
 
 type AnswerModel = {
   id: string,
@@ -38,6 +41,7 @@ type TestProps = {
 type Props = {
   test: TestProps
   finishTimeHandler?: () => void
+  onFullScreenClick?: () => void
 }
 
 export interface AnsweredTest {
@@ -67,31 +71,42 @@ class Test extends React.Component<Props & WrappedComponentProps> {
     this.answeredTest.questionsAndAnswers!.push(a);
   };
 
+  finishTest = () => {
+    Modal.confirm({
+      title: "Вы действительно хотите завершить тест",
+      onOk: () => {
+        restServices.lmsService.finishTest({answeredTest: this.answeredTest}).then(respnonse => {
+          Notification.info({
+            message: `Вы набрали ${respnonse.score} из ${respnonse.maxScore}`
+          });
+          if (this.props.finishTimeHandler) {
+            this.props.finishTimeHandler();
+          }
+        });
+      }
+    })
+  };
+
   render() {
     if (!this.test) {
       return <Spin spinning/>
     }
-
     const {Countdown} = Statistic;
     const timer = Date.now() + 1000 * 60 * this.test.timer;
+
     return (
-      <div>
+      <Card className={"modal-body card-actions-container"}
+            actions={[<Button buttonType={ButtonType.PRIMARY} onClick={this.finishTest}>Завершить тест</Button>]}>
         <div className={"timer-block"}>
-          <span className={"timer-title"}>{this.props.intl.formatMessage({id: 'test.time'})}: </span>
-          <Countdown value={timer} onFinish={this.props.finishTimeHandler}/>
+          <div style={{display: 'flex', justifyContent: 'space-between'}} className={"fullscreen-icon"}>
+            <span className={"timer-title"}>{this.props.intl.formatMessage({id: 'test.time'})}: </span>
+            <Icon type="fullscreen" onClick={this.props.onFullScreenClick}/>
+          </div>
+          <Countdown value={timer}
+                     onFinish={this.props.finishTimeHandler ? this.props.finishTimeHandler.bind(null, this.answeredTest) : null}/>
+          <QuestionBlock test={this.test} addRemoveAnswer={this.addRemoveAnswer}/>
         </div>
-        <div className="test-container">
-          {this.test.testSections.map(ts => <div className={"test-section"}>
-            <div className={"test-section-title"}>
-              <span>{ts.name}</span>
-            </div>
-            {ts.questionsAndAnswers.map(question => <><Question
-              testSectionId={ts.id}
-              addRemoveAnswer={this.addRemoveAnswer}
-              question={question}/></>)}
-          </div>)}
-        </div>
-      </div>
+      </Card>
     );
   }
 

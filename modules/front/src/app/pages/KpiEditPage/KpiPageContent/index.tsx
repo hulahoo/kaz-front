@@ -18,12 +18,12 @@ class KpiPageContent extends React.Component<RootStoreProp & WrappedComponentPro
   render() {
 
     const createGoalsMenu: MenuRaw[] = [{
-      id: "/kpi/" + this.props.rootStore!.kpiEditStore.appId + "/goal/create/default",
+      id: "/kpi/" + this.props.rootStore!.kpiEditStore.appId + "/goal/default",
       value: this.props.intl.formatMessage({id: "newGoal"})
     }, {
-      id: "/kpi/goal/create/library",
+      id: "/kpi/goal/library",
       value: this.props.intl.formatMessage({id: "fromLibrary"})
-    }, {id: "/kpi/goal/create/cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
+    }, {id: "/kpi/goal/cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
 
     return (<>
         <Section size={"large"} sectionName={this.props.intl.formatMessage({id: "employeeInformation"})}>

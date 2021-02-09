@@ -153,7 +153,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     }, {view: "assigned-goal-weight"}).then((otherGoals) => {
       const otherGoalsWeights: number = otherGoals.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0);
 
-      if (otherGoalsWeights > 100) {
+      if (otherGoalsWeights != 100) {
         Notification.error({
           message: this.props.intl.formatMessage({
             id: "goal.validation.error.totalWeightSum"
@@ -179,12 +179,12 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
       }
     });
 
-    const goalCreatePathUrl = AssignedPerformancePlanManagement.PATH + "/" + this.props.entityId + "/goal/create/";
+    const goalCreatePathUrl = AssignedPerformancePlanManagement.PATH + "/" + this.props.entityId + "/goal/";
     const createGoalsMenu: MenuRaw[] = [{
-      id: goalCreatePathUrl + "individual",
+      id: goalCreatePathUrl + "individual/new",
       value: this.props.intl.formatMessage({id: "newGoal"})
     }, {
-      id: goalCreatePathUrl + "library",
+      id: goalCreatePathUrl + "library/new",
       value: this.props.intl.formatMessage({id: "fromLibrary"})
     }, {id: goalCreatePathUrl + "cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
 
@@ -193,12 +193,11 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
         pageName={this.props.intl.formatMessage({id: 'page.kpi'}, {"name": status === 'DONE' ? this.dataInstance.item!.performancePlan!.performancePlanName : ""})}>
         <Card className="narrow-layout card-actions-container" actions={[
           <Link to={AssignedPerformancePlanManagement.PATH}>
-            <Button buttonType={ButtonType.FOLLOW}>Закрыть</Button>
+            <Button buttonType={ButtonType.FOLLOW}>{this.props.intl.formatMessage({id: "close"})}</Button>
           </Link>,
-          <Button buttonType={ButtonType.FOLLOW} onClick={this.sendOnApprove}>Отправить на согласование</Button>,
-          <Link to={AssignedPerformancePlanManagement.PATH}>
-            <Button buttonType={ButtonType.PRIMARY}>Сохранить</Button>
-          </Link>]} bordered={false}>
+          <Button buttonType={ButtonType.FOLLOW}
+                  onClick={this.sendOnApprove}>{this.props.intl.formatMessage({id: "sendOnApprove"})}</Button>]}
+              bordered={false}>
           <div className={"large-section section-container"}>
             <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "employeeInfo"})}</div>
             <Form onSubmit={this.handleSubmit} layout="vertical">
@@ -301,8 +300,8 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                             buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
           </Section>
           <Section size={"large"} sectionName={<div>
-            <div><h1>Цели</h1></div>
-            <div><h1>Вес: {this.totalWeight}</h1></div>
+            <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
+            <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
           </div>}>
             <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight}/>
           </Section>

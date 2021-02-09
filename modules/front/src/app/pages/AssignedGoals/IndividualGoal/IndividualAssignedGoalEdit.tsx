@@ -32,7 +32,7 @@ type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
   entityId: string,
-  assignedPerformancePlanId: string;
+  appId: string
 };
 
 @injectMainStore
@@ -140,17 +140,17 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
 
   render() {
     if (this.updated) {
-      return <Redirect to={"/kpi/" + this.props.assignedPerformancePlanId}/>;
+      return <Redirect to={"/kpi/" + this.props.appId}/>;
     }
 
     const messages = this.props.mainStore!.messages!;
     const {status} = this.dataInstance;
 
     return (
-      <Page pageName={"Создание индивидуальной цели"}>
+      <Page pageName={this.props.intl.formatMessage({id: "goal.individual.create"})}>
         <Form onSubmit={this.handleSubmit} layout="vertical">
           <Card className="narrow-layout card-actions-container" actions={[
-            <Link to={"/kpi/" + this.props.assignedPerformancePlanId}>
+            <Link to={"/kpi/" + this.props.appId}>
               <Button buttonType={ButtonType.FOLLOW}>
                 <FormattedMessage id="management.editor.cancel"/>
               </Button>
@@ -222,7 +222,7 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
       this.dataInstance.load(this.props.entityId);
     } else {
       const assignedPerformancePlan = new AssignedPerformancePlan();
-      assignedPerformancePlan.id = this.props.assignedPerformancePlanId;
+      assignedPerformancePlan.id = this.props.appId;
 
       const assignedGoal = new AssignedGoal();
       assignedGoal.assignedPerformancePlan = assignedPerformancePlan;

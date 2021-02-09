@@ -29,6 +29,7 @@ import PersonContactList from "../PersonContact/PersonContactList";
 import PersonDocumentList from "../PersonDocument/PersonDocumentList";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
+import Section from "../../hoc/Section";
 
 type Props = FormComponentProps;
 
@@ -125,7 +126,7 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
     return (
       <div>
         <Card className="narrow-layout large-section section-container">
-          <div className={"section-header-container"}>Основные данные</div>
+          <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "myProfile.mainData"})}</div>
           <Row type={"flex"}>
             <Col md={24} lg={8}>
               <Row type={"flex"} align={"middle"} style={{'width': '100%', 'height': '100%'}} justify={"center"}>
@@ -209,11 +210,11 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
           </Row>
         </Card>
         <Card className="narrow-layout large-section section-container">
-          <div className={"section-header-container"}>Документы</div>
+          <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "myProfile.documents"})}</div>
           <PersonDocumentList/>
         </Card>
         <Card className="narrow-layout large-section section-container">
-          <div className={"section-header-container"}>Контактная информация</div>
+          <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "myProfile.contactInformation"})}</div>
           <PersonContactList/>
         </Card>
       </div>

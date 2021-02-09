@@ -3,6 +3,14 @@
 .test-section {
   color: black;
 
+  .question-container {
+    display: none;
+  }
+
+  .question-container.visible {
+    display: block;
+  }
+
   .test-section-title {
     font-size: 20px;
     text-align: center;
@@ -22,6 +30,18 @@
       padding: 5px !important;
       margin: 5px 0 !important;
       width: 100%;
+    }
+  }
+
+  .question-control-block {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    margin: 10px 0;
+
+    .control {
+      cursor: pointer;
     }
   }
 }

@@ -4,8 +4,8 @@ import {observer} from "mobx-react";
 import PersonalDataRequestEdit from "./PersonalDataRequestEdit";
 import PersonalDataRequestList from "./PersonalDataRequestList";
 import PageContentHoc from "../../hoc/PageContentHoc";
-import {PersonalDataRequestEditPage} from "./PersonalDataRequestEditPage";
 import Page from "../../hoc/PageContentHoc";
+import PersonalDataRequestEditPage from "./PersonalDataRequestEditPage";
 
 type Props = RouteComponentProps<{ entityId?: string }>;
 
