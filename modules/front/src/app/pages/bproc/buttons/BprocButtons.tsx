@@ -14,6 +14,7 @@ import {Modal, notification} from "antd";
 import {Redirect} from "react-router-dom";
 import {restServices} from "../../../../cuba/services";
 import {WrappedFormUtils} from "antd/lib/form/Form";
+import TextArea from "antd/es/input/TextArea";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
@@ -39,8 +40,14 @@ export class BprocButtons extends React.Component<TaskProps> {
   @observable
   isRedirectPath = false;
 
+  comment: string | null;
+
   showModal = (outcome: BprocFormOutcome) => {
     this.modalVisibleMap.set(outcome.id!, true);
+  };
+
+  setComment = (comment: string | null) => {
+    this.comment = comment;
   };
 
   handleOk = (outcome: BprocFormOutcome) => {
@@ -49,7 +56,9 @@ export class BprocButtons extends React.Component<TaskProps> {
     restServices.bprocTaskService.completeWithOutcome({
       taskData: this.props.task!,
       outcomeId: outcome.id!,
-      processVariables: new Map<string, any>()
+      processVariables: {
+        "comment": this.comment
+      }
     })
       .then(value => {
         notification.info({
@@ -58,8 +67,6 @@ export class BprocButtons extends React.Component<TaskProps> {
             'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
           placement: 'bottomRight'
         });
-
-        return <Redirect to={this.props.redirectPath}/>;
       })
     this.isRedirectPath = true;
   };
@@ -78,7 +85,14 @@ export class BprocButtons extends React.Component<TaskProps> {
         visible={this.modalVisibleMap.get(outcome.id!)}
         onOk={() => this.handleOk(outcome)}
         onCancel={() => this.handleCancel(outcome)}>
-        <textarea id={outcome.id + "_textArea"} required={outcome.id !== "APPROVE"}/>
+        <TextArea
+          onChange={event => {
+            const {value} = event.currentTarget;
+            this.setComment(value);
+          }}
+          rows={4}
+          id={outcome.id + "_textArea"}
+          required={outcome.id !== "APPROVE"}/>
       </Modal>
     </Button>;
   }

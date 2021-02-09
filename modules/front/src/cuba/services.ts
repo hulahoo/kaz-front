@@ -213,7 +213,7 @@ export const restServices = {
       }
     },
     bprocTaskService: {
-      completeWithOutcome: (param: { taskData: ExtTaskData, outcomeId: string, processVariables: Map<string, any> }): Promise<void> => {
+      completeWithOutcome: (param: { taskData: ExtTaskData, outcomeId: string, processVariables: any }): Promise<void> => {
         return getCubaREST()!.invokeService(
           "bproc_BprocTaskService",
           "completeWithOutcome",
