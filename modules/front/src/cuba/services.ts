@@ -209,7 +209,16 @@ export const restServices = {
           "bproc_BprocRuntimeService",
           "startProcessInstanceByKey",
           {...param}
-        ).then((value: string) => JSON.parse(value));
+        );
+      }
+    },
+    bprocTaskService: {
+      completeWithOutcome: (param: { taskData: ExtTaskData, outcomeId: string, processVariables: Map<string, any> }): Promise<void> => {
+        return getCubaREST()!.invokeService(
+          "bproc_BprocTaskService",
+          "completeWithOutcome",
+          {...param}
+        );
       }
     },
     fileDownload: {
