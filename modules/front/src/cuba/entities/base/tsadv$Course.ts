@@ -1,4 +1,6 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
+import { Enrollment } from "./tsadv$Enrollment";
+import { CourseTrainer } from "./tsadv$CourseTrainer";
 import { CourseFeedbackTemplate } from "./tsadv$CourseFeedbackTemplate";
 import { PartyExt } from "./base$PartyExt";
 import { DicCategory } from "./tsadv$DicCategory";
@@ -6,10 +8,14 @@ import { CourseSection } from "./tsadv$CourseSection";
 import { CourseCompetence } from "./tsadv$CourseCompetence";
 import { CoursePreRequisition } from "./tsadv$CoursePreRequisition";
 import { DicLearningType } from "./tsadv$DicLearningType";
-import {CourseTrainer} from "./tsadv$CourseTrainer";
+import { CourseReview } from "./tsadv$CourseReview";
+import { CourseSchedule } from "./tsadv_CourseSchedule";
 export class Course extends AbstractParentEntity {
   static NAME = "tsadv$Course";
   name?: string | null;
+  isIssuedCertificate?: boolean | null;
+  enrollments?: Enrollment[] | null;
+  courseTrainers?: CourseTrainer[] | null;
   feedbackTemplates?: CourseFeedbackTemplate[] | null;
   party?: PartyExt | null;
   description?: string | null;
@@ -25,29 +31,38 @@ export class Course extends AbstractParentEntity {
   selfEnrollment?: boolean | null;
   completed?: boolean | null;
   learningType?: DicLearningType | null;
-  courseTrainers?: CourseTrainer[] | null;
-  educationPeriod?: number | any;
-  educationDuration?: number | any;
+  reviews?: CourseReview[] | null;
+  isOnline?: boolean | null;
+  courseSchedule?: CourseSchedule[] | null;
+  educationPeriod?: any | null;
+  educationDuration?: any | null;
 }
 export type CourseViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "course-learning-history"
+  | "course-portal-browse"
   | "course.browse"
   | "course.edit"
   | "course.edit.new"
-  | "course.tree";
+  | "course.tree"
+  | "portal-course-edit";
 export type CourseView<V extends CourseViewName> = V extends "_base"
   ? Pick<
       Course,
       | "id"
       | "name"
+      | "isIssuedCertificate"
       | "description"
       | "logo"
       | "targetAudience"
       | "activeFlag"
       | "shortDescription"
       | "selfEnrollment"
+      | "isOnline"
+      | "educationPeriod"
+      | "educationDuration"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -57,18 +72,26 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       Course,
       | "id"
       | "name"
+      | "isIssuedCertificate"
       | "description"
       | "logo"
       | "targetAudience"
       | "activeFlag"
       | "shortDescription"
       | "selfEnrollment"
+      | "isOnline"
+      | "educationPeriod"
+      | "educationDuration"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
   : V extends "_minimal"
   ? Pick<Course, "id" | "name">
+  : V extends "course-learning-history"
+  ? Pick<Course, "id" | "name" | "sections">
+  : V extends "course-portal-browse"
+  ? Pick<Course, "id" | "name" | "name" | "avgRate" | "logo" | "isOnline">
   : V extends "course.browse"
   ? Pick<
       Course,
@@ -105,6 +128,8 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       Course,
       | "id"
       | "name"
+      | "feedbackTemplates"
+      | "party"
       | "description"
       | "logo"
       | "category"
@@ -117,8 +142,8 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "avgRate"
       | "selfEnrollment"
       | "learningType"
-      | "party"
-      | "feedbackTemplates"
+      | "isOnline"
+      | "courseSchedule"
     >
   : V extends "course.tree"
   ? Pick<
@@ -134,5 +159,23 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "shortDescription"
       | "competences"
       | "selfEnrollment"
+    >
+  : V extends "portal-course-edit"
+  ? Pick<
+      Course,
+      | "id"
+      | "name"
+      | "name"
+      | "description"
+      | "educationDuration"
+      | "educationPeriod"
+      | "avgRate"
+      | "preRequisition"
+      | "courseTrainers"
+      | "sections"
+      | "enrollments"
+      | "logo"
+      | "isIssuedCertificate"
+      | "reviews"
     >
   : never;

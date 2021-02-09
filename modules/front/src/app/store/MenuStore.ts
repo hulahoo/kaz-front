@@ -3,6 +3,8 @@ import {action, observable} from "mobx";
 import {restServices} from "../../cuba/services";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
+import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
+import {ExtTaskDataCards} from "../pages/bproc/TaskData/ExtTaskDataCards";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -42,7 +44,28 @@ export default class MenuStore {
       {
         id: "help",
         caption: "Справка",
-        items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
+        items: [
+          {
+            id: "main",
+            caption: "Справка с места работы",
+            menuLink: "/certificate-request",
+            pathPattern: "/",
+            component: null
+          },
+          {
+            id: "mainCertificateRequest",
+            caption: "CertificateRequestManagement",
+            menuLink: "/certificateRequestManagement",
+            pathPattern: "/certificateRequestManagement/:entityId?",
+            component: CertificateRequestManagement
+          }/*,
+          {
+            pathPattern: "/extTaskDataCards",
+            menuLink: "/extTaskDataCards",
+            component: ExtTaskDataCards,
+            caption: "ExtTaskDataCards"
+          }*/
+        ],
       } as MenuSubMenu,
       {
         id: "leave",

@@ -20,7 +20,8 @@ export type StandardScheduleViewName =
   | "_base"
   | "_local"
   | "_minimal"
-  | "schedule.view";
+  | "schedule.view"
+  | "standardSchedule-for-my-team";
 export type StandardScheduleView<
   V extends StandardScheduleViewName
 > = V extends "_base"
@@ -73,5 +74,24 @@ export type StandardScheduleView<
       | "standardShifts"
       | "standardOffsets"
       | "baseStandardSchedule"
+    >
+  : V extends "standardSchedule-for-my-team"
+  ? Pick<
+      StandardSchedule,
+      | "id"
+      | "scheduleName"
+      | "description"
+      | "startDate"
+      | "endDate"
+      | "period"
+      | "scheduleType"
+      | "isHolidayWorkDay"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "baseStandardSchedule"
+      | "calendar"
+      | "standardOffsets"
+      | "standardShifts"
     >
   : never;

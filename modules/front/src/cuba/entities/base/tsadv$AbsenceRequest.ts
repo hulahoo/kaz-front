@@ -2,6 +2,8 @@ import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { AssignmentGroupExt } from "./base$AssignmentGroupExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
 import { DicAbsenceType } from "./tsadv$DicAbsenceType";
+import { PersonGroupExt } from "./base$PersonGroupExt";
+import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
 export class AbsenceRequest extends AbstractBprocRequest {
   static NAME = "tsadv$AbsenceRequest";
   assignmentGroup?: AssignmentGroupExt | null;
@@ -10,13 +12,24 @@ export class AbsenceRequest extends AbstractBprocRequest {
   dateTo?: any | null;
   absenceDays?: number | null;
   type?: DicAbsenceType | null;
-  comment?: string | null;
   distanceWorkingConfirm?: boolean | null;
+  personGroup?: PersonGroupExt | null;
+  purpose?: DicAbsencePurpose | null;
+  purposeText?: string | null;
+  timeOfStarting?: any | null;
+  timeOfFinishing?: any | null;
+  totalHours?: number | null;
+  compencation?: boolean | null;
+  vacationDay?: boolean | null;
+  acquainted?: boolean | null;
+  agree?: boolean | null;
 }
 export type AbsenceRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "absenceRequest-for-my-team"
+  | "absenceRequest-for-ss-my-team"
   | "absenceRequest.edit"
   | "absenceRequest.view";
 export type AbsenceRequestView<
@@ -29,12 +42,20 @@ export type AbsenceRequestView<
       | "dateFrom"
       | "dateTo"
       | "absenceDays"
-      | "comment"
       | "distanceWorkingConfirm"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
+      | "comment"
     >
   : V extends "_local"
   ? Pick<
@@ -43,16 +64,74 @@ export type AbsenceRequestView<
       | "dateFrom"
       | "dateTo"
       | "absenceDays"
-      | "comment"
       | "distanceWorkingConfirm"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
+      | "comment"
     >
   : V extends "_minimal"
   ? Pick<AbsenceRequest, "id" | "requestDate">
+  : V extends "absenceRequest-for-my-team"
+  ? Pick<
+      AbsenceRequest,
+      | "id"
+      | "dateFrom"
+      | "dateTo"
+      | "absenceDays"
+      | "distanceWorkingConfirm"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "type"
+      | "personGroup"
+      | "purpose"
+      | "status"
+    >
+  : V extends "absenceRequest-for-ss-my-team"
+  ? Pick<
+      AbsenceRequest,
+      | "id"
+      | "dateFrom"
+      | "dateTo"
+      | "absenceDays"
+      | "distanceWorkingConfirm"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+    >
   : V extends "absenceRequest.edit"
   ? Pick<
       AbsenceRequest,
@@ -60,13 +139,21 @@ export type AbsenceRequestView<
       | "dateFrom"
       | "dateTo"
       | "absenceDays"
-      | "comment"
       | "distanceWorkingConfirm"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
+      | "comment"
       | "assignmentGroup"
       | "type"
       | "attachment"
@@ -79,13 +166,21 @@ export type AbsenceRequestView<
       | "dateFrom"
       | "dateTo"
       | "absenceDays"
-      | "comment"
       | "distanceWorkingConfirm"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
+      | "comment"
       | "assignmentGroup"
       | "type"
       | "attachment"

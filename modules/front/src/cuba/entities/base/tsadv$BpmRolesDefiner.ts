@@ -1,8 +1,10 @@
 import { StandardEntity } from "./sys$StandardEntity";
+import { DicCompany } from "./base_DicCompany";
 import { BpmRolesLink } from "./tsadv$BpmRolesLink";
 export class BpmRolesDefiner extends StandardEntity {
   static NAME = "tsadv$BpmRolesDefiner";
   processDefinitionKey?: string | null;
+  company?: DicCompany | null;
   links?: BpmRolesLink[] | null;
 }
 export type BpmRolesDefinerViewName =
@@ -19,5 +21,5 @@ export type BpmRolesDefinerView<
   : V extends "_minimal"
   ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
   : V extends "bpmRolesDefiner-view"
-  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey" | "links">
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey" | "company" | "links">
   : never;

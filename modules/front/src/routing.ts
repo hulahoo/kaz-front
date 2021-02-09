@@ -1,6 +1,6 @@
-import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
-import { rootStore } from "./app/store";
-import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";
+import {getMenuItems} from "@cuba-platform/react";
+import {rootStore} from "./app/store";
+import {MenuRouteItem, MenuSubMenu} from "./app/store/MenuStore";
 
 export const menuItems = getMenuItems();
 
@@ -29,3 +29,9 @@ export function getRouteList() {
   return flattenRoutes(rootStore.menu.menuList);
 }
 
+// menuItems.push({
+//   pathPattern: "/extTaskDataCards",
+//   menuLink: "/extTaskDataCards",
+//   component: ExtTaskDataCards,
+//   caption: "ExtTaskDataCards"
+// });

@@ -4,13 +4,14 @@ import {PersonGroupExt} from "./base$PersonGroupExt";
 export class UserExt extends BaseUserExt {
   static NAME = "tsadv$UserExt";
   personGroup?: PersonGroupExt | null;
+  fullNameWithLogin?: string | null;
 }
-
 export type UserExtViewName =
   | "_base"
   | "_local"
   | "_minimal"
   | "tsadvUserExt-view"
+  | "user-fioWithLogin"
   | "user.browse"
   | "user.edit"
   | "user.roles"
@@ -21,6 +22,7 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
     | "id"
     | "shortName"
     | "login"
+    | "fullNameWithLogin"
     | "loginLowerCase"
     | "password"
     | "passwordEncryption"
@@ -49,6 +51,7 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
   : V extends "_local"
     ? Pick<UserExt,
       | "id"
+      | "fullNameWithLogin"
       | "login"
       | "loginLowerCase"
       | "password"
@@ -82,6 +85,7 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
         ? Pick<UserExt,
           | "id"
           | "login"
+          | "fullNameWithLogin"
           | "loginLowerCase"
           | "password"
           | "passwordEncryption"

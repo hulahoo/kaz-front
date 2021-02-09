@@ -1,4 +1,5 @@
 {
+  "router.ExtTaskDataCards": "ExtTaskDataCards",
   "management.browser.delete.areYouSure": "Are you sure you want to delete {instanceName}?",
   "management.browser.delete.ok": "Delete",
   "management.browser.delete.cancel": "Cancel",
@@ -11,6 +12,7 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.CertificateRequestManagement": "CertificateRequestManagement",
   "router.AssignedGoalManagement": "AssignedGoalManagement",
   "router.AssignedPerformancePlanManagement": "AssignedPerformancePlanManagement",
   "router.PersonDocumentManagement": "PersonDocumentManagement",

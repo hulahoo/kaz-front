@@ -155,9 +155,9 @@
   "period": "Период",
   "goal.management.editor.success": "Цель успешно сохранена",
   "goal.validation.error.totalWeightSum": "Общий вес целей должен быть равен 100%",
-  "assessmentPeriod":"Период оценки",
-  "course.info.isOnline.false":"Оффлайн",
-  "course.info.isOnline.true":"Онлайн",
-  "course.info.approve":"Подтверждение",
-  "back":"Назад"
+  "assessmentPeriod": "Период оценки",
+  "course.info.isOnline.false": "Оффлайн",
+  "course.info.isOnline.true": "Онлайн",
+  "course.info.approve": "Подтверждение",
+  "back": "Назад"
 }

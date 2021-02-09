@@ -8,6 +8,7 @@ import { JobGroupGoalLink } from "./tsadv$JobGroupGoalLink";
 import { RcJobGroup } from "./tsadv$RcJobGroup";
 import { DicEmployeeCategory } from "./tsadv$DicEmployeeCategory";
 import { DicJobCategory } from "./tsadv$DicJobCategory";
+import { DicCompany } from "./base_DicCompany";
 export class JobGroup extends AbstractGroup {
   static NAME = "tsadv$JobGroup";
   jobNameDefault?: string | null;
@@ -26,6 +27,7 @@ export class JobGroup extends AbstractGroup {
   rcJobGroups?: RcJobGroup[] | null;
   employeeCategory?: DicEmployeeCategory | null;
   jobCategory?: DicJobCategory | null;
+  company?: DicCompany | null;
   jobName?: string | null;
 }
 export type JobGroupViewName =
@@ -90,11 +92,12 @@ export type JobGroupView<V extends JobGroupViewName> = V extends "_base"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "list"
-      | "cases"
       | "jobNameDefault"
+      | "list"
       | "job"
+      | "cases"
       | "employeeCategory"
+      | "company"
     >
   : V extends "jobGroup.for.requisitions"
   ? Pick<

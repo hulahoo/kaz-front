@@ -21,12 +21,13 @@ import {
   IntlFormatters,
   WrappedComponentProps
 } from "react-intl";
-import {getMenuIcon} from '../resources/icons/menu';
+// import {getMenuIcon} from '../resources/icons/menu';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
 import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
+import {CertificateRequestManagement} from "./pages/certificateRequest/CertificateRequestManagement";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
@@ -92,9 +93,11 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
                 <Route path="/my-profile" component={PersonalDataRequestEditPage}/>
+                {/*<Route path="/certificate-request" component={CertificateRequestList}/>*/}
                 {/*<Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>*/}
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
+                <Route exact={true} path="/certificateRequestManagement/:entityId?" component={CertificateRequestManagement}/>
                 <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/create/individual" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/create/library" component={LibraryAssignedGoalManagement}/>
@@ -122,13 +125,13 @@ function menuItem(
   if ((item as any).items != null) {
     //recursively walk through sub menus
     const menuSubMenu: MenuSubMenu = item as MenuSubMenu;
-    const MenuIcon = getMenuIcon(menuSubMenu.id);
+    // const MenuIcon = getMenuIcon(menuSubMenu.id);
     return (
       <Menu.SubMenu
         key={keyString}
         title={
           <span>
-            <img src={MenuIcon} className={"ant-menu-item-icon"}/>
+            {/*<img src={MenuIcon} className={"ant-menu-item-icon"}/>*/}
             <span>{item.caption}</span>
           </span>
         }>
@@ -141,11 +144,11 @@ function menuItem(
 
   // Route Item
   const menuRouteItem: MenuRouteItem = item as MenuRouteItem;
-  const MenuIcon = getMenuIcon(menuRouteItem.id);
+  // const MenuIcon = getMenuIcon(menuRouteItem.id);
 
   return (
     <Menu.Item key={keyString}>
-      <img src={MenuIcon} className={"ant-menu-item-icon"}/>
+      {/*<img src={MenuIcon} className={"ant-menu-item-icon"}/>*/}
       <NavLink to={menuRouteItem.menuLink}>
         {item.caption}
       </NavLink>

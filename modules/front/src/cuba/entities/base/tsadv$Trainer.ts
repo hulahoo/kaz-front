@@ -18,6 +18,7 @@ export type TrainerViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "course-trainer-info"
   | "trainer.browse"
   | "trainer.edit";
 export type TrainerView<V extends TrainerViewName> = V extends "_base"
@@ -45,6 +46,8 @@ export type TrainerView<V extends TrainerViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<Trainer, "id" | "trainerFullName">
+  : V extends "course-trainer-info"
+  ? Pick<Trainer, "id" | "employee" | "courseTrainer">
   : V extends "trainer.browse"
   ? Pick<
       Trainer,
