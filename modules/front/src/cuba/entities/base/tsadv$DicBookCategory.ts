@@ -1,7 +1,9 @@
 import { AbstractDictionary } from "./AbstractDictionary";
+import { Book } from "./tsadv$Book";
 export class DicBookCategory extends AbstractDictionary {
   static NAME = "tsadv$DicBookCategory";
   parentBookCategory?: DicBookCategory | null;
+  books?: Book[] | null;
 }
 export type DicBookCategoryViewName =
   | "_base"
@@ -9,7 +11,8 @@ export type DicBookCategoryViewName =
   | "_minimal"
   | "book-category-view"
   | "dicBookCategory-browse"
-  | "dicBookCategory-edit";
+  | "dicBookCategory-edit"
+  | "portal-books-category-browse";
 export type DicBookCategoryView<
   V extends DicBookCategoryViewName
 > = V extends "_base"
@@ -151,5 +154,18 @@ export type DicBookCategoryView<
       | "isDefault"
       | "order"
       | "company"
+    >
+  : V extends "portal-books-category-browse"
+  ? Pick<
+      DicBookCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+      | "order"
+      | "books"
     >
   : never;

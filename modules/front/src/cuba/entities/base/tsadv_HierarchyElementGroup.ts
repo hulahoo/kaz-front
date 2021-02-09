@@ -10,6 +10,7 @@ export type HierarchyElementGroupViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "hierarchyElementGroup-for-integration-rest"
   | "new.hierarchyElement.browse";
 export type HierarchyElementGroupView<
   V extends HierarchyElementGroupViewName
@@ -25,6 +26,11 @@ export type HierarchyElementGroupView<
     >
   : V extends "_minimal"
   ? Pick<HierarchyElementGroup, "id" | "name">
+  : V extends "hierarchyElementGroup-for-integration-rest"
+  ? Pick<
+      HierarchyElementGroup,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin" | "list"
+    >
   : V extends "new.hierarchyElement.browse"
   ? Pick<
       HierarchyElementGroup,

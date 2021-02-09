@@ -111,5 +111,6 @@ export type DicEmployeeCategoryView<
       | "endDate"
       | "code"
       | "isSystemRecord"
+      | "company"
     >
   : never;

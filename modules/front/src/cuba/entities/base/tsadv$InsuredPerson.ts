@@ -22,6 +22,7 @@ export class InsuredPerson extends StandardEntity {
   secondName?: string | null;
   middleName?: string | null;
   job?: JobGroup | null;
+  jobMember?: string | null;
   sex?: DicSex | null;
   iin?: string | null;
   birthdate?: any | null;
@@ -32,6 +33,7 @@ export class InsuredPerson extends StandardEntity {
   address?: string | null;
   insuranceProgram?: string | null;
   file?: FileDescriptor[] | null;
+  statementFile?: FileDescriptor | null;
   type?: any | null;
   amount?: any | null;
   totalAmount?: any | null;
@@ -56,6 +58,7 @@ export type InsuredPersonView<
       | "attachDate"
       | "secondName"
       | "middleName"
+      | "jobMember"
       | "iin"
       | "birthdate"
       | "documentNumber"
@@ -75,6 +78,7 @@ export type InsuredPersonView<
       | "firstName"
       | "secondName"
       | "middleName"
+      | "jobMember"
       | "iin"
       | "birthdate"
       | "documentNumber"
@@ -96,6 +100,7 @@ export type InsuredPersonView<
       | "firstName"
       | "secondName"
       | "middleName"
+      | "jobMember"
       | "iin"
       | "birthdate"
       | "documentNumber"
@@ -108,6 +113,8 @@ export type InsuredPersonView<
       | "comment"
       | "statusRequest"
       | "employee"
+      | "file"
+      | "statementFile"
       | "relative"
       | "sex"
       | "documentType"
@@ -125,6 +132,7 @@ export type InsuredPersonView<
       | "firstName"
       | "secondName"
       | "middleName"
+      | "jobMember"
       | "iin"
       | "birthdate"
       | "documentNumber"
@@ -145,6 +153,7 @@ export type InsuredPersonView<
       | "firstName"
       | "secondName"
       | "middleName"
+      | "jobMember"
       | "iin"
       | "birthdate"
       | "documentNumber"
@@ -166,6 +175,7 @@ export type InsuredPersonView<
       | "region"
       | "addressType"
       | "file"
+      | "statementFile"
     >
   : V extends "insuredPersonMember-editView"
   ? Pick<
@@ -175,6 +185,7 @@ export type InsuredPersonView<
       | "firstName"
       | "secondName"
       | "middleName"
+      | "jobMember"
       | "iin"
       | "birthdate"
       | "documentNumber"

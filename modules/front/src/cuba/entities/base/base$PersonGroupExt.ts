@@ -28,6 +28,7 @@ import { Internship } from "./tsadv$Internship";
 import { Enrollment } from "./tsadv$Enrollment";
 import { Attestation } from "./tsadv$Attestation";
 import { CandidateRequirement } from "./tsadv$CandidateRequirement";
+import { DicCompany } from "./base_DicCompany";
 export class PersonGroupExt extends PersonGroup {
   static NAME = "base$PersonGroupExt";
   list?: PersonExt[] | null;
@@ -66,6 +67,7 @@ export class PersonGroupExt extends PersonGroup {
   enrollment?: Enrollment[] | null;
   attestation?: Attestation[] | null;
   candidateRequirement?: CandidateRequirement[] | null;
+  company?: DicCompany | null;
   totalExperience?: any | null;
   personFioWithEmployeeNumber?: string | null;
   activeAssessment?: Assessment | null;
@@ -102,8 +104,10 @@ export type PersonGroupExtViewName =
   | "personGroup.search.candidate"
   | "personGroup.with.positionGroup"
   | "personGroupBeneficiary"
+  | "personGroupExt-Mic"
   | "personGroupExt-absenceEdit"
   | "personGroupExt-for-beneficary-request-edit"
+  | "personGroupExt-for-integration-rest"
   | "personGroupExt-for-load-attribute"
   | "personGroupExt-for-person-data"
   | "personGroupExt-for-person-data"
@@ -359,6 +363,19 @@ export type PersonGroupExtView<
       | "person"
       | "personDocuments"
     >
+  : V extends "personGroupExt-Mic"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "assignments"
+    >
   : V extends "personGroupExt-absenceEdit"
   ? Pick<
       PersonGroupExt,
@@ -384,6 +401,19 @@ export type PersonGroupExtView<
       | "list"
       | "assignments"
       | "personExperience"
+    >
+  : V extends "personGroupExt-for-integration-rest"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "company"
     >
   : V extends "personGroupExt-for-load-attribute"
   ? Pick<PersonGroupExt, "id" | "person" | "list">

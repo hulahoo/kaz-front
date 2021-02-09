@@ -82,5 +82,6 @@ export type DicTestTypeView<V extends DicTestTypeViewName> = V extends "_base"
       | "endDate"
       | "code"
       | "isSystemRecord"
+      | "company"
     >
   : never;

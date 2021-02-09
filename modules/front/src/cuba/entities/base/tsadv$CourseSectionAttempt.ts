@@ -21,6 +21,7 @@ export type CourseSectionAttemptViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "course-section-attempt"
   | "courseSectionAttempt.browse"
   | "courseSectionAttempt.course.schedule"
   | "courseSectionAttempt.edit"
@@ -62,6 +63,22 @@ export type CourseSectionAttemptView<
     >
   : V extends "_minimal"
   ? Pick<CourseSectionAttempt, "id" | "courseSection">
+  : V extends "course-section-attempt"
+  ? Pick<
+      CourseSectionAttempt,
+      | "id"
+      | "attemptDate"
+      | "testResult"
+      | "testResultPercent"
+      | "timeSpent"
+      | "activeAttempt"
+      | "success"
+      | "courseSectionFormat"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "courseSection"
+    >
   : V extends "courseSectionAttempt.browse"
   ? Pick<
       CourseSectionAttempt,

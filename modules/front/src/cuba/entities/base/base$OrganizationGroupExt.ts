@@ -46,6 +46,7 @@ export type OrganizationGroupExtViewName =
   | "organizationGroup.hrUsersView"
   | "organizationGroup.list"
   | "organizationGroup.lookup"
+  | "organizationGroupExt-for-integration-rest"
   | "organizationGroupExt-receptionAssignment"
   | "organizationGroupExt-view-for-requisition"
   | "organizationGroupExt.for.attestation.lookup";
@@ -141,6 +142,29 @@ export type OrganizationGroupExtView<
       | "integrationUserLogin"
       | "list"
       | "organization"
+    >
+  : V extends "organizationGroupExt-for-integration-rest"
+  ? Pick<
+      OrganizationGroupExt,
+      | "id"
+      | "organizationName"
+      | "list"
+      | "company"
+      | "legacyId"
+      | "location"
+      | "organizationType"
+      | "createdBy"
+      | "createTs"
+      | "updateTs"
+      | "updatedBy"
+      | "costCenter"
+      | "payroll"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
+      | "analytics"
     >
   : V extends "organizationGroupExt-receptionAssignment"
   ? Pick<

@@ -85,7 +85,10 @@ export type AssignedGoalView<V extends AssignedGoalViewName> = V extends "_base"
   : V extends "assigned-goal-weight"
   ? Pick<AssignedGoal, "id" | "goalString" | "weight">
   : V extends "assignedGoal-library"
-  ? Pick<AssignedGoal, "id" | "goalString" | "goal" | "weight" | "goalLibrary">
+  ? Pick<
+      AssignedGoal,
+      "id" | "goalString" | "goal" | "weight" | "goalLibrary" | "category"
+    >
   : V extends "assignedGoal-portal-kpi-create-default"
   ? Pick<
       AssignedGoal,
@@ -104,6 +107,7 @@ export type AssignedGoalView<V extends AssignedGoalViewName> = V extends "_base"
       | "integrationUserLogin"
       | "category"
       | "goal"
+      | "goalLibrary"
     >
   : V extends "assignedGoal-view"
   ? Pick<

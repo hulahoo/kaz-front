@@ -2,7 +2,11 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicOffenceType extends AbstractDictionary {
   static NAME = "tsadv$DicOffenceType";
 }
-export type DicOffenceTypeViewName = "_base" | "_local" | "_minimal";
+export type DicOffenceTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicOffenceType-browse";
 export type DicOffenceTypeView<
   V extends DicOffenceTypeViewName
 > = V extends "_base"
@@ -66,5 +70,31 @@ export type DicOffenceTypeView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+    >
+  : V extends "dicOffenceType-browse"
+  ? Pick<
+      DicOffenceType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
     >
   : never;

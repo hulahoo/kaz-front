@@ -26,6 +26,7 @@ export type AssignedPerformancePlanViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "assignedPerformancePlan-kpi-team"
   | "assignedPerformancePlan-myKpi"
   | "assignedPerformancePlan-myKpi-edit"
   | "assignedPerformancePlan.browse";
@@ -70,6 +71,20 @@ export type AssignedPerformancePlanView<
       | "adjustedBonus"
       | "adjustedScore"
       | "maxBonusPercent"
+    >
+  : V extends "assignedPerformancePlan-kpi-team"
+  ? Pick<
+      AssignedPerformancePlan,
+      | "id"
+      | "performancePlan"
+      | "startDate"
+      | "endDate"
+      | "status"
+      | "performancePlan"
+      | "startDate"
+      | "endDate"
+      | "status"
+      | "assignedPerson"
     >
   : V extends "assignedPerformancePlan-myKpi"
   ? Pick<

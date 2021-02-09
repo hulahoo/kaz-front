@@ -11,6 +11,7 @@ export type DicCategoryViewName =
   | "_local"
   | "_minimal"
   | "category-courses"
+  | "category-enrollment"
   | "dicCategory.browse";
 export type DicCategoryView<V extends DicCategoryViewName> = V extends "_base"
   ? Pick<
@@ -80,6 +81,22 @@ export type DicCategoryView<V extends DicCategoryViewName> = V extends "_base"
   ? Pick<
       DicCategory,
       | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "courses"
+    >
+  : V extends "category-enrollment"
+  ? Pick<
+      DicCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "langValue"
       | "langValue1"
       | "langValue2"

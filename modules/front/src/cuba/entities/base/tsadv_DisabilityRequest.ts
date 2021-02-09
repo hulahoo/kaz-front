@@ -19,6 +19,7 @@ export class DisabilityRequest extends AbstractParentEntity {
   requestStatus?: DicRequestStatus | null;
   file?: FileDescriptor | null;
   disability?: Disability | null;
+  attachments?: FileDescriptor[] | null;
 }
 export type DisabilityRequestViewName = "_base" | "_local" | "_minimal";
 export type DisabilityRequestView<

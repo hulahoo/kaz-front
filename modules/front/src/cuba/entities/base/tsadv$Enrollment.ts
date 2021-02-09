@@ -3,6 +3,7 @@ import { Course } from "./tsadv$Course";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { CertificationEnrollment } from "./tsadv$CertificationEnrollment";
 import { DicReasonForLearning } from "./tsadv$DicReasonForLearning";
+import { CourseSchedule } from "./tsadv_CourseSchedule";
 export class Enrollment extends AbstractParentEntity {
   static NAME = "tsadv$Enrollment";
   course?: Course | null;
@@ -13,11 +14,14 @@ export class Enrollment extends AbstractParentEntity {
   certificationEnrollment?: CertificationEnrollment | null;
   moneyInBudget?: boolean | null;
   reasonForLearning?: DicReasonForLearning | null;
+  courseSchedule?: CourseSchedule | null;
 }
 export type EnrollmentViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "enrollment-course"
+  | "enrollment-course"
   | "enrollment-view"
   | "enrollment.browse"
   | "enrollment.course.schedule"
@@ -60,6 +64,10 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<Enrollment, "id" | "course">
+  : V extends "enrollment-course"
+  ? Pick<Enrollment, "id" | "course" | "course">
+  : V extends "enrollment-course"
+  ? Pick<Enrollment, "id" | "course" | "course">
   : V extends "enrollment-view"
   ? Pick<
       Enrollment,
@@ -72,6 +80,7 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
       | "certificationEnrollment"
       | "moneyInBudget"
       | "reasonForLearning"
+      | "courseSchedule"
     >
   : V extends "enrollment.browse"
   ? Pick<
@@ -83,7 +92,13 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
   : V extends "enrollment.for.course"
   ? Pick<
       Enrollment,
-      "id" | "course" | "personGroup" | "status" | "reasonForLearning"
+      | "id"
+      | "course"
+      | "personGroup"
+      | "status"
+      | "date"
+      | "reasonForLearning"
+      | "courseSchedule"
     >
   : V extends "enrollment.for.course.card"
   ? Pick<Enrollment, "id" | "course" | "course" | "status">

@@ -28,6 +28,7 @@ export type HierarchyElementExtViewName =
   | "hierarchyElement.parent.minimal"
   | "hierarchyElement.position.tree"
   | "hierarchyElement.timecard"
+  | "hierarchyElementExt-for-integration-rest"
   | "new.hierarchyElement.browse";
 export type HierarchyElementExtView<
   V extends HierarchyElementExtViewName
@@ -193,6 +194,23 @@ export type HierarchyElementExtView<
       | "organizationGroup"
       | "parent"
       | "name"
+    >
+  : V extends "hierarchyElementExt-for-integration-rest"
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "elementType"
+      | "positionGroup"
+      | "organizationGroup"
+      | "parentGroup"
+      | "group"
+      | "hierarchy"
     >
   : V extends "new.hierarchyElement.browse"
   ? Pick<
