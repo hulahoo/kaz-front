@@ -134,5 +134,6 @@
   "form.validation.required": "Field {fieldName} is mandatory.",
   "course.certificate.true": "issued",
   "course.certificate.false": "not issued",
-  "certificateRequest": "Certificate request"
+  "certificateRequest": "Certificate request",
+  "bproc.startBproc.modal.error": "User is already added"
 }

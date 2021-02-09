@@ -160,5 +160,6 @@
   "course.info.isOnline.true": "Онлайн",
   "course.info.approve": "Подтверждение",
   "back": "Назад",
-  "certificateRequest": "Справка с места работы"
+  "certificateRequest": "Справка с места работы",
+  "bproc.startBproc.modal.error": "Пользователь уже добавлен"
 }

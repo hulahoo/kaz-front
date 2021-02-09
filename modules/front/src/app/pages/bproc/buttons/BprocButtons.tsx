@@ -9,7 +9,7 @@ import Button, {ButtonType} from "../../../components/Button/Button";
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
-import {StartBprocModal} from "../modal/StartBprocModal";
+import StartBprocModal from "../modal/StartBprocModal";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
@@ -57,7 +57,7 @@ export class BprocButtons extends React.Component<TaskProps & MainStoreInjected>
         {outcome.id}
       </Button>
     );
-  }
+  };
 
   StartForm = () => {
     return (
