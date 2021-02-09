@@ -13,12 +13,14 @@ import {Candidate} from "../component/Candidate";
 import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
 import CustomButton, {ButtonType} from "../../../components/Button/Button";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
-import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Notification from "../../../util/notification/Notification";
 import {WrappedFormUtils} from "antd/lib/form/Form";
+import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
+import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
+import {CertificateRequestManagement} from "../../certificateRequest/CertificateRequestManagement";
 
 type StartBproc = {
   processDefinitionKey: string;
@@ -26,14 +28,14 @@ type StartBproc = {
   validate(): void;
   update(): void;
   isValidatedSuccess(): boolean;
-  dataInstance: DataInstanceStore<AbstractBprocRequest>;
+  dataInstance: DataInstanceStore<CertificateRequest>;
   form: WrappedFormUtils
 }
 
 @inject("rootStore")
 @injectMainStore
 @observer
-class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & RootStoreProp & WrappedComponentProps> {
+class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & RootStoreProp & WrappedComponentProps & RouteComponentProps> {
 
   @observable
   modalVisible: boolean = false;
@@ -74,7 +76,12 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
         id: "cubaReact.dataTable.no"
       }),
       onOk: () => {
-        this.props.dataInstance.update(this.props.form.getFieldsValue()).then(() => {
+        this.props.dataInstance.update({
+          personGroup: {
+            id: this.props.rootStore!.userInfo.personGroupId
+          },
+          ...this.props.form.getFieldsValue()
+        }).then(() => {
           restServices.startBprocService.saveBprocActors({
             entityId: this.props.dataInstance.item!.id,
             notPersisitBprocActors: this.items
@@ -87,11 +94,10 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 rolesLinks: this.bprocRolesDefiner!.links
               }
             }).then(response => {
+              this.props.history!.push(`${CertificateRequestManagement.PATH}/${this.props.dataInstance.item!.id}`);
               Notification.success({
                 message: this.props.intl.formatMessage({id: "bproc.start.success"})
               });
-              this.props.dataInstance.load(this.props.dataInstance.item!.id);
-              this.modalVisible = false;
             })
           });
         });
@@ -258,4 +264,4 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   }
 }
 
-export default injectIntl(StartBprocModal);
+export default withRouter(injectIntl(StartBprocModal));
