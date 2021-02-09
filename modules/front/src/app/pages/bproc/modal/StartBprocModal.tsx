@@ -18,6 +18,7 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Notification from "../../../util/notification/Notification";
+import {WrappedFormUtils} from "antd/lib/form/Form";
 
 type StartBproc = {
   processDefinitionKey: string;
@@ -26,6 +27,7 @@ type StartBproc = {
   update(): void;
   isValidatedSuccess(): boolean;
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
+  form: WrappedFormUtils
 }
 
 @inject("rootStore")
@@ -72,7 +74,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
         id: "cubaReact.dataTable.no"
       }),
       onOk: () => {
-        this.props.dataInstance.commit().then(() => {
+        this.props.dataInstance.update(this.props.form.getFieldsValue()).then(() => {
           restServices.startBprocService.saveBprocActors({
             entityId: this.props.dataInstance.item!.id,
             notPersisitBprocActors: this.items
@@ -88,6 +90,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
               Notification.success({
                 message: this.props.intl.formatMessage({id: "bproc.start.success"})
               });
+              this.props.dataInstance.load(this.props.dataInstance.item!.id);
               this.modalVisible = false;
             })
           });

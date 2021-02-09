@@ -13,6 +13,7 @@ import StartBprocModal from "../modal/StartBprocModal";
 import {Modal, notification} from "antd";
 import {Redirect} from "react-router-dom";
 import {restServices} from "../../../../cuba/services";
+import {WrappedFormUtils} from "antd/lib/form/Form";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
@@ -25,6 +26,7 @@ type TaskProps = {
   processInstanceData: ProcessInstanceData | null;
   processDefinitionKey: string;
   redirectPath: string;
+  form: WrappedFormUtils
 };
 
 @injectMainStore
@@ -88,6 +90,7 @@ export class BprocButtons extends React.Component<TaskProps> {
       update={this.props.update}
       isValidatedSuccess={this.props.isValidatedSuccess}
       dataInstance={this.props.dataInstance}
+      form={this.props.form}
       processDefinitionKey={this.props.processDefinitionKey}/>
   }
 

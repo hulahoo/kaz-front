@@ -228,6 +228,7 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                                                       isStartForm={this.isStartForm}
                                                       redirectPath={CertificateRequestManagement.PATH}
                                                       processDefinitionKey={'certificateRequest'}
+                                                      form={this.props.form}
                                                       task={this.activeTask}/> : null;
     return (
       <Page pageName={this.props.intl.formatMessage({id: "certificateRequest"})}>
