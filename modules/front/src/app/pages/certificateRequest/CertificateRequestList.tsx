@@ -17,6 +17,8 @@ import {Table} from "antd/es";
 import Column from "antd/es/table/Column";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
+import Page from "../../hoc/PageContentHoc";
+import Section from "../../hoc/Section";
 
 @injectMainStore
 @inject("rootStore")
@@ -81,64 +83,67 @@ class CertificateRequestListComponent extends React.Component<MainStoreInjected 
     ];
 
     return (
-
-      <div>
-        <div style={{marginBottom: 16}}>
-          {buttons}
-        </div>
-        <Table
-          dataSource={items}
-          rowKey={record => record.id}>
-          <Column
-            title={<Msg entityName={CertificateRequest.NAME} propertyName='requestNumber'/>}
-            dataIndex="requestNumber"
-            render={(text, record) => (
-              <Link
-                to={CertificateRequestManagement.PATH + "/" + (record as CertificateRequest).id}>
-                {(record as CertificateRequest).requestNumber}
-              </Link>
-            )}
-          />
-          <Column
-            title={<Msg entityName={CertificateRequest.NAME} propertyName='requestDate'/>}
-            dataIndex="requestDate"
-            render={(text, record) => (
-              <div>
-                {(record as CertificateRequest).requestDate}
-              </div>
-            )}
-          />
-          <Column
-            title={<Msg entityName={CertificateRequest.NAME} propertyName='status'/>}
-            dataIndex="status"
-            render={(text, record) => (
-              <div>
-                {((record as CertificateRequest).status as DicRequestStatus).langValue1}
-              </div>
-            )}
-          />
-          <Column
-            title={<Msg entityName={CertificateRequest.NAME} propertyName='file'/>}
-            dataIndex="file"
-            render={(text, record) => {
-              if ((record as CertificateRequest).file)
-                return (
-                  <a
-                    onClick={() =>
-                      getCubaREST()!.getFile(((record as CertificateRequest).file as FileDescriptor).id)
-                        .then(responseBlob => {
-                          window.open(URL.createObjectURL(responseBlob), "_blank");
-                        })
-                    }>
-                    {((record as CertificateRequest).file as FileDescriptor).name}
-                  </a>
-                )
-              return (<span/>);
-            }
-            }
-          />
-        </Table>
-      </div>
+      <Page pageName={this.props.intl.formatMessage({id: "certificateRequest"})}>
+        <Section size="large">
+          <div>
+            <div style={{marginBottom: 16}}>
+              {buttons}
+            </div>
+            <Table
+              dataSource={items}
+              rowKey={record => record.id}>
+              <Column
+                title={<Msg entityName={CertificateRequest.NAME} propertyName='requestNumber'/>}
+                dataIndex="requestNumber"
+                render={(text, record) => (
+                  <Link
+                    to={CertificateRequestManagement.PATH + "/" + (record as CertificateRequest).id}>
+                    {(record as CertificateRequest).requestNumber}
+                  </Link>
+                )}
+              />
+              <Column
+                title={<Msg entityName={CertificateRequest.NAME} propertyName='requestDate'/>}
+                dataIndex="requestDate"
+                render={(text, record) => (
+                  <div>
+                    {(record as CertificateRequest).requestDate}
+                  </div>
+                )}
+              />
+              <Column
+                title={<Msg entityName={CertificateRequest.NAME} propertyName='status'/>}
+                dataIndex="status"
+                render={(text, record) => (
+                  <div>
+                    {((record as CertificateRequest).status as DicRequestStatus).langValue1}
+                  </div>
+                )}
+              />
+              <Column
+                title={<Msg entityName={CertificateRequest.NAME} propertyName='file'/>}
+                dataIndex="file"
+                render={(text, record) => {
+                  if ((record as CertificateRequest).file)
+                    return (
+                      <a
+                        onClick={() =>
+                          getCubaREST()!.getFile(((record as CertificateRequest).file as FileDescriptor).id)
+                            .then(responseBlob => {
+                              window.open(URL.createObjectURL(responseBlob), "_blank");
+                            })
+                        }>
+                        {((record as CertificateRequest).file as FileDescriptor).name}
+                      </a>
+                    )
+                  return (<span/>);
+                }
+                }
+              />
+            </Table>
+          </div>
+        </Section>
+      </Page>
     );
   }
 

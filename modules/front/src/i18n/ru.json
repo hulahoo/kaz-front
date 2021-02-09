@@ -159,5 +159,6 @@
   "course.info.isOnline.false": "Оффлайн",
   "course.info.isOnline.true": "Онлайн",
   "course.info.approve": "Подтверждение",
-  "back": "Назад"
+  "back": "Назад",
+  "certificateRequest": "Справка с места работы"
 }

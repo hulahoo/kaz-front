@@ -37,6 +37,8 @@ import {BprocButtons} from "../bproc/buttons/BprocButtons";
 import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
 import {BprocFormData} from "../../../cuba/entities/bproc/bproc_FormData";
 import Button, {ButtonType} from "../../components/Button/Button";
+import Page from "../../hoc/PageContentHoc";
+import Section from "../../hoc/Section";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -227,169 +229,173 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                                                       processDefinitionKey={'certificateRequest'}
                                                       task={this.activeTask}/> : null;
     return (
-      <div>
-        <Card className="narrow-layout">
-          <Form onSubmit={this.validate} layout="vertical">
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="requestNumber"
-              form={this.props.form}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              disabled={true}
-              getFieldDecoratorOpts={{
-                rules: [{required: true,}]
-              }}
-            />
+      <Page pageName={this.props.intl.formatMessage({id: "certificateRequest"})}>
+        <Section size="large">
+          <div>
+            <Card className="narrow-layout" bordered={false}>
+              <Form onSubmit={this.validate} layout="vertical">
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="requestNumber"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  disabled={true}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true,}]
+                  }}
+                />
 
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="status"
-              disabled={true}
-              form={this.props.form}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              optionsContainer={this.statusesDc}
-              getFieldDecoratorOpts={{
-                rules: [{required: true,}],
-              }}
-            />
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="status"
+                  disabled={true}
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  optionsContainer={this.statusesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true,}],
+                  }}
+                />
 
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="requestDate"
-              form={this.props.form}
-              disabled={true}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              getFieldDecoratorOpts={{
-                rules: [{required: true,}]
-              }}
-            />
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="requestDate"
+                  form={this.props.form}
+                  disabled={true}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true,}]
+                  }}
+                />
 
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="receivingType"
-              form={this.props.form}
-              disabled={isDraft}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              optionsContainer={this.receivingTypesDc}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.receivingType']})
-                }]
-              }}
-            />
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="receivingType"
+                  form={this.props.form}
+                  disabled={isDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  optionsContainer={this.receivingTypesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.receivingType']})
+                    }]
+                  }}
+                />
 
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="certificateType"
-              form={this.props.form}
-              disabled={isDraft}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              optionsContainer={this.certificateTypesDc}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.certificateType']})
-                }]
-              }}
-            />
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="certificateType"
+                  form={this.props.form}
+                  disabled={isDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  optionsContainer={this.certificateTypesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.certificateType']})
+                    }]
+                  }}
+                />
 
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="language"
-              form={this.props.form}
-              disabled={isDraft}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              optionsContainer={this.languagesDc}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.language']})
-                }]
-              }}
-            />
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="language"
+                  form={this.props.form}
+                  disabled={isDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  optionsContainer={this.languagesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.language']})
+                    }]
+                  }}
+                />
 
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="showSalary"
-              form={this.props.form}
-              disabled={isDraft}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.showSalary']})
-                }],
-                valuePropName: "checked"
-              }}
-            />
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="showSalary"
+                  form={this.props.form}
+                  disabled={isDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.showSalary']})
+                    }],
+                    valuePropName: "checked"
+                  }}
+                />
 
-            <ReadonlyField
-              entityName={CertificateRequest.NAME}
-              propertyName="numberOfCopy"
-              form={this.props.form}
-              // disabled={isDraft}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.numberOfCopy']})
-                }]
-              }}
+                <ReadonlyField
+                  entityName={CertificateRequest.NAME}
+                  propertyName="numberOfCopy"
+                  form={this.props.form}
+                  // disabled={isDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.numberOfCopy']})
+                    }]
+                  }}
 
-            />
+                />
 
-            {this.takCard()}
+                {this.takCard()}
 
-            {this.globalErrors.length > 0 && (
-              <Alert
-                message={<MultilineText lines={toJS(this.globalErrors)}/>}
-                type="error"
-                style={{marginBottom: "24px"}}
-              />
-            )}
+                {this.globalErrors.length > 0 && (
+                  <Alert
+                    message={<MultilineText lines={toJS(this.globalErrors)}/>}
+                    type="error"
+                    style={{marginBottom: "24px"}}
+                  />
+                )}
 
-            <Form.Item style={{textAlign: "center"}}>
+                <Form.Item style={{textAlign: "center"}}>
 
-              {outcomeBtns}
+                  {outcomeBtns}
 
-              <Link to={CertificateRequestManagement.PATH}>
-                <Button buttonType={ButtonType.FOLLOW} htmlType="button">
-                  <FormattedMessage id="management.editor.cancel"/>
-                </Button>
-              </Link>
-              <Button
-                buttonType={ButtonType.PRIMARY}
-                htmlType="submit"
-                disabled={status !== "DONE" && status !== "ERROR"}
-                loading={status === "LOADING"}
-                style={{marginLeft: "8px"}}
-              >
-                <FormattedMessage id="management.editor.submit"/>
-              </Button>
-            </Form.Item>
+                  <Link to={CertificateRequestManagement.PATH}>
+                    <Button buttonType={ButtonType.FOLLOW} htmlType="button">
+                      <FormattedMessage id="management.editor.cancel"/>
+                    </Button>
+                  </Link>
+                  <Button
+                    buttonType={ButtonType.PRIMARY}
+                    htmlType="submit"
+                    disabled={status !== "DONE" && status !== "ERROR"}
+                    loading={status === "LOADING"}
+                    style={{marginLeft: "8px"}}
+                  >
+                    <FormattedMessage id="management.editor.submit"/>
+                  </Button>
+                </Form.Item>
 
-            {/*<Form.Item style={{textAlign: "center"}}>*/}
-            {/*  <Link to={CertificateRequestManagement.PATH}>*/}
-            {/*    <Button htmlType="button">*/}
-            {/*      <FormattedMessage id="management.editor.cancel"/>*/}
-            {/*    </Button>*/}
-            {/*  </Link>*/}
-            {/*  <Button*/}
-            {/*    type="primary"*/}
-            {/*    htmlType="submit"*/}
-            {/*    disabled={status !== "DONE" && status !== "ERROR"}*/}
-            {/*    loading={status === "LOADING"}*/}
-            {/*    style={{marginLeft: "8px"}}*/}
-            {/*  >*/}
-            {/*    <FormattedMessage id="management.editor.submit"/>*/}
-            {/*  </Button>*/}
+                {/*<Form.Item style={{textAlign: "center"}}>*/}
+                {/*  <Link to={CertificateRequestManagement.PATH}>*/}
+                {/*    <Button htmlType="button">*/}
+                {/*      <FormattedMessage id="management.editor.cancel"/>*/}
+                {/*    </Button>*/}
+                {/*  </Link>*/}
+                {/*  <Button*/}
+                {/*    type="primary"*/}
+                {/*    htmlType="submit"*/}
+                {/*    disabled={status !== "DONE" && status !== "ERROR"}*/}
+                {/*    loading={status === "LOADING"}*/}
+                {/*    style={{marginLeft: "8px"}}*/}
+                {/*  >*/}
+                {/*    <FormattedMessage id="management.editor.submit"/>*/}
+                {/*  </Button>*/}
 
-            {/*</Form.Item>*/}
-          </Form>
-        </Card>
+                {/*</Form.Item>*/}
+              </Form>
+            </Card>
 
-      </div>
+          </div>
+        </Section>
+      </Page>
     );
   }
 
