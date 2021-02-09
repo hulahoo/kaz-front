@@ -176,138 +176,137 @@ class PersonDocumentEditComponent extends React.Component<Props & WrappedCompone
     if (!messages) {
       return <LoadingPage/>
     }
-    const PageContent = <Card className="narrow-layout large-section section-container">
-      <Form onSubmit={this.handleSubmit} layout="vertical">
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="documentType"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          optionsContainer={this.documentTypesDc}
-          getFieldDecoratorOpts={{
-            rules: [{
-              required: true,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.documentType']})
-            }]
-          }}/>
 
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="status"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          optionsContainer={this.statusDc}
-          getFieldDecoratorOpts={{
-            rules: [{
-              required: true,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.status']})
-            }]
-          }}/>
+    return <Page pageName={this.props.intl.formatMessage({id: "myProfile.documents"})}>
+      <Card className="narrow-layout large-section section-container">
+        <Form onSubmit={this.handleSubmit} layout="vertical">
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="documentType"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            optionsContainer={this.documentTypesDc}
+            getFieldDecoratorOpts={{
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.documentType']})
+              }]
+            }}/>
 
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="expiredDate"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          getFieldDecoratorOpts={{
-            rules: [{
-              required: true,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.expiredDate']})
-            }]
-          }}
-        />
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="status"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            optionsContainer={this.statusDc}
+            getFieldDecoratorOpts={{
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.status']})
+              }]
+            }}/>
 
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="issuingAuthority"
-          form={this.props.form}
-          mainStore={this.mainStore}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          optionsContainer={this.issuingAuthoritiesDc}
-          getFieldDecoratorOpts={{
-            rules: [{
-              required: true,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.issuingAuthority']})
-            }]
-          }}/>
-
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="issueDate"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          getFieldDecoratorOpts={{
-            rules: [{
-              required: true,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.issueDate']})
-            }]
-          }}
-        />
-
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="description"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          getFieldDecoratorOpts={{}}
-        />
-
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="documentNumber"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          getFieldDecoratorOpts={{
-            rules: [{
-              required: true,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.documentNumber']})
-            }]
-          }}
-        />
-
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="series"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          getFieldDecoratorOpts={{}}
-        />
-
-        <Field
-          entityName={PersonDocument.NAME}
-          propertyName="file"
-          form={this.props.form}
-          formItemOpts={{style: {marginBottom: "12px"}}}
-          optionsContainer={this.filesDc}
-          getFieldDecoratorOpts={{}}/>
-
-        {this.globalErrors.length > 0 && (
-          <Alert
-            message={<MultilineText lines={toJS(this.globalErrors)}/>}
-            type="error"
-            style={{marginBottom: "24px"}}
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="expiredDate"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            getFieldDecoratorOpts={{
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.expiredDate']})
+              }]
+            }}
           />
-        )}
 
-        <Form.Item style={{textAlign: "center"}}>
-          <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
-            <FormattedMessage id="management.editor.cancel"/>
-          </Button>
-          <Button
-            buttonType={ButtonType.PRIMARY}
-            htmlType="submit"
-            disabled={status !== "DONE" && status !== "ERROR"}
-            loading={status === "LOADING"}
-            style={{marginLeft: "8px"}}
-          >
-            <FormattedMessage id="management.editor.submit"/>
-          </Button>
-        </Form.Item>
-      </Form>
-    </Card>;
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="issuingAuthority"
+            form={this.props.form}
+            mainStore={this.mainStore}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            optionsContainer={this.issuingAuthoritiesDc}
+            getFieldDecoratorOpts={{
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.issuingAuthority']})
+              }]
+            }}/>
 
-    return <Page pageName={"Документ"}>
-      {PageContent}
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="issueDate"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            getFieldDecoratorOpts={{
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.issueDate']})
+              }]
+            }}
+          />
+
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="description"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            getFieldDecoratorOpts={{}}
+          />
+
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="documentNumber"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            getFieldDecoratorOpts={{
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[PersonDocument.NAME + '.documentNumber']})
+              }]
+            }}
+          />
+
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="series"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            getFieldDecoratorOpts={{}}
+          />
+
+          <Field
+            entityName={PersonDocument.NAME}
+            propertyName="file"
+            form={this.props.form}
+            formItemOpts={{style: {marginBottom: "12px"}}}
+            optionsContainer={this.filesDc}
+            getFieldDecoratorOpts={{}}/>
+
+          {this.globalErrors.length > 0 && (
+            <Alert
+              message={<MultilineText lines={toJS(this.globalErrors)}/>}
+              type="error"
+              style={{marginBottom: "24px"}}
+            />
+          )}
+
+          <Form.Item style={{textAlign: "center"}}>
+            <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
+              <FormattedMessage id="management.editor.cancel"/>
+            </Button>
+            <Button
+              buttonType={ButtonType.PRIMARY}
+              htmlType="submit"
+              disabled={status !== "DONE" && status !== "ERROR"}
+              loading={status === "LOADING"}
+              style={{marginLeft: "8px"}}
+            >
+              <FormattedMessage id="management.editor.submit"/>
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </Page>;
   }
 

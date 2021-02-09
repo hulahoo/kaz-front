@@ -26,7 +26,6 @@ import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
-import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
@@ -35,6 +34,8 @@ import {LibraryAssignedGoalManagement} from "./pages/AssignedGoals/LibraryGoal/L
 import LearningHistory from "./pages/LearningHistory";
 import {CourseManagement} from "./pages/Course/CourseManagement";
 import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
+import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
+import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 
 @injectMainStore
 @inject("rootStore")
@@ -82,7 +83,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
           >
             <Menu mode="inline" style={{height: "100%", borderRight: 0}} className={"side-menu"}>
               {menuItems.map((item, idx) =>
-                menuItem(item, "" + (idx + 1 + menuIdx), this.props.intl)
+                this.menuItem(item, "" + (idx + 1 + menuIdx), this.props.intl)
               )}
             </Menu>
           </Layout.Sider>
@@ -92,15 +93,18 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
-                <Route path="/my-profile" component={PersonalDataRequestEditPage}/>
-                {/*<Route path="/personalDataRequestManagement/:entityId?" component={PersonalDataRequestEdit}/>*/}
+                <Route exact={true} path="/my-profile" component={PersonalDataRequestEditPage}/>
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
                 <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
-                <Route exact={true} path="/kpi/:appId/goal/create/individual" component={AssignedGoalManagement}/>
-                <Route exact={true} path="/kpi/:appId/goal/create/library" component={LibraryAssignedGoalManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/individual/:entityId?" component={AssignedGoalManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/library/:entityId?"
+                       component={LibraryAssignedGoalManagement}/>
                 <Route exact={true} path="/learning-history" component={LearningHistory}/>
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
+                <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>
+                <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
+                {/*<Route exact={true} path="/books/:entityId?" component={BookCards}/>*/}
                 <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
@@ -113,46 +117,47 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
       </Layout>
     );
   }
-}
 
-function menuItem(
-  item: RouteItem | SubMenu,
-  keyString: string,
-  intl: IntlFormatters
-) {
-  // Sub Menu  const
-  if ((item as any).items != null) {
-    //recursively walk through sub menus
-    const menuSubMenu: MenuSubMenu = item as MenuSubMenu;
-    const MenuIcon = getMenuIcon(menuSubMenu.id);
-    return (
-      <Menu.SubMenu
-        key={keyString}
-        title={
-          <span>
+  menuItem = (
+    item: RouteItem | SubMenu,
+    keyString: string,
+    intl: IntlFormatters
+  ) => {
+    // Sub Menu  const
+    if ((item as any).items != null) {
+      //recursively walk through sub menus
+      const menuSubMenu: MenuSubMenu = item as MenuSubMenu;
+      const MenuIcon = getMenuIcon(menuSubMenu.id);
+      return (
+        <Menu.SubMenu
+          key={keyString}
+          title={
+            <span>
             <img src={MenuIcon} className={"ant-menu-item-icon"}/>
-            <span>{item.caption}</span>
+            <span>{this.props.intl.formatMessage({id: "menu." + (item as any).id})}</span>
           </span>
-        }>
-        {(item as SubMenu).items.map((ri, index) =>
-          menuItem(ri, keyString + "-" + (index + 1), intl)
-        )}
-      </Menu.SubMenu>
+          }>
+          {(item as SubMenu).items.map((ri, index) =>
+            this.menuItem(ri, keyString + "-" + (index + 1), intl)
+          )}
+        </Menu.SubMenu>
+      );
+    }
+
+    // Route Item
+    const menuRouteItem: MenuRouteItem = item as MenuRouteItem;
+    const MenuIcon = getMenuIcon(menuRouteItem.id);
+
+    return (
+      <Menu.Item key={keyString}>
+        <img src={MenuIcon} className={"ant-menu-item-icon"}/>
+        <NavLink to={menuRouteItem.menuLink}>
+          {this.props.intl.formatMessage({id: "menu." + (item as any).id})}
+        </NavLink>
+      </Menu.Item>
     );
   }
 
-  // Route Item
-  const menuRouteItem: MenuRouteItem = item as MenuRouteItem;
-  const MenuIcon = getMenuIcon(menuRouteItem.id);
-
-  return (
-    <Menu.Item key={keyString}>
-      <img src={MenuIcon} className={"ant-menu-item-icon"}/>
-      <NavLink to={menuRouteItem.menuLink}>
-        {item.caption}
-      </NavLink>
-    </Menu.Item>
-  );
 }
 
 const App = injectIntl(AppComponent);

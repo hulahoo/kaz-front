@@ -39,7 +39,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
     const {TabPane} = Tabs;
 
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "myCourses"})}>
+      <Page pageName={this.props.intl.formatMessage({id: "menu.my-courses"})}>
         <Spin spinning={this.status === 'LOADING'}>
           <SearchInput onSearch={this.onSearch}/>
           <Tabs>

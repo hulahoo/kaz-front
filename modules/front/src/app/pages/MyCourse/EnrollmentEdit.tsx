@@ -3,7 +3,7 @@ import {observer} from "mobx-react";
 import {action, observable, runInAction} from "mobx";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
-import {DataContainerStatus,} from "@cuba-platform/react";
+import {DataContainerStatus, getCubaREST, instance,} from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
@@ -24,6 +24,11 @@ import {EnrollmentManagement} from "./EnrollmentManagement";
 import {restQueries} from "../../../cuba/queries";
 import Video from "../../components/Video";
 import Test from "../../components/Test/Test";
+import * as ReactDOM from "react-dom";
+import {RefObject} from "react";
+import CourseSectionModal from "./CourseSectionModal";
+import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSectionAttempt";
+import moment from "moment";
 
 type Props = {
   entityId: string;
@@ -39,43 +44,102 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   dataInstance: SerializedEntity<Enrollment>;
 
   @observable
-  selectedSection: CourseSection;
+  selectedSectionId: string;
+
+  @observable
+  selectedCourseSection = instance<CourseSection>(CourseSection.NAME, {
+    view: "course.section.with.format.session",
+    loadImmediately: false
+  });
 
   @observable
   visibleModal: boolean = false;
 
   clickSection = (e: React.MouseEvent<HTMLDivElement>) => {
     const courseSectionId = e.currentTarget.children.item(0)!.id;
-
-    this.status = "LOADING";
-    restServices.lmsService.loadCourseSectionData({
-      enrollmentId: this.props.entityId,
-      courseSectionId: courseSectionId
-    }).then((courseSection) => {
-      this.setSelectedSection(courseSection);
-      this.loadData();
-    })
+    this.setSelectedSectionId(courseSectionId);
   };
 
   playIconClick = () => {
-    if (!this.selectedSection) {
+    if (!this.selectedSectionId) {
       Notification.info({
         message: "Не выбран раздел курса"
       });
       return;
     }
 
+    this.selectedCourseSection.load(this.selectedSectionId);
     this.setVisibleModal(true);
   };
 
+  onCloseModal = () => {
+    this.setVisibleModal(false);
+  };
+
   @action
-  setSelectedSection = (value: CourseSection) => {
-    this.selectedSection = value;
+  setSelectedSectionId = (value: string) => {
+    this.selectedSectionId = value;
   };
 
   @action
   setVisibleModal = (value: boolean) => {
     this.visibleModal = value;
+  };
+
+  finishSection = () => {
+    getCubaREST()!.searchEntitiesWithCount(CourseSectionAttempt.NAME, {
+      conditions: [{
+        property: "enrollment",
+        operator: "=",
+        value: this.props.entityId
+      }, {
+        property: "courseSection",
+        operator: "=",
+        value: this.selectedSectionId
+      }]
+    }, {view: "course-section-attempt"}).then(response => {
+      if ((response.count == 0)) {
+        getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
+          courseSection: {
+            id: this.selectedCourseSection,
+          },
+          attemptDate: moment().toISOString(),
+          activeAttempt: false,
+          success: true,
+          enrollment: {
+            id: this.props.entityId
+          }
+        } as CourseSectionAttempt).then(respones => {
+          const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSectionId);
+          if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
+            const nextSelectedSectionIndex = selectedSectionIndex + 1;
+            const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
+            if (nextSection) {
+              this.setSelectedSectionId(nextSection.id);
+              this.playIconClick();
+            } else {
+              this.visibleModal = false;
+            }
+          } else {
+            this.visibleModal = false;
+          }
+        });
+      } else {
+        const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSectionId);
+        if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
+          const nextSelectedSectionIndex = selectedSectionIndex + 1;
+          const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
+          if (nextSection) {
+            this.setSelectedSectionId(nextSection.id);
+            this.playIconClick();
+          } else {
+            this.visibleModal = false;
+          }
+        } else {
+          this.visibleModal = false;
+        }
+      }
+    })
   };
 
   render() {
@@ -98,20 +162,18 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
               <Col span={8} style={{paddingLeft: "30px"}}>
                 <CourseSectionList dataInstance={this.dataInstance ? this.dataInstance.course!.sections : null}
                                    clickItemHandler={this.clickSection}
-                                   selectedItem={this.selectedSection ? this.selectedSection.id : null}/>
+                                   selectedItem={this.selectedSectionId}/>
                 <hr/>
                 <Meta title="Анкета обратной связи" className={"course-section-item course-section-item-feedback"}/>
               </Col>
             </Row>
           </Section>
+          {this.visibleModal ? <CourseSectionModal
+            onFinishSection={this.finishSection}
+            onCloseModal={this.onCloseModal}
+            selectedCourseSection={this.selectedCourseSection.item}
+            enrollmentId={this.props.entityId}/> : <></>}
         </Spin>
-        <Modal visible={this.visibleModal}
-               onCancel={() => this.setVisibleModal(false)}
-               footer={null}
-               width={900}
-               destroyOnClose>
-          {this.selectedSection ? this.getSectionBody(this.selectedSection) : null}
-        </Modal>
       </Page>);
   }
 
@@ -127,53 +189,13 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       if (response && response.length > 0) {
         runInAction(() => {
           this.dataInstance = response[0]
-        })
+        });
         this.status = "DONE";
       }
     }).catch(() => {
       this.status = "DONE";
     });
   };
-
-//TODO: переписать
-  getSectionBody = (cs: CourseSection) => {
-    if (!cs.sectionObject) {
-      Notification.error({message: "У раздела отсутствует объект раздела!"});
-      return;
-    }
-
-    if (cs.sectionObject.test) {
-      return <Card className={"modal-body"} actions={[<Button buttonType={ButtonType.PRIMARY}>Завершить тест</Button>]}>
-        <Test test={{
-          enrollmentId: this.props.entityId,
-          courseSectionObjectId: cs.sectionObject.id
-        }}/>
-      </Card>
-    } else if (cs.sectionObject.content) {
-      if (cs.sectionObject.content.contentType === "HTML") {
-        return <Card className={"modal-body"}>
-          <div dangerouslySetInnerHTML={{__html: cs.sectionObject.content.html!}}
-               style={{width: '100%', height: '500px'}}/>
-        </Card>
-      }
-      if (cs.sectionObject.content.contentType === "URL") {
-        return <Card className={"modal-body"}>
-          <div style={{width: '100%', height: '500px'}}>
-            <iframe width="100%" height="100%" src={cs.sectionObject.content.url!}/>
-          </div>
-        </Card>
-      }
-      if (cs.sectionObject.content.contentType === "VIDEO") {
-        return <Card className={"modal-body"}>
-          <div style={{width: '100%', height: '500px'}}>
-            <Video fileId={cs.sectionObject.content.file!.id!}/>
-          </div>
-        </Card>
-      }
-    }
-    return null;
-  };
-
 }
 
 export default injectIntl(EnrollmentEditComponent);
