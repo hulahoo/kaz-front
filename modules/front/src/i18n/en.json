@@ -135,5 +135,7 @@
   "course.certificate.true": "issued",
   "course.certificate.false": "not issued",
   "certificateRequest": "Certificate request",
-  "bproc.startBproc.modal.error": "User is already added"
+  "bproc.startBproc.modal.error": "User is already added",
+  "bproc.start": "Are you sure, want to send on approve?",
+  "bproc.start.success": "Document successfully sent on approve"
 }

@@ -16,8 +16,6 @@ import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
-import {User} from "../../../../cuba/entities/base/sec$User";
-import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Notification from "../../../util/notification/Notification";
 
@@ -63,16 +61,39 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   handleOk = (e: any) => {
-    restServices.startBprocService.saveBprocActors({
-      entityId: this.props.dataInstance.item!.id,
-      notPersisitBprocActors: this.items
-    }).then(response => {
-      // restServices.startBprocService.({
-      //   entityId: this.props.dataInstance.item!.id,
-      //   notPersisitBprocActors: this.items
-      // })
+    Modal.confirm({
+      title: this.props.intl.formatMessage(
+        {id: "bproc.start"}
+      ),
+      okText: this.props.intl.formatMessage({
+        id: "cubaReact.dataTable.yes"
+      }),
+      cancelText: this.props.intl.formatMessage({
+        id: "cubaReact.dataTable.no"
+      }),
+      onOk: () => {
+        this.props.dataInstance.commit().then(() => {
+          restServices.startBprocService.saveBprocActors({
+            entityId: this.props.dataInstance.item!.id,
+            notPersisitBprocActors: this.items
+          }).then(response => {
+            restServices.bprocRuntimeService.startProcessInstanceByKey({
+              businessKey: this.props.dataInstance.item!.id,
+              processDefinitionKey: this.props.processDefinitionKey,
+              variables: {
+                entity: this.props.dataInstance.item,
+                rolesLinks: this.bprocRolesDefiner!.links
+              }
+            }).then(response => {
+              Notification.success({
+                message: this.props.intl.formatMessage({id: "bproc.start.success"})
+              });
+              this.modalVisible = false;
+            })
+          });
+        });
+      }
     });
-    this.modalVisible = false;
   };
 
   handleCancel = (e: any) => {
@@ -94,7 +115,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
     if (value) {
       this.selectedUser = {
         id: value,
-        fullNameWithLogin: (option.props['children'] as any)
+        fullNameWithLogin: (option.props['children'] as any),
       };
     } else {
       this.selectedUser = null;
@@ -110,7 +131,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
     }
     this.items.unshift(({
       hrRole: this.selectedHrRole,
-      users: [this.selectedUser]
+      users: [this.selectedUser],
+      bprocUserTaskCode: this.bprocRolesDefiner!.links!.find(rd => rd.hrRole!.id === this.selectedHrRole!.id)!.bprocUserTaskCode
     } as any));
   };
 

@@ -204,7 +204,7 @@ export const restServices = {
       }
     },
     bprocRuntimeService: {
-      startProcessInstanceByKey: (param: { processDefinitionKey: string, businessKey: string, variables: Map<string, any> }): Promise<void> => {
+      startProcessInstanceByKey: (param: { processDefinitionKey: string, businessKey: string, variables: any }): Promise<void> => {
         return getCubaREST()!.invokeService(
           "bproc_BprocRuntimeService",
           "startProcessInstanceByKey",

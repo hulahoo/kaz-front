@@ -161,5 +161,7 @@
   "course.info.approve": "Подтверждение",
   "back": "Назад",
   "certificateRequest": "Справка с места работы",
-  "bproc.startBproc.modal.error": "Пользователь уже добавлен"
+  "bproc.startBproc.modal.error": "Пользователь уже добавлен",
+  "bproc.start": "Вы уверены, что хотите отправить на утверждение?",
+  "bproc.start.success": "Документ успешно отправлен на утверждение"
 }
