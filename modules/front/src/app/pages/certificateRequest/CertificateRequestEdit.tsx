@@ -125,9 +125,11 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
   validate = () => {
 
     console.log("validate")
-    console.log("validate")
 
     this.props.form.validateFields((err, values) => {
+
+      this.isValidatedSuccess = !err;
+
       if (err) {
         message.error(
           this.props.intl.formatMessage({
@@ -136,8 +138,6 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
         );
         return;
       }
-
-      this.isValidatedSuccess = !!err;
     });
   };
 
@@ -221,7 +221,7 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                                                       formData={this.formData}
                                                       validate={this.validate}
                                                       update={this.update}
-                                                      isValidatedSuccess={this.isValidatedSuccess}
+                                                      isValidatedSuccess={() => this.isValidatedSuccess}
                                                       processInstanceData={this.processInstanceData}
                                                       isStartForm={this.isStartForm}
                                                       processDefinitionKey={'certificateRequest'}

@@ -20,7 +20,7 @@ type StartBproc = {
   employee: UserExt | null;
   validate(): void;
   update(): void;
-  isValidatedSuccess: boolean;
+  isValidatedSuccess(): boolean;
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
 }
 
@@ -37,8 +37,9 @@ export class StartBprocModal extends React.Component<StartBproc & MainStoreInjec
   showModal = () => {
 
     this.props.validate();
+    console.log(this.props.isValidatedSuccess());
 
-    if (this.props.isValidatedSuccess) {
+    if (this.props.isValidatedSuccess()) {
 
       // if (this.props.children.updated === true)
       this.setState({

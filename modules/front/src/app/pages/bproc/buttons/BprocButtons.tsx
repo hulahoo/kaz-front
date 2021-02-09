@@ -16,7 +16,7 @@ type TaskProps = {
   formData: BprocFormData;
   validate(): void;
   update(): void;
-  isValidatedSuccess: boolean;
+  isValidatedSuccess(): boolean;
   isStartForm: boolean;
   task: ExtTaskData | null;
   processInstanceData: ProcessInstanceData | null;
