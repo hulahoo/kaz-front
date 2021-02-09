@@ -207,5 +207,7 @@
   "course.greetingTrainer": "Приветствие от тренера",
   "course.courses": "Курсов",
   "goals": "Цели",
-  "weight": "Вес"
+  "weight": "Вес",
+  "close": "Закрыть",
+  "sendOnApprove": "Отправить на утверждение"
 }
