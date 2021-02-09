@@ -19,7 +19,7 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import Notification from "../../../util/notification/Notification";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
-import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import {CertificateRequestManagement} from "../../certificateRequest/CertificateRequestManagement";
 
 type StartBproc = {
@@ -94,7 +94,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 rolesLinks: this.bprocRolesDefiner!.links
               }
             }).then(response => {
-              this.props.history!.push(`${CertificateRequestManagement.PATH}/${this.props.dataInstance.item!.id}`);
+              this.props.history!.push(`${CertificateRequestManagement.PATH}`);
               Notification.success({
                 message: this.props.intl.formatMessage({id: "bproc.start.success"})
               });
