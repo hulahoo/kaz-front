@@ -11,6 +11,7 @@ export class Goal extends AbstractParentEntity {
   uom?: DicUOM | null;
   startDate?: any | null;
   endDate?: any | null;
+  parentGoal?: Goal | null;
 }
 export type GoalViewName =
   | "_base"
@@ -50,11 +51,12 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "id"
       | "goalName"
       | "successCriteria"
+      | "library"
       | "measureType"
       | "uom"
       | "startDate"
       | "endDate"
-      | "library"
+      | "parentGoal"
     >
   : V extends "goal.edit"
   ? Pick<
@@ -67,5 +69,6 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "uom"
       | "startDate"
       | "endDate"
+      | "parentGoal"
     >
   : never;

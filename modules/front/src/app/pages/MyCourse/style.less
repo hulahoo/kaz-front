@@ -1,0 +1,135 @@
+@import "/src/theme-vars";
+
+
+.course-logo {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .play-icon {
+    color: #fff;
+    font-size: 100px;
+
+    position: absolute;
+    cursor: pointer;
+  }
+
+  .play-icon:hover {
+    font-size: 130px;
+  }
+
+  .play-icon:active {
+    color: @primary-4;
+  }
+}
+
+.course-section-item {
+  border: 2px solid @border-color;
+  border-radius: @default-border-radius;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center !important;
+
+  .ant-list-item-meta-avatar {
+    margin-left: 10px;
+  }
+
+  .ant-list-item-meta-title {
+    margin: 14px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .done {
+      position: absolute;
+      left: 0;
+    }
+  }
+}
+
+.ant-modal-body {
+  .fullscreen-icon {
+    text-align: right;
+
+    > i {
+      font-size: 16px;
+      text-align: right;
+
+      transition: 0.3s;
+    }
+
+    > i:hover {
+      font-size: 24px;
+    }
+  }
+
+  .modal-body {
+    margin-top: 20px;
+    padding: 10px;
+  }
+}
+
+.course-section-item.selected {
+  border-color: @primary-1;
+}
+
+.course-section-modal {
+  transition: 0.5s !important;
+  top: 0 !important;
+
+  .course-section-modal-body {
+    width: 100%;
+    height: 500px;
+  }
+}
+
+.course-section-modal.fullscreen {
+  width: 100% !important;
+  height: 100%;
+  padding: 0;
+
+  .ant-modal-content {
+    height: 100%;
+
+    .ant-modal-body {
+      height: 100%;
+
+      .ant-card {
+        height: 100%;
+
+        .ant-card-body {
+          height: calc(100% - 57px);
+
+          .course-section-modal-body {
+            height: calc(100% - 27px);
+          }
+        }
+      }
+
+    }
+  }
+}
+
+
+.course-section-item:hover {
+  border-color: @primary-4;
+}
+
+.course-section-item:active {
+  border-color: @primary-3;
+}
+
+.course-section-item-feedback {
+  border-color: @follow-button-color;
+}
+
+.course-section-item-feedback:hover {
+  border-color: @follow-button-hover-color;
+}

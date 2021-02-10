@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicCompetenceType extends AbstractDictionary {
   static NAME = "tsadv$DicCompetenceType";
 }
-export type DicCompetenceTypeViewName = "_base" | "_local" | "_minimal";
+export type DicCompetenceTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicCompetenceType-browse"
+  | "dicCompetenceType-edit";
 export type DicCompetenceTypeView<
   V extends DicCompetenceTypeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicCompetenceTypeView<
       DicCompetenceType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicCompetenceTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicCompetenceType, "id" | "langValue">
+  ? Pick<
+      DicCompetenceType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicCompetenceType-browse"
+  ? Pick<
+      DicCompetenceType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicCompetenceType-edit"
+  ? Pick<
+      DicCompetenceType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

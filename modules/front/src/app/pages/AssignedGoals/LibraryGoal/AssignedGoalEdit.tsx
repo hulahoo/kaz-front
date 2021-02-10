@@ -35,7 +35,8 @@ import Button, {ButtonType} from "../../../components/Button/Button";
 type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
-  entityId: string;
+  appId: string,
+  entityId: string,
 };
 
 @injectMainStore
@@ -83,7 +84,7 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
         .update({
           ...fieldsValue,
           assignedPerformancePlan: {
-            id: this.props.entityId
+            id: this.props.appId
           }
         })
         .then(() => {
@@ -164,7 +165,7 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
 
   render() {
     if (this.updated) {
-      return <Redirect to={"/kpi/" + this.props.entityId}/>;
+      return <Redirect to={"/kpi/" + this.props.appId}/>;
     }
 
     const messages = this.props.mainStore!.messages!;
@@ -172,11 +173,11 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
     const {Option} = Select;
 
     return (
-      <Page pageName={"Создание цели из библиотеки"}>
+      <Page pageName={""}>
         <Form onSubmit={this.handleSubmit} layout="vertical">
           <Card className="narrow-layout card-actions-container" actions={
             [
-              <Link to={"/kpi/" + this.props.entityId}>
+              <Link to={"/kpi/" + this.props.appId}>
                 <Button htmlType="button" buttonType={ButtonType.FOLLOW}>
                   <FormattedMessage id="management.editor.cancel"/>
                 </Button>
@@ -269,16 +270,28 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
   }
 
   componentDidMount() {
-    // if (this.props.entityId !== LibraryAssignedGoalManagement.NEW_SUBPATH) {
-    //   this.dataInstance.load(this.props.entityId);
-    // } else {
-    this.dataInstance.setItem(new AssignedGoal());
-    // }
+    if (this.props.entityId !== "new") {
+      this.dataInstance.load(this.props.entityId);
+    } else {
+      this.dataInstance.setItem(new AssignedGoal());
+    }
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
       () => {
+        const goalLibrary = this.dataInstance.getFieldValues(["goalLibrary"]).goalLibrary;
+        if (goalLibrary) {
+          this.goalsDc = collection<Goal>(Goal.NAME, {
+            filter: {
+              conditions: [{
+                property: "library",
+                operator: "=",
+                value: goalLibrary
+              }]
+            }, view: "_minimal"
+          });
+        }
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );

@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicCostCenter extends AbstractDictionary {
   static NAME = "tsadv$DicCostCenter";
 }
-export type DicCostCenterViewName = "_base" | "_local" | "_minimal";
+export type DicCostCenterViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicCostCenter-browse"
+  | "dicCostCenter-edit";
 export type DicCostCenterView<
   V extends DicCostCenterViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicCostCenterView<
     >
   : V extends "_minimal"
   ? Pick<DicCostCenter, "id" | "langValue">
+  : V extends "dicCostCenter-browse"
+  ? Pick<
+      DicCostCenter,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicCostCenter-edit"
+  ? Pick<
+      DicCostCenter,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

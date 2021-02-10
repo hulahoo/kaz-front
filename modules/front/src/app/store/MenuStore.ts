@@ -1,6 +1,5 @@
 import RootStore from "./RootStore";
 import {action, observable} from "mobx";
-import {restServices} from "../../cuba/services";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
 import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
@@ -68,7 +67,7 @@ export default class MenuStore {
         ],
       } as MenuSubMenu,
       {
-        id: "leave",
+        id: "vacation",
         caption: "Отпуска",
         items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
       } as MenuSubMenu,
@@ -85,14 +84,20 @@ export default class MenuStore {
           {
             id: "my-courses",
             caption: "Мои курсы",
-            menuLink: "/my-courses",
-            pathPattern: "/my-courses",
+            menuLink: "/my-course",
+            pathPattern: "/my-course",
             component: null,
           },
           {
             id: "library",
             caption: "Библиотека",
             items: [{
+              id: "books",
+              caption: "Мои книги",
+              menuLink: "/books",
+              pathPattern: "/books",
+              component: null
+            },{
               id: "my-books",
               caption: "Мои книги",
               menuLink: "/my-books",
@@ -113,8 +118,8 @@ export default class MenuStore {
       {
         id: "team-kpi",
         caption: "KPI команды",
-        menuLink: "/team-kpi",
-        pathPattern: "/team-kpi",
+        menuLink: "/kpi-team",
+        pathPattern: "/kpi-team",
         component: null,
       },
       {

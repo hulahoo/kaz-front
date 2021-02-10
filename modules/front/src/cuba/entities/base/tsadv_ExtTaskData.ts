@@ -1,9 +1,9 @@
 import { TaskData } from "./bproc_TaskData";
-import { UserExt } from "./tsadv$UserExt";
+import { User } from "./sec$User";
 import { DicHrRole } from "./tsadv$DicHrRole";
 export class ExtTaskData extends TaskData {
   static NAME = "tsadv_ExtTaskData";
-  assigneeOrCandidates?: UserExt[] | null;
+  assigneeOrCandidates?: User | null;
   outcome?: string | null;
   hrRole?: DicHrRole | null;
   comment?: string | null;

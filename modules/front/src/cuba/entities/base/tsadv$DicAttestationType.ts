@@ -6,6 +6,8 @@ export type DicAttestationTypeViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicAttestationType-browse"
+  | "dicAttestationType-edit"
   | "dicAttestationType-view";
 export type DicAttestationTypeView<
   V extends DicAttestationTypeViewName
@@ -62,6 +64,58 @@ export type DicAttestationTypeView<
     >
   : V extends "_minimal"
   ? Pick<DicAttestationType, "id" | "langValue">
+  : V extends "dicAttestationType-browse"
+  ? Pick<
+      DicAttestationType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAttestationType-edit"
+  ? Pick<
+      DicAttestationType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicAttestationType-view"
   ? Pick<
       DicAttestationType,

@@ -7,6 +7,7 @@ import { OrdAssignment } from "./tsadv$OrdAssignment";
 import { AbsenceRequest } from "./tsadv$AbsenceRequest";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { AbsenceToAbsenceBalance } from "./tsadv$AbsenceToAbsenceBalance";
+import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
 export class Absence extends AbstractParentCategorizedEntity {
   static NAME = "tsadv$Absence";
   notificationDate?: any | null;
@@ -32,11 +33,24 @@ export class Absence extends AbstractParentCategorizedEntity {
   periodStart?: any | null;
   periodEnd?: any | null;
   useInBalance?: boolean | null;
+  purposeText?: string | null;
+  purpose?: DicAbsencePurpose | null;
+  timeOfStarting?: any | null;
+  timeOfFinishing?: any | null;
+  totalHours?: number | null;
+  compencation?: boolean | null;
+  vacationDay?: boolean | null;
+  acquainted?: boolean | null;
+  agree?: boolean | null;
+  transferPeriodStart?: any | null;
+  transferPeriodEnd?: any | null;
 }
 export type AbsenceViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "absence-for-my-team"
+  | "absence-view"
   | "absence-with-dynamic-attributes.view"
   | "absence.view"
   | "absence.viewForNotify";
@@ -44,10 +58,10 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
   ? Pick<
       Absence,
       | "id"
-      | "absenceDays"
-      | "absenceStatus"
       | "dateFrom"
       | "dateTo"
+      | "absenceDays"
+      | "absenceStatus"
       | "notificationDate"
       | "order"
       | "type"
@@ -58,6 +72,16 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "periodStart"
       | "periodEnd"
       | "useInBalance"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "transferPeriodStart"
+      | "transferPeriodEnd"
     >
   : V extends "_local"
   ? Pick<
@@ -74,18 +98,85 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "periodStart"
       | "periodEnd"
       | "useInBalance"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "transferPeriodStart"
+      | "transferPeriodEnd"
     >
   : V extends "_minimal"
   ? Pick<
       Absence,
       | "id"
-      | "absenceDays"
-      | "absenceStatus"
       | "dateFrom"
       | "dateTo"
+      | "absenceDays"
+      | "absenceStatus"
       | "notificationDate"
       | "order"
       | "type"
+    >
+  : V extends "absence-for-my-team"
+  ? Pick<
+      Absence,
+      | "id"
+      | "notificationDate"
+      | "orderNum"
+      | "orderDate"
+      | "dateFrom"
+      | "dateTo"
+      | "absenceDays"
+      | "additionalDays"
+      | "legacyId"
+      | "periodStart"
+      | "periodEnd"
+      | "useInBalance"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "transferPeriodStart"
+      | "transferPeriodEnd"
+      | "order"
+      | "type"
+      | "absenceStatus"
+      | "personGroup"
+      | "purpose"
+    >
+  : V extends "absence-view"
+  ? Pick<
+      Absence,
+      | "id"
+      | "notificationDate"
+      | "orderNum"
+      | "orderDate"
+      | "dateFrom"
+      | "dateTo"
+      | "absenceDays"
+      | "additionalDays"
+      | "legacyId"
+      | "periodStart"
+      | "periodEnd"
+      | "useInBalance"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "transferPeriodStart"
+      | "transferPeriodEnd"
     >
   : V extends "absence-with-dynamic-attributes.view"
   ? Pick<
@@ -102,6 +193,16 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "periodStart"
       | "periodEnd"
       | "useInBalance"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "transferPeriodStart"
+      | "transferPeriodEnd"
       | "personGroup"
       | "type"
       | "category"
@@ -123,6 +224,16 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "periodStart"
       | "periodEnd"
       | "useInBalance"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "transferPeriodStart"
+      | "transferPeriodEnd"
       | "absenceRequest"
       | "personGroup"
       | "ordAssignment"
@@ -150,6 +261,16 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "periodStart"
       | "periodEnd"
       | "useInBalance"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "transferPeriodStart"
+      | "transferPeriodEnd"
       | "absenceRequest"
       | "personGroup"
       | "ordAssignment"

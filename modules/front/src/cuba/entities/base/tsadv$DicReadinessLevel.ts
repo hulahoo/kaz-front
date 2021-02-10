@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicReadinessLevel extends AbstractDictionary {
   static NAME = "tsadv$DicReadinessLevel";
 }
-export type DicReadinessLevelViewName = "_base" | "_local" | "_minimal";
+export type DicReadinessLevelViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicReadinessLevel-browse"
+  | "dicReadinessLevel-edit";
 export type DicReadinessLevelView<
   V extends DicReadinessLevelViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicReadinessLevelView<
       DicReadinessLevel,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicReadinessLevelView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicReadinessLevel, "id" | "langValue">
+  ? Pick<
+      DicReadinessLevel,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicReadinessLevel-browse"
+  ? Pick<
+      DicReadinessLevel,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicReadinessLevel-edit"
+  ? Pick<
+      DicReadinessLevel,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

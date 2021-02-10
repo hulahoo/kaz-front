@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicDeliveryAddress extends AbstractDictionary {
   static NAME = "tsadv$DicDeliveryAddress";
 }
-export type DicDeliveryAddressViewName = "_base" | "_local" | "_minimal";
+export type DicDeliveryAddressViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicDeliveryAddress-browse"
+  | "dicDeliveryAddress-edit";
 export type DicDeliveryAddressView<
   V extends DicDeliveryAddressViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicDeliveryAddressView<
       DicDeliveryAddress,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicDeliveryAddressView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicDeliveryAddress, "id" | "langValue">
+  ? Pick<
+      DicDeliveryAddress,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicDeliveryAddress-browse"
+  ? Pick<
+      DicDeliveryAddress,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicDeliveryAddress-edit"
+  ? Pick<
+      DicDeliveryAddress,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

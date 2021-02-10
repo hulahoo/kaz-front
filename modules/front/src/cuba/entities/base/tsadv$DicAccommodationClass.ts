@@ -16,18 +16,18 @@ export type DicAccommodationClassView<
       DicAccommodationClass,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -63,7 +63,16 @@ export type DicAccommodationClassView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicAccommodationClass, "id" | "langValue">
+  ? Pick<
+      DicAccommodationClass,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicAccommodationClass.all"
   ? Pick<
       DicAccommodationClass,
@@ -89,5 +98,6 @@ export type DicAccommodationClassView<
       | "isDefault"
       | "order"
       | "dicAccommodationType"
+      | "company"
     >
   : never;

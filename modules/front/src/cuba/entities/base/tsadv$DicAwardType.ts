@@ -14,18 +14,18 @@ export type DicAwardTypeView<V extends DicAwardTypeViewName> = V extends "_base"
       DicAwardType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -61,7 +61,16 @@ export type DicAwardTypeView<V extends DicAwardTypeViewName> = V extends "_base"
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicAwardType, "id" | "langValue">
+  ? Pick<
+      DicAwardType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicAwardType.all"
   ? Pick<
       DicAwardType,
@@ -87,5 +96,6 @@ export type DicAwardTypeView<V extends DicAwardTypeViewName> = V extends "_base"
       | "isDefault"
       | "order"
       | "promotionType"
+      | "company"
     >
   : never;

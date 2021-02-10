@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicLearningObjectType extends AbstractDictionary {
   static NAME = "tsadv$DicLearningObjectType";
 }
-export type DicLearningObjectTypeViewName = "_base" | "_local" | "_minimal";
+export type DicLearningObjectTypeViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicLearningObjectType-browse"
+  | "dicLearningObjectType-edit";
 export type DicLearningObjectTypeView<
   V extends DicLearningObjectTypeViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicLearningObjectTypeView<
       DicLearningObjectType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicLearningObjectTypeView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicLearningObjectType, "id" | "langValue">
+  ? Pick<
+      DicLearningObjectType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicLearningObjectType-browse"
+  ? Pick<
+      DicLearningObjectType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicLearningObjectType-edit"
+  ? Pick<
+      DicLearningObjectType,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

@@ -20,7 +20,9 @@ import {
 } from "react-intl";
 import Column from "antd/es/table/Column";
 import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
-import {restServices} from "../../../../cuba/services";
+import {restQueries} from "../../../../cuba/queries";
+import {Link} from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -29,7 +31,7 @@ type Props = {
 
 @injectMainStore
 @observer
-class AssignedGoalList extends React.Component<MainStoreInjected & WrappedComponentProps & Props> {
+class AssignedGoalList extends React.Component<MainStoreInjected & WrappedComponentProps & Props & RouteComponentProps> {
 
   @observable
   dataCollection: any[] = [];
@@ -84,26 +86,18 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   render() {
     //TODO: переписать
     if (this.dataCollection.length > 0 && this.props.setTotalWeight) {
-      this.props.setTotalWeight(
-        this.dataCollection.map((e: any) => {
-          return e.children
-        }).map(g => g.map((g: AssignedGoal) => g.weight)
-          .reduce((v1: number, v2: number) => v1 + v2, 0))
-          .reduce((i1, i2) => i1 + i2, 0));
+      this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
     }
 
     return (
-      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false} indentSize={0}
+      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
              size="default" bordered={false} rowKey="id">
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
-                dataIndex="key"
-                key="key"
-                sorter={(a: any, b: any) => {
-                  if (a.key) {
-                    return a.key.localeCompare(b.key);
-                  }
-                  return a;
-                }}/>
+                dataIndex="category.langValue1"
+                key="category"
+                sorter={(a: AssignedGoal, b: AssignedGoal) =>
+                  a.category!.langValue1!.localeCompare(b.category!.langValue1!)
+                }/>
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='goalString'/>}
                 dataIndex="goalString"
                 key="goalString"
@@ -112,16 +106,10 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                     return a;
                   }
                   return a.goalString.localeCompare(b.goalString);
-                }}/>
-        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
-                dataIndex="weight"
-                key="weight"
-                sorter={(a: any, b: any) => {
-                  if (a.key) {
-                    return a;
-                  }
-                  return a.weight - b.weight;
-                }}/>
+                }}
+                render={((text, record, index) => {
+                  return <Link to={this.getGoalUrl(record)}>{text}</Link>
+                })}/>
         <Column title={<Msg entityName={Goal.NAME} propertyName='successCriteria'/>}
                 dataIndex="goal.successCriteria"
                 key="successCriteria"
@@ -144,16 +132,25 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                   }
                   return 0
                 }}/>
+        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+                dataIndex="weight"
+                key="weight"
+                sorter={(a: any, b: any) => {
+                  if (a.key) {
+                    return a;
+                  }
+                  return a.weight - b.weight;
+                }}/>
         <Column
           title=""
           key="action"
-          render={ag => {
-            return ag.children ? <></> : <Button type="link"
-                                                 style={{padding: 0}}
-                                                 onClick={() => this.showDeletionDialog(ag)}>
+          render={ag => (
+            <Button type="link"
+                    style={{padding: 0}}
+                    onClick={() => this.showDeletionDialog(ag)}>
               <Icon type="delete" style={{fontSize: '18px', cursor: 'pointer'}}/>
             </Button>
-          }}
+          )}
         />
       </Table>
     );
@@ -164,14 +161,9 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   load = () => {
-    restServices.kpiService.kpiAssignedGoals({appId: this.props.assignedPerformancePlanId}).then(response => {
+    restQueries.kpiAssignedGoals(this.props.assignedPerformancePlanId).then(ag => {
       runInAction(() => {
-        this.dataCollection = response.map(pm => {
-          return {
-            key: pm.key,
-            children: pm.value
-          }
-        });
+        this.dataCollection = ag
       })
     });
   };
@@ -179,6 +171,12 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
     this.selectedRowKey = selectedRowKeys[0];
   };
+
+  getGoalUrl = (assignedGoal: AssignedGoal): string => {
+    return this.props.match.url[this.props.match.url.length - 1] === '/'
+      ? `${this.props.match.url}goal/${assignedGoal.goalLibrary ? "library" : "individual"}/${assignedGoal.id}`
+      : `${this.props.match.url}/goal/${assignedGoal.goalLibrary ? "library" : "individual"}/${assignedGoal.id}`;
+  };
 }
 
-export default injectIntl(AssignedGoalList);
+export default injectIntl(withRouter(AssignedGoalList));

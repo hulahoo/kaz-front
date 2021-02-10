@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicHrRole extends AbstractDictionary {
   static NAME = "tsadv$DicHrRole";
 }
-export type DicHrRoleViewName = "_base" | "_local" | "_minimal";
+export type DicHrRoleViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicHrRole-browse"
+  | "dicHrRole-edit";
 export type DicHrRoleView<V extends DicHrRoleViewName> = V extends "_base"
   ? Pick<
       DicHrRole,
@@ -56,4 +61,56 @@ export type DicHrRoleView<V extends DicHrRoleViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<DicHrRole, "id" | "langValue">
+  : V extends "dicHrRole-browse"
+  ? Pick<
+      DicHrRole,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicHrRole-edit"
+  ? Pick<
+      DicHrRole,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

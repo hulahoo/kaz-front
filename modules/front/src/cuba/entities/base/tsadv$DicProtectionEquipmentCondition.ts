@@ -5,7 +5,9 @@ export class DicProtectionEquipmentCondition extends AbstractDictionary {
 export type DicProtectionEquipmentConditionViewName =
   | "_base"
   | "_local"
-  | "_minimal";
+  | "_minimal"
+  | "dicProtectionEquipmentCondition-browse"
+  | "dicProtectionEquipmentCondition-edit";
 export type DicProtectionEquipmentConditionView<
   V extends DicProtectionEquipmentConditionViewName
 > = V extends "_base"
@@ -13,18 +15,18 @@ export type DicProtectionEquipmentConditionView<
       DicProtectionEquipmentCondition,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -60,5 +62,66 @@ export type DicProtectionEquipmentConditionView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicProtectionEquipmentCondition, "id" | "langValue">
+  ? Pick<
+      DicProtectionEquipmentCondition,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicProtectionEquipmentCondition-browse"
+  ? Pick<
+      DicProtectionEquipmentCondition,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicProtectionEquipmentCondition-edit"
+  ? Pick<
+      DicProtectionEquipmentCondition,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

@@ -6,6 +6,8 @@ export type DicMaritalStatusViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicMaritalStatus-browse"
+  | "dicMaritalStatus-edit"
   | "dicMaritalStatus.all";
 export type DicMaritalStatusView<
   V extends DicMaritalStatusViewName
@@ -62,6 +64,58 @@ export type DicMaritalStatusView<
     >
   : V extends "_minimal"
   ? Pick<DicMaritalStatus, "id" | "langValue">
+  : V extends "dicMaritalStatus-browse"
+  ? Pick<
+      DicMaritalStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicMaritalStatus-edit"
+  ? Pick<
+      DicMaritalStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicMaritalStatus.all"
   ? Pick<
       DicMaritalStatus,

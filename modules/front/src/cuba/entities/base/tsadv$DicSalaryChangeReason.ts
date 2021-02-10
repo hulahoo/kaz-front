@@ -6,6 +6,8 @@ export type DicSalaryChangeReasonViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicSalaryChangeReason-browse"
+  | "dicSalaryChangeReason-edit"
   | "dicSalaryChangeReason-view";
 export type DicSalaryChangeReasonView<
   V extends DicSalaryChangeReasonViewName
@@ -62,6 +64,58 @@ export type DicSalaryChangeReasonView<
     >
   : V extends "_minimal"
   ? Pick<DicSalaryChangeReason, "id" | "langValue">
+  : V extends "dicSalaryChangeReason-browse"
+  ? Pick<
+      DicSalaryChangeReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicSalaryChangeReason-edit"
+  ? Pick<
+      DicSalaryChangeReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicSalaryChangeReason-view"
   ? Pick<
       DicSalaryChangeReason,

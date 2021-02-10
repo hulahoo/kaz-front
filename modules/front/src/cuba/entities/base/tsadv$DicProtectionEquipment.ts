@@ -24,6 +24,11 @@ export type DicProtectionEquipmentView<
       DicProtectionEquipment,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "gost"
       | "replacementDuration"
       | "isSingle"
@@ -31,15 +36,10 @@ export type DicProtectionEquipmentView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -79,7 +79,16 @@ export type DicProtectionEquipmentView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicProtectionEquipment, "id" | "langValue">
+  ? Pick<
+      DicProtectionEquipment,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicProtectionEquipment.edit"
   ? Pick<
       DicProtectionEquipment,

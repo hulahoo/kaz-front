@@ -49,9 +49,8 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
   };
 
   render() {
-    console.log(this.props);
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "learningHistory"})}>
+      <Page pageName={this.props.intl.formatMessage({id: "menu.learn-history"})}>
         <Section visible={false} size={"large"}>
           <div className={"button-group"}>
             <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg
@@ -90,7 +89,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
               key="action"
               render={ag => (
                 <a style={{padding: 0}} onClick={() => this.previewCertificate("c25098eb-a310-a1e6-b775-b44e5ee13fe2")}>
-                  Просмотр
+                  {this.props.intl.formatMessage({id: "learningHistory.overview"})}
                 </a>
               )}
             />

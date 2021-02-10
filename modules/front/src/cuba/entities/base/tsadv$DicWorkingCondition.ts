@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicWorkingCondition extends AbstractDictionary {
   static NAME = "tsadv$DicWorkingCondition";
 }
-export type DicWorkingConditionViewName = "_base" | "_local" | "_minimal";
+export type DicWorkingConditionViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicWorkingCondition-browse"
+  | "dicWorkingCondition-edit";
 export type DicWorkingConditionView<
   V extends DicWorkingConditionViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicWorkingConditionView<
     >
   : V extends "_minimal"
   ? Pick<DicWorkingCondition, "id" | "langValue">
+  : V extends "dicWorkingCondition-browse"
+  ? Pick<
+      DicWorkingCondition,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicWorkingCondition-edit"
+  ? Pick<
+      DicWorkingCondition,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

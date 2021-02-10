@@ -229,7 +229,7 @@ class PersonContactEditComponent extends React.Component<Props & WrappedComponen
         </Form.Item>
       </Form>
     </Card>;
-    return (<Page pageName={"Контактная информация"}>
+    return (<Page pageName={this.props.intl.formatMessage({id: "myProfile.information"})}>
       {PageContent}
     </Page>);
   }

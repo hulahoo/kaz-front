@@ -1,4 +1,4 @@
-import {FetchOptions, SerializedEntity} from "@cuba-platform/rest";
+import {CubaApp, FetchOptions, SerializedEntity} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {SortOrder} from "antd/lib/table/interface";
 import {Course} from "./entities/base/tsadv$Course";
@@ -11,6 +11,9 @@ import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
 import {UserExt} from "./entities/base/tsadv$UserExt";
+import {DicCategory} from "./entities/base/tsadv$DicCategory";
+import {CourseSection} from "./entities/base/tsadv$CourseSection";
+import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -40,78 +43,116 @@ export type PairModel<K, V> = {
 }
 
 export const restServices = {
-    userMenuService: {
-      getTimeZones: (params?: {}, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_UserSettingService",
-          "getTimeZones",
-          {...params},
-          fetchOpts
-        );
-      },
-      changePassword: (params: { oldPassword: string, newPassword: string }, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_LmsService",
-          "changePassword",
-          {...params},
-          fetchOpts
-        );
-      },
+  userMenuService: {
+    getTimeZones: (params?: {}, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_UserSettingService",
+        "getTimeZones",
+        {...params},
+        fetchOpts
+      );
     },
-    notificationsService: {
-      notifications: (params?: {}, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_NotificationService",
-          "notifications",
-          {...params},
-          fetchOpts
-        );
-      }
+    changePassword: (params: { oldPassword: string, newPassword: string }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "changePassword",
+        {...params},
+        fetchOpts
+      );
     },
-    learningService: {
-      learningHistory: (params: { personGroupId: string }): Promise<Course[]> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_LearningService",
-          "learningHistory",
-          {...params}
-        ).then((response: string) => {
-          return JSON.parse(response);
-        });
-      }
-    },
-    courseService: {
-      courseInfo: (params: { courseId: string }): Promise<CourseInfo> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_CourseService",
-          "courseInfo",
-          {...params}
-        ).then((response: string) => {
-          const courseInfo: CourseInfo = JSON.parse(response) as CourseInfo;
-          courseInfo.startDate = moment(courseInfo.startDate, DEFAULT_DATE_PARSE_FORMAT);
-          courseInfo.endDate = moment(courseInfo.endDate, DEFAULT_DATE_PARSE_FORMAT);
+  },
+  notificationsService: {
+    notifications: (params?: {}, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_NotificationService",
+        "notifications",
+        {...params},
+        fetchOpts
+      );
+    }
+  },
+  learningService: {
+    learningHistory: (params: { personGroupId: string }): Promise<Course[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LearningService",
+        "learningHistory",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
+    }
+  },
+  courseService: {
+    courseInfo: (params: { courseId: string, personGroupId: string}): Promise<CourseInfo> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "courseInfo",
+        {...params}
+      ).then((response: string) => {
+        const courseInfo: CourseInfo = JSON.parse(response) as CourseInfo;
+        courseInfo.startDate = moment(courseInfo.startDate, DEFAULT_DATE_PARSE_FORMAT);
+        courseInfo.endDate = moment(courseInfo.endDate, DEFAULT_DATE_PARSE_FORMAT);
 
-          return courseInfo;
-        });
-      },
-      courseTrainerInfo: (params: { trainerId: string }): Promise<CourseTrainerInfo> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_CourseService",
-          "courseTrainerInfo",
-          {...params}
-        ).then((response: string) => {
-          return JSON.parse(response);
-        });
-      }
+        return courseInfo;
+      });
     },
-    kpiService: {
-      kpiAssignedGoals: (params: { appId: string }): Promise<PairModel<string, SerializedEntity<AssignedGoal>[]>[]> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_KpiService",
-          "kpiAssignedGoals",
-          {...params}
-        ).then((response: string) => JSON.parse(response));
-      }
+    courseTrainerInfo: (params: { trainerId: string }): Promise<CourseTrainerInfo> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "courseTrainerInfo",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
+    }
+  },
+  kpiService: {
+    kpiAssignedGoals: (params: { appId: string }): Promise<PairModel<string, SerializedEntity<AssignedGoal>[]>[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_KpiService",
+        "kpiAssignedGoals",
+        {...params}
+      ).then((response: string) => JSON.parse(response));
+    }
+  },
+  enrollmentService: {
+    searchEnrollments: (params: { courseName?: string, userId: string }): Promise<SerializedEntity<DicCategory>[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_EnrollmentService",
+        "searchEnrollment",
+        {...params}
+      ).then((response: string) => JSON.parse(response));
+    }
+  },
+  lmsService: {
+    loadCourseSectionData: (params: { enrollmentId: string, courseSectionId: string }, fetchOpts?: FetchOptions): Promise<SerializedEntity<CourseSection>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "loadCourseSectionData",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
     },
+    startAndLoadTest: (params: { courseSectionObjectId: string, enrollmentId: string }, fetchOpts?: FetchOptions): Promise<TestModel> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "startAndLoadTest",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    finishTest: (params: { answeredTest: AnsweredTest }, fetchOpts?: FetchOptions): Promise<{
+      score: number,
+      maxScore: number
+    }> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "finishTest",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    }
+  },
     portalHelperService: {
       newEntity: (param ?: { entityName: string }, fetchOpts?: FetchOptions) => {
         return getCubaREST()!.invokeService(
@@ -249,4 +290,6 @@ export type CourseInfo = {
   description: string
   educationPeriod: number
   educationDuration: number
+  hasEnrollment: boolean
+  selfEnrollment: boolean
 }

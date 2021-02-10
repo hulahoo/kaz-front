@@ -1,13 +1,18 @@
 import { AbstractDictionary } from "./AbstractDictionary";
+import { Book } from "./tsadv$Book";
 export class DicBookCategory extends AbstractDictionary {
   static NAME = "tsadv$DicBookCategory";
   parentBookCategory?: DicBookCategory | null;
+  books?: Book[] | null;
 }
 export type DicBookCategoryViewName =
   | "_base"
   | "_local"
   | "_minimal"
-  | "book-category-view";
+  | "book-category-view"
+  | "dicBookCategory-browse"
+  | "dicBookCategory-edit"
+  | "portal-books-category-browse";
 export type DicBookCategoryView<
   V extends DicBookCategoryViewName
 > = V extends "_base"
@@ -15,18 +20,18 @@ export type DicBookCategoryView<
       DicBookCategory,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -62,7 +67,16 @@ export type DicBookCategoryView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicBookCategory, "id" | "langValue">
+  ? Pick<
+      DicBookCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "book-category-view"
   ? Pick<
       DicBookCategory,
@@ -88,5 +102,70 @@ export type DicBookCategoryView<
       | "isDefault"
       | "order"
       | "parentBookCategory"
+    >
+  : V extends "dicBookCategory-browse"
+  ? Pick<
+      DicBookCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicBookCategory-edit"
+  ? Pick<
+      DicBookCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "portal-books-category-browse"
+  ? Pick<
+      DicBookCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+      | "order"
+      | "books"
     >
   : never;

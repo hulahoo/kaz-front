@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAdditionalEducation extends AbstractDictionary {
   static NAME = "tsadv$DicAdditionalEducation";
 }
-export type DicAdditionalEducationViewName = "_base" | "_local" | "_minimal";
+export type DicAdditionalEducationViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAdditionalEducation-browse"
+  | "dicAdditionalEducation-edit";
 export type DicAdditionalEducationView<
   V extends DicAdditionalEducationViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicAdditionalEducationView<
       DicAdditionalEducation,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicAdditionalEducationView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicAdditionalEducation, "id" | "langValue">
+  ? Pick<
+      DicAdditionalEducation,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicAdditionalEducation-browse"
+  ? Pick<
+      DicAdditionalEducation,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAdditionalEducation-edit"
+  ? Pick<
+      DicAdditionalEducation,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

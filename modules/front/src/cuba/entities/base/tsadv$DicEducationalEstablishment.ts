@@ -16,18 +16,18 @@ export type DicEducationalEstablishmentView<
       DicEducationalEstablishment,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -63,7 +63,16 @@ export type DicEducationalEstablishmentView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicEducationalEstablishment, "id" | "langValue">
+  ? Pick<
+      DicEducationalEstablishment,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicEducationalEstablishment.edit"
   ? Pick<
       DicEducationalEstablishment,
@@ -89,5 +98,6 @@ export type DicEducationalEstablishmentView<
       | "isDefault"
       | "order"
       | "educationalEstablishmentType"
+      | "company"
     >
   : never;

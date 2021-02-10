@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicAttachmentCategory extends AbstractDictionary {
   static NAME = "tsadv$DicAttachmentCategory";
 }
-export type DicAttachmentCategoryViewName = "_base" | "_local" | "_minimal";
+export type DicAttachmentCategoryViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicAttachmentCategory-browse"
+  | "dicAttachmentCategory-edit";
 export type DicAttachmentCategoryView<
   V extends DicAttachmentCategoryViewName
 > = V extends "_base"
@@ -58,4 +63,56 @@ export type DicAttachmentCategoryView<
     >
   : V extends "_minimal"
   ? Pick<DicAttachmentCategory, "id" | "langValue">
+  : V extends "dicAttachmentCategory-browse"
+  ? Pick<
+      DicAttachmentCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAttachmentCategory-edit"
+  ? Pick<
+      DicAttachmentCategory,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

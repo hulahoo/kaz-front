@@ -1,6 +1,6 @@
 import { OrganizationGroup } from "./base$OrganizationGroup";
 import { OrganizationExt } from "./base$OrganizationExt";
-import { DicCompany } from "./tsadv$DicCompany";
+import { DicCompany } from "./base_DicCompany";
 import { DicCostCenter } from "./tsadv$DicCostCenter";
 import { DicPayroll } from "./tsadv$DicPayroll";
 import { DicLocation } from "./base$DicLocation";
@@ -46,6 +46,7 @@ export type OrganizationGroupExtViewName =
   | "organizationGroup.hrUsersView"
   | "organizationGroup.list"
   | "organizationGroup.lookup"
+  | "organizationGroupExt-for-integration-rest"
   | "organizationGroupExt-receptionAssignment"
   | "organizationGroupExt-view-for-requisition"
   | "organizationGroupExt.for.attestation.lookup";
@@ -87,7 +88,12 @@ export type OrganizationGroupExtView<
   : V extends "organizationGroup.browse"
   ? Pick<
       OrganizationGroupExt,
-      "id" | "list" | "organization" | "analytics" | "organizationName"
+      | "id"
+      | "organizationName"
+      | "list"
+      | "company"
+      | "organization"
+      | "analytics"
     >
   : V extends "organizationGroup.hrUsersView"
   ? Pick<
@@ -136,6 +142,29 @@ export type OrganizationGroupExtView<
       | "integrationUserLogin"
       | "list"
       | "organization"
+    >
+  : V extends "organizationGroupExt-for-integration-rest"
+  ? Pick<
+      OrganizationGroupExt,
+      | "id"
+      | "organizationName"
+      | "list"
+      | "company"
+      | "legacyId"
+      | "location"
+      | "organizationType"
+      | "createdBy"
+      | "createTs"
+      | "updateTs"
+      | "updatedBy"
+      | "costCenter"
+      | "payroll"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
+      | "analytics"
     >
   : V extends "organizationGroupExt-receptionAssignment"
   ? Pick<

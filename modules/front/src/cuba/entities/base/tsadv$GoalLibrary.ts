@@ -1,6 +1,6 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { DicGoalCategory } from "./tsadv$DicGoalCategory";
-import {Goal} from "./tsadv$Goal";
+import { Goal } from "./tsadv$Goal";
 export class GoalLibrary extends AbstractParentEntity {
   static NAME = "tsadv$GoalLibrary";
   libraryName?: string | null;
@@ -13,6 +13,7 @@ export type GoalLibraryViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "goal-library-category"
   | "goalLibrary.browse"
   | "goalLibrary.edit";
 export type GoalLibraryView<V extends GoalLibraryViewName> = V extends "_base"
@@ -39,6 +40,18 @@ export type GoalLibraryView<V extends GoalLibraryViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<GoalLibrary, "id" | "libraryName">
+  : V extends "goal-library-category"
+  ? Pick<
+      GoalLibrary,
+      | "id"
+      | "libraryName"
+      | "startDate"
+      | "endDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "category"
+    >
   : V extends "goalLibrary.browse"
   ? Pick<
       GoalLibrary,

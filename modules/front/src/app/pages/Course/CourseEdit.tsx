@@ -16,6 +16,7 @@ import {Link} from "react-router-dom";
 import {FormComponentProps} from "antd/es/form";
 import {CourseRequest} from "../../../cuba/entities/base/tsadv$CourseRequest";
 import {CourseReview} from "../../../cuba/entities/base/tsadv$CourseReview";
+import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 
 type Props = {
   entityId: string;
@@ -51,6 +52,9 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
   @observable
   sendingComment = false;
 
+  @observable
+  subscribingToCourse: boolean = false;
+
   changeRate = (value: number) => {
     runInAction(() => {
       this.dataInstance = {
@@ -58,7 +62,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
         avgRate: value
       };
       Notification.success({
-        message: "Спасибо за оценку"
+        message: this.props.intl.formatMessage({id: "course.rate.notification"})
       })
     })
   };
@@ -104,12 +108,43 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
       });
 
       Notification.success({
-        message: "Спасибо за отзыв"
+        message: this.props.intl.formatMessage({id: "course.rate.notification"})
       });
       this.load();
     }).catch(() => {
       this.sendingComment = false;
     });
+  };
+
+  subscribeToCourse = () => {
+    if (!this.dataInstance.selfEnrollment) {
+      Notification.error({
+        message: this.props.intl.formatMessage({id: "course.error.enrollment.selfEnrollment"})
+      });
+      return;
+    }
+
+    this.subscribingToCourse = true;
+    getCubaREST()!.commitEntity(Enrollment.NAME, ({
+      personGroup: {
+        id: this.props.rootStore!.userInfo.personGroupId!
+      },
+      status: "APPROVED",
+      course: {
+        id: this.props.entityId
+      },
+      date: moment().toISOString()
+    } as Enrollment))
+      .then(response => {
+        this.subscribingToCourse = false;
+
+        Notification.success({
+          message: this.props.intl.formatMessage({id: "course.notification.enrollment"})
+        });
+        this.load();
+      }).catch(() => {
+      this.subscribingToCourse = false;
+    })
   };
 
   @action
@@ -144,20 +179,22 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                   <div className={"course-info-rate form-item"} style={{marginTop: '32px'}}>
                     <><Rate className={"rate-container"} value={this.dataInstance.avgRate} allowHalf disabled
                             onChange={this.changeRate}/>
-                      ({this.dataInstance.rateReviewCount} оценок)
+                      ({this.dataInstance.rateReviewCount} {this.props.intl.formatMessage({id: "course.ratingCount"})})
                     </>
                   </div>
                   <div className={"course-info-feedback"}>
                     <Row>
                       <Col style={{display: 'inline-block'}}>
-                        <Form.Item label={"Сотрудников прошли курс"} className={"form-item"}
+                        <Form.Item label={this.props.intl.formatMessage({id: "course.studentFinished"})}
+                                   className={"form-item"}
                                    key='finished'>{
                           <span>{this.dataInstance.finished}</span>
                         }
                         </Form.Item>
                       </Col>
                       <Col style={{display: 'inline-block'}}>
-                        <Form.Item label={"Отзывов о курсе"} className={"form-item"}
+                        <Form.Item label={this.props.intl.formatMessage({id: "course.reviewCount"})}
+                                   className={"form-item"}
                                    key='finished'>{
                           <span>{this.dataInstance.comments.length}</span>
                         }
@@ -165,7 +202,10 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                       </Col>
                     </Row>
                   </div>
-                  <Button buttonType={ButtonType.PRIMARY}>Записаться на курс</Button>
+                  {this.dataInstance.hasEnrollment ?
+                    <FormattedMessage id={this.props.intl.formatMessage({id: "course.enrolled"})}/> :
+                    <Button buttonType={ButtonType.PRIMARY} loading={this.subscribingToCourse}
+                            onClick={this.subscribeToCourse}>{this.props.intl.formatMessage({id: "course.subscribe"})}</Button>}
                 </Col>
                 <Col span={8}>
                   <div className="course-info-image">
@@ -175,11 +215,11 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                 </Col>
               </Row>
             </Section>
-            <Section size={"large"} sectionName={"Информация о курсе"}>
+            <Section size={"large"} sectionName={this.props.intl.formatMessage({id: "course.information"})}>
               <Row>
                 <Col>
-                  <Form.Item label={"Описание"} className={"form-item"}
-                             key='descripytion'>
+                  <Form.Item label={this.props.intl.formatMessage({id: "course.description"})} className={"form-item"}
+                             key='description'>
                     {this.dataInstance.description ?
                       <div dangerouslySetInnerHTML={{__html: this.dataInstance.description}}/> : <></>}
                   </Form.Item>
@@ -187,7 +227,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
               </Row>
               <Row>
                 <Col span={5}>
-                  <Form.Item label={"Тренеры"} className={"form-item"}
+                  <Form.Item label={this.props.intl.formatMessage({id: "course.trainers"})} className={"form-item"}
                              key='trainers'>
                     {this.dataInstance.trainers.map((trainer: any) => <a className={"default-link"}
                                                                          style={{marginRight: '10px'}}
@@ -197,38 +237,39 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                   </Form.Item>
                 </Col>
                 <Col span={5}>
-                  <Form.Item label={"Пререквизиты"} className={"form-item"}
+                  <Form.Item label={this.props.intl.formatMessage({id: "course.prerequisition"})}
+                             className={"form-item"}
                              key='preRequisitions'>
                     {this.dataInstance.preRequisitions}
                   </Form.Item>
                 </Col>
                 <Col span={5}>
-                  <Form.Item label={"Продолжительность"} className={"form-item"}
+                  <Form.Item label={this.props.intl.formatMessage({id: "course.duration"})} className={"form-item"}
                              key='duration'>
                     {this.dataInstance.educationDuration}
                   </Form.Item>
                 </Col>
                 <Col span={5}>
-                  <Form.Item label={"Период обучения"} className={"form-item"}
+                  <Form.Item label={this.props.intl.formatMessage({id: "course.period"})} className={"form-item"}
                              key='duration'>
                     {this.dataInstance.educationPeriod}
                   </Form.Item>
                 </Col>
                 <Col span={4}>
-                  <Form.Item label={"Сертификат"} className={"form-item"}
+                  <Form.Item label={this.props.intl.formatMessage({id: "course.confirm"})} className={"form-item"}
                              key='certificate'>
                     <span>{this.props.intl.formatMessage({id: "course.certificate." + this.dataInstance.isIssuedCertificate})}</span>
                   </Form.Item>
                 </Col>
               </Row>
             </Section>
-            <Section sectionName={"Отзывы студентов"} size={"large"}>
+            <Section sectionName={this.props.intl.formatMessage({id: "course.studentReviews"})} size={"large"}>
               <Row type={"flex"}>
                 <Col span={6} className={"centered-flex-container"}>
                   <div className={"large-rate centered-flex-container"}>
                     <span className={"large-text"}>{this.dataInstance.avgRate.toFixed(1)}</span>
                     <Rate allowHalf disabled value={this.dataInstance.avgRate}/>
-                    <span className="default-font">Рейтинг курса</span>
+                    <span className="default-font">{this.props.intl.formatMessage({id: "course.rating"})}</span>
                   </div>
                 </Col>
                 <Col span={18}>
@@ -241,7 +282,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                             <List.Item.Meta
                               title={item.rate}
                             />
-                            <div>{item.finished} студентов</div>
+                            <div>{item.finished} {this.props.intl.formatMessage({id: "course.students"})}</div>
                           </List.Item>
                         )}
                   />
@@ -270,7 +311,8 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                 : <> </>}
               <Row>
                 <Col>
-                  <Spin tip="Отзыв отправляется" spinning={this.sendingComment}>
+                  <Spin tip={this.props.intl.formatMessage({id: "course.sendingReview"})}
+                        spinning={this.sendingComment}>
                     <Card bordered={false} style={{marginTop: '20px'}}>
                       <Form onSubmit={this.submitCommentForm}>
                         {this.props.form.getFieldDecorator("rate")(
@@ -282,7 +324,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                         <Row type="flex" justify="end">
                           <Col>
                             <Button buttonType={ButtonType.FOLLOW} style={{marginTop: '10px'}} htmlType={"submit"}>
-                              Оставить комментарий
+                              {this.props.intl.formatMessage({id: "course.sendComment"})}
                             </Button>
                           </Col>
                         </Row>
@@ -321,14 +363,16 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                       </Row>
                       <Row>
                         <Col className={"form-item-container"} style={{marginTop: '32px'}}>
-                          <Form.Item label={"Студентов"} className={"form-item"}
-                                     key='finished'>{
+                          <Form.Item
+                            label={this.props.intl.formatMessage({id: "course.students"})[0].toUpperCase() + "" + this.props.intl.formatMessage({id: "course.students"}).slice(1, this.props.intl.formatMessage({id: "course.students"}).length - 1)}
+                            className={"form-item"}
+                            key='finished'>{
                             <span>{this.selectedTrainer.finished}</span>
                           }
                           </Form.Item>
                         </Col>
                         <Col className={"form-item-container"}>
-                          <Form.Item label={"Курсов"} className={"form-item"}
+                          <Form.Item label={this.props.intl.formatMessage({id: "course.courses"})} className={"form-item"}
                                      key='courseCount'>{
                             <span>{this.selectedTrainer.courseCount}</span>
                           }
@@ -336,13 +380,13 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                         </Col>
                       </Row>
                       <Row>
-                        <Form.Item label={"Приветствие тренера"} className={"form-item"}
+                        <Form.Item label={this.props.intl.formatMessage({id: "course.greetingTrainer"})} className={"form-item"}
                                    key='finished'>
                           {"Тут должно быть приветствие от тренера с наилучшими пожеланиями"}
                         </Form.Item>
                       </Row>
                       <Row>
-                        <Form.Item label={"Информация о тренере"} className={"form-item"}
+                        <Form.Item label={this.props.intl.formatMessage({id: "course.trainerInformation"})} className={"form-item"}
                                    key='trainerInfo'>
                           {"Тут должна быть информация о тренере с наилучшими пожеланиями"}
                         </Form.Item>
@@ -364,7 +408,10 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
 
   load = () => {
     this.rateList = [];
-    restServices.courseService.courseInfo({courseId: this.props.entityId}).then(courseInfo => {
+    restServices.courseService.courseInfo({
+      courseId: this.props.entityId,
+      personGroupId: this.props.rootStore!.userInfo.personGroupId!
+    }).then(courseInfo => {
       runInAction(() => {
         this.dataInstance = courseInfo;
 

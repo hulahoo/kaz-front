@@ -34,6 +34,7 @@ export type JobGroupViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "jobGroup-for-integration-rest"
   | "jobGroup-name-Ru-En"
   | "jobGroup.browse"
   | "jobGroup.for.requisitions";
@@ -66,6 +67,8 @@ export type JobGroupView<V extends JobGroupViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<JobGroup, "id" | "jobNameDefault">
+  : V extends "jobGroup-for-integration-rest"
+  ? Pick<JobGroup, "id" | "jobNameDefault" | "list" | "company" | "legacyId">
   : V extends "jobGroup-name-Ru-En"
   ? Pick<
       JobGroup,

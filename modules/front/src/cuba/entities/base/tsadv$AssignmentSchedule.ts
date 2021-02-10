@@ -16,6 +16,7 @@ export type AssignmentScheduleViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "assignmentSchedule-for-my-team"
   | "assignmentSchedule.view";
 export type AssignmentScheduleView<
   V extends AssignmentScheduleViewName
@@ -43,6 +44,21 @@ export type AssignmentScheduleView<
     >
   : V extends "_minimal"
   ? Pick<AssignmentSchedule, "id">
+  : V extends "assignmentSchedule-for-my-team"
+  ? Pick<
+      AssignmentSchedule,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "colorsSet"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "assignmentGroup"
+      | "name"
+      | "schedule"
+      | "offset"
+    >
   : V extends "assignmentSchedule.view"
   ? Pick<
       AssignmentSchedule,

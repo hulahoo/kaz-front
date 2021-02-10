@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicCourseFormat extends AbstractDictionary {
   static NAME = "tsadv$DicCourseFormat";
 }
-export type DicCourseFormatViewName = "_base" | "_local" | "_minimal";
+export type DicCourseFormatViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicCourseFormat-browse"
+  | "dicCourseFormat-edit";
 export type DicCourseFormatView<
   V extends DicCourseFormatViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicCourseFormatView<
       DicCourseFormat,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicCourseFormatView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicCourseFormat, "id" | "langValue">
+  ? Pick<
+      DicCourseFormat,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicCourseFormat-browse"
+  ? Pick<
+      DicCourseFormat,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicCourseFormat-edit"
+  ? Pick<
+      DicCourseFormat,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

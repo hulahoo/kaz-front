@@ -12,18 +12,18 @@ export type DicTestTypeView<V extends DicTestTypeViewName> = V extends "_base"
       DicTestType,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -59,7 +59,16 @@ export type DicTestTypeView<V extends DicTestTypeViewName> = V extends "_base"
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicTestType, "id" | "langValue">
+  ? Pick<
+      DicTestType,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
   : V extends "dicTestType.browse"
   ? Pick<
       DicTestType,
@@ -73,5 +82,6 @@ export type DicTestTypeView<V extends DicTestTypeViewName> = V extends "_base"
       | "endDate"
       | "code"
       | "isSystemRecord"
+      | "company"
     >
   : never;

@@ -3,25 +3,30 @@ export class Priority extends AbstractDictionary {
   static NAME = "uactivity$Priority";
   style?: any | null;
 }
-export type PriorityViewName = "_base" | "_local" | "_minimal";
+export type PriorityViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "priority-browse"
+  | "priority-edit";
 export type PriorityView<V extends PriorityViewName> = V extends "_base"
   ? Pick<
       Priority,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "style"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -58,5 +63,68 @@ export type PriorityView<V extends PriorityViewName> = V extends "_base"
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<Priority, "id" | "langValue">
+  ? Pick<
+      Priority,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "priority-browse"
+  ? Pick<
+      Priority,
+      | "id"
+      | "style"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "priority-edit"
+  ? Pick<
+      Priority,
+      | "id"
+      | "style"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

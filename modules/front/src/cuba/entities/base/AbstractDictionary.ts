@@ -1,5 +1,7 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
+import { DicCompany } from "./base_DicCompany";
 export class AbstractDictionary extends AbstractParentEntity {
+  company?: DicCompany | null;
   langValue1?: string | null;
   description1?: string | null;
   langValue2?: string | null;

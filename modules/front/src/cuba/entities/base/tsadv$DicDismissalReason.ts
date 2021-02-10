@@ -2,7 +2,12 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicDismissalReason extends AbstractDictionary {
   static NAME = "tsadv$DicDismissalReason";
 }
-export type DicDismissalReasonViewName = "_base" | "_local" | "_minimal";
+export type DicDismissalReasonViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "dicDismissalReason-browse"
+  | "dicDismissalReason-edit";
 export type DicDismissalReasonView<
   V extends DicDismissalReasonViewName
 > = V extends "_base"
@@ -10,18 +15,18 @@ export type DicDismissalReasonView<
       DicDismissalReason,
       | "id"
       | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "langValue1"
       | "description1"
-      | "langValue2"
       | "description2"
-      | "langValue3"
       | "description3"
-      | "langValue4"
       | "description4"
-      | "langValue5"
       | "description5"
       | "startDate"
       | "endDate"
@@ -57,5 +62,66 @@ export type DicDismissalReasonView<
       | "order"
     >
   : V extends "_minimal"
-  ? Pick<DicDismissalReason, "id" | "langValue">
+  ? Pick<
+      DicDismissalReason,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+    >
+  : V extends "dicDismissalReason-browse"
+  ? Pick<
+      DicDismissalReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicDismissalReason-edit"
+  ? Pick<
+      DicDismissalReason,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : never;

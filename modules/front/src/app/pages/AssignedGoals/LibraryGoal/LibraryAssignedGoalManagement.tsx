@@ -8,15 +8,15 @@ type Props = RouteComponentProps<{ entityId?: string }>;
 
 @observer
 export class LibraryAssignedGoalManagement extends React.Component<Props> {
-  static PATH = "/assignedGoalManagement";
+  static PATH = "/goal/library/";
   static NEW_SUBPATH = "new";
 
   render() {
-    const { appId } = this.props.match.params as any;
+    const { appId, entityId } = this.props.match.params as any;
     return (
       <>
         {appId ? (
-          <AssignedGoalEdit entityId={appId} />
+          <AssignedGoalEdit appId={appId} entityId={entityId} />
         ) : (
           <AssignedGoalList />
         )}

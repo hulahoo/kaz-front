@@ -6,6 +6,8 @@ export type DicCitizenshipViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "dicCitizenship-browse"
+  | "dicCitizenship-edit"
   | "dicCitizenship.all";
 export type DicCitizenshipView<
   V extends DicCitizenshipViewName
@@ -62,6 +64,58 @@ export type DicCitizenshipView<
     >
   : V extends "_minimal"
   ? Pick<DicCitizenship, "id" | "langValue">
+  : V extends "dicCitizenship-browse"
+  ? Pick<
+      DicCitizenship,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicCitizenship-edit"
+  ? Pick<
+      DicCitizenship,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
   : V extends "dicCitizenship.all"
   ? Pick<
       DicCitizenship,

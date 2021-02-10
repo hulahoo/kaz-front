@@ -12,12 +12,6 @@ import {rootStore, RootStoreProp} from "../../store";
 @observer
 class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps> {
 
-  constructor(props: MainStoreInjected & WrappedComponentProps & RootStoreProp, context: any) {
-    super(props, context);
-
-    // this.props.rootStore!.bellNotification.loadBellNotificationsAndTasks();
-  }
-
   render() {
     const appState = this.props.mainStore!;
 

@@ -43,6 +43,7 @@ export type PositionGroupExtViewName =
   | "positionGroup.list"
   | "positionGroup.scheduleView"
   | "positionGroup.timecard"
+  | "positionGroupExt-for-integration-rest"
   | "positionGroupExt-view"
   | "positionGroupExt.admin.approve"
   | "positionGroupExt.for.requisition"
@@ -102,7 +103,7 @@ export type PositionGroupExtView<
   : V extends "positionGroup.list"
   ? Pick<
       PositionGroupExt,
-      "id" | "list" | "position" | "vacationConditionsList" | "analytics"
+      "id" | "list" | "vacationConditionsList" | "analytics" | "position"
     >
   : V extends "positionGroup.scheduleView"
   ? Pick<PositionGroupExt, "id" | "positionName" | "list" | "assignments">
@@ -115,6 +116,11 @@ export type PositionGroupExtView<
       | "integrationUserLogin"
       | "position"
       | "assignments"
+    >
+  : V extends "positionGroupExt-for-integration-rest"
+  ? Pick<
+      PositionGroupExt,
+      "id" | "legacyId" | "organizationBin" | "integrationUserLogin" | "list"
     >
   : V extends "positionGroupExt-view"
   ? Pick<

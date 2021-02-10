@@ -36,6 +36,7 @@ export type AssignmentExtViewName =
   | "_minimal"
   | "assignmanetExt.view.for.positionEdit"
   | "assignment-for-talents"
+  | "assignment-portal-kpi"
   | "assignment-viewREQS"
   | "assignment-with-groups"
   | "assignment-with-org-calendar"
@@ -127,6 +128,28 @@ export type AssignmentExtView<
       | "group"
       | "gradeGroup"
       | "positionGroup"
+    >
+  : V extends "assignment-portal-kpi"
+  ? Pick<
+      AssignmentExt,
+      | "id"
+      | "orderNumber"
+      | "orderDate"
+      | "durationProbationPeriod"
+      | "unit"
+      | "probationEndDate"
+      | "primaryFlag"
+      | "fte"
+      | "temporaryEndDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "assignDate"
+      | "jobGroup"
+      | "organizationGroup"
     >
   : V extends "assignment-viewREQS"
   ? Pick<
@@ -518,7 +541,12 @@ export type AssignmentExtView<
       | "endDate"
       | "writeHistory"
       | "assignDate"
+      | "personGroup"
+      | "jobGroup"
       | "gradeGroup"
+      | "organizationGroup"
+      | "group"
+      | "positionGroup"
     >
   : V extends "assignmentExt-with-type"
   ? Pick<
