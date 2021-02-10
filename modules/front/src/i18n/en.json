@@ -123,6 +123,7 @@
   "menu.my-app-vacation": "My Vacations",
   "menu.assigment-interview": "Assigment Interviews",
   "menu.job-offers": "Job Offers",
+  "menu.certificateRequest": "Certificate request",
   "settings": "Settings",
   "logout": "Logout",
   "search": "Search",
@@ -180,7 +181,6 @@
   "personalPlan.startDate": "From",
   "personalPlan.endDate": "To",
   "course.certificate.true": "issued",
-  "course.certificate.false": "not issued",
   "learningHistory.certificate.downloadExcel": "Download EXCEL",
   "learningHistory.testResult": "Result",
   "learningHistory.certificate": "Download EXCEL",
@@ -218,10 +218,16 @@
   "goals": "Goals",
   "weight": "Weight",
   "close": "Close",
-  "sendOnApprove": "Send on approve"
+  "sendOnApprove": "Send on approve",
   "course.certificate.false": "not issued",
   "certificateRequest": "Certificate request",
   "bproc.startBproc.modal.error": "User is already added",
   "bproc.start": "Are you sure, want to send on approve?",
-  "bproc.start.success": "Document successfully sent on approve"
+  "bproc.start.success": "Document successfully sent on approve",
+  "bproc.REJECT.success": "Application rejected",
+  "bproc.APPROVE.success": "Application approved",
+  "candidates": "Candidates",
+  "APPROVE": "Approve",
+  "REJECT": "Reject",
+  "bproc.start.btn": "Start process"
 }

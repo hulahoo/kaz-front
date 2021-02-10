@@ -9,7 +9,6 @@ import LoadingPage from "../../LoadingPage";
 import {restServices} from "../../../../cuba/services";
 import {RootStoreProp} from "../../../store";
 import {BpmRolesDefiner} from "../../../../cuba/entities/base/tsadv$BpmRolesDefiner";
-import {Candidate} from "../component/Candidate";
 import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
 import CustomButton, {ButtonType} from "../../../components/Button/Button";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
@@ -21,6 +20,7 @@ import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import {CertificateRequestManagement} from "../../certificateRequest/CertificateRequestManagement";
+import Candidate from "../component/Candidate";
 
 type StartBproc = {
   processDefinitionKey: string;
@@ -173,7 +173,9 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       <CustomButton buttonType={ButtonType.FOLLOW}
                     onClickCapture={this.showModal}
                     key="start">
-        Start
+        {this.props.intl.formatMessage({
+          id: "bproc.start.btn"
+        })}
         <Modal
           title="Start bproc"
           visible={this.modalVisible}

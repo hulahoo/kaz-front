@@ -8,7 +8,7 @@ import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import LoadingPage from "../../LoadingPage";
 import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
-import {Candidate} from "../component/Candidate";
+import Candidate from "../component/Candidate";
 
 type TaskProps = {
   tasks: ExtTaskData[];

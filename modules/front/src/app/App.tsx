@@ -21,12 +21,12 @@ import {
   IntlFormatters,
   WrappedComponentProps
 } from "react-intl";
-// import {getMenuIcon} from '../resources/icons/menu';
+import {getMenuIcon} from '../resources/icons/menu';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
-import {PersonalDataRequestEditPage} from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
+import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {CertificateRequestManagement} from "./pages/certificateRequest/CertificateRequestManagement";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
@@ -43,9 +43,6 @@ import DicBookCategoryCards from "./pages/Books/DicBookCategoryCards";
 @inject("rootStore")
 @observer
 class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
-
-  // @observable
-  // mainStore = this.props.mainStore!;
 
   constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
     super(props, context);

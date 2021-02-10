@@ -8,15 +8,17 @@ import Button, {ButtonType} from "../../../../components/Button/Button";
 import {action, observable} from "mobx";
 import {BellNotification} from "../../../../store/BellNotificationStore";
 import {restServices} from "../../../../../cuba/services";
-
-const taskCode = "KPI_APPROVE";
-const notificationCode = "NOTIFICATION";
+import {Link, RouteComponentProps, withRouter} from "react-router-dom";
 
 const scheduleNotificationTime: number = 10000;
 
+type Props = {
+  setVisibleFalse(): void;
+}
+
 @inject("rootStore")
 @observer
-class NotificationDropdownMenu extends Component<WrappedComponentProps & RootStoreProp> {
+class NotificationDropdownMenu extends Component<Props & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
 
   @observable bellNotifications: BellNotification[];
   @observable bellTasks: BellNotification[];
@@ -42,9 +44,12 @@ class NotificationDropdownMenu extends Component<WrappedComponentProps & RootSto
               <ul className={"notifications-tab-content"}>
                 {this.bellTasks ? this.bellTasks.map(task => {
                   return <li key={task.id}>
-                    <div className={"bell-notification-name"}>{task.name}</div>
-                    <div
-                      className={"bell-notification-date"}>{format(task.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>
+                    <Link to={task.link + "/" + task.entityId}>
+                      <div className={"bell-notification-name"}
+                           onClick={() => this.props.setVisibleFalse()}>{task.name}</div>
+                      <div
+                        className={"bell-notification-date"}>{format(task.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>
+                    </Link>
                   </li>
                 }) : <></>}
               </ul>
@@ -79,18 +84,23 @@ class NotificationDropdownMenu extends Component<WrappedComponentProps & RootSto
     const loadNotifications = () => {
       restServices.notificationsService.notifications().then((r: string) => {
         const notifications: BellNotification[] = [];
+
+        (JSON.parse(r) as BellNotification[]).forEach(e => {
+          e.createTs = new Date(e.createTs);
+          notifications.push(e);
+        });
+
+        this.setBellNotifications(notifications);
+      });
+
+      restServices.notificationsService.tasks().then((r: string) => {
         const tasks: BellNotification[] = [];
 
         (JSON.parse(r) as BellNotification[]).forEach(e => {
           e.createTs = new Date(e.createTs);
-          if (e.code === notificationCode) {
-            notifications.push(e);
-          } else {
-            tasks.push(e);
-          }
+          tasks.push(e);
         });
 
-        this.setBellNotifications(notifications);
         this.setBellTasks(tasks);
       });
     };
@@ -99,4 +109,4 @@ class NotificationDropdownMenu extends Component<WrappedComponentProps & RootSto
   }
 }
 
-export default injectIntl(NotificationDropdownMenu);
+export default withRouter(injectIntl(NotificationDropdownMenu));

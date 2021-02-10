@@ -45,25 +45,12 @@ export default class MenuStore {
         caption: "Справка",
         items: [
           {
-            id: "main",
+            id: "certificateRequest",
             caption: "Справка с места работы",
-            menuLink: "/certificate-request",
-            pathPattern: "/",
-            component: null
-          },
-          {
-            id: "mainCertificateRequest",
-            caption: "CertificateRequestManagement",
             menuLink: "/certificateRequestManagement",
             pathPattern: "/certificateRequestManagement/:entityId?",
             component: CertificateRequestManagement
-          }/*,
-          {
-            pathPattern: "/extTaskDataCards",
-            menuLink: "/extTaskDataCards",
-            component: ExtTaskDataCards,
-            caption: "ExtTaskDataCards"
-          }*/
+          }
         ],
       } as MenuSubMenu,
       {

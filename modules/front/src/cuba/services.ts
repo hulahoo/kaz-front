@@ -69,6 +69,14 @@ export const restServices = {
         {...params},
         fetchOpts
       );
+    },
+    tasks: (params?: {}, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_NotificationService",
+        "tasks",
+        {...params},
+        fetchOpts
+      );
     }
   },
   learningService: {

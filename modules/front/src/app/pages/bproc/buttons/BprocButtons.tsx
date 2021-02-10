@@ -7,14 +7,16 @@ import {BprocFormOutcome} from "../../../../cuba/entities/bproc/bproc_FormOutcom
 import {ProcessInstanceData} from "../../../../cuba/entities/base/bproc_ProcessInstanceData";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import {injectMainStore} from "@cuba-platform/react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {observable} from "mobx";
 import StartBprocModal from "../modal/StartBprocModal";
-import {Modal, notification} from "antd";
-import {Redirect} from "react-router-dom";
+import {Modal} from "antd";
+import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
 import {restServices} from "../../../../cuba/services";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import TextArea from "antd/es/input/TextArea";
+import {injectIntl, WrappedComponentProps} from "react-intl";
+import Notification from "../../../util/notification/Notification";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
@@ -30,9 +32,10 @@ type TaskProps = {
   form: WrappedFormUtils
 };
 
+@inject("rootStore")
 @injectMainStore
 @observer
-export class BprocButtons extends React.Component<TaskProps> {
+class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & RouteComponentProps> {
 
   @observable
   modalVisibleMap = new Map<string, boolean>();
@@ -61,11 +64,8 @@ export class BprocButtons extends React.Component<TaskProps> {
       }
     })
       .then(value => {
-        notification.info({
-          message: outcome.id,
-          description:
-            'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-          placement: 'bottomRight'
+        Notification.success({
+          message: this.props.intl.formatMessage({id: "bproc." + outcome.id + ".success"})
         });
       })
     this.isRedirectPath = true;
@@ -76,12 +76,13 @@ export class BprocButtons extends React.Component<TaskProps> {
   };
 
   OutcomeButton = (outcome: BprocFormOutcome) => {
+    const title = this.props.intl.formatMessage({id: outcome.id!});
     return <Button buttonType={ButtonType.FOLLOW}
                    onClickCapture={() => this.showModal(outcome)}
                    key={outcome.id}>
-      {outcome.id}
+      {title}
       <Modal
-        title={outcome.id}
+        title={title}
         visible={this.modalVisibleMap.get(outcome.id!)}
         onOk={() => this.handleOk(outcome)}
         onCancel={() => this.handleCancel(outcome)}>
@@ -117,3 +118,5 @@ export class BprocButtons extends React.Component<TaskProps> {
         : "";
   }
 }
+
+export default withRouter(injectIntl(BprocButtons));

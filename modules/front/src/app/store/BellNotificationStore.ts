@@ -4,14 +4,13 @@ import {restServices} from "../../cuba/services";
 
 const scheduleNotificationTime: number = 10000;
 
-const taskCode = "KPI_APPROVE";
-const notificationCode = "NOTIFICATION";
-
 export type BellNotification = {
   id: string,
   name: string,
   createTs: Date,
-  code: string
+  code: string,
+  link: string,
+  entityId: string
 }
 
 class BellNotificationStore {
@@ -35,28 +34,35 @@ class BellNotificationStore {
   }
 
   @action
-  loadBellNotificationsAndTasks = () => {
+  loadBellNotifications = () => {
     const loadNotifications = () => {
       restServices.notificationsService.notifications().then((r: string) => {
         const notifications: BellNotification[] = [];
+
+        (JSON.parse(r) as BellNotification[]).forEach(e => {
+          e.createTs = new Date(e.createTs);
+          notifications.push(e);
+        });
+
+        this.setBellNotifications(notifications);
+      });
+
+      restServices.notificationsService.tasks().then((r: string) => {
         const tasks: BellNotification[] = [];
 
         (JSON.parse(r) as BellNotification[]).forEach(e => {
           e.createTs = new Date(e.createTs);
-          if (e.code === notificationCode) {
-            notifications.push(e);
-          } else {
-            tasks.push(e);
-          }
+          tasks.push(e);
         });
 
-        this.setBellNotifications(notifications);
         this.setBellTasks(tasks);
       });
     };
+
     loadNotifications();
     setInterval(loadNotifications, scheduleNotificationTime);
   }
+
 }
 
 export default BellNotificationStore;

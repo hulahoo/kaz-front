@@ -26,7 +26,10 @@ import Section from "../../hoc/Section";
 class CertificateRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
   dataCollection = collection<CertificateRequest>(CertificateRequest.NAME, {
     view: "portal.certificateRequest-edit",
-    sort: "-updateTs"
+    sort: "-updateTs",
+    filter: {
+      conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
+    }
   });
 
   fields = [

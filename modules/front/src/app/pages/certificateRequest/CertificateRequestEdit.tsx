@@ -33,12 +33,12 @@ import {ReadonlyField} from "../../components/ReadonlyField";
 import {ExtTaskDataCards} from "../bproc/TaskData/ExtTaskDataCards";
 import {ProcessInstanceData} from "../../../cuba/entities/base/bproc_ProcessInstanceData";
 import LoadingPage from "../LoadingPage";
-import {BprocButtons} from "../bproc/buttons/BprocButtons";
 import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
 import {BprocFormData} from "../../../cuba/entities/bproc/bproc_FormData";
 import Button, {ButtonType} from "../../components/Button/Button";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
+import BprocButtons from "../bproc/buttons/BprocButtons";
 
 type Props = FormComponentProps & EditorProps;
 

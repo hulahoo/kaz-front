@@ -107,6 +107,7 @@
   "menu.my-app-vacation": "Мои заявки на вакансию",
   "menu.assigment-interview": "Назначенные интервью",
   "menu.job-offers": "Job Offers",
+  "menu.certificateRequest": "Справка с места работы",
   "settings": "Настройки",
   "logout": "Выйти",
   "search": "Найти",
@@ -209,14 +210,15 @@
   "goals": "Цели",
   "weight": "Вес",
   "close": "Закрыть",
-  "sendOnApprove": "Отправить на утверждение"
-  "assessmentPeriod": "Период оценки",
-  "course.info.isOnline.false": "Оффлайн",
-  "course.info.isOnline.true": "Онлайн",
-  "course.info.approve": "Подтверждение",
-  "back": "Назад",
+  "sendOnApprove": "Отправить на утверждение",
   "certificateRequest": "Справка с места работы",
   "bproc.startBproc.modal.error": "Пользователь уже добавлен",
   "bproc.start": "Вы уверены, что хотите отправить на утверждение?",
-  "bproc.start.success": "Документ успешно отправлен на утверждение"
+  "bproc.start.success": "Документ успешно отправлен на утверждение",
+  "bproc.REJECT.success": "Заявка отклонено",
+  "bproc.APPROVE.success": "Заявка утверждена",
+  "candidates": "Кандидаты",
+  "APPROVE": "Утвердить",
+  "REJECT": "Отклонить",
+  "bproc.start.btn": "Запустить процесс"
 }
