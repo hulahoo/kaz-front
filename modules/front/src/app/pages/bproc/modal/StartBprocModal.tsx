@@ -19,16 +19,16 @@ import Notification from "../../../util/notification/Notification";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
 import {RouteComponentProps, withRouter} from "react-router-dom";
-import {CertificateRequestManagement} from "../../certificateRequest/CertificateRequestManagement";
 import Candidate from "../component/Candidate";
 
 type StartBproc = {
   processDefinitionKey: string;
   employee: UserExt | null;
   validate(): void;
-  update(): void;
+  update():  Promise<any>;
   isValidatedSuccess(): boolean;
   dataInstance: DataInstanceStore<CertificateRequest>;
+  redirectPath: string;
   form: WrappedFormUtils
 }
 
@@ -76,12 +76,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
         id: "cubaReact.dataTable.no"
       }),
       onOk: () => {
-        this.props.dataInstance.update({
-          personGroup: {
-            id: this.props.rootStore!.userInfo.personGroupId
-          },
-          ...this.props.form.getFieldsValue()
-        }).then(() => {
+        this.props.update()
+          .then(() => {
           restServices.startBprocService.saveBprocActors({
             entityId: this.props.dataInstance.item!.id,
             notPersisitBprocActors: this.items
@@ -94,7 +90,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 rolesLinks: this.bprocRolesDefiner!.links
               }
             }).then(response => {
-              this.props.history!.push(`${CertificateRequestManagement.PATH}`);
+              this.props.history!.push(`${this.props.redirectPath}`);
               Notification.success({
                 message: this.props.intl.formatMessage({id: "bproc.start.success"})
               });

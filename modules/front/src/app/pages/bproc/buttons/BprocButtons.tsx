@@ -22,7 +22,7 @@ type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
   formData: BprocFormData;
   validate(): void;
-  update(): void;
+  update():  Promise<any>;
   isValidatedSuccess(): boolean;
   isStartForm: boolean;
   task: ExtTaskData | null;
@@ -92,8 +92,10 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & R
             this.setComment(value);
           }}
           rows={4}
+          aria-errormessage="errer my eror"
           id={outcome.id + "_textArea"}
           required={outcome.id !== "APPROVE"}/>
+
       </Modal>
     </Button>;
   }
@@ -106,6 +108,7 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & R
       isValidatedSuccess={this.props.isValidatedSuccess}
       dataInstance={this.props.dataInstance}
       form={this.props.form}
+      redirectPath={this.props.redirectPath}
       processDefinitionKey={this.props.processDefinitionKey}/>
   }
 

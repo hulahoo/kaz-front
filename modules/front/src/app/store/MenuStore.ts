@@ -3,7 +3,6 @@ import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
 import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
-import {ExtTaskDataCards} from "../pages/bproc/TaskData/ExtTaskDataCards";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -26,7 +25,8 @@ export default class MenuStore {
 
   @action
   loadUserMenuList = () => {
-    this.menuList = [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null},
+    this.menuList = [
+      {id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null},
       {
         id: "my-profile",
         caption: "Мой профиль",
@@ -84,7 +84,7 @@ export default class MenuStore {
               menuLink: "/books",
               pathPattern: "/books",
               component: null
-            },{
+            }, {
               id: "my-books",
               caption: "Мои книги",
               menuLink: "/my-books",

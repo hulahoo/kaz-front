@@ -9,10 +9,7 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {restServices} from "../../../cuba/services";
 
 import {
-  clearFieldErrors,
   collection,
-  constructFieldsWithErrors,
-  extractServerValidationErrors,
   injectMainStore,
   instance,
   MainStoreInjected,
@@ -61,7 +58,7 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
   });
 
   receivingTypesDc = collection<DicReceivingType>(DicReceivingType.NAME, {
-    view: "_minimal"
+    view: "_local"
   });
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
@@ -144,56 +141,13 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
   };
 
   update = () => {
-    if (!this.isValidatedSuccess) return;
     const updateEntityData = {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
       },
       ...this.props.form.getFieldsValue(this.fields)
     };
-    this.dataInstance
-      .update(updateEntityData)
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({id: "management.editor.success"})
-        );
-        this.updated = true;
-      })
-      .catch((e: any) => {
-        if (e.response && typeof e.response.json === "function") {
-          e.response.json().then((response: any) => {
-            clearFieldErrors(this.props.form);
-            const {
-              globalErrors,
-              fieldErrors
-            } = extractServerValidationErrors(response);
-            this.globalErrors = globalErrors;
-            if (fieldErrors.size > 0) {
-              this.props.form.setFields(
-                constructFieldsWithErrors(fieldErrors, this.props.form)
-              );
-            }
-
-            if (fieldErrors.size > 0 || globalErrors.length > 0) {
-              message.error(
-                this.props.intl.formatMessage({
-                  id: "management.editor.validationError"
-                })
-              );
-            } else {
-              message.error(
-                this.props.intl.formatMessage({
-                  id: "management.editor.error"
-                })
-              );
-            }
-          });
-        } else {
-          message.error(
-            this.props.intl.formatMessage({id: "management.editor.error"})
-          );
-        }
-      });
+    return this.dataInstance.update(updateEntityData);
   }
 
   takCard() {
@@ -207,6 +161,11 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
       return <LoadingPage/>
     }
 
+    const fieldValue = this.props.form.getFieldValue("receivingType");
+
+    const val = this.receivingTypesDc.items.find(value => value.id === fieldValue)!;
+    const isNeedBpm = fieldValue && val.code === 'ON_HAND';
+
     if (this.updated) {
       return <Redirect to={CertificateRequestManagement.PATH}/>;
     }
@@ -219,17 +178,34 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
 
     if (!messages) return <LoadingPage/>
 
-    const outcomeBtns = this.formData ? <BprocButtons dataInstance={this.dataInstance}
-                                                      formData={this.formData}
-                                                      validate={this.validate}
-                                                      update={this.update}
-                                                      isValidatedSuccess={() => this.isValidatedSuccess}
-                                                      processInstanceData={this.processInstanceData}
-                                                      isStartForm={this.isStartForm}
-                                                      redirectPath={CertificateRequestManagement.PATH}
-                                                      processDefinitionKey={'certificateRequest'}
-                                                      form={this.props.form}
-                                                      task={this.activeTask}/> : null;
+    const outcomeBtns = this.formData
+      ? isNeedBpm
+        ? <BprocButtons dataInstance={this.dataInstance}
+                        formData={this.formData}
+                        validate={this.validate}
+                        update={this.update}
+                        isValidatedSuccess={() => this.isValidatedSuccess}
+                        processInstanceData={this.processInstanceData}
+                        isStartForm={this.isStartForm}
+                        redirectPath={CertificateRequestManagement.PATH}
+                        processDefinitionKey={'certificateRequest'}
+                        form={this.props.form}
+                        task={this.activeTask}/>
+        : <Button
+          buttonType={ButtonType.PRIMARY}
+          onClick={event => {
+            this.validate();
+            if (this.isValidatedSuccess) {
+              this.update().then(value => this.updated = true);
+            }
+          }
+          }
+          disabled={status !== "DONE" && status !== "ERROR"}
+          loading={status === "LOADING"}
+          style={{marginLeft: "8px"}}>
+          <FormattedMessage id="management.editor.submit"/>
+        </Button>
+      : null;
     return (
       <Page pageName={this.props.intl.formatMessage({id: "certificateRequest"})}>
         <Section size="large">
