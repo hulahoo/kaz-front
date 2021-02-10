@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
 
+    <view entity="tsadv$DicBookCategory" name="dicBookCategory-view" extends="_minimal">
+        <property name="books" view="_minimal">
+            <property name="image" view="_minimal"/>
+            <property name="fb2" view="_minimal"/>
+            <property name="epub" view="_minimal"/>
+            <property name="mobi" view="_minimal"/>
+            <property name="kf8" view="_minimal"/>
+            <property name="pdf" view="_minimal"/>
+            <property name="djvu" view="_minimal"/>
+        </property>
+        <property name="order"/>
+    </view>
 </views>

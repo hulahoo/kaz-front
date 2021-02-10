@@ -6,6 +6,7 @@ export class ExtTaskData extends TaskData {
   assigneeOrCandidates?: User | null;
   outcome?: string | null;
   hrRole?: DicHrRole | null;
+  comment?: string | null;
 }
 export type ExtTaskDataViewName = "_base" | "_local" | "_minimal";
 export type ExtTaskDataView<V extends ExtTaskDataViewName> = V extends "_base"

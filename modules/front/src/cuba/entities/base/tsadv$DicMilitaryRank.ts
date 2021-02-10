@@ -128,5 +128,6 @@ export type DicMilitaryRankView<
       | "order"
       | "troopType"
       | "categoryComposition"
+      | "company"
     >
   : never;

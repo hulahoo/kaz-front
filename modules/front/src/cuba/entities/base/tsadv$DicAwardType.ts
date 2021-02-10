@@ -96,5 +96,6 @@ export type DicAwardTypeView<V extends DicAwardTypeViewName> = V extends "_base"
       | "isDefault"
       | "order"
       | "promotionType"
+      | "company"
     >
   : never;

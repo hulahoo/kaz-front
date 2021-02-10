@@ -541,9 +541,12 @@ export type AssignmentExtView<
       | "endDate"
       | "writeHistory"
       | "assignDate"
-      | "organizationGroup"
+      | "personGroup"
       | "jobGroup"
       | "gradeGroup"
+      | "organizationGroup"
+      | "group"
+      | "positionGroup"
     >
   : V extends "assignmentExt-with-type"
   ? Pick<

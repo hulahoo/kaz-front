@@ -5,7 +5,7 @@ export class UserExt extends BaseUserExt {
   personGroup?: PersonGroupExt | null;
   fullNameWithLogin?: string | null;
 }
-export type UserExtViewName =
+export type TsadvUserViewName =
   | "_base"
   | "_local"
   | "_minimal"
@@ -16,9 +16,9 @@ export type UserExtViewName =
   | "user.roles"
   | "userExt.bproc"
   | "userExt.edit";
-export type UserExtView<V extends UserExtViewName> = V extends "_base"
+export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
   ? Pick<
-      UserExt,
+    UserExt,
       | "id"
       | "shortName"
       | "login"
@@ -86,7 +86,7 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
   ? Pick<UserExt, "id" | "shortName" | "login">
   : V extends "tsadvUserExt-view"
   ? Pick<
-      UserExt,
+          UserExt,
       | "id"
       | "login"
       | "loginLowerCase"

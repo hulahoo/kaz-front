@@ -63,5 +63,6 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "personGroup"
       | "addressType"
       | "country"
+      | "city"
     >
   : never;
