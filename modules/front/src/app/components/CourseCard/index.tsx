@@ -2,29 +2,28 @@ import React from 'react';
 import Meta from "antd/es/card/Meta";
 import {Card, Rate} from "antd";
 
-export type CourseCardProps = {
+export type PanelCardProps = {
   loading?: boolean
-  imgBase64?: string;
-  courseName?: string,
-  rateCount?: number,
-  avgRate?: number,
-  courseId?: string,
-  imageIcon?: string,
+  name?: string,
+  header?: JSX.Element,
 }
 
-class CourseCard extends React.Component<CourseCardProps> {
+class PanelCard extends React.Component<PanelCardProps> {
+
   render() {
     return (
       <Card className={"course-card"}
             loading={this.props.loading}
             hoverable={!this.props.loading}
-            cover={<>{this.props.imageIcon ? <img src={this.props.imageIcon} alt="online" className={"icon-online"}/> : null}<img alt={this.props.courseName}
-                             src={this.props.imgBase64 ? "data:image/png;base64, " + this.props.imgBase64 : undefined}/></>}>
-        <Meta title={this.props.courseName}
-              description={<><Rate disabled defaultValue={this.props.avgRate} allowHalf/> ({this.props.rateCount})</>}/>
+            cover={this.props.header}>
+        {this.props.children}
       </Card>
     );
   }
+
+  componentDidMount(): void {
+
+  }
 }
 
-export default CourseCard;
+export default PanelCard;

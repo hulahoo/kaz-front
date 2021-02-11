@@ -88,6 +88,7 @@
   "antd.form.validation.array.max": "Поле %s должно содержать не более %s элементов.",
   "antd.form.validation.array.range": "Поле %s должно содержать от %s до %s элементов.",
   "antd.form.validation.pattern.mismatch": "Поле %s имеет значение %s, не подходящее под паттерн %s.",
+  "menu.main": "Главная",
   "menu.my-profile": "Мой профиль",
   "menu.my-team": "Моя команда",
   "menu.help": "Справка",

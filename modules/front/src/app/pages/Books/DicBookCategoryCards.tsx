@@ -1,17 +1,24 @@
 import * as React from "react";
 import {observer} from "mobx-react";
-import {Card, Icon} from "antd";
-import {collection, EntityProperty} from "@cuba-platform/react";
+import {Button, Icon, Rate, Select, Tabs} from "antd";
 import {DicBookCategory} from "../../../cuba/entities/base/tsadv$DicBookCategory";
 import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
+import PanelCard from "../../components/CourseCard";
+import {Link} from "react-router-dom";
+import {getBlobUrl} from "../../util/util";
+import {queryCollection} from "../../util/QueryDataCollectionStore";
+import {SerializedEntity} from "@cuba-platform/rest";
+import {Book} from "../../../cuba/entities/base/tsadv$Book";
+import Meta from "antd/es/card/Meta";
+import ImageLogo from "../../components/ImageLogo";
+
+const bookFileProperties = ["fb2", "epub", "mobi", "kf8", "pdf", "djvu"];
 
 @observer
 class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
-  dataCollection = collection<DicBookCategory>(DicBookCategory.NAME, {
-    view: "portal-books-category-browse",
-    sort: "-updateTs"
-  });
+  dataCollection = queryCollection<DicBookCategory>(DicBookCategory.NAME, "books", {});
+
   fields = [
     "langValue",
 
@@ -40,22 +47,34 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.books"})}>
         <div className="narrow-layout">
-          {items.map(e => (
-            <Card
-              title={e._instanceName}
-              key={e.id}
-              style={{marginBottom: "12px"}}
-            >
-              {this.fields.map(p => (
-                <EntityProperty
-                  entityName={DicBookCategory.NAME}
-                  propertyName={p}
-                  value={e[p]}
-                  key={p}
-                />
-              ))}
-            </Card>
-          ))}
+          <Tabs>
+            {status === 'DONE' ? items.map(category => <Tabs.TabPane
+              tab={(category as SerializedEntity<DicBookCategory>)._instanceName} key={category.id}>
+              <div className={"courses-cards-wrapper"}>
+                <div className={"courses-cards"}>
+                  {category.books!.map(book => <PanelCard key={book.id}
+                                                          loading={false}
+                                                          name={(book as SerializedEntity<Book>)._instanceName}
+                                                          header={
+                                                            <Link to={"/book/" + book.id} key={book.id}><ImageLogo
+                                                              type="promise"
+                                                              imgSrcProp={book.image ? getBlobUrl(book.image.id) : undefined}
+                                                              name={book.bookNameLang1!}/></Link>}>
+                    <Meta title={(book as SerializedEntity<Book>)._instanceName}
+                          description={<>
+                            {bookFileProperties.find(fp => (book as {}).hasOwnProperty(fp)) != undefined
+                              ? <Select placeholder={"Скачать книгу"} style={{width: '100%'}}>
+                                {bookFileProperties.filter(fp => (book as {}).hasOwnProperty(fp)).map(fp =>
+                                  <Select.Option key={book[fp].id!}>{fp}</Select.Option>)}
+                              </Select>
+                              : <></>}
+                            <Button type="primary" style={{width: '100%', marginTop: '5px'}}>В мои
+                              книги</Button></>}/>
+                  </PanelCard>)}
+                </div>
+              </div>
+            </Tabs.TabPane>) : <></>}
+          </Tabs>
         </div>
       </Page>
     );
