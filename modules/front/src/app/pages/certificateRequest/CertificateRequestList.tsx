@@ -24,6 +24,9 @@ import Section from "../../hoc/Section";
 @inject("rootStore")
 @observer
 class CertificateRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+  componentDidMount(): void {
+  }
+
   dataCollection = collection<CertificateRequest>(CertificateRequest.NAME, {
     view: "portal.certificateRequest-edit",
     sort: "-updateTs",

@@ -47,8 +47,8 @@ export default class MenuStore {
           {
             id: "certificateRequest",
             caption: "Справка с места работы",
-            menuLink: "/certificateRequestManagement",
-            pathPattern: "/certificateRequestManagement/:entityId?",
+            menuLink: "/certificateRequest",
+            pathPattern: "/certificateRequest/:entityId?",
             component: CertificateRequestManagement
           }
         ],

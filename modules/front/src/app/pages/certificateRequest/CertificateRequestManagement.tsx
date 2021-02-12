@@ -8,7 +8,7 @@ type Props = RouteComponentProps<{ entityId?: string }>;
 
 @observer
 export class CertificateRequestManagement extends React.Component<Props> {
-  static PATH = "/certificateRequestManagement";
+  static PATH = "/certificateRequest";
   static NEW_SUBPATH = "new";
 
   render() {

@@ -91,7 +91,7 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
   formData: BprocFormData | null;
 
   @observable
-  isStartForm: boolean | true;
+  isStartForm: boolean;
 
   fields = [
     "requestNumber",
@@ -122,8 +122,6 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
   isValidatedSuccess = false;
 
   validate = () => {
-
-    console.log("validate")
 
     this.props.form.validateFields((err, values) => {
 
@@ -298,10 +296,6 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                   disabled={isDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[CertificateRequest.NAME + '.showSalary']})
-                    }],
                     valuePropName: "checked"
                   }}
                 />
@@ -362,7 +356,10 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
           restServices.bprocService.tasks({processInstanceData: value})
             .then(tasks => {
               this.tasks = tasks;
-              this.activeTask = tasks.find(task => !task.endTime) as ExtTaskData;
+              this.activeTask = tasks.find(task => !task.endTime
+                && Array.isArray(task.assigneeOrCandidates)
+                && task.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
+              ) as ExtTaskData;
 
               if (this.activeTask)
                 restServices.bprocFormService.getTaskFormData({taskId: this.activeTask.id!})

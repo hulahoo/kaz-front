@@ -95,7 +95,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/my-profile" component={PersonalDataRequestEditPage}/>
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
-                <Route exact={true} path="/certificateRequestManagement/:entityId?" component={CertificateRequestManagement}/>
+                <Route exact={true} path="/certificateRequest/:entityId?" component={CertificateRequestManagement}/>
                 <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/individual/:entityId?" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/library/:entityId?"
