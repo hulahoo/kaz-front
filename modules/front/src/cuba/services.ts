@@ -7,6 +7,7 @@ import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
 import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/Test";
+import {Comment} from '../app/pages/Material/MaterialReviews'
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -159,7 +160,7 @@ export type CourseInfo = {
   certificateUrl: string
   sections: any[]
   logo: any
-  comments: any[]
+  comments: Comment[]
   isIssuedCertificate: boolean
   rateReviewCount: number
   rating: any[]

@@ -3,9 +3,9 @@ import NoImage from "../NoImage";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 
-type ImageType = "base64" | "src" | "promise"
+export type ImageType = "base64" | "src" | "promise"
 
-type ImageLogoProps = {
+export type ImageLogoProps = {
   type?: ImageType
   imgSrc?: string
   imgSrcProp?: Promise<string>

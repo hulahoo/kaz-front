@@ -71,8 +71,8 @@ export default class MenuStore {
             items: [{
               id: "books",
               caption: "Мои книги",
-              menuLink: "/books",
-              pathPattern: "/books",
+              menuLink: "/book",
+              pathPattern: "/book",
               component: null
             },{
               id: "my-books",
