@@ -1,13 +1,13 @@
 import React from 'react';
 import {DataContainerStatus} from "@cuba-platform/react";
-import CourseCard, {CourseCardProps} from "../CourseCard";
 import {Button} from "antd";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
+import PanelCard, {PanelCardProps} from "../CourseCard";
 
 type Props<T> = {
   status: DataContainerStatus,
-  items: Array<CourseCardProps>
+  items: Array<PanelCardProps>
 }
 
 @observer
@@ -62,15 +62,15 @@ class CourseCarousel<T> extends React.Component<Props<T>> {
     const courses = [];
     if (status !== 'LOADING') {
       for (let i = 0; i < 10; i++) {
-        courses.push(<div className="carousel-item"><CourseCard key={items[0].courseId} loading={false} {...items[0]}
-                                                                courseName={items[0]!.courseName! + (i + 1)}/></div>)
+        courses.push(<div className="carousel-item"><PanelCard key={items[0].name} loading={false} {...items[0]}
+                                                                name={items[0]!.name! + (i + 1)}/></div>)
       }
     }
 
     return (
       <div className={"carousel-courses-wrapper"}>
         <div className={"carousel-courses"} ref={this.carouselCoursesRef}>
-          {status === 'LOADING' ? <CourseCard loading={true}/> : courses}
+          {status === 'LOADING' ? <PanelCard loading={true}/> : courses}
         </div>
         {status === 'LOADING'
           ? <></>

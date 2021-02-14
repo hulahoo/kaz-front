@@ -11,7 +11,7 @@ export class QueryDataInstanceStore<T> extends DataInstanceStore<T> {
         return;
       }
       this.status = "LOADING";
-      getCubaREST()!.query<T>(this.entityName, queryName,  params)
+      getCubaREST()!.query<T>(this.entityName, queryName, params)
         .then((loadedEntity) => {
           runInAction(() => {
             this.item = loadedEntity[0];
@@ -27,6 +27,6 @@ export class QueryDataInstanceStore<T> extends DataInstanceStore<T> {
   }
 }
 
-export function queryInstance<T>(entityName: string, queryName: string, params: any) {
+export function queryInstance<T>(entityName: string, queryName: string, params: any): DataInstanceStore<T> {
   return new QueryDataInstanceStore<T>(getMainStore(), entityName, queryName, params);
 }

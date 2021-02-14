@@ -37,7 +37,8 @@ import LearningHistory from "./pages/LearningHistory";
 import {CourseManagement} from "./pages/Course/CourseManagement";
 import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
 import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
-import DicBookCategoryCards from "./pages/Books/DicBookCategoryCards";
+import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
+import {BooksManagement} from "./pages/Books/BooksManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -104,7 +105,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
                 <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
-                <Route exact={true} path="/books/:entityId?" component={DicBookCategoryCards}/>
+                <Route exact={true} path="/book/:entityId?" component={BooksManagement}/>
                 <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}

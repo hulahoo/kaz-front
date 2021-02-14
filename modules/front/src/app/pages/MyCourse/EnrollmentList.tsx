@@ -1,6 +1,5 @@
 import React from 'react';
-import CourseCard from "../../components/CourseCard";
-import {Spin, Tabs} from "antd";
+import {Rate, Spin, Tabs} from "antd";
 import {inject, observer} from "mobx-react";
 import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
@@ -12,6 +11,9 @@ import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {restServices} from "../../../cuba/services";
 import {EnrollmentManagement} from "./EnrollmentManagement";
+import PanelCard from "../../components/CourseCard";
+import Meta from "antd/es/card/Meta";
+import ImageLogo from "../../components/ImageLogo";
 
 @inject("rootStore")
 @observer
@@ -47,14 +49,27 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                    key={category.id}>
               <div className={"courses-cards-wrapper"}>
                 <div className={"courses-cards"}>
-                  {category.courses!.map(course => <Link to={EnrollmentManagement.PATH + "/" + course.enrollments![0].id}><CourseCard key={course.id}
-                                                                                                     loading={false} {...course}
-                                                                                                     courseName={course.name!}
-                                                                                                     imgBase64={course.logo}
-                                                                                                     imageIcon={!(course as any).isOnline ? require("../../../resources/icons/online.png") : null}
-                                                                                                     rateCount={90}
-                                                                                                     avgRate={course.avgRate}
-                                                                                                     courseId={course.id}/></Link>)}
+                  {category.courses!.map(course => <Link
+                    to={EnrollmentManagement.PATH + "/" + course.enrollments![0].id}><PanelCard key={course.id}
+                                                                                                loading={false} {...course}
+                                                                                                name={course.name!}
+                                                                                                header={(<>
+                                                                                                  {!(course as
+                                                                                                    any).isOnline ?
+                                                                                                    <img
+                                                                                                      src={require("../../../resources/icons/online.png")}
+                                                                                                      alt="online"
+                                                                                                      className={"icon-online"}/> :
+                                                                                                    null}
+                                                                                                  <ImageLogo
+                                                                                                    type="base64"
+                                                                                                    imgSrc={course.logo}
+                                                                                                    name={course.name!}/>
+                                                                                                </>)}>
+
+                    <Meta title={course.name}
+                          description={<><Rate disabled defaultValue={course.avgRate} allowHalf/> (90)</>}/>
+                  </PanelCard></Link>)}
                 </div>
               </div>
             </TabPane>) : <></>}
