@@ -26,7 +26,6 @@ import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
 import {RootStoreProp} from "./store";
 import MyKpiPage from "./pages/my-kpi/MyKpiPage";
-import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {CertificateRequestManagement} from "./pages/certificateRequest/CertificateRequestManagement";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
@@ -44,11 +43,6 @@ import {BooksManagement} from "./pages/Books/BooksManagement";
 @inject("rootStore")
 @observer
 class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
-
-  constructor(props: MainStoreInjected & WrappedComponentProps, context: any) {
-    super(props, context);
-  }
-
   render() {
     const {initialized, locale, loginRequired, metadata} = this.props.mainStore!;
 
