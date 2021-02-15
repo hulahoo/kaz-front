@@ -9,6 +9,7 @@ import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import LoadingPage from "../../LoadingPage";
 import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
 import Candidate from "../component/Candidate";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 
 type TaskProps = {
   tasks: ExtTaskData[];
@@ -17,7 +18,7 @@ type TaskProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-export class ExtTaskDataCards extends React.Component<TaskProps & MainStoreInjected> {
+class ExtTaskDataCards extends React.Component<TaskProps & MainStoreInjected & WrappedComponentProps> {
 
   state = {visible: false};
 
@@ -69,7 +70,8 @@ export class ExtTaskDataCards extends React.Component<TaskProps & MainStoreInjec
                   dataIndex="outcome"
                   key="outcome"
                   render={(text, record, index) => {
-                    return (record as ExtTaskData).outcome;
+                    const outcome = (record as ExtTaskData).outcome;
+                    return outcome ? this.props.intl.formatMessage({id: outcome!}) : "";
                   }}/>
           <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='comment'/>}
                   dataIndex="comment"
@@ -83,3 +85,5 @@ export class ExtTaskDataCards extends React.Component<TaskProps & MainStoreInjec
       ;
   }
 }
+
+export default injectIntl(ExtTaskDataCards);
