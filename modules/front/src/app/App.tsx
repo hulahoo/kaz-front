@@ -52,9 +52,11 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
 
     if (loginRequired) {
       return (
-        <Centered>
-          <Login/>
-        </Centered>
+        <div>
+          <Centered>
+            <Login/>
+          </Centered>
+        </div>
       );
     }
 

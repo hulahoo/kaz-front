@@ -1,7 +1,7 @@
 import * as React from "react";
 import {observer} from "mobx-react";
 
-import {action, observable, runInAction} from "mobx";
+import {action, IReactionDisposer, observable, reaction, runInAction} from "mobx";
 
 import {Modal, Button, Table, Icon} from "antd";
 
@@ -23,6 +23,11 @@ import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 import {restQueries} from "../../../../cuba/queries";
 import {Link} from "react-router-dom";
 import {RouteComponentProps, withRouter} from "react-router";
+import {PersonGroupExt} from "../../../../cuba/entities/base/base$PersonGroupExt";
+import {JobGroup} from "../../../../cuba/entities/base/tsadv$JobGroup";
+import {OrganizationGroupExt} from "../../../../cuba/entities/base/base$OrganizationGroupExt";
+import {OrganizationExt} from "../../../../cuba/entities/base/base$OrganizationExt";
+import moment from "moment";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -49,6 +54,8 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   ];
 
   @observable selectedRowKey: string | undefined;
+
+  reactionDisposer: IReactionDisposer;
 
   showDeletionDialog = (e: SerializedEntity<AssignedGoal>) => {
     Modal.confirm({
@@ -84,13 +91,8 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
 
   render() {
-    //TODO: переписать
-    if (this.dataCollection.length > 0 && this.props.setTotalWeight) {
-      this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
-    }
-
     return (
-      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
+      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
              size="default" bordered={false} rowKey="id">
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
                 dataIndex="category.langValue1"
@@ -158,6 +160,15 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
   componentDidMount(): void {
     this.load();
+
+    this.reactionDisposer = reaction(
+      () => this.dataCollection,
+      (item) => {
+        if (this.dataCollection.length > 0 && this.props.setTotalWeight) {
+          this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
+        }
+      }
+    );
   }
 
   load = () => {

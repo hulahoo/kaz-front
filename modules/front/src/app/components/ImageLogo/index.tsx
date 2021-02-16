@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, ImgHTMLAttributes} from 'react';
 import NoImage from "../NoImage";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
@@ -13,18 +13,20 @@ export type ImageLogoProps = {
 }
 
 @observer
-class ImageLogo extends Component<ImageLogoProps> {
+class ImageLogo extends Component<ImageLogoProps & React.ImgHTMLAttributes<HTMLImageElement>> {
 
   @observable
   logo = this.props.imgSrc;
 
   render() {
+    const {type, imgSrc, imgSrcProp, name, ...rest} = this.props;
+
     return (
       <>
         {this.logo
-          ? <img alt={this.props.name}
+          ? <img {...rest} alt={name}
                  src={this.props.type === 'base64' ? "data:image/png;base64, " + this.logo : this.logo}/>
-          : <NoImage/>} </>
+          : <NoImage {...this.props}/>} </>
     );
   }
 

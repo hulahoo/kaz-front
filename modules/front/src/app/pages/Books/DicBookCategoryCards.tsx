@@ -56,7 +56,7 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
   };
 
   selectBookHandler = (fileId: string, option: React.ReactElement<HTMLLIElement>) => {
-    this.downloadBook(fileId, (option.props["children"] as any).name, (option.props["children"] as any).extension);
+    this.downloadBook(fileId, option.props["name"], option.props["extension"]);
   };
 
   render() {
@@ -79,10 +79,13 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
                                                             loading={false}
                                                             name={(book as SerializedEntity<Book>)._instanceName}
                                                             header={
-                                                              <Link to={"/book/" + book.id} key={book.id}><ImageLogo
-                                                                type="promise"
-                                                                imgSrcProp={book.image ? getBlobUrl(book.image.id) : undefined}
-                                                                name={book.bookNameLang1!}/></Link>}>
+                                                              <Link to={"/book/" + book.id} key={book.id}>
+                                                                <ImageLogo
+                                                                  className="panel-logo"
+                                                                  type="promise"
+                                                                  imgSrcProp={book.image ? getBlobUrl(book.image.id) : undefined}
+                                                                  name={book.bookNameLang1!}/>
+                                                              </Link>}>
                       <Meta title={(book as SerializedEntity<Book>)._instanceName}
                             description={<>
                               {bookFileProperties.find(fp => (book as {}).hasOwnProperty(fp)) != undefined
@@ -94,8 +97,9 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
                                                    extension={fp}>{fp}</Select.Option>)}
                                 </Select>
                                 : <></>}
-                              <Button type="primary" style={{width: '100%', marginTop: '5px'}}>В мои
-                                книги</Button></>}/>
+                              {/*<Button type="primary" style={{width: '100%', marginTop: '5px'}}>В мои*/}
+                              {/*  книги</Button>*/}
+                            </>}/>
                     </PanelCard>)}
                   </div>
                 </div>

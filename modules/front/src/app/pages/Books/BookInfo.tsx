@@ -90,6 +90,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                 ? <MaterialHeader
                   name={this.dataInstance.item._instanceName!}
                   finished={0}
+                  showEnrollment={false}
                   materialInfoType="book"
                   avgRate={this.dataInstance.item.reviews
                     ? this.dataInstance.item.reviews.map(r => (r.rating as number)).reduce((i1, i2) => i1 + i2, 0)

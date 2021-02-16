@@ -84,12 +84,12 @@ export default class MenuStore {
               menuLink: "/book",
               pathPattern: "/book",
               component: null
-            }, {
-              id: "my-books",
-              caption: "Мои книги",
-              menuLink: "/my-books",
-              pathPattern: "/my-books",
-              component: null
+            // }, {
+            //   id: "my-books",
+            //   caption: "Мои книги",
+            //   menuLink: "/my-books",
+            //   pathPattern: "/my-books",
+            //   component: null
             }]
           } as MenuSubMenu,
           {

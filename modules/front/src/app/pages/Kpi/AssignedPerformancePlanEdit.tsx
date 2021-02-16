@@ -34,9 +34,14 @@ import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
 import {queryInstance} from "../../util/QueryDataInstanceStore";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
-import {EnumValueInfo} from "@cuba-platform/rest/dist-node/model";
+import {EnumValueInfo, SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
 import Notification from "../../util/notification/Notification";
+import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
+import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
+import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
+import {OrganizationExt} from "../../../cuba/entities/base/base$OrganizationExt";
+import EntitySecurityState from "../../util/EntitySecurityState";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -55,20 +60,28 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     {appId: this.props.entityId}
   );
 
+  entitySecurityState: EntitySecurityState = new EntitySecurityState(AssignedPerformancePlan.NAME, this.props.entityId);
+
   @observable
   totalWeight: number;
 
   @observable
   updated = false;
+
+  @observable
+  readonly: boolean = true;
+
   reactionDisposer: IReactionDisposer;
 
   fields = [
 
     "assignedPerson",
 
-    "currentAssignment",
+    "jobGroup",
 
-    "performancePlan",
+    "organizationGroup",
+
+    "organization",
 
     "startDate",
 
@@ -195,8 +208,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
           <Link to={AssignedPerformancePlanManagement.PATH}>
             <Button buttonType={ButtonType.FOLLOW}>{this.props.intl.formatMessage({id: "close"})}</Button>
           </Link>,
-          <Button buttonType={ButtonType.FOLLOW}
-                  onClick={this.sendOnApprove}>{this.props.intl.formatMessage({id: "sendOnApprove"})}</Button>]}
+          ...this.pageActions()]}
               bordered={false}>
           <div className={"large-section section-container"}>
             <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "employeeInfo"})}</div>
@@ -206,8 +218,9 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={AssignedPerformancePlan.NAME}
-                      propertyName="assignedPerson._instanceName"
+                      propertyName="assignedPerson"
                       form={this.props.form}
+                      disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         className: 'disabled',
@@ -217,8 +230,9 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={AssignedPerformancePlan.NAME}
-                      propertyName="currentAssignment.jobGroup._instanceName"
+                      propertyName="jobGroup"
                       form={this.props.form}
+                      disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         className: 'disabled',
@@ -228,8 +242,9 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={AssignedPerformancePlan.NAME}
-                      propertyName="currentAssignment.organizationGroup.organizationNameLang1"
+                      propertyName="organizationGroup"
                       form={this.props.form}
+                      disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         label: this.props.intl.formatMessage({id: "organizationGroup"})
@@ -239,8 +254,9 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={AssignedPerformancePlan.NAME}
-                      propertyName="currentAssignment.organizationGroup.organization.organizationNameLang1"
+                      propertyName="organization"
                       form={this.props.form}
+                      disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         label: this.props.intl.formatMessage({id: "organization"})
@@ -254,6 +270,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                       entityName={AssignedPerformancePlan.NAME}
                       propertyName="startDate"
                       form={this.props.form}
+                      disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         label: <Msg entityName={PerformancePlan.NAME} propertyName={"startDate"}/>
@@ -265,6 +282,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                       entityName={AssignedPerformancePlan.NAME}
                       propertyName="endDate"
                       form={this.props.form}
+                      disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         label: <Msg entityName={PerformancePlan.NAME} propertyName={"endDate"}/>
@@ -276,7 +294,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                                key='hireDate'
                                style={{marginBottom: '12px'}}>{
                       this.props.form.getFieldDecorator('hireDate')(
-                        <DatePicker disabled={true}/>
+                        <DatePicker disabled/>
                       )}
                     </Form.Item>
                   </Col>
@@ -295,10 +313,13 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
             <StatusSteps steps={statusSteps}
                          currentIndex={this.dataInstance.item ? statusesPerformancePlan.filter(s => s.id === this.dataInstance.item!.status).map((s, i) => i)[0] : undefined}/>
           </Section>
-          <Section size={"large"} visible={false}>
-            <DropdownButton menu={createGoalsMenu}
-                            buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
-          </Section>
+          {this.readonly
+            ? <></>
+            : <Section size={"large"} visible={false}>
+              <DropdownButton menu={createGoalsMenu}
+                              buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
+            </Section>
+          }
           <Section size={"large"} sectionName={<div>
             <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
             <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
@@ -310,18 +331,37 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     );
   }
 
+  @action
+  setReadOnly = (): void => {
+    this.entitySecurityState.afterLoad = () => {
+      console.log(this.entitySecurityState.securityState);
+      this.readonly = this.entitySecurityState.securityState.hiddenAttributes
+        && (this.entitySecurityState.securityState.hiddenAttributes.find(a => a === "performancePlan") != undefined);
+    };
+    this.entitySecurityState.loadSecurityState()
+  };
+
+  pageActions = (): JSX.Element[] => {
+    if (!this.readonly) {
+      return [<Button buttonType={ButtonType.FOLLOW}
+                      onClick={this.sendOnApprove}>{this.props.intl.formatMessage({id: "sendOnApprove"})}</Button>]
+    }
+    return [];
+  };
+
   componentDidMount() {
     this.loadInstanceData();
+    this.setReadOnly();
     this.reactionDisposer = reaction(
       () => this.dataInstance.item,
       (item) => {
         this.props.form.setFieldsValue(
           {
-            // ...this.dataInstance.getFieldValues(this.fields),
             ...{
-              assignedPerson: item!.assignedPerson!,
-              currentAssignment: item!.assignedPerson!.assignments![0],
-              performancePlan: item!.performancePlan,
+              assignedPerson: (item!.assignedPerson! as SerializedEntity<PersonGroupExt>)._instanceName,
+              jobGroup: (item!.assignedPerson!.assignments![0].jobGroup as SerializedEntity<JobGroup>)._instanceName,
+              organizationGroup: (item!.assignedPerson!.assignments![0].organizationGroup as SerializedEntity<OrganizationGroupExt>)._instanceName,
+              organization: (item!.assignedPerson!.assignments![0].organizationGroup!.organization as SerializedEntity<OrganizationExt>)._instanceName,
               startDate: moment(item!.performancePlan!.startDate),
               endDate: moment(item!.performancePlan!.endDate),
               hireDate: moment(item!.assignedPerson!.person!.hireDate),
@@ -346,7 +386,11 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 }
 
 export default injectIntl(
-  withLocalizedForm<EditorProps>({
+  withLocalizedForm
+
+  <
+  EditorProps
+  > ({
     onValuesChange: (props: any, changedValues: any) => {
       // Reset server-side errors when field is edited
       Object.keys(changedValues).forEach((fieldName: string) => {
@@ -360,4 +404,5 @@ export default injectIntl(
     }
   })
   (AssignedPerformancePlanEditComponent)
-);
+)
+;

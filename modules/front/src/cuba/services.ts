@@ -15,6 +15,7 @@ import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 import {Comment} from '../app/pages/Material/MaterialReviews'
+import {SecurityState} from "../app/util/EntitySecurityState";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -281,6 +282,15 @@ export const restServices = {
       download: (fileId: string) => {
         return getCubaREST()!.getFile(fileId)
           .then(value => value);
+      }
+    },
+    portalAccessEntityAttributesService: {
+      entityAttributesSecurityState: (param: { entityName: string, entityId: string}): Promise<SecurityState> => {
+        return getCubaREST()!.invokeService<string>(
+          "tsadv_PortalAccessEntityAttributesService",
+          "entityAttributesSecurityState",
+          {...param}
+        ).then(r => JSON.parse(r));
       }
     }
   }

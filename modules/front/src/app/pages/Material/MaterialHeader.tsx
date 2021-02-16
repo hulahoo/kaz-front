@@ -11,6 +11,7 @@ type MaterialHeaderProps = {
   finished: number;
   hasEnrollment: boolean;
   subscribing?: boolean;
+  showEnrollment?: boolean;
   imageProps?: ImageLogoProps;
   materialInfoType?: string;
 }
@@ -21,6 +22,8 @@ type MaterialHeaderHandlers = {
 
 class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderProps & MaterialHeaderHandlers> {
   render() {
+    const {showEnrollment = true} = this.props;
+
     return (
       <Row>
         <Col span={16}>
@@ -52,10 +55,12 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
               </Col>
             </Row>
           </div>
-          {this.props.hasEnrollment ?
-            <FormattedMessage id={this.props.intl.formatMessage({id: this.props.materialInfoType + ".enrolled"})}/> :
-            <Button buttonType={ButtonType.PRIMARY} loading={this.props.subscribing}
-                    onClick={this.props.subscribe}>{this.props.intl.formatMessage({id: this.props.materialInfoType + ".subscribe"})}</Button>}
+          {showEnrollment
+            ? this.props.hasEnrollment
+              ? <FormattedMessage id={this.props.intl.formatMessage({id: this.props.materialInfoType + ".enrolled"})}/>
+              : <Button buttonType={ButtonType.PRIMARY} loading={this.props.subscribing}
+                        onClick={this.props.subscribe}>{this.props.intl.formatMessage({id: this.props.materialInfoType + ".subscribe"})}</Button>
+            : <></>}
         </Col>
         <Col span={8}>
           <div className="course-info-image">
