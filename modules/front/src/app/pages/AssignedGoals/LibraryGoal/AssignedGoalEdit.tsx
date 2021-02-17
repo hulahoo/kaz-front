@@ -31,6 +31,7 @@ import Page from "../../../hoc/PageContentHoc";
 import Notification from "../../../util/notification/Notification";
 import {FormComponentProps} from "antd/es/form";
 import Button, {ButtonType} from "../../../components/Button/Button";
+import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -41,7 +42,7 @@ type EditorProps = {
 
 @injectMainStore
 @observer
-class AssignedGoalEditComponent extends React.Component<Props & WrappedComponentProps & MainStoreInjected> {
+class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & WrappedComponentProps & MainStoreInjected> {
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-library",
     loadImmediately: false
@@ -169,28 +170,17 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
     }
 
     const messages = this.props.mainStore!.messages!;
-    const {status} = this.dataInstance;
     const {Option} = Select;
 
     return (
       <Page pageName={""}>
         <Form onSubmit={this.handleSubmit} layout="vertical">
           <Card className="narrow-layout card-actions-container" actions={
-            [
-              <Link to={"/kpi/" + this.props.appId}>
-                <Button htmlType="button" buttonType={ButtonType.FOLLOW}>
-                  <FormattedMessage id="management.editor.cancel"/>
-                </Button>
-              </Link>,
-              <Button buttonType={ButtonType.PRIMARY}
-                      type="primary"
-                      htmlType="submit"
-                      disabled={status !== "DONE" && status !== "ERROR"}
-                      loading={status === "LOADING"}
-                      style={{marginLeft: "8px"}}
-              ><FormattedMessage id="management.editor.submit"/>
+            [<Link to={"/kpi/" + this.props.appId}>
+              <Button htmlType="button" buttonType={ButtonType.FOLLOW}>
+                <FormattedMessage id="management.editor.cancel"/>
               </Button>
-            ]
+            </Link>]
           } bordered={false}>
             <Section size={"large"}>
               <Row className={"form-row"}>
@@ -268,6 +258,22 @@ class AssignedGoalEditComponent extends React.Component<Props & WrappedComponent
       </Page>
     );
   }
+
+  pageActions = (): JSX.Element[] => {
+    if (!this.readonly) {
+      const {status} = this.dataInstance;
+
+      return [<Button
+        buttonType={ButtonType.PRIMARY}
+        htmlType="submit"
+        disabled={status !== "DONE" && status !== "ERROR" && status !== "CLEAN"}
+        loading={status === "LOADING"}
+        style={{marginLeft: "8px"}}>
+        <FormattedMessage id="management.editor.submit"/>
+      </Button>]
+    }
+    return [];
+  };
 
   componentDidMount() {
     if (this.props.entityId !== "new") {

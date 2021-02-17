@@ -324,7 +324,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
             <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
             <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
           </div>}>
-            <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight}/>
+            <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight} readonly={this.readonly}/>
           </Section>
         </Card>
       </Page>
@@ -334,7 +334,6 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
   @action
   setReadOnly = (): void => {
     this.entitySecurityState.afterLoad = () => {
-      console.log(this.entitySecurityState.securityState);
       this.readonly = this.entitySecurityState.securityState.hiddenAttributes
         && (this.entitySecurityState.securityState.hiddenAttributes.find(a => a === "performancePlan") != undefined);
     };

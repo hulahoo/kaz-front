@@ -32,6 +32,7 @@ import moment from "moment";
 type Props = {
   assignedPerformancePlanId: string;
   setTotalWeight?: (totalWeight: number) => void
+  readonly: boolean;
 }
 
 @injectMainStore
@@ -110,7 +111,9 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                   return a.goalString.localeCompare(b.goalString);
                 }}
                 render={((text, record, index) => {
-                  return <Link to={this.getGoalUrl(record)}>{text}</Link>
+                  return this.props.readonly
+                    ? text
+                    : <Link to={this.getGoalUrl(record)}>{text}</Link>
                 })}/>
         <Column title={<Msg entityName={Goal.NAME} propertyName='successCriteria'/>}
                 dataIndex="goal.successCriteria"
@@ -146,13 +149,15 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
         <Column
           title=""
           key="action"
-          render={ag => (
-            <Button type="link"
-                    style={{padding: 0}}
-                    onClick={() => this.showDeletionDialog(ag)}>
-              <Icon type="delete" style={{fontSize: '18px', cursor: 'pointer'}}/>
-            </Button>
-          )}
+          render={ag => {
+            return this.props.readonly
+              ? <></>
+              : <Button type="link"
+                        style={{padding: 0}}
+                        onClick={() => this.showDeletionDialog(ag)}>
+                <Icon type="delete" style={{fontSize: '18px', cursor: 'pointer'}}/>
+              </Button>
+          }}
         />
       </Table>
     );
