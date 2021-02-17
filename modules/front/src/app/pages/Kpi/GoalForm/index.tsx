@@ -6,6 +6,7 @@ import AssignedGoalList from "../../AssignedGoals/IndividualGoal/AssignedGoalLis
 type Props = {
   assignedPerformancePlanId: string;
   setTotalWeight?: (totalWeight: number) => void
+  readonly: boolean;
 }
 
 class GoalForm extends React.Component<Props & WrappedComponentProps> {
@@ -16,7 +17,7 @@ class GoalForm extends React.Component<Props & WrappedComponentProps> {
     return (
       <Tabs defaultActiveKey="1">
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="1">
-          <AssignedGoalList assignedPerformancePlanId={this.props.assignedPerformancePlanId} setTotalWeight={this.props.setTotalWeight}/>
+          <AssignedGoalList assignedPerformancePlanId={this.props.assignedPerformancePlanId} setTotalWeight={this.props.setTotalWeight} readonly={this.props.readonly}/>
         </TabPane>
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.approvers"})} key="2">
           <div>

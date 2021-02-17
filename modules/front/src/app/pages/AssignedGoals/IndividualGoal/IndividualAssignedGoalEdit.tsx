@@ -27,6 +27,7 @@ import Page from "../../../hoc/PageContentHoc";
 import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import Notification from "../../../util/notification/Notification";
+import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -37,7 +38,8 @@ type EditorProps = {
 
 @injectMainStore
 @observer
-class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponentProps & MainStoreInjected> {
+class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & WrappedComponentProps & MainStoreInjected> {
+
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
     loadImmediately: false
@@ -144,7 +146,6 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
     }
 
     const messages = this.props.mainStore!.messages!;
-    const {status} = this.dataInstance;
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "goal.individual.create"})}>
@@ -155,15 +156,7 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
                 <FormattedMessage id="management.editor.cancel"/>
               </Button>
             </Link>,
-            <Button
-              buttonType={ButtonType.PRIMARY}
-              htmlType="submit"
-              disabled={status !== "DONE" && status !== "ERROR" && status !== "CLEAN"}
-              loading={status === "LOADING"}
-              style={{marginLeft: "8px"}}
-            >
-              <FormattedMessage id="management.editor.submit"/>
-            </Button>
+            this.pageActions()
           ]} bordered={false}>
             <Section size={"large"}>
               <Row className={"form-row"}>
@@ -217,7 +210,26 @@ class IndividualAssignedGoalEdit extends React.Component<Props & WrappedComponen
     );
   }
 
+  pageActions = (): JSX.Element[] => {
+    if (!this.readonly) {
+      const {status} = this.dataInstance;
+
+      return [<Button
+        buttonType={ButtonType.PRIMARY}
+        htmlType="submit"
+        disabled={status !== "DONE" && status !== "ERROR" && status !== "CLEAN"}
+        loading={status === "LOADING"}
+        style={{marginLeft: "8px"}}
+      >
+        <FormattedMessage id="management.editor.submit"/>
+      </Button>]
+    }
+    return [];
+  };
+
   componentDidMount() {
+    super.componentDidMount();
+
     if (this.props.entityId !== 'new') {
       this.dataInstance.load(this.props.entityId);
     } else {
