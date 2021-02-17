@@ -1,26 +1,17 @@
 import * as React from "react";
 import "./App.css";
 
-import {Icon, Layout, Menu} from "antd";
+import {Layout, Menu} from "antd";
 import {inject, observer} from "mobx-react";
 import Login from "./login/Login";
 import Centered from "./common/Centered";
 import AppHeader from "./header/AppHeader";
 import {NavLink, Route, Switch} from "react-router-dom";
 import HomePage from "./home/HomePage";
-import {getRouteList, menuItems} from "../routing";
-import {
-  injectMainStore,
-  MainStoreInjected,
-  RouteItem,
-  SubMenu
-} from "@cuba-platform/react";
+import {menuItems} from "../routing";
+import {injectMainStore, MainStoreInjected, RouteItem, SubMenu} from "@cuba-platform/react";
 import {CenteredLoader} from "./CenteredLoader";
-import {
-  injectIntl,
-  IntlFormatters,
-  WrappedComponentProps
-} from "react-intl";
+import {injectIntl, IntlFormatters, WrappedComponentProps} from "react-intl";
 import {getMenuIcon} from '../resources/icons/menu';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
 import UserSettings from "./pages/user-settings/UserSettings";
@@ -38,6 +29,7 @@ import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
 import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
 import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {BooksManagement} from "./pages/Books/BooksManagement";
+import {ActivityManagement} from "./pages/activity/ActivityManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -90,7 +82,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/my-profile" component={PersonalDataRequestEditPage}/>
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
-                <Route exact={true} path="/certificateRequest/:entityId?" component={CertificateRequestManagement}/>
+                <Route exact={true}
+                       path={CertificateRequestManagement.PATH + "/:entityId?"}
+                       component={CertificateRequestManagement}/>
                 <Route exact={true} path="/kpi/:entityId?" component={AssignedPerformancePlanManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/individual/:entityId?" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/library/:entityId?"
@@ -101,6 +95,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/book/:entityId?" component={BooksManagement}/>
                 <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
+                <Route exact={true} path={ActivityManagement.PATH} component={ActivityManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

@@ -1,4 +1,5 @@
 {
+  "router.ActivityCards": "ActivityCards",
   "router.ExtTaskDataCards": "ExtTaskDataCards",
   "router.DicBookCategoryCards": "DicBookCategoryCards",
   "router.BookCards": "BookCards",
@@ -239,5 +240,8 @@
   "APPROVE": "Approve",
   "REJECT": "Reject",
   "REVISION": "To revision",
-  "START": "Start process"
+  "START": "Start process",
+  "tasks": "Tasks",
+  "notifications": "Notifications",
+  "open": "Open"
 }

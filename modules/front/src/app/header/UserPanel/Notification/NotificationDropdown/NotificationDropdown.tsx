@@ -9,6 +9,7 @@ import {action, observable} from "mobx";
 import {BellNotification} from "../../../../store/BellNotificationStore";
 import {restServices} from "../../../../../cuba/services";
 import {Link, RouteComponentProps, withRouter} from "react-router-dom";
+import {ActivityManagement} from "../../../../pages/activity/ActivityManagement";
 
 const scheduleNotificationTime: number = 10000;
 
@@ -39,7 +40,7 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
     return (
       <div className={"notifications-menu"}>
         <Tabs defaultActiveKey="1">
-          <TabPane tab="Задачи" key="1">
+          <TabPane tab={this.props.intl.formatMessage({id: "tasks"})} key="1">
             <div>
               <ul className={"notifications-tab-content"}>
                 {this.bellTasks ? this.bellTasks.map(task => {
@@ -54,12 +55,14 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
                 }) : <></>}
               </ul>
               <div className={"notifications-button-container"}>
-                <Button children={<span>Посмотреть все</span>} buttonType={ButtonType.FOLLOW}/>
+                <Link to={ActivityManagement.PATH_TASKS} onClick={() => this.props.setVisibleFalse()}>
+                  <Button children={<span>Посмотреть все</span>} buttonType={ButtonType.FOLLOW}/>
+                </Link>
               </div>
             </div>
 
           </TabPane>
-          <TabPane tab="Уведомления" key="2">
+          <TabPane tab={this.props.intl.formatMessage({id: "notifications"})} key="2">
             <div>
               <ul className={"notifications-tab-content"}>
                 {this.bellNotifications ? this.bellNotifications.map(notification => {
@@ -71,7 +74,9 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
                 }) : <></>}
               </ul>
               <div className={"notifications-button-container"}>
-                <Button children={<span>Посмотреть все</span>} buttonType={ButtonType.FOLLOW}/>
+                <Link to={ActivityManagement.PATH_NOTIFICATIONS} onClick={() => this.props.setVisibleFalse()}>
+                  <Button children={<span>Посмотреть все</span>} buttonType={ButtonType.FOLLOW}/>
+                </Link>
               </div>
             </div>
           </TabPane>
