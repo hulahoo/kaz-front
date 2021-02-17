@@ -1,7 +1,4 @@
 {
-  "router.ExtTaskDataCards": "ExtTaskDataCards",
-  "router.DicBookCategoryCards": "DicBookCategoryCards",
-  "router.BookCards": "BookCards",
   "management.browser.delete.areYouSure": "Are you sure you want to delete {instanceName}?",
   "management.browser.delete.ok": "Delete",
   "management.browser.delete.cancel": "Cancel",
@@ -14,6 +11,10 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.InsuredPersonManagement": "InsuredPersonManagement",
+  "router.ExtTaskDataCards": "ExtTaskDataCards",
+  "router.DicBookCategoryCards": "DicBookCategoryCards",
+  "router.BookCards": "BookCards",
   "router.KpiTeamManagement": "KpiTeamManagement",
   "router.EnrollmentManagement": "EnrollmentManagement",
   "router.CertificateRequestManagement": "CertificateRequestManagement",
