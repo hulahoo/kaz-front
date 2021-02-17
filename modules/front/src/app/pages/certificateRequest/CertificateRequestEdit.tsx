@@ -27,7 +27,6 @@ import {DicLanguage} from "../../../cuba/entities/base/tsadv$DicLanguage";
 import {DicCertificateType} from "../../../cuba/entities/base/tsadv_DicCertificateType";
 import {RootStoreProp} from "../../store";
 import {ReadonlyField} from "../../components/ReadonlyField";
-import {ExtTaskDataCards} from "../bproc/TaskData/ExtTaskDataCards";
 import {ProcessInstanceData} from "../../../cuba/entities/base/bproc_ProcessInstanceData";
 import LoadingPage from "../LoadingPage";
 import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
@@ -36,6 +35,7 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import BprocButtons from "../bproc/buttons/BprocButtons";
+import ExtTaskDataCards from "../bproc/TaskData/ExtTaskDataCards";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -191,10 +191,10 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                         task={this.activeTask}/>
         : <Button
           buttonType={ButtonType.PRIMARY}
-          onClick={event => {
+          onClick={() => {
             this.validate();
             if (this.isValidatedSuccess) {
-              this.update().then(value => this.updated = true);
+              this.update().then(() => this.updated = true);
             }
           }
           }

@@ -76,7 +76,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   handleOk = (e: any) => {
     Modal.confirm({
       title: this.props.intl.formatMessage(
-        {id: "bproc.start"}
+        {id: "START.INFO"}
       ),
       okText: this.props.intl.formatMessage({
         id: "cubaReact.dataTable.yes"
@@ -101,7 +101,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
               }).then(response => {
                 this.props.history!.push(`${this.props.redirectPath}`);
                 Notification.success({
-                  message: this.props.intl.formatMessage({id: "bproc.start.success"})
+                  message: this.props.intl.formatMessage({id: "START.success"})
                 });
               })
             });
@@ -175,7 +175,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   modal = () => {
     if (!this.items) return <div/>;
     return <Modal
-      title={this.props.intl.formatMessage({id: "bproc.start.btn"})}
+      title={this.props.intl.formatMessage({id: "START"})}
       visible={this.modalVisible}
       onOk={this.handleOk}
       width={700}
@@ -251,7 +251,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                     onClickCapture={this.showModalOrMessage}
                     key="start">
         {this.props.intl.formatMessage({
-          id: "bproc.start.btn"
+          id: "START"
         })}
         {this.modal()}
       </CustomButton>

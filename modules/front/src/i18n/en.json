@@ -1,4 +1,5 @@
 {
+  "router.ActivityCards": "ActivityCards",
   "router.ExtTaskDataCards": "ExtTaskDataCards",
   "router.DicBookCategoryCards": "DicBookCategoryCards",
   "router.BookCards": "BookCards",
@@ -221,7 +222,7 @@
   "goals": "Goals",
   "weight": "Weight",
   "close": "Close",
-  "sendOnApprove": "Send on approve",
+  "SEND_FOR_APPROVAL": "Send on approve",
   "ratingCount": "rating",
   "book.information": "Information",
   "book.extension": "Extensions",
@@ -229,12 +230,18 @@
   "book.pageCount": "Page count",
   "certificateRequest": "Certificate request",
   "bproc.startBproc.modal.error": "User is already added",
-  "bproc.start": "Are you sure, want to send on approve?",
-  "bproc.start.success": "Document successfully sent on approve",
+  "START.INFO": "Are you sure, want to send on approve?",
+  "START.success": "Document successfully sent on approve",
   "bproc.REJECT.success": "Application rejected",
   "bproc.APPROVE.success": "Application approved",
+  "bproc.REVISION.success": "Application sent to revision",
+  "bproc.SEND_FOR_APPROVAL.success": "Application sent for approval",
   "candidates": "Candidates",
   "APPROVE": "Approve",
   "REJECT": "Reject",
-  "bproc.start.btn": "Start process"
+  "REVISION": "To revision",
+  "START": "Start process",
+  "tasks": "Tasks",
+  "notifications": "Notifications",
+  "open": "Open"
 }
