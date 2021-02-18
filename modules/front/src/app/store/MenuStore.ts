@@ -3,6 +3,7 @@ import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
 import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
+import {AbsenceRequestManagement} from "../pages/absenceRequest/AbsenceRequestManagement";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -39,6 +40,12 @@ export default class MenuStore {
         menuLink: "/my-team",
         pathPattern: "/my-team",
         component: null
+      }, {
+        id: "absenceRequest",
+        caption: "Absence",
+        menuLink: "/absenceRequest",
+        pathPattern: "/absenceRequest",
+        component: AbsenceRequestManagement
       },
       {
         id: "help",
