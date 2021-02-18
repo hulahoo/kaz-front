@@ -1,16 +1,13 @@
 import React from 'react';
 import {collection} from "@cuba-platform/react";
-import CourseCard from "../../components/CourseCard";
-import {Card, Rate, Spin, Tabs} from "antd";
+import PanelCard from "../../components/CourseCard";
+import {Rate, Spin, Tabs} from "antd";
 import {observer} from "mobx-react";
 import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
-import Input from "../../components/Input/Input";
 import SearchInput from "../../components/SearchInput";
-import Search from "antd/es/input/Search";
 import {restQueries} from "../../../cuba/queries";
 import {runInAction} from "mobx";
-import PanelCard from "../../components/CourseCard";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 

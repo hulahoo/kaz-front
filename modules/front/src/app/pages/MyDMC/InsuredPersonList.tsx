@@ -1,51 +1,46 @@
 import * as React from "react";
-import {observer} from "mobx-react";
-import {Link} from "react-router-dom";
+import {inject, observer} from "mobx-react";
+import {withRouter} from "react-router-dom";
 
-import {observable, reaction, runInAction} from "mobx";
+import {observable} from "mobx";
 
-import {Button, Modal, Table} from "antd";
+import {Button, Modal} from "antd";
 
-import {collection, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 
 import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
-import {EntityFilter, SerializedEntity} from "@cuba-platform/rest";
+import {SerializedEntity} from "@cuba-platform/rest";
 import {InsuredPersonManagement} from "./InsuredPersonManagement";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import Column from "antd/es/table/Column";
-import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
-import {restQueries} from "../../../cuba/queries";
-import {RouteComponentProps, withRouter} from "react-router";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
-
+import {RouteComponentProps} from "react-router";
 
 @injectMainStore
 @observer
-class InsuredPersonListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
-
-  @observable
-  dataCollection: any[] = [];
-
-  serverDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
+@inject("rootStore")
+class InsuredPersonListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
+  dataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
     sort: "-updateTs",
     filter: {
-      conditions:[{
-        property: "employee.id",
-        operator: "=",
-        value: this.props.rootStore!.userInfo.personGroupId!
-      },{
-        property: "type",
-        operator: "=",
-        value: "Employee",
-      },]
+      conditions: [
+        {
+          property: "employee.id",
+          operator: "=",
+          value: this.props.rootStore!.userInfo.personGroupId!
+        },
+        {
+          property: "type",
+          operator: "=",
+          value: "EMPLOYEE"
+        }
+      ]
     }
   });
 
   fields = [
-    "insuranceContract.contract",
-    "insuranceContract.startDate",
-    "insuranceContract.expirationDate",
+    "documentNumber",
+    "insuranceContract",
     "attachDate",
     "statusRequest",
     "totalAmount",
@@ -68,111 +63,43 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
       onOk: () => {
         this.selectedRowKey = undefined;
 
-        return this.serverDataCollection.delete(e);
+        return this.dataCollection.delete(e);
       }
     });
   };
 
   render() {
     const buttons = [
-      <Link
-        to={
-          InsuredPersonManagement.PATH +
-          "/" +
-          InsuredPersonManagement.NEW_SUBPATH
-        }
-        key="create"
-      >
         <Button
           htmlType="button"
           style={{margin: "0 12px 12px 0"}}
           type="primary"
+          onClick={this.subscribeToMIC}
           icon="plus"
         >
           <span>
-            <FormattedMessage id="management.browser.create"/>
+            Прикрепиться к ДМС
           </span>
         </Button>
-      </Link>,
-      <Link
-        to={InsuredPersonManagement.PATH + "/" + this.selectedRowKey}
-        key="edit"
-      >
-        <Button
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          disabled={!this.selectedRowKey}
-          type="default"
-        >
-          <FormattedMessage id="management.browser.edit"/>
-        </Button>
-      </Link>,
-      <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        disabled={!this.selectedRowKey}
-        onClick={this.deleteSelectedRow}
-        key="remove"
-        type="default"
-      >
-        <FormattedMessage id="management.browser.remove"/>
-      </Button>
-    ];
+      ]
+    ;
 
     return (
-      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
-             size="default" bordered={false} rowKey="id">
-        <Column title={<Msg entityName={InsuredPerson.NAME} propertyName='insuranceContract'/>}
-                dataIndex="insuranceContract.contract"
-                key="insuranceContract"
-                sorter={(a: InsuredPerson, b: InsuredPerson) =>
-                  a.insuranceContract!.contract!.localeCompare(b.insuranceContract!.contract!)
-                }/>
-
-        <Column title={<Msg entityName={InsuredPerson.NAME} propertyName='insuranceContract'/>}
-                dataIndex="insuranceContract.startDate"
-                key="startDate"
-                sorter={(a: InsuredPerson, b: InsuredPerson) =>
-                  a.insuranceContract!.startDate!.localeCompare(b.insuranceContract!.startDate!)
-                }/>
-
-        <Column title={<Msg entityName={InsuredPerson.NAME} propertyName='insuranceContract'/>}
-                dataIndex="insuranceContract.expirationDate"
-                key="expirationDate"
-                sorter={(a: InsuredPerson, b: InsuredPerson) =>
-                  a.insuranceContract!.expirationDate!.localeCompare(b.insuranceContract!.expirationDate!)
-                }/>
-
-
-        <Column title={<Msg entityName={InsuredPerson.NAME} propertyName='attachDate'/>}
-                dataIndex="attachDate"
-                key="attachDate"
-                sorter={(a: InsuredPerson, b: InsuredPerson) =>
-                  a.attachDate!.localeCompare(b.attachDate!)
-                }/>
-
-        <Column title={<Msg entityName={InsuredPerson.NAME} propertyName='statusRequest'/>}
-                dataIndex="statusRequest"
-                key="statusRequest"
-                sorter={(a: InsuredPerson, b: InsuredPerson) =>
-                  a.statusRequest!.langValue!.localeCompare(b.statusRequest!.langValue!)
-                }/>
-
-        <Column title={<Msg entityName={InsuredPerson.NAME} propertyName='totalAmount'/>}
-                dataIndex="totalAmount"
-                key="totalAmount"
-                sorter={(a: InsuredPerson, b: InsuredPerson) =>
-                  a.totalAmount!.localeCompare(b.totalAmount!)
-                }/>
-
-      </Table>
+      <DataTable
+        dataCollection={this.dataCollection}
+        fields={this.fields}
+        onRowSelectionChange={this.handleRowSelectionChange}
+        hideSelectionColumn={true}
+        buttons={buttons}
+      >
+      </DataTable>
     );
   }
 
   getRecordById(id: string): SerializedEntity<InsuredPerson> {
     const record:
       | SerializedEntity<InsuredPerson>
-      | undefined = this.serverDataCollection.items.find(record => record.id === id);
+      | undefined = this.dataCollection.items.find(record => record.id === id);
 
     if (!record) {
       throw new Error("Cannot find entity with id " + id);
@@ -185,10 +112,16 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
     this.selectedRowKey = selectedRowKeys[0];
   };
 
-  deleteSelectedRow = () => {
-    this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
+
+  subscribeToMIC = () => {
+    console.log(this.dataCollection.items);
+    let sort = this.dataCollection.items.sort((a, b) => a.exclusionDate.compareTo(b.exclusionDate));
+    this.props.history.push(InsuredPersonManagement.PATH + "/" + sort[0].id);
   };
+
+
 }
 
-export default injectIntl(withRouter(InsuredPersonListComponent));
+const InsuredPersonList = withRouter(injectIntl(InsuredPersonListComponent));
 
+export default InsuredPersonList;

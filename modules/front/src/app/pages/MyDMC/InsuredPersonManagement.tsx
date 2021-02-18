@@ -8,7 +8,7 @@ type Props = RouteComponentProps<{ entityId?: string }>;
 
 @observer
 export class InsuredPersonManagement extends React.Component<Props> {
-  static PATH = "/insuredPersonManagement";
+  static PATH = "/my-dmc";
   static NEW_SUBPATH = "new";
 
   render() {
