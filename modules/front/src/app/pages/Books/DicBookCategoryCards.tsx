@@ -6,7 +6,7 @@ import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import PanelCard from "../../components/CourseCard";
 import {Link} from "react-router-dom";
-import {getBlobUrl} from "../../util/util";
+import {downloadFile, getBlobUrl} from "../../util/util";
 import {queryCollection} from "../../util/QueryDataCollectionStore";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {Book} from "../../../cuba/entities/base/tsadv$Book";
@@ -40,23 +40,8 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
     "order"
   ];
 
-  downloadBook = (fileId: string, fileName: string, extension: string) => {
-    getCubaREST()!.getFile(fileId).then((value: Blob) => {
-      const anchor = document.createElement('a');
-      anchor.href = URL.createObjectURL(value);
-      anchor.target = '_blank';
-      anchor.download = fileName + '.' + extension;
-
-      anchor.click();
-    }).catch(() => {
-      Notification.error({
-        message: this.props.intl.formatMessage({id: "Не удалось скачать книгу"}),
-      })
-    });
-  };
-
   selectBookHandler = (fileId: string, option: React.ReactElement<HTMLLIElement>) => {
-    this.downloadBook(fileId, option.props["name"], option.props["extension"]);
+    downloadFile(fileId, option.props["name"], option.props["extension"], this.props.intl.formatMessage({id: "Не удалось скачать книгу"}));
   };
 
   render() {

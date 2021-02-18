@@ -20,7 +20,6 @@ type Prop = { type: string }
 @observer
 class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
 
-  @observable
   dataCollection = collection<Activity>(Activity.NAME, {
     view: "portal-activity",
     sort: "-updateTs",
@@ -42,16 +41,17 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
     "status"
   ];
 
-  @observable selectedRowKey: string | undefined;
+  @observable
+  selectedRowKey: string | undefined;
 
   // @observable type: string | undefined;
 
   render() {
     const {status, items} = this.dataCollection;
-
-    if (status === "LOADING") {
-      return <Icon type="spin"/>;
-    }
+    console.log(items);
+    // if (status === "LOADING") {
+    //   return <Icon type="spin"/>;
+    // }
 
     const type = this.props.type;
 
@@ -79,6 +79,8 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
               {button}
             </div>
             <DataTable fields={this.fields}
+                       rowSelectionMode="single"
+                       canSelectRowByClick={true}
                        onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
                        dataCollection={this.dataCollection}/>
           </div>
@@ -88,9 +90,13 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
   }
 
   componentDidMount(): void {
-    this.dataCollection.load()
+    console.log('componentDidMount');
   }
 
+
+  componentWillUnmount(): void {
+    console.log('componentWillUnmount');
+  }
 }
 
 export default withRouter(injectIntl(ActivityCards));

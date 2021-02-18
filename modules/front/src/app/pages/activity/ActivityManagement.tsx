@@ -5,7 +5,7 @@ import ActivityCards from "./ActivityCards";
 
 type Props = RouteComponentProps<{ type: string }>;
 
-@observer
+// @observer
 export class ActivityManagement extends React.Component<Props> {
   static PATH = "/activity/:type";
   static PATH_TASKS = "/activity/tasks";
@@ -15,7 +15,7 @@ export class ActivityManagement extends React.Component<Props> {
     const {type} = this.props.match.params;
     return (
       <>
-        <ActivityCards type={type}/>
+        <ActivityCards type={type} key={type}/>
       </>
     );
   }
