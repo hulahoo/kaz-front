@@ -1,42 +1,38 @@
 import * as React from "react";
-import { FormEvent } from "react";
-import { Alert, Button, Card, Form, message } from "antd";
-import { observer } from "mobx-react";
-import { InsuredPersonManagement } from "./InsuredPersonManagement";
-import { FormComponentProps } from "antd/lib/form";
-import { Link, Redirect } from "react-router-dom";
-import { IReactionDisposer, observable, reaction, toJS } from "mobx";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {FormEvent} from "react";
+import {Alert, Button, Card, Col, Form, message, Row} from "antd";
+import {observer} from "mobx-react";
+import {InsuredPersonManagement} from "./InsuredPersonManagement";
+import {FormComponentProps} from "antd/lib/form";
+import {Link, Redirect} from "react-router-dom";
+import {IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
+  clearFieldErrors,
   collection,
+  constructFieldsWithErrors,
+  extractServerValidationErrors,
   Field,
   instance,
-  withLocalizedForm,
-  extractServerValidationErrors,
-  constructFieldsWithErrors,
-  clearFieldErrors,
-  MultilineText
+  MultilineText,
+  withLocalizedForm
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
-import { InsuredPerson } from "../../../cuba/entities/base/tsadv$InsuredPerson";
-import { DicMICAttachmentStatus } from "../../../cuba/entities/base/tsadv$DicMICAttachmentStatus";
-import { InsuranceContract } from "../../../cuba/entities/base/tsadv$InsuranceContract";
-import { DicCompany } from "../../../cuba/entities/base/base_DicCompany";
-import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt";
-import { DicRelationshipType } from "../../../cuba/entities/base/tsadv$DicRelationshipType";
-import { JobGroup } from "../../../cuba/entities/base/tsadv$JobGroup";
-import { DicSex } from "../../../cuba/entities/base/base$DicSex";
-import { DicDocumentType } from "../../../cuba/entities/base/tsadv$DicDocumentType";
-import { DicRegion } from "../../../cuba/entities/base/base$DicRegion";
-import { Address } from "../../../cuba/entities/base/tsadv$Address";
-import { FileDescriptor } from "../../../cuba/entities/base/sys$FileDescriptor";
+import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
+import {DicMICAttachmentStatus} from "../../../cuba/entities/base/tsadv$DicMICAttachmentStatus";
+import {InsuranceContract} from "../../../cuba/entities/base/tsadv$InsuranceContract";
+import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
+import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
+import {DicRelationshipType} from "../../../cuba/entities/base/tsadv$DicRelationshipType";
+import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
+import {DicSex} from "../../../cuba/entities/base/base$DicSex";
+import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType";
+import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
+import {Address} from "../../../cuba/entities/base/tsadv$Address";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -45,9 +41,7 @@ type EditorProps = {
 };
 
 @observer
-class InsuredPersonEditComponent extends React.Component<
-  Props & WrappedComponentProps
-> {
+class InsuredPersonEditComponent extends React.Component<Props & WrappedComponentProps> {
   dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-editView",
     loadImmediately: false
@@ -55,14 +49,14 @@ class InsuredPersonEditComponent extends React.Component<
 
   statusRequestsDc = collection<DicMICAttachmentStatus>(
     DicMICAttachmentStatus.NAME,
-    { view: "_minimal" }
+    {view: "_minimal"}
   );
 
   insuranceContractsDc = collection<InsuranceContract>(InsuranceContract.NAME, {
     view: "_minimal"
   });
 
-  companysDc = collection<DicCompany>(DicCompany.NAME, { view: "_minimal" });
+  companysDc = collection<DicCompany>(DicCompany.NAME, {view: "_minimal"});
 
   employeesDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_minimal"
@@ -72,17 +66,17 @@ class InsuredPersonEditComponent extends React.Component<
     view: "_minimal"
   });
 
-  jobsDc = collection<JobGroup>(JobGroup.NAME, { view: "_minimal" });
+  jobsDc = collection<JobGroup>(JobGroup.NAME, {view: "_minimal"});
 
-  sexsDc = collection<DicSex>(DicSex.NAME, { view: "_minimal" });
+  sexsDc = collection<DicSex>(DicSex.NAME, {view: "_minimal"});
 
   documentTypesDc = collection<DicDocumentType>(DicDocumentType.NAME, {
     view: "_minimal"
   });
 
-  regionsDc = collection<DicRegion>(DicRegion.NAME, { view: "_minimal" });
+  regionsDc = collection<DicRegion>(DicRegion.NAME, {view: "_minimal"});
 
-  addressTypesDc = collection<Address>(Address.NAME, { view: "_minimal" });
+  addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
@@ -170,7 +164,7 @@ class InsuredPersonEditComponent extends React.Component<
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
           message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
+            this.props.intl.formatMessage({id: "management.editor.success"})
           );
           this.updated = true;
         })
@@ -205,7 +199,7 @@ class InsuredPersonEditComponent extends React.Component<
             });
           } else {
             message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
+              this.props.intl.formatMessage({id: "management.editor.error"})
             );
           }
         });
@@ -214,288 +208,285 @@ class InsuredPersonEditComponent extends React.Component<
 
   render() {
     if (this.updated) {
-      return <Redirect to={InsuredPersonManagement.PATH} />;
+      return <Redirect to={InsuredPersonManagement.PATH}/>;
     }
 
-    const { status } = this.dataInstance;
+    const {status} = this.dataInstance;
 
+    let field_style = {marginBottom: "12px", margin: "10px"};
+    let card_style = {};
     return (
       <Card className="narrow-layout">
         <Form onSubmit={this.handleSubmit} layout="vertical">
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="attachDate"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+          <Row gutter={16}>
+            <Col span={8}>
+              <Card size="small" title="Общие сведения" style={card_style}>
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="firstName"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="employee"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.employeesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="secondName"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="relative"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.relativesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="middleName"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
+                {/*     <Field
+                entityName={InsuredPerson.NAME}
+                propertyName="firstName"
+                form={this.props.form}
+                formItemOpts={{style: field_style}}
+                getFieldDecoratorOpts={{
+                  rules: [{required: true}]
+                }}
+              />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="jobMember"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
+              <Field
+                entityName={InsuredPerson.NAME}
+                propertyName="secondName"
+                form={this.props.form}
+                formItemOpts={{style: field_style}}
+                getFieldDecoratorOpts={{
+                  rules: [{required: true}]
+                }}
+              />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="iin"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+              <Field
+                entityName={InsuredPerson.NAME}
+                propertyName="middleName"
+                form={this.props.form}
+                formItemOpts={{style: field_style}}
+                getFieldDecoratorOpts={{}}
+              />*/}
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="birthdate"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="iin"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="documentNumber"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="sex"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.sexsDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="address"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="birthdate"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="insuranceProgram"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="documentType"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.documentTypesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="type"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="documentNumber"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="amount"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="addressType"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.addressTypesDc}
+                  getFieldDecoratorOpts={{}}
+                />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="address"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{}}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="totalAmount"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="exclusionDate"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="company"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.companysDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="comment"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="job"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.jobsDc}
+                  getFieldDecoratorOpts={{}}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="statusRequest"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.statusRequestsDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+              </Card>
+            </Col>
+            <Col span={8}>
+              <Card size="small" title="Cведения по ДМС" style={card_style}>
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="insuranceContract"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.insuranceContractsDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="insuranceContract"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.insuranceContractsDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="attachDate"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="exclusionDate"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{}}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="company"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.companysDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="employee"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.employeesDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="statusRequest"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.statusRequestsDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="insuranceProgram"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="relative"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.relativesDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+             {/*   <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="amount"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{}}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="job"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.jobsDc}
-            getFieldDecoratorOpts={{}}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="totalAmount"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />*/}
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="sex"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.sexsDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="region"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.regionsDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="documentType"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.documentTypesDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="region"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.regionsDc}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="file"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.filesDc}
+                  getFieldDecoratorOpts={{}}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="addressType"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.addressTypesDc}
-            getFieldDecoratorOpts={{}}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="statementFile"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.statementFilesDc}
+                  getFieldDecoratorOpts={{}}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="file"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.filesDc}
-            getFieldDecoratorOpts={{}}
-          />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="comment"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{}}
+                />
 
-          <Field
-            entityName={InsuredPerson.NAME}
-            propertyName="statementFile"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.statementFilesDc}
-            getFieldDecoratorOpts={{}}
-          />
+              </Card>
+            </Col>
+          </Row>
+
 
           {this.globalErrors.length > 0 && (
             <Alert
-              message={<MultilineText lines={toJS(this.globalErrors)} />}
+              message={<MultilineText lines={toJS(this.globalErrors)}/>}
               type="error"
-              style={{ marginBottom: "24px" }}
+              style={{marginBottom: "24px"}}
             />
           )}
 
-          <Form.Item style={{ textAlign: "center" }}>
+          <Form.Item style={{textAlign: "center"}}>
             <Link to={InsuredPersonManagement.PATH}>
               <Button htmlType="button">
-                <FormattedMessage id="management.editor.cancel" />
+                <FormattedMessage id="management.editor.cancel"/>
               </Button>
             </Link>
             <Button
@@ -503,9 +494,9 @@ class InsuredPersonEditComponent extends React.Component<
               htmlType="submit"
               disabled={status !== "DONE" && status !== "ERROR"}
               loading={status === "LOADING"}
-              style={{ marginLeft: "8px" }}
+              style={{marginLeft: "8px"}}
             >
-              <FormattedMessage id="management.editor.submit" />
+              <FormattedMessage id="management.editor.submit"/>
             </Button>
           </Form.Item>
         </Form>
