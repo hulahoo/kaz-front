@@ -2,8 +2,9 @@ import {observer} from "mobx-react";
 import * as React from "react";
 import {RouteComponentProps} from "react-router";
 import ActivityCards from "./ActivityCards";
+import {ActivityEdit} from "./ActivityEdit";
 
-type Props = RouteComponentProps<{ type: string }>;
+type Props = RouteComponentProps<{ type?: string }>;
 
 @observer
 export class ActivityManagement extends React.Component<Props> {
@@ -13,10 +14,16 @@ export class ActivityManagement extends React.Component<Props> {
 
   render() {
     const {type} = this.props.match.params;
+    const component = (type
+      ? (type === "tasks" || type === "notifications")
+        ? <ActivityCards type={type} key={type}/>
+        : <ActivityEdit entityId={type}/>
+      : null);
     return (
       <>
-        <ActivityCards type={type}/>
+        {component}
       </>
     );
   }
+
 }

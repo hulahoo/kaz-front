@@ -3,7 +3,7 @@ import {Alert, Card, Form, message} from "antd";
 import {inject, observer} from "mobx-react";
 import {CertificateRequestManagement} from "./CertificateRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Link, Redirect, RouteComponentProps} from "react-router-dom";
+import {Redirect, RouteComponentProps} from "react-router-dom";
 import {IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {restServices} from "../../../cuba/services";
@@ -36,6 +36,7 @@ import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import BprocButtons from "../bproc/buttons/BprocButtons";
 import ExtTaskDataCards from "../bproc/TaskData/ExtTaskDataCards";
+import {withRouter} from "react-router";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -185,7 +186,6 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
                         isValidatedSuccess={() => this.isValidatedSuccess}
                         processInstanceData={this.processInstanceData}
                         isStartForm={this.isStartForm}
-                        redirectPath={CertificateRequestManagement.PATH}
                         processDefinitionKey={'certificateRequest'}
                         form={this.props.form}
                         task={this.activeTask}/>
@@ -329,11 +329,9 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
 
                   {outcomeBtns}
 
-                  <Link to={CertificateRequestManagement.PATH}>
-                    <Button buttonType={ButtonType.FOLLOW} htmlType="button">
-                      <FormattedMessage id="management.editor.cancel"/>
-                    </Button>
-                  </Link>
+                  <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
+                    <FormattedMessage id="management.editor.cancel"/>
+                  </Button>
                 </Form.Item>
               </Form>
             </Card>
@@ -424,5 +422,5 @@ export default injectIntl(
         });
       });
     }
-  })(CertificateRequestEditComponent)
+  })(withRouter(CertificateRequestEditComponent))
 );

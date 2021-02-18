@@ -1,6 +1,5 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {Icon} from "antd";
 import {collection, DataTable, injectMainStore} from "@cuba-platform/react";
 import {Activity} from "../../../cuba/entities/base/uactivity$Activity";
 import {injectIntl, WrappedComponentProps} from "react-intl";
@@ -49,9 +48,9 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
   render() {
     const {status, items} = this.dataCollection;
 
-    if (status === "LOADING") {
-      return <Icon type="spin"/>;
-    }
+    // if (status === "LOADING") {
+    //   return <Icon type="spin"/>;
+    // }
 
     const type = this.props.type;
 
@@ -59,15 +58,17 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
       ? this.dataCollection.items.find(value => value.id === this.selectedRowKey) as Activity
       : null;
 
-    const button = type === "tasks"
-      ? <Button disabled={find === null}
-                type={"primary"}
-                style={{padding: 0}}
-                onClick={() => {
-                  if (find)
-                    this.props.history!.push(`../${WindowProperty.link(find!.type!.windowProperty!)}/${find!.referenceId}`);
-                }}>{this.props.intl.formatMessage({id: "open"})}</Button>
-      : null;
+    const button = <Button disabled={find === null}
+                           type={"primary"}
+                           style={{padding: 0}}
+                           onClick={() => {
+                             if (find) {
+                               if (find.type!.code !== "NOTIFICATION")
+                                 this.props.history!.push(`/${WindowProperty.link(find!.type!.windowProperty!)}/${find!.referenceId}`);
+                               else
+                                 this.props.history!.push(find.id);
+                             }
+                           }}>{this.props.intl.formatMessage({id: "open"})}</Button>;
 
     const message = this.props.intl.formatMessage({id: type});
 
