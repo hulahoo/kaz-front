@@ -1,8 +1,7 @@
-import {observer} from "mobx-react";
 import * as React from "react";
 import {RouteComponentProps} from "react-router";
 import ActivityCards from "./ActivityCards";
-import {ActivityEdit} from "./ActivityEdit";
+import ActivityEdit from "./ActivityEdit";
 
 type Props = RouteComponentProps<{ type?: string }>;
 

@@ -9,10 +9,10 @@ import {RouteComponentProps} from "react-router-dom";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {withRouter} from "react-router";
-import {WindowProperty} from "../../../cuba/entities/base/uactivity$WindowProperty";
 import Button from "../../components/Button/Button";
+import {link} from "../../util/util";
 
-type Prop = { type: string }
+type Prop = { type: "tasks" | "notifications" }
 
 @injectMainStore
 @inject("rootStore")
@@ -43,15 +43,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
   @observable
   selectedRowKey: string | undefined;
 
-  // @observable type: string | undefined;
-
   render() {
-    const {status, items} = this.dataCollection;
-    console.log(items);
-    // if (status === "LOADING") {
-    //   return <Icon type="spin"/>;
-    // }
-
     const type = this.props.type;
 
     const find = this.selectedRowKey != null
@@ -64,7 +56,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
                            onClick={() => {
                              if (find) {
                                if (find.type!.code !== "NOTIFICATION")
-                                 this.props.history!.push(`../${WindowProperty.link(find!.type!.windowProperty!)}/${find!.referenceId}`);
+                                 this.props.history!.push(`../${link(find!.type!.windowProperty!)}/${find!.referenceId}`);
                                else
                                  this.props.history!.push(find.id);
                              }

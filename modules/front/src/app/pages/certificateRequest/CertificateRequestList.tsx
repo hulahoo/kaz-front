@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {collection, getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {collection, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 
 import {CertificateRequest} from "../../../cuba/entities/base/tsadv_CertificateRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
@@ -19,6 +19,7 @@ import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStat
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
+import {downloadFile} from "../../util/util";
 
 @injectMainStore
 @inject("rootStore")
@@ -130,16 +131,18 @@ class CertificateRequestListComponent extends React.Component<MainStoreInjected 
                 title={<Msg entityName={CertificateRequest.NAME} propertyName='file'/>}
                 dataIndex="file"
                 render={(text, record) => {
-                  if ((record as CertificateRequest).file)
+                  const file = (record as CertificateRequest).file;
+                  if (file)
                     return (
                       <a
-                        onClick={() =>
-                          getCubaREST()!.getFile(((record as CertificateRequest).file as FileDescriptor).id)
-                            .then(responseBlob => {
-                              window.open(URL.createObjectURL(responseBlob), "_blank");
-                            })
+                        onClick={() => {
+                          downloadFile((file as FileDescriptor).id,
+                            (file as FileDescriptor).name as string,
+                            (file as FileDescriptor).extension as string,
+                            "");
+                        }
                         }>
-                        {((record as CertificateRequest).file as FileDescriptor).name}
+                        {(file as FileDescriptor).name}
                       </a>
                     )
                   return (<span/>);
