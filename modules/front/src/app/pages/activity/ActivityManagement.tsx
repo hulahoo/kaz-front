@@ -6,7 +6,7 @@ import {ActivityEdit} from "./ActivityEdit";
 
 type Props = RouteComponentProps<{ type?: string }>;
 
-@observer
+// @observer
 export class ActivityManagement extends React.Component<Props> {
   static PATH = "/activity/:type";
   static PATH_TASKS = "/activity/tasks";

@@ -1,6 +1,6 @@
 import {Button, Dropdown, Icon, Modal} from "antd";
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import "./AppHeader.css";
 import logo from "./logo.png";
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
@@ -10,16 +10,22 @@ import Input from "../components/Input/Input";
 import UserPanel from "./UserPanel/UserPanel";
 import CommonComponentHoc from "../hoc/CommonComponent/CommonComponentHoc";
 import {ChangeEvent} from "react";
+import SockJS from "sockjs-client";
+import {RootStoreProp} from "../store";
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProps> {
+class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+
+  // ws = new SockJS('http://localhost:8085/tsadv-core/ws/handler');
+
   render() {
     const SearchComponent = CommonComponentHoc(
       <Input className={"search-input"}
-        placeholder={this.props.intl.formatMessage({id: "search"}) + " ..."}
-        prefix={<Icon type="search"/>}
-        autoComplete={'off'}/>, {wrapperStyles: {style: {"margin": "16px 0"}}});
+             placeholder={this.props.intl.formatMessage({id: "search"}) + " ..."}
+             prefix={<Icon type="search"/>}
+             autoComplete={'off'}/>, {wrapperStyles: {style: {"margin": "16px 0"}}});
 
     return (
       <div className="app-header">
@@ -37,6 +43,15 @@ class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProp
         </div>
       </div>
     );
+  }
+
+  componentDidMount(): void {
+    // this.ws.send(JSON.stringify({
+    //   userId: this.props.rootStore!.userInfo.id
+    // }));
+    // this.ws.onmessage = (e: MessageEvent) => {
+    //   console.log(e);
+    // };
   }
 }
 

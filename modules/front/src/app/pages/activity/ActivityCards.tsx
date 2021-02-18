@@ -19,7 +19,6 @@ type Prop = { type: string }
 @observer
 class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
 
-  @observable
   dataCollection = collection<Activity>(Activity.NAME, {
     view: "portal-activity",
     sort: "-updateTs",
@@ -41,13 +40,14 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
     "status"
   ];
 
-  @observable selectedRowKey: string | undefined;
+  @observable
+  selectedRowKey: string | undefined;
 
   // @observable type: string | undefined;
 
   render() {
     const {status, items} = this.dataCollection;
-
+    console.log(items);
     // if (status === "LOADING") {
     //   return <Icon type="spin"/>;
     // }
@@ -64,7 +64,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
                            onClick={() => {
                              if (find) {
                                if (find.type!.code !== "NOTIFICATION")
-                                 this.props.history!.push(`/${WindowProperty.link(find!.type!.windowProperty!)}/${find!.referenceId}`);
+                                 this.props.history!.push(`../${WindowProperty.link(find!.type!.windowProperty!)}/${find!.referenceId}`);
                                else
                                  this.props.history!.push(find.id);
                              }
@@ -80,6 +80,8 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
               {button}
             </div>
             <DataTable fields={this.fields}
+                       rowSelectionMode="single"
+                       canSelectRowByClick={true}
                        onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
                        dataCollection={this.dataCollection}/>
           </div>
@@ -89,7 +91,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
   }
 
   componentDidMount(): void {
-    this.dataCollection.load()
+    console.log('componentDidMount');
   }
 
 }

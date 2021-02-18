@@ -45,7 +45,7 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
               <ul className={"notifications-tab-content"}>
                 {this.bellTasks ? this.bellTasks.map(task => {
                   return <li key={task.id}>
-                    <Link to={task.link + "/" + task.entityId}>
+                    <Link to={"/" + task.link + "/" + task.entityId}>
                       <div className={"bell-notification-name"}
                            onClick={() => this.props.setVisibleFalse()}>{task.name}</div>
                       <div
