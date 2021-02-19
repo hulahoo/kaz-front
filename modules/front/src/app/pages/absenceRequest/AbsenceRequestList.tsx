@@ -1,43 +1,37 @@
 import * as React from "react";
-import { observer } from "mobx-react";
-import { Link } from "react-router-dom";
+import {inject, observer} from "mobx-react";
+import {Link} from "react-router-dom";
 
-import { observable } from "mobx";
+import {observable} from "mobx";
 
-import { Modal, Button } from "antd";
+import {Button, Modal} from "antd";
 
-import {
-  collection,
-  injectMainStore,
-  MainStoreInjected,
-  DataTable
-} from "@cuba-platform/react";
+import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 
-import { AbsenceRequest } from "../../../cuba/entities/base/tsadv$AbsenceRequest";
-import { SerializedEntity } from "@cuba-platform/rest";
-import { AbsenceRequestManagement } from "./AbsenceRequestManagement";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {AbsenceRequest} from "../../../cuba/entities/base/tsadv$AbsenceRequest";
+import {SerializedEntity} from "@cuba-platform/rest";
+import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {RootStoreProp} from "../../store";
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class AbsenceRequestListComponent extends React.Component<
-  MainStoreInjected & WrappedComponentProps
-> {
+class AbsenceRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
   dataCollection = collection<AbsenceRequest>(AbsenceRequest.NAME, {
     view: "_local",
-    sort: "-updateTs"
+    sort: "-updateTs",
+    filter: {
+      conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
+    }
   });
 
   fields = [
+    "requestNumber",
+
     "dateFrom",
 
     "dateTo",
-
-    "requestNumber",
 
     "requestDate"
   ];
@@ -47,8 +41,8 @@ class AbsenceRequestListComponent extends React.Component<
   showDeletionDialog = (e: SerializedEntity<AbsenceRequest>) => {
     Modal.confirm({
       title: this.props.intl.formatMessage(
-        { id: "management.browser.delete.areYouSure" },
-        { instanceName: e._instanceName }
+        {id: "management.browser.delete.areYouSure"},
+        {instanceName: e._instanceName}
       ),
       okText: this.props.intl.formatMessage({
         id: "management.browser.delete.ok"
@@ -76,12 +70,12 @@ class AbsenceRequestListComponent extends React.Component<
       >
         <Button
           htmlType="button"
-          style={{ margin: "0 12px 12px 0" }}
+          style={{margin: "0 12px 12px 0"}}
           type="primary"
           icon="plus"
         >
           <span>
-            <FormattedMessage id="management.browser.create" />
+            <FormattedMessage id="management.browser.create"/>
           </span>
         </Button>
       </Link>,
@@ -91,22 +85,22 @@ class AbsenceRequestListComponent extends React.Component<
       >
         <Button
           htmlType="button"
-          style={{ margin: "0 12px 12px 0" }}
+          style={{margin: "0 12px 12px 0"}}
           disabled={!this.selectedRowKey}
           type="default"
         >
-          <FormattedMessage id="management.browser.edit" />
+          <FormattedMessage id="management.browser.edit"/>
         </Button>
       </Link>,
       <Button
         htmlType="button"
-        style={{ margin: "0 12px 12px 0" }}
+        style={{margin: "0 12px 12px 0"}}
         disabled={!this.selectedRowKey}
         onClick={this.deleteSelectedRow}
         key="remove"
         type="default"
       >
-        <FormattedMessage id="management.browser.remove" />
+        <FormattedMessage id="management.browser.remove"/>
       </Button>
     ];
 

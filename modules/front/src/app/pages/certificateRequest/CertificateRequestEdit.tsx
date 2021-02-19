@@ -85,9 +85,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
     }
   };
 
-  getFields = (): any => {
-    return this.fields;
-  }
+  processDefinitionKey = "certificateRequest";
 
   render() {
     if (!this.dataInstance) {

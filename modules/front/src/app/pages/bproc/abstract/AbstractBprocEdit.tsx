@@ -15,8 +15,6 @@ import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import BprocButtons from "../buttons/BprocButtons";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
-import {AbsenceRequest} from "../../../../cuba/entities/base/tsadv$AbsenceRequest";
-import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -92,13 +90,12 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
   }
 
-  getFields = (): any => {
-  }
+  fields: any;
 
   getOutcomeBtns = (isNeedBpm?: any) => {
     const {status} = this.dataInstance;
 
-    if (!isNeedBpm) isNeedBpm = true;
+    if (isNeedBpm !== false) isNeedBpm = true;
 
     return this.formData
       ? isNeedBpm
@@ -109,7 +106,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         isValidatedSuccess={() => this.isValidatedSuccess}
                         processInstanceData={this.processInstanceData}
                         isStartForm={this.isStartForm}
-                        processDefinitionKey={'certificateRequest'}
+                        processDefinitionKey={this.processDefinitionKey}
                         form={this.props.form}
                         task={this.activeTask}/>
         : <Button
@@ -129,19 +126,11 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       : null;
   }
 
-  getProcessDefinitionKey = (entityName: string): string => {
-    switch (entityName) {
-      case CertificateRequest.NAME:
-        return "certificateRequest";
-      case AbsenceRequest.NAME:
-        return "absenceRequest";
-      default:
-        return "";
-    }
-  }
+  processDefinitionKey: string;
 
   componentDidMount() {
-    const processDefinitionKey = this.getProcessDefinitionKey(this.dataInstance.entityName);
+    const entityName = this.dataInstance.entityName;
+    const processDefinitionKey = this.processDefinitionKey;
     if (this.props.entityId !== "new") {
       this.dataInstance.load(this.props.entityId);
       restServices.bprocService.processInstanceData({
@@ -175,7 +164,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         }
       })
     } else {
-      restServices.portalHelperService.newEntity({entityName: this.dataInstance.entityName}).then((response: string) => {
+      restServices.portalHelperService.newEntity({entityName: entityName}).then((response: string) => {
 
         restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
           .then(formData => {
@@ -185,9 +174,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
         this.dataInstance.setItem(JSON.parse(response));
 
-        this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.getFields())
-        );
+        const fieldValues = this.dataInstance.getFieldValues(this.fields);
+        this.props.form.setFieldsValue(fieldValues);
       });
     }
 
@@ -197,7 +185,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       },
       () => {
         this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.getFields())
+          this.dataInstance.getFieldValues(this.fields)
         );
       }
     );

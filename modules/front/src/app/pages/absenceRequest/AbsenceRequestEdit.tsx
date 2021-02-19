@@ -53,8 +53,12 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
     "requestDate",
 
+    "status",
+
     "comment"
   ];
+
+  assignmentGroupId: string;
 
   getUpdateEntityData = (): any => {
     return {
@@ -65,9 +69,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     }
   };
 
-  getFields = (): any => {
-    return this.fields;
-  }
+  processDefinitionKey = "absenceRequest";
 
   render() {
     if (!this.dataInstance) {
@@ -102,7 +104,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
                   propertyName="status"
-                  disabled={false}
+                  disabled={true}
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.statusesDc}
