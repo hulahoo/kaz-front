@@ -88,4 +88,5 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
 
 }
 
-export default withRouter(injectIntl(ActivityCards));
+const component = injectIntl(ActivityCards);
+export default withRouter(component);

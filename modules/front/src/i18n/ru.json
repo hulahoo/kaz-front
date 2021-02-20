@@ -109,6 +109,9 @@
   "menu.assigment-interview": "Назначенные интервью",
   "menu.job-offers": "Job Offers",
   "menu.certificateRequest": "Справка с места работы",
+  "menu.absenceRequest": "Отсутствие",
+  "absenceRequest": "Заявка на отсутствие",
+  "absence": "Отсутствие",
   "settings": "Настройки",
   "logout": "Выйти",
   "search": "Найти",
@@ -235,5 +238,9 @@
   "START": "Запустить процесс",
   "tasks": "Задачи",
   "notifications": "Уведомления",
-  "open": "Открыть"
+  "open": "Открыть",
+  "CALENDAR": "Календарный",
+  "WORK": "Рабочий",
+  "validation.absenceRequest.dateFrom" : "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
+  "validation.absenceRequest.dateTo" : "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\""
 }

@@ -4,7 +4,7 @@ import { UserExt } from "./tsadv$UserExt";
 export class NotPersisitBprocActors extends BaseUuidEntity {
   static NAME = "tsadv_NotPersisitBprocActors";
   hrRole?: DicHrRole | null;
-  users?: UserExt | null;
+  users?: UserExt[] | null;
   bprocUserTaskCode?: string | null;
   isSystemRecord?: boolean | null;
   isEditable?: boolean | null;

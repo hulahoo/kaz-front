@@ -269,7 +269,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
           initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
           bpmRolesDefiner: value
         }).then(notPersisitBprocActors => {
-          this.items = notPersisitBprocActors;
+          this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
         }).catch(async (response: any) => {
           const reader = response.response.body.getReader();
 

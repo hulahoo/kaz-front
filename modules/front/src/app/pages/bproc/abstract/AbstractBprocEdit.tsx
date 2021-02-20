@@ -20,7 +20,6 @@ type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
   entityId: string;
-  processDefinitionKey: string;
 };
 
 abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends React.Component<K & Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {

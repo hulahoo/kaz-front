@@ -4,36 +4,62 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Button, Modal} from "antd";
+import {Modal, Tabs} from "antd";
 
 import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 
 import {AbsenceRequest} from "../../../cuba/entities/base/tsadv$AbsenceRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
-import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
+import Page from "../../hoc/PageContentHoc";
+import Section from "../../hoc/Section";
+import Button, {ButtonType} from "../../components/Button/Button";
+import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
+import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
+
+const {TabPane} = Tabs;
 
 @injectMainStore
 @inject("rootStore")
 @observer
 class AbsenceRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
   dataCollection = collection<AbsenceRequest>(AbsenceRequest.NAME, {
-    view: "_local",
+    view: "absenceRequest.edit",
     sort: "-updateTs",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
   });
 
-  fields = [
+  dataCollectionAbsence = collection<Absence>(Absence.NAME, {
+    view: "absence.view",
+    sort: "-updateTs",
+    filter: {
+      conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
+    }
+  });
+
+  absenceRequestFields = [
     "requestNumber",
 
     "dateFrom",
 
     "dateTo",
 
+    "status",
+
     "requestDate"
+  ];
+
+  absenceFields = [
+    "type",
+
+    "dateFrom",
+
+    "dateTo",
+
+    "absenceDays"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -58,60 +84,60 @@ class AbsenceRequestListComponent extends React.Component<MainStoreInjected & Wr
     });
   };
 
-  render() {
-    const buttons = [
-      <Link
-        to={
-          AbsenceRequestManagement.PATH +
-          "/" +
-          AbsenceRequestManagement.NEW_SUBPATH
-        }
-        key="create"
-      >
-        <Button
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          type="primary"
-          icon="plus"
-        >
-          <span>
-            <FormattedMessage id="management.browser.create"/>
-          </span>
-        </Button>
-      </Link>,
-      <Link
-        to={AbsenceRequestManagement.PATH + "/" + this.selectedRowKey}
-        key="edit"
-      >
-        <Button
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          disabled={!this.selectedRowKey}
-          type="default"
-        >
-          <FormattedMessage id="management.browser.edit"/>
-        </Button>
-      </Link>,
-      <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        disabled={!this.selectedRowKey}
-        onClick={this.deleteSelectedRow}
-        key="remove"
-        type="default"
-      >
-        <FormattedMessage id="management.browser.remove"/>
-      </Button>
-    ];
+  @observable
+  pageName = "absence";
 
+  render() {
+    const openBtn = <Link
+      to={AbsenceRequestManagement.PATH + "/" + this.selectedRowKey}
+      key="edit">
+      <Button buttonType={ButtonType.PRIMARY}
+              style={{margin: "0 12px 12px 0"}}
+              disabled={!this.selectedRowKey}>
+        <FormattedMessage id="open"/>
+      </Button>
+    </Link>;
+
+    const createBtn = <Link
+      to={AbsenceRequestManagement.PATH + "/" + AbsenceRequestManagement.NEW_SUBPATH}
+      key="create">
+      <Button buttonType={ButtonType.PRIMARY}
+              style={{margin: "0 12px 12px 0"}}><span><FormattedMessage id="management.browser.create"/></span>
+      </Button>
+    </Link>;
     return (
-      <DataTable
-        dataCollection={this.dataCollection}
-        fields={this.fields}
-        onRowSelectionChange={this.handleRowSelectionChange}
-        hideSelectionColumn={true}
-        buttons={buttons}
-      />
+      <Page pageName={this.props.intl.formatMessage({id: this.pageName})}>
+        <Section size="large">
+          <Tabs defaultActiveKey="1"
+                onChange={activeKey => this.pageName = "absence" + (activeKey === "1" ? "" : "Request")}>
+            <TabPane tab={this.props.intl.formatMessage({id: "absence"})} key="1">
+              <div>
+                <div style={{marginBottom: 16}}>
+                  {createBtn}
+                </div>
+                <DataTable
+                  dataCollection={this.dataCollectionAbsence}
+                  fields={this.absenceFields}
+                  hideSelectionColumn={true}
+                />
+              </div>
+            </TabPane>
+            <TabPane tab={this.props.intl.formatMessage({id: "absenceRequest"})} key="2">
+              <div>
+                <div style={{marginBottom: 16}}>
+                  {openBtn}
+                </div>
+                <DataTable
+                  dataCollection={this.dataCollection}
+                  fields={this.absenceRequestFields}
+                  onRowSelectionChange={this.handleRowSelectionChange}
+                  // columnProps={}
+                />
+              </div>
+            </TabPane>
+          </Tabs>
+        </Section>
+      </Page>
     );
   }
 

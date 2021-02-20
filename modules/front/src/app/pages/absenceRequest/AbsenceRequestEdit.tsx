@@ -2,14 +2,21 @@ import * as React from "react";
 import {Alert, Card, Form} from "antd";
 import {inject, observer} from "mobx-react";
 import {toJS} from "mobx";
-import {FormattedMessage, injectIntl} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
-import {collection, injectMainStore, instance, MultilineText, withLocalizedForm} from "@cuba-platform/react";
+import {
+  collection,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
+  MultilineText,
+  withLocalizedForm
+} from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
 import {AbsenceRequest} from "../../../cuba/entities/base/tsadv$AbsenceRequest";
-import {withRouter} from "react-router";
+import {RouteComponentProps, withRouter} from "react-router";
 import AbstractBprocEdit from "../bproc/abstract/AbstractBprocEdit";
 import LoadingPage from "../LoadingPage";
 import Page from "../../hoc/PageContentHoc";
@@ -20,6 +27,8 @@ import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStat
 import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
 import {Redirect} from "react-router-dom";
 import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
+import {restServices} from "../../../cuba/services";
+import {rootStore, RootStoreProp} from "../../store";
 
 type EditorProps = {
   entityId: string;
@@ -45,6 +54,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
   fields = [
     "dateFrom",
 
+    "type",
+
     "dateTo",
 
     "absenceDays",
@@ -54,6 +65,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     "requestDate",
 
     "status",
+
+    "absenceDays",
+
+    "vacationDurationType",
 
     "comment"
   ];
@@ -71,7 +86,18 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   processDefinitionKey = "absenceRequest";
 
+  dateValidator = () => {
+    const dateFrom = this.props.form.getFieldValue("dateFrom");
+    const dateTo = this.props.form.getFieldValue("dateTo");
+
+    if (dateFrom) dateFrom.startOf('day');
+    if (dateTo) dateTo.startOf('day');
+
+    return dateFrom && dateTo && dateFrom <= dateTo;
+  }
+
   render() {
+
     if (!this.dataInstance) {
       return <LoadingPage/>
     }
@@ -90,6 +116,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           <div>
             <Card className="narrow-layout" bordered={false}>
               <Form onSubmit={this.validate} layout="vertical">
+
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
                   propertyName="requestNumber"
@@ -124,7 +151,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                     rules: [{
                       required: true,
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.type']})
-                    }]
+                    }
+                    ]
                   }}
                 />
 
@@ -137,7 +165,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   getFieldDecoratorOpts={{
                     rules: [{
                       required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.dateFrom']})
+                      message: this.props.intl.formatMessage({id: "validation.absenceRequest.dateFrom"}),
+                      validator: this.dateValidator
                     }]
                   }}
                 />
@@ -151,9 +180,26 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   getFieldDecoratorOpts={{
                     rules: [{
                       required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.dateTo']})
+                      message: this.props.intl.formatMessage({id: "validation.absenceRequest.dateTo"}),
+                      validator: this.dateValidator
                     }]
                   }}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="vacationDurationType"
+                  form={this.props.form}
+                  disabled={true}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="absenceDays"
+                  form={this.props.form}
+                  disabled={true}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
                 <ReadonlyField
@@ -201,17 +247,49 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
   }
 }
 
-export default injectIntl(
-  withLocalizedForm<EditorProps>({
-    onValuesChange: (props: any, changedValues: any) => {
-      // Reset server-side errors when field is edited
-      Object.keys(changedValues).forEach((fieldName: string) => {
-        props.form.setFields({
-          [fieldName]: {
-            value: changedValues[fieldName]
-          }
-        });
-      });
+const onValuesChange = (props: any, changedValues: any) => {
+  // Reset server-side errors when field is edited
+  Object.keys(changedValues).forEach((fieldName: string) => {
+    props.form.setFields({
+      [fieldName]: {
+        value: changedValues[fieldName]
+      }
+    });
+
+    if (fieldName === "dateTo" || fieldName === "dateFrom") {
+      props.form.validateFields();
     }
-  })(withRouter(AbsenceRequestEditComponent))
-);
+
+    if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
+      const type = props.form.getFieldValue(`type`);
+      const dateFrom = props.form.getFieldValue(`dateFrom`);
+      const dateTo = props.form.getFieldValue(`dateTo`);
+
+      const personGroupId = rootStore.userInfo.personGroupId;
+
+      if ((fieldName === "dateFrom" || fieldName === "type") && personGroupId && type && dateFrom) {
+        restServices.absenceService.vacationDurationType({
+          personGroupId: personGroupId,
+          absenceTypeId: type,
+          dateFrom: dateFrom
+        }).then(value => {
+          value = value ? value.substring(1, value.length - 1) : value;
+          props.form.setFields({"vacationDurationType": {value: props.intl.formatMessage({id: value})}});
+        });
+      }
+      if ((fieldName === "type" || fieldName === "dateFrom" || fieldName === "dateTo")
+        && type && dateTo && dateFrom && personGroupId) {
+        restServices.absenceService.countDays({
+          dateFrom: dateFrom,
+          dateTo: dateTo,
+          absenceTypeId: type,
+          personGroupId: personGroupId
+        }).then(value => {
+          props.form.setFields({"absenceDays": {value: value}});
+        })
+      }
+    }
+  });
+};
+const component = injectIntl(withLocalizedForm<EditorProps & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>>({onValuesChange})(AbsenceRequestEditComponent));
+export default withRouter(component);

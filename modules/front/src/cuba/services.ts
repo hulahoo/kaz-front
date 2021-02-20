@@ -285,12 +285,28 @@ export const restServices = {
       }
     },
     portalAccessEntityAttributesService: {
-      entityAttributesSecurityState: (param: { entityName: string, entityId: string}): Promise<SecurityState> => {
+      entityAttributesSecurityState: (param: { entityName: string, entityId: string }): Promise<SecurityState> => {
         return getCubaREST()!.invokeService<string>(
           "tsadv_PortalAccessEntityAttributesService",
           "entityAttributesSecurityState",
           {...param}
         ).then(r => JSON.parse(r));
+      }
+    },
+    absenceService: {
+      vacationDurationType: (param: { personGroupId: string, absenceTypeId: string, dateFrom: Date | null }): Promise<string> => {
+        return getCubaREST()!.invokeService<string>(
+          "tsadv_AbsenceService",
+          "getVacationDurationType",
+          {...param}
+        );
+      },
+      countDays: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+        return getCubaREST()!.invokeService<string>(
+          "tsadv_AbsenceService",
+          "countDays",
+          {...param}
+        );
       }
     }
   }
