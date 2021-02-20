@@ -5,12 +5,6 @@ export class WindowProperty extends AbstractParentEntity {
   screenName?: string | null;
   viewName?: string | null;
   entityName?: string | null;
-
-  static link(windowProperty: WindowProperty) {
-    let entityName = windowProperty.entityName!;
-    entityName = entityName.substring(Math.max(entityName!.indexOf("$"), entityName!.indexOf("_")) + 1);
-    return entityName.charAt(0).toLocaleLowerCase() + entityName.substring(1);
-  }
 }
 
 export type WindowPropertyViewName =

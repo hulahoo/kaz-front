@@ -1,6 +1,5 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {Icon} from "antd";
 import {collection, DataTable, injectMainStore} from "@cuba-platform/react";
 import {Activity} from "../../../cuba/entities/base/uactivity$Activity";
 import {injectIntl, WrappedComponentProps} from "react-intl";
@@ -10,10 +9,10 @@ import {RouteComponentProps} from "react-router-dom";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {withRouter} from "react-router";
-import {WindowProperty} from "../../../cuba/entities/base/uactivity$WindowProperty";
 import Button from "../../components/Button/Button";
+import {link} from "../../util/util";
 
-type Prop = { type: string }
+type Prop = { type: "tasks" | "notifications" }
 
 @injectMainStore
 @inject("rootStore")
@@ -44,30 +43,24 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
   @observable
   selectedRowKey: string | undefined;
 
-  // @observable type: string | undefined;
-
   render() {
-    const {status, items} = this.dataCollection;
-    console.log(items);
-    // if (status === "LOADING") {
-    //   return <Icon type="spin"/>;
-    // }
-
     const type = this.props.type;
 
     const find = this.selectedRowKey != null
       ? this.dataCollection.items.find(value => value.id === this.selectedRowKey) as Activity
       : null;
 
-    const button = type === "tasks"
-      ? <Button disabled={find === null}
-                type={"primary"}
-                style={{padding: 0}}
-                onClick={() => {
-                  if (find)
-                    this.props.history!.push(`../${WindowProperty.link(find!.type!.windowProperty!)}/${find!.referenceId}`);
-                }}>{this.props.intl.formatMessage({id: "open"})}</Button>
-      : null;
+    const button = <Button disabled={find === null}
+                           type={"primary"}
+                           style={{padding: 0}}
+                           onClick={() => {
+                             if (find) {
+                               if (find.type!.code !== "NOTIFICATION")
+                                 this.props.history!.push(`../${link(find!.type!.windowProperty!)}/${find!.referenceId}`);
+                               else
+                                 this.props.history!.push(find.id);
+                             }
+                           }}>{this.props.intl.formatMessage({id: "open"})}</Button>;
 
     const message = this.props.intl.formatMessage({id: type});
 
@@ -93,10 +86,6 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
     console.log('componentDidMount');
   }
 
-
-  componentWillUnmount(): void {
-    console.log('componentWillUnmount');
-  }
 }
 
 export default withRouter(injectIntl(ActivityCards));

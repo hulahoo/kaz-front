@@ -30,6 +30,7 @@ import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
 import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {BooksManagement} from "./pages/Books/BooksManagement";
 import {ActivityManagement} from "./pages/activity/ActivityManagement";
+import {AbsenceRequestManagement} from "./pages/absenceRequest/AbsenceRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -98,6 +99,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/book/:entityId?" component={BooksManagement}/>
                 <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
                 <Route exact={true} path={ActivityManagement.PATH} component={ActivityManagement}/>
+                <Route exact={true}
+                       path={AbsenceRequestManagement.PATH + "/:entityId?"}
+                       component={AbsenceRequestManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

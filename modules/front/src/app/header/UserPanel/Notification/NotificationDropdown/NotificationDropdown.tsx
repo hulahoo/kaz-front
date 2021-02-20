@@ -67,9 +67,11 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
               <ul className={"notifications-tab-content"}>
                 {this.bellNotifications ? this.bellNotifications.map(notification => {
                   return <li key={notification.id}>
-                    <div className={"bell-notification-name"}>{notification.name}</div>
-                    <div
-                      className={"bell-notification-date"}>{format(notification.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>
+                    <Link to={"/activity/" + notification.entityId}>
+                      <div className={"bell-notification-name"}>{notification.name}</div>
+                      <div
+                        className={"bell-notification-date"}>{format(notification.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>
+                    </Link>
                   </li>
                 }) : <></>}
               </ul>

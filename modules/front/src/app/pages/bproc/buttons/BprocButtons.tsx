@@ -11,24 +11,25 @@ import {inject, observer} from "mobx-react";
 import {observable} from "mobx";
 import StartBprocModal from "../modal/StartBprocModal";
 import {Modal} from "antd";
-import {Redirect, RouteComponentProps, withRouter} from "react-router-dom";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 import {restServices} from "../../../../cuba/services";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import TextArea from "antd/es/input/TextArea";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Notification from "../../../util/notification/Notification";
+import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
   formData: BprocFormData;
+  employee?: UserExt | null;
   validate(): void;
-  update():  Promise<any>;
+  update(): Promise<any>;
   isValidatedSuccess(): boolean;
   isStartForm: boolean;
   task: ExtTaskData | null;
   processInstanceData: ProcessInstanceData | null;
   processDefinitionKey: string;
-  redirectPath: string;
   form: WrappedFormUtils
 };
 
@@ -39,9 +40,6 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & R
 
   @observable
   modalVisibleMap = new Map<string, boolean>();
-
-  @observable
-  isRedirectPath = false;
 
   comment: string | null;
 
@@ -64,11 +62,11 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & R
       }
     })
       .then(value => {
+        this.props.history!.goBack();
         Notification.success({
           message: this.props.intl.formatMessage({id: "bproc." + outcome.id + ".success"})
         });
       })
-    this.isRedirectPath = true;
   };
 
   handleCancel = (outcome: BprocFormOutcome) => {
@@ -102,19 +100,16 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & R
 
   StartForm = () => {
     return <StartBprocModal
-      employee={null}
+      employee={this.props.employee}
       validate={this.props.validate}
       update={this.props.update}
       isValidatedSuccess={this.props.isValidatedSuccess}
       dataInstance={this.props.dataInstance}
       form={this.props.form}
-      redirectPath={this.props.redirectPath}
       processDefinitionKey={this.props.processDefinitionKey}/>
   }
 
   render() {
-    if (this.isRedirectPath)
-      return <Redirect to={this.props.redirectPath}/>;
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
         ? this.props.formData.outcomes.map(value => this.OutcomeButton(value))

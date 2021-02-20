@@ -23,12 +23,11 @@ import Candidate from "../component/Candidate";
 
 type StartBproc = {
   processDefinitionKey: string;
-  employee: UserExt | null;
+  employee?: UserExt | null;
   validate(): void;
   update(): Promise<any>;
   isValidatedSuccess(): boolean;
   dataInstance: DataInstanceStore<CertificateRequest>;
-  redirectPath: string;
   form: WrappedFormUtils
 }
 
@@ -99,7 +98,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                   rolesLinks: this.bprocRolesDefiner!.links
                 }
               }).then(response => {
-                this.props.history!.push(`${this.props.redirectPath}`);
+                this.props.history!.goBack();
                 Notification.success({
                   message: this.props.intl.formatMessage({id: "START.success"})
                 });
@@ -266,7 +265,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       .then(value => {
         this.bprocRolesDefiner = value;
         restServices.startBprocService.getNotPersisitBprocActors({
-          employee: this.props.employee,
+          employee: this.props.employee ? this.props.employee : null,
           initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
           bpmRolesDefiner: value
         }).then(notPersisitBprocActors => {
