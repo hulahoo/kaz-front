@@ -1,19 +1,20 @@
 import * as React from "react";
-import {inject, observer} from "mobx-react";
-import {withRouter} from "react-router-dom";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
-import {observable} from "mobx";
+import { observable } from "mobx";
 
-import {Button, Modal} from "antd";
+import { Button, Card, Modal } from "antd";
 
-import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import { collection, DataTable, injectMainStore, MainStoreInjected } from "@cuba-platform/react";
 
-import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
-import {SerializedEntity} from "@cuba-platform/rest";
-import {InsuredPersonManagement} from "./InsuredPersonManagement";
-import {injectIntl, WrappedComponentProps} from "react-intl";
-import {RootStoreProp} from "../../store";
-import {RouteComponentProps} from "react-router";
+import { InsuredPerson } from "../../../cuba/entities/base/tsadv$InsuredPerson";
+import { SerializedEntity } from "@cuba-platform/rest";
+import { InsuredPersonManagement } from "./InsuredPersonManagement";
+import { injectIntl, WrappedComponentProps } from "react-intl";
+import { RootStoreProp } from "../../store";
+import { RouteComponentProps } from "react-router";
+import Page from "../../hoc/PageContentHoc";
 
 @injectMainStore
 @observer
@@ -51,8 +52,8 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
   showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
     Modal.confirm({
       title: this.props.intl.formatMessage(
-        {id: "management.browser.delete.areYouSure"},
-        {instanceName: e._instanceName}
+        { id: "management.browser.delete.areYouSure" },
+        { instanceName: e._instanceName }
       ),
       okText: this.props.intl.formatMessage({
         id: "management.browser.delete.ok"
@@ -70,29 +71,28 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
 
   render() {
     const buttons = [
-        <Button
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          type="primary"
-          onClick={this.subscribeToMIC}
-          icon="plus"
-        >
-          <span>
-            Прикрепиться к ДМС
+      <Button
+        htmlType="button"
+        style={{ margin: "12px" }}
+        type="primary"
+        onClick={this.subscribeToMIC}
+      >
+        <span>
+          Прикрепиться к ДМС
           </span>
-        </Button>
-      ]
-    ;
+      </Button>
+    ];
 
     return (
-      <DataTable
-        dataCollection={this.dataCollection}
-        fields={this.fields}
-        onRowSelectionChange={this.handleRowSelectionChange}
-        hideSelectionColumn={true}
-        buttons={buttons}
-      >
-      </DataTable>
+      <Card style={{ margin: "10px" }}>
+        <DataTable
+          dataCollection={this.dataCollection}
+          fields={this.fields}
+          onRowSelectionChange={this.handleRowSelectionChange}
+          hideSelectionColumn={true}
+          buttons={buttons}
+        />
+      </Card>
     );
   }
 
