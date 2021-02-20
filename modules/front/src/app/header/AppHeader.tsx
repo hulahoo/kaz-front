@@ -12,13 +12,12 @@ import CommonComponentHoc from "../hoc/CommonComponent/CommonComponentHoc";
 import {ChangeEvent} from "react";
 import SockJS from "sockjs-client";
 import {RootStoreProp} from "../store";
+import {observable, runInAction} from "mobx";
 
 @injectMainStore
 @inject("rootStore")
 @observer
 class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
-
-  // ws = new SockJS('http://localhost:8085/tsadv-core/ws/handler');
 
   render() {
     const SearchComponent = CommonComponentHoc(
@@ -43,15 +42,6 @@ class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProp
         </div>
       </div>
     );
-  }
-
-  componentDidMount(): void {
-    // this.ws.send(JSON.stringify({
-    //   userId: this.props.rootStore!.userInfo.id
-    // }));
-    // this.ws.onmessage = (e: MessageEvent) => {
-    //   console.log(e);
-    // };
   }
 }
 
