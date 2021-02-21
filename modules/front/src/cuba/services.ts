@@ -17,6 +17,8 @@ import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
+import {List} from "antd";
+import {BaseUuidEntity} from "./entities/base/sys$BaseUuidEntity";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -299,6 +301,14 @@ export const restServices = {
         return getCubaREST()!.invokeService(
           "tsadv_DocumentService",
           "getInsuredPerson",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
+      getInsuredPersonMembers: (params: { insuredPersonId: any }, fetchOpts?: FetchOptions): Promise<List<InsuredPerson>> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "getInsuredPersonMembers",
           {...params},
           fetchOpts
         ).then((response: string) => JSON.parse(response));

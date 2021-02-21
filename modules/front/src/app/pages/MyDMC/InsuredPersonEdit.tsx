@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Button, Card, Col, Form, message, Row, Spin} from "antd";
+import {Alert, Button, Card, Col, Form, message, Modal, Row, Spin} from "antd";
 import {observer} from "mobx-react";
 import {InsuredPersonManagement} from "./InsuredPersonManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -12,6 +12,7 @@ import {
   clearFieldErrors,
   collection,
   constructFieldsWithErrors,
+  DataTable,
   extractServerValidationErrors,
   Field,
   instance,
@@ -35,6 +36,8 @@ import {Address} from "../../../cuba/entities/base/tsadv$Address";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import {restServices} from "../../../cuba/services";
+import {RouteComponentProps} from "react-router";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -43,10 +46,24 @@ type EditorProps = {
 };
 
 @observer
-class InsuredPersonEditComponent extends React.Component<Props & WrappedComponentProps> {
+class InsuredPersonEditComponent extends React.Component<Props & WrappedComponentProps & RouteComponentProps<any>> {
   dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-editView",
     loadImmediately: false
+  });
+  /*  */
+  familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
+    view: "insuredPerson-browseView",
+    sort: "-updateTs",
+    filter: {
+      conditions: [
+        {
+          property: "1",
+          value: "1",
+          operator: "<>"
+        }
+      ]
+    }
   });
 
   statusRequestsDc = collection<DicMICAttachmentStatus>(
@@ -91,6 +108,8 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
   @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
+
+  @observable selectedRowKey: string | undefined;
 
   fields = [
     "attachDate",
@@ -146,6 +165,24 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
     "file",
 
     "statementFile"
+  ];
+
+
+  memberFields = [
+    "relative",
+    "firstName",
+    "secondName",
+    "middleName",
+    "birthdate",
+    "iin",
+    "documentType",
+    "documentNumber",
+    "attachDate",
+    "insuranceProgram",
+    "amount",
+    "region",
+    "insuranceContract",
+    "file",
   ];
 
   @observable
@@ -208,15 +245,64 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
     });
   };
 
+
+  showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
+    Modal.confirm({
+      title: this.props.intl.formatMessage(
+        {id: "management.browser.delete.areYouSure"},
+        {instanceName: e._instanceName}
+      ),
+      okText: this.props.intl.formatMessage({
+        id: "management.browser.delete.ok"
+      }),
+      cancelText: this.props.intl.formatMessage({
+        id: "management.browser.delete.cancel"
+      }),
+      onOk: () => {
+        this.selectedRowKey = undefined;
+
+        return this.familyDataCollection.delete(e);
+      }
+    });
+  };
+
   render() {
     if (this.updated) {
       return <Redirect to={InsuredPersonManagement.PATH}/>;
     }
 
     const {status} = this.dataInstance;
-    console.log(status);
     let field_style = {marginBottom: "12px", margin: "10px",};
     let card_style = {margin: "10px"};
+
+
+    const buttons = [
+      <Button
+        htmlType="button"
+        style={{margin: "12px"}}
+        type="primary"
+        icon={"plus"}
+        onClick={this.subscribeMemberToMIC}
+      />,
+      <Button
+        htmlType="button"
+        style={{margin: "12px"}}
+        type="primary"
+        icon={"edit"}
+        disabled={this.selectedRowKey === undefined}
+        onClick={this.subscribeMemberToMIC}
+      />,
+      <Button
+        htmlType="button"
+        style={{margin: "12px"}}
+        type="primary"
+        icon={"delete"}
+        disabled={this.selectedRowKey === undefined}
+        onClick={this.deleteSelectedRow}
+      />
+    ];
+
+    let isMemberAttach = this.props.entityId !== InsuredPersonManagement.NEW_SUBPATH;
     return (
       <Card className="narrow-layout">
         <Spin spinning={status == 'LOADING'}>
@@ -318,7 +404,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                                  }}
                   />
 
-                  <Field
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="documentType"
                     form={this.props.form}
@@ -329,7 +415,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                     }}
                   />
 
-                  <Field
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="documentNumber"
                     form={this.props.form}
@@ -339,7 +425,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                     }}
                   />
 
-                  <Field
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="addressType"
                     form={this.props.form}
@@ -347,7 +433,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                     optionsContainer={this.addressTypesDc}
                     getFieldDecoratorOpts={{}}
                   />
-                  <Field
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="address"
                     form={this.props.form}
@@ -380,7 +466,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
               </Col>
               <Col span={8}>
                 <Card size="small" title="Cведения по ДМС" style={card_style}>
-                  <Field
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="insuranceContract"
                     form={this.props.form}
@@ -429,7 +515,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                                  }}
                   />
 
-                  {/*   <Field
+                  {/*   <ReadonlyField disabled={isMemberAttach}
                   entityName={InsuredPerson.NAME}
                   propertyName="amount"
                   form={this.props.form}
@@ -447,7 +533,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                                  }}
                   />
 
-                  <Field
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="region"
                     form={this.props.form}
@@ -459,15 +545,16 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                   />
 
 
-                  <Field
+                  {/*<ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="file"
                     form={this.props.form}
                     formItemOpts={{style: field_style}}
                     optionsContainer={this.filesDc}
                     getFieldDecoratorOpts={{}}
-                  />
-                  <Field
+                  />*/}
+
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="statementFile"
                     form={this.props.form}
@@ -476,7 +563,7 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                     getFieldDecoratorOpts={{}}
                   />
 
-                  <Field
+                  <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="comment"
                     form={this.props.form}
@@ -487,6 +574,18 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
                 </Card>
               </Col>
             </Row>
+
+            {isMemberAttach ?
+              <Card title ="Сведения по членам семьи" style={{margin: "10px"}}>
+                <DataTable
+                  dataCollection={this.familyDataCollection}
+                  fields={this.memberFields}
+                  hideSelectionColumn={true}
+                  onRowSelectionChange={this.handleRowSelectionChange}
+                  buttons={buttons}
+                />
+              </Card>
+              : <></>}
 
 
             {this.globalErrors.length > 0 && (
@@ -519,13 +618,53 @@ class InsuredPersonEditComponent extends React.Component<Props & WrappedComponen
     );
   }
 
+
+  subscribeMemberToMIC = () => {
+    this.props.history.push(InsuredPersonManagement.PATH + "/" + InsuredPersonManagement.NEW_SUBPATH);
+  };
+
+
+  handleRowSelectionChange = (selectedRowKeys: string[]) => {
+    this.selectedRowKey = selectedRowKeys[0];
+  };
+
+
+  getRecordById(id: string): SerializedEntity<InsuredPerson> {
+    const record:
+      | SerializedEntity<InsuredPerson>
+      | undefined = this.familyDataCollection.items.find(record => record.id === id);
+
+    if (!record) {
+      throw new Error("Cannot find entity with id " + id);
+    }
+
+    return record;
+  }
+
+
+  deleteSelectedRow = () => {
+    this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
+  };
+
   componentDidMount() {
     if (this.props.entityId !== InsuredPersonManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
+      // @ts-ignore
+      restServices.documentService.getInsuredPersonMembers({
+        insuredPersonId: this.props!.entityId!
+      }).then(value => {
+        this.familyDataCollection.clear();
+        // @ts-ignore
+        this.familyDataCollection.items = Array.from(value);
+      })
     } else {
       restServices.documentService.getInsuredPerson({
         type: "Employee",
-      }).then(value => this.dataInstance.setItem(value));
+      }).then(value => {
+        value.id = undefined;
+        console.log(value);
+        this.dataInstance.setItem(value);
+      });
     }
     this.reactionDisposer = reaction(
       () => {
