@@ -25,6 +25,8 @@ export class AbsenceRequest extends AbstractBprocRequest {
   acquainted?: boolean | null;
   agree?: boolean | null;
   vacationDurationType?: string | null;
+  reason?: string | null;
+  files?: FileDescriptor[] | null;
 }
 
 export type AbsenceRequestViewName =

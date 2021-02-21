@@ -71,8 +71,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
     "absenceDays",
 
-    "vacationDurationType",
-
     "comment"
   ];
 
