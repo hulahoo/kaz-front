@@ -48,7 +48,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
   });
 
   absenceTypesDc = collection<DicRequestStatus>(DicAbsenceType.NAME, {
-    view: "_minimal"
+    view: "_minimal",
+    filter: {
+      conditions: [{property: "useInSelfService", operator: "=", value: 'TRUE'}]
+    }
   });
 
   fields = [
