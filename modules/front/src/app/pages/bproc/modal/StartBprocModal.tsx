@@ -23,12 +23,11 @@ import Candidate from "../component/Candidate";
 
 type StartBproc = {
   processDefinitionKey: string;
-  employee: UserExt | null;
+  employee?: UserExt | null;
   validate(): void;
   update(): Promise<any>;
   isValidatedSuccess(): boolean;
   dataInstance: DataInstanceStore<CertificateRequest>;
-  redirectPath: string;
   form: WrappedFormUtils
 }
 
@@ -76,7 +75,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   handleOk = (e: any) => {
     Modal.confirm({
       title: this.props.intl.formatMessage(
-        {id: "bproc.start"}
+        {id: "START.INFO"}
       ),
       okText: this.props.intl.formatMessage({
         id: "cubaReact.dataTable.yes"
@@ -99,9 +98,9 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                   rolesLinks: this.bprocRolesDefiner!.links
                 }
               }).then(response => {
-                this.props.history!.push(`${this.props.redirectPath}`);
+                this.props.history!.goBack();
                 Notification.success({
-                  message: this.props.intl.formatMessage({id: "bproc.start.success"})
+                  message: this.props.intl.formatMessage({id: "START.success"})
                 });
               })
             });
@@ -175,7 +174,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   modal = () => {
     if (!this.items) return <div/>;
     return <Modal
-      title={this.props.intl.formatMessage({id: "bproc.start.btn"})}
+      title={this.props.intl.formatMessage({id: "START"})}
       visible={this.modalVisible}
       onOk={this.handleOk}
       width={700}
@@ -251,7 +250,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                     onClickCapture={this.showModalOrMessage}
                     key="start">
         {this.props.intl.formatMessage({
-          id: "bproc.start.btn"
+          id: "START"
         })}
         {this.modal()}
       </CustomButton>
@@ -266,11 +265,11 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       .then(value => {
         this.bprocRolesDefiner = value;
         restServices.startBprocService.getNotPersisitBprocActors({
-          employee: this.props.employee,
+          employee: this.props.employee ? this.props.employee : null,
           initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
           bpmRolesDefiner: value
         }).then(notPersisitBprocActors => {
-          this.items = notPersisitBprocActors;
+          this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
         }).catch(async (response: any) => {
           const reader = response.response.body.getReader();
 

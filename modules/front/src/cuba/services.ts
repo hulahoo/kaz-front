@@ -296,6 +296,22 @@ export const restServices = {
         ).then(r => JSON.parse(r));
       }
     },
+    absenceService: {
+      vacationDurationType: (param: { personGroupId: string, absenceTypeId: string, dateFrom: Date | null }): Promise<string> => {
+        return getCubaREST()!.invokeService<string>(
+          "tsadv_AbsenceService",
+          "getVacationDurationType",
+          {...param}
+        );
+      },
+      countDays: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+        return getCubaREST()!.invokeService<string>(
+          "tsadv_AbsenceService",
+          "countDays",
+          {...param}
+        );
+      }
+    },
     documentService: {
       getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
         return getCubaREST()!.invokeService(

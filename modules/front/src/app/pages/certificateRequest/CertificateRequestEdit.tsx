@@ -1,21 +1,12 @@
 import * as React from "react";
-import {Alert, Card, Form, message} from "antd";
+import {Alert, Card, Form} from "antd";
 import {inject, observer} from "mobx-react";
 import {CertificateRequestManagement} from "./CertificateRequestManagement";
-import {FormComponentProps} from "antd/lib/form";
-import {Link, Redirect, RouteComponentProps} from "react-router-dom";
-import {IReactionDisposer, observable, reaction, toJS} from "mobx";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import {restServices} from "../../../cuba/services";
+import {Redirect} from "react-router-dom";
+import {toJS} from "mobx";
+import {FormattedMessage, injectIntl} from "react-intl";
 
-import {
-  collection,
-  injectMainStore,
-  instance,
-  MainStoreInjected,
-  MultilineText,
-  withLocalizedForm
-} from "@cuba-platform/react";
+import {collection, injectMainStore, instance, MultilineText, withLocalizedForm} from "@cuba-platform/react";
 
 import "../../App.css";
 
@@ -25,28 +16,22 @@ import {DicReceivingType} from "../../../cuba/entities/base/tsadv_DicReceivingTy
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {DicLanguage} from "../../../cuba/entities/base/tsadv$DicLanguage";
 import {DicCertificateType} from "../../../cuba/entities/base/tsadv_DicCertificateType";
-import {RootStoreProp} from "../../store";
 import {ReadonlyField} from "../../components/ReadonlyField";
-import {ExtTaskDataCards} from "../bproc/TaskData/ExtTaskDataCards";
-import {ProcessInstanceData} from "../../../cuba/entities/base/bproc_ProcessInstanceData";
 import LoadingPage from "../LoadingPage";
-import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
-import {BprocFormData} from "../../../cuba/entities/bproc/bproc_FormData";
 import Button, {ButtonType} from "../../components/Button/Button";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
-import BprocButtons from "../bproc/buttons/BprocButtons";
-
-type Props = FormComponentProps & EditorProps;
+import {withRouter} from "react-router";
+import AbstractBprocEdit from "../bproc/abstract/AbstractBprocEdit";
 
 type EditorProps = {
   entityId: string;
-};
+}
 
 @inject("rootStore")
 @injectMainStore
 @observer
-class CertificateRequestEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
+class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateRequest, EditorProps> {
 
   dataInstance = instance<CertificateRequest>(CertificateRequest.NAME, {
     view: "portal.certificateRequest-edit",
@@ -71,28 +56,6 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
     view: "_minimal"
   });
 
-  @observable
-  updated = false;
-
-  reactionDisposer: IReactionDisposer;
-
-  @observable
-  mainStore = this.props.mainStore!;
-
-  processInstanceData: ProcessInstanceData | null;
-
-  @observable
-  tasks: ExtTaskData[] | null;
-
-  @observable
-  activeTask: ExtTaskData | null;
-
-  @observable
-  formData: BprocFormData | null;
-
-  @observable
-  isStartForm: boolean;
-
   fields = [
     "requestNumber",
 
@@ -113,46 +76,16 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
     "certificateType"
   ];
 
-  @observable
-  globalErrors: string[] = [];
-
-  createElement = React.createElement;
-
-  @observable
-  isValidatedSuccess = false;
-
-  validate = () => {
-
-    this.props.form.validateFields((err, values) => {
-
-      this.isValidatedSuccess = !err;
-
-      if (err) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
-        );
-        return;
-      }
-    });
-  };
-
-  update = () => {
-    const updateEntityData = {
+  getUpdateEntityData = (): any => {
+    return {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
       },
       ...this.props.form.getFieldsValue(this.fields)
-    };
-    return this.dataInstance.update(updateEntityData);
-  }
+    }
+  };
 
-  takCard() {
-    if (!this.tasks) return <div/>;
-    const tasks = Array.from(this.tasks);
-    return <ExtTaskDataCards tasks={tasks}/>
-  }
+  processDefinitionKey = "certificateRequest";
 
   render() {
     if (!this.dataInstance) {
@@ -168,42 +101,12 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
       return <Redirect to={CertificateRequestManagement.PATH}/>;
     }
 
-    const {status} = this.dataInstance;
-
-    const isDraft = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
+    const isDraft = this.isDraft();
 
     const messages = this.mainStore.messages!;
 
     if (!messages) return <LoadingPage/>
 
-    const outcomeBtns = this.formData
-      ? isNeedBpm
-        ? <BprocButtons dataInstance={this.dataInstance}
-                        formData={this.formData}
-                        validate={this.validate}
-                        update={this.update}
-                        isValidatedSuccess={() => this.isValidatedSuccess}
-                        processInstanceData={this.processInstanceData}
-                        isStartForm={this.isStartForm}
-                        redirectPath={CertificateRequestManagement.PATH}
-                        processDefinitionKey={'certificateRequest'}
-                        form={this.props.form}
-                        task={this.activeTask}/>
-        : <Button
-          buttonType={ButtonType.PRIMARY}
-          onClick={event => {
-            this.validate();
-            if (this.isValidatedSuccess) {
-              this.update().then(value => this.updated = true);
-            }
-          }
-          }
-          disabled={status !== "DONE" && status !== "ERROR"}
-          loading={status === "LOADING"}
-          style={{marginLeft: "8px"}}>
-          <FormattedMessage id="management.editor.submit"/>
-        </Button>
-      : null;
     return (
       <Page pageName={this.props.intl.formatMessage({id: "certificateRequest"})}>
         <Section size="large">
@@ -327,13 +230,11 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
 
                 <Form.Item style={{textAlign: "center"}}>
 
-                  {outcomeBtns}
+                  {this.getOutcomeBtns(isNeedBpm)}
 
-                  <Link to={CertificateRequestManagement.PATH}>
-                    <Button buttonType={ButtonType.FOLLOW} htmlType="button">
-                      <FormattedMessage id="management.editor.cancel"/>
-                    </Button>
-                  </Link>
+                  <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
+                    <FormattedMessage id="management.editor.cancel"/>
+                  </Button>
                 </Form.Item>
               </Form>
             </Card>
@@ -342,73 +243,6 @@ class CertificateRequestEditComponent extends React.Component<Props & WrappedCom
         </Section>
       </Page>
     );
-  }
-
-  componentDidMount() {
-    if (this.props.entityId !== CertificateRequestManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
-      restServices.bprocService.processInstanceData({
-        processInstanceBusinessKey: this.props.entityId,
-        processDefinitionKey: 'certificateRequest'
-      }).then(value => {
-        this.processInstanceData = value;
-        if (value) {
-          restServices.bprocService.tasks({processInstanceData: value})
-            .then(tasks => {
-              this.tasks = tasks;
-              this.activeTask = tasks.find(task => !task.endTime
-                && Array.isArray(task.assigneeOrCandidates)
-                && task.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
-              ) as ExtTaskData;
-
-              if (this.activeTask)
-                restServices.bprocFormService.getTaskFormData({taskId: this.activeTask.id!})
-                  .then(formData => {
-                    this.formData = formData;
-                    this.isStartForm = false;
-                  });
-            })
-        } else {
-          restServices.bprocService.getStartFormData({processDefinitionKey: 'certificateRequest'})
-            .then(formData => {
-              this.formData = formData;
-              this.isStartForm = true;
-            });
-          // this.dataInstance.item!.requestDate = Date.now(); //todo
-        }
-      })
-    } else {
-      restServices.portalHelperService.newEntity({entityName: this.dataInstance.entityName}).then((response: string) => {
-
-        restServices.bprocService.getStartFormData({processDefinitionKey: 'certificateRequest'})
-          .then(formData => {
-            this.formData = formData;
-            this.isStartForm = true;
-          });
-
-        this.dataInstance.setItem(JSON.parse(response));
-
-        this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
-        );
-
-      });
-    }
-
-    this.reactionDisposer = reaction(
-      () => {
-        return this.dataInstance.item;
-      },
-      () => {
-        this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
-        );
-      }
-    );
-  }
-
-  componentWillUnmount() {
-    this.reactionDisposer();
   }
 }
 
@@ -424,5 +258,5 @@ export default injectIntl(
         });
       });
     }
-  })(CertificateRequestEditComponent)
+  })(withRouter(CertificateRequestEditComponent))
 );
