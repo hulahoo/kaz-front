@@ -14,7 +14,7 @@ class Notification extends React.Component<RootStoreProp> {
   @observable
   newNotifications: number;
 
-  ws = new SockJS('http://localhost:8085/tsadv-core/ws/handler');
+  ws = new SockJS('http://dev.uco.kz:8014/kzm-core/ws/handler');
 
   state = {
     visible: false,
