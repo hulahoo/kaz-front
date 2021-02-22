@@ -10,6 +10,9 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl"
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
 import Notification from "../../util/notification/Notification";
 
+import {downloadFile} from "../../util/util";
+
+
 import {
   clearFieldErrors,
   collection,
@@ -594,7 +597,17 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 </Card>
                 <Card size="small" title="Приложения" style={card_style}>
                   {this.dataInstance.item && this.dataInstance.status === 'DONE'
-                    ? this.dataInstance.item!.insuranceContract!.attachments!.map(a => <Link to={"/rest/v2/files" + a.attachment!.id} key={a.id}>{a.attachment!.name!}</Link>)
+                    ? this.dataInstance.item!.insuranceContract!.attachments!
+                    .map(a =>
+                    <a
+                    style={{margin:"10px"}}
+                    onClick={() => {
+                        downloadFile((a.attachment as FileDescriptor).id,
+                          (a.attachment as FileDescriptor).name as string,
+                          (a.attachment as FileDescriptor).extension as string,
+                          "");
+                      }
+                      }> {(a.attachment as FileDescriptor).name}</a>)
                     : <></>}
                 </Card>
               </Col>

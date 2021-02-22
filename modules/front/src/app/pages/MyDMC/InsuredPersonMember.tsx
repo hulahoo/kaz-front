@@ -1,12 +1,14 @@
 import * as React from "react";
 import { FormEvent } from "react";
 import { Alert, Button, Card, Col, Form, message, Modal, Row, Spin } from "antd";
-import { observer } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { InsuredPersonManagement } from "./InsuredPersonManagement";
 import { FormComponentProps } from "antd/lib/form";
 import { Link, Redirect, withRouter } from "react-router-dom";
 import { IReactionDisposer, observable, reaction, toJS } from "mobx";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
+
+import { createElement } from "react";
 
 import {
     clearFieldErrors,
@@ -38,6 +40,7 @@ import { ReadonlyField } from "../../components/ReadonlyField";
 import { restServices } from "../../../cuba/services";
 import { RouteComponentProps } from "react-router";
 import { SerializedEntity } from "@cuba-platform/rest";
+import { RootStoreProp } from "../../store";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -51,8 +54,9 @@ type EditorHandlers = {
     refreshDs: () => void;
 };
 
+@inject("rootStore")
 @observer
-class InsuredPersonMemberComponent extends React.Component<Props & WrappedComponentProps & RouteComponentProps<any> & EditorHandlers> {
+class InsuredPersonMemberComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & RouteComponentProps<any> & EditorHandlers> {
     dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
         view: "insuredPerson-editView",
         loadImmediately: false
@@ -71,6 +75,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
             ]
         }
     });
+
 
     statusRequestsDc = collection<DicMICAttachmentStatus>(
         DicMICAttachmentStatus.NAME,
@@ -127,6 +132,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     @observable selectedRowKey: string | undefined;
 
+
     fields = [
         "attachDate",
 
@@ -181,24 +187,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
         "file",
 
         "statementFile"
-    ];
-
-
-    memberFields = [
-        "relative",
-        "firstName",
-        "secondName",
-        "middleName",
-        "birthdate",
-        "iin",
-        "documentType",
-        "documentNumber",
-        "attachDate",
-        "insuranceProgram",
-        "amount",
-        "region",
-        "insuranceContract",
-        "file",
     ];
 
     @observable
@@ -290,6 +278,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
             return <Redirect to={InsuredPersonManagement.PATH} />;
         }
 
+        console.log(this.props.form.getFieldValue("amount"));
         const { status } = this.dataInstance;
         let field_style = { marginBottom: "12px", margin: "10px", };
         let card_style = { margin: "10px" };
@@ -343,7 +332,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="jobMember"
                             form={this.props.form}
@@ -355,7 +344,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                         />
 
 
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="sex"
                             form={this.props.form}
@@ -366,7 +355,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="iin"
                             form={this.props.form}
@@ -376,7 +365,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="birthdate"
                             form={this.props.form}
@@ -385,7 +374,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                                 rules: [{ required: true }]
                             }}
                         />
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="relative"
                             form={this.props.form}
@@ -396,7 +385,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="type"
                             form={this.props.form}
@@ -407,7 +396,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="documentType"
                             form={this.props.form}
@@ -418,7 +407,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="documentNumber"
                             form={this.props.form}
@@ -427,7 +416,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                                 rules: [{ required: true }]
                             }}
                         />
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="region"
                             form={this.props.form}
@@ -437,7 +426,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                                 rules: [{ required: true }]
                             }}
                         />
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="addressType"
                             form={this.props.form}
@@ -445,14 +434,14 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             optionsContainer={this.addressTypesDc}
                             getFieldDecoratorOpts={{}}
                         />
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="address"
                             form={this.props.form}
                             formItemOpts={{ style: field_style }}
                             getFieldDecoratorOpts={{}}
                         />
-                        <ReadonlyField
+                        <Field
                             entityName={InsuredPerson.NAME}
                             propertyName="insuranceProgram"
                             form={this.props.form}
@@ -542,58 +531,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
-
-                        {/*
-                            <ReadonlyField disabled={true}
-                                entityName={InsuredPerson.NAME}
-                                propertyName="amount"
-                                form={this.props.form}
-                                formItemOpts={{ style: field_style }}
-                                getFieldDecoratorOpts={{}}
-                            />
-
-                            
-                            <ReadonlyField
-                                entityName={InsuredPerson.NAME}
-                                propertyName="region"
-                                form={this.props.form}
-                                formItemOpts={{ style: field_style }}
-                                optionsContainer={this.regionsDc}
-                                getFieldDecoratorOpts={{
-                                    rules: [{ required: true }]
-                                }}
-                            />
-
-
-                           <ReadonlyField 
-                    entityName={InsuredPerson.NAME}
-                    propertyName="file"
-                    form={this.props.form}
-                    formItemOpts={{style: field_style}}
-                    optionsContainer={this.filesDc}
-                    getFieldDecoratorOpts={{}}
-                  />
-
-                            <ReadonlyField
-                                entityName={InsuredPerson.NAME}
-                                propertyName="statementFile"
-                                form={this.props.form}
-                                formItemOpts={{ style: field_style }}
-                                optionsContainer={this.statementFilesDc}
-                                getFieldDecoratorOpts={{}}
-                            />
-
-                            <ReadonlyField
-                                entityName={InsuredPerson.NAME}
-                                propertyName="comment"
-                                form={this.props.form}
-                                formItemOpts={{ style: field_style }}
-                                getFieldDecoratorOpts={{}}
-                            />
-*/}
-
-
-
                         {this.globalErrors.length > 0 && (
                             <Alert
                                 message={<MultilineText lines={toJS(this.globalErrors)} />}
@@ -607,8 +544,19 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
         );
     }
 
-    componentDidMount() {
+    calculateAmount = () => {
+        if (this.dataInstance.item && this.dataInstance.status === 'DONE') {
+            let bith = this.props.form.getFieldValue("birthdate");
 
+            if (this.dataInstance.item!.insuranceContract
+                && bith
+                && this.dataInstance.item!.relative) {
+
+            }
+        }
+    }
+
+    componentDidMount() {
         if (this.props.entityId !== undefined) {
             this.dataInstance.load(this.props.entityId);
         } else {
@@ -647,6 +595,17 @@ export default injectIntl(
                         value: changedValues[fieldName]
                     }
                 });
+            });
+          
+            restServices.documentService.calcAmount({
+                personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
+                insuranceContractId: props.form.getFieldsValue(["insuranceContract"])["insuranceContract"],
+                bith: props.form.getFieldsValue(["birthdate"])["birthdate"],
+                relativeTypeId: props.form.getFieldsValue(["relative"])["relative"],
+            }).then(val => {
+                console.log(val);
+                //     this.dataInstance!.item!.amount!=val!;
+                props.form.setFieldsValue({ amount: val, totalAmount: val });
             });
         }
     })(InsuredPersonMemberComponent)
