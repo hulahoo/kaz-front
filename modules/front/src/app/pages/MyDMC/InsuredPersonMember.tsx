@@ -47,7 +47,8 @@ type EditorProps = {
 };
 
 type EditorHandlers = {
-    onChangeVisible: (value: boolean) => void
+    onChangeVisible: (value: boolean) => void;
+    refreshDs: () => void;
 };
 
 @observer
@@ -220,7 +221,8 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                     message.success(
                         this.props.intl.formatMessage({ id: "management.editor.success" })
                     );
-                    this.updated = true;
+                    // this.updated = true;
+                    this.props.refreshDs();
                     this.props.onChangeVisible(false)
                 })
                 .catch((e: any) => {
@@ -531,14 +533,14 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
                         <ReadonlyField
-                                entityName={InsuredPerson.NAME}
-                                propertyName="totalAmount"
-                                form={this.props.form}
-                                formItemOpts={{ style: { display: "none", } }}
-                                getFieldDecoratorOpts={{
-                                    rules: [{ required: true }]
-                                }}
-                            />
+                            entityName={InsuredPerson.NAME}
+                            propertyName="totalAmount"
+                            form={this.props.form}
+                            formItemOpts={{ style: { display: "none", } }}
+                            getFieldDecoratorOpts={{
+                                rules: [{ required: true }]
+                            }}
+                        />
 
 
                         {/*
@@ -607,7 +609,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     componentDidMount() {
 
-        console.log(this.props.entityId);
         if (this.props.entityId !== undefined) {
             this.dataInstance.load(this.props.entityId);
         } else {
@@ -615,7 +616,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                 type: "Member",
             }).then(value => {
                 value.id = undefined;
-                console.log(value);
                 this.dataInstance.setItem(value);
             });
         }

@@ -4,7 +4,7 @@ import { Alert, Button, Card, Col, Form, message, Modal, Row, Spin } from "antd"
 import { inject, observer } from "mobx-react";
 import { InsuredPersonManagement } from "./InsuredPersonManagement";
 import { FormComponentProps } from "antd/lib/form";
-import { Link, Redirect, withRouter } from "react-router-dom";
+import { Link, NavLink, Redirect, withRouter } from "react-router-dom";
 import { action, IReactionDisposer, observable, reaction, toJS } from "mobx";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
@@ -41,6 +41,9 @@ import { restServices } from "../../../cuba/services";
 import { RouteComponentProps } from "react-router";
 import { SerializedEntity } from "@cuba-platform/rest";
 import { RootStoreProp } from "../../store";
+import { Attachment } from "../../../cuba/entities/base/tsadv$Attachment";
+import { getBlobUrl } from "../../util/util";
+import { CUBA_APP_URL } from "../../../config";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -52,7 +55,7 @@ type EditorProps = {
 @inject("rootStore")
 @observer
 class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp & WrappedComponentProps & RouteComponentProps<any>> {
-  
+
   @observable
   visible: boolean = false;
 
@@ -270,7 +273,10 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       onOk: () => {
         this.selectedRowKey = undefined;
 
-        return this.familyDataCollection.delete(e);
+        this.familyDataCollection.delete(e).then(v => {
+          this.refreshDs();
+        });
+        return;
       }
     });
   };
@@ -586,6 +592,11 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                   />
 
                 </Card>
+                <Card size="small" title="Приложения" style={card_style}>
+                  {this.dataInstance.item && this.dataInstance.status === 'DONE'
+                    ? this.dataInstance.item!.insuranceContract!.attachments!.map(a => <Link to={"/rest/v2/files" + a.attachment!.id} key={a.id}>{a.attachment!.name!}</Link>)
+                    : <></>}
+                </Card>
               </Col>
             </Row>
 
@@ -628,11 +639,26 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Form.Item>
           </Form>
         </Spin>
-          <InsuredPersonMemberComponent entityId={this.selectedRowKey!} visible={this.visible} onChangeVisible={this.onChangeVisible}/>
-        </Card>
+        <InsuredPersonMemberComponent entityId={this.selectedRowKey!} visible={this.visible} onChangeVisible={this.onChangeVisible} refreshDs={this.refreshDs} />
+      </Card>
     );
   }
 
+
+
+  refreshDs = () => {
+    // (new Promise(resolve => setTimeout(resolve, 4500))).then(val => {
+    //   this.getComponents(this.dataInstance.item!.insuranceContract!.attachments!)
+    // });
+    // @ts-ignore
+    restServices.documentService.getInsuredPersonMembers({
+      insuredPersonId: this.props!.entityId!
+    }).then(value => {
+      this.familyDataCollection.clear();
+      // @ts-ignore
+      this.familyDataCollection.items = Array.from(value);
+    })
+  }
 
   subscribeMemberToMIC = () => {
     this.props.history.push(InsuredPersonManagement.PATH + "/" + InsuredPersonManagement.NEW_SUBPATH);
@@ -673,31 +699,23 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   componentDidMount() {
     if (this.props.entityId !== InsuredPersonManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
-      // @ts-ignore
-      restServices.documentService.getInsuredPersonMembers({
-        insuredPersonId: this.props!.entityId!
-      }).then(value => {
-        this.familyDataCollection.clear();
-        // @ts-ignore
-        this.familyDataCollection.items = Array.from(value);
-      })
+      this.refreshDs();
     } else {
       restServices.documentService.getInsuredPerson({
         type: "Employee",
       }).then(value => {
         value.id = undefined;
-        console.log(value);
         this.dataInstance.setItem(value);
         restServices.documentService.checkPersonInsure({
-          contractId:value.insuranceContract!.id!,
-          personGroupId:this.props.rootStore!.userInfo.personGroupId,
-        }).then(value=>{
-          if(value){
-            this.props.history.goBack();
-            Notification.info({
-              message: `Данный сотрудник уже привязан к договору`
-            });
-          }
+          contractId: value.insuranceContract!.id!,
+          personGroupId: this.props.rootStore!.userInfo.personGroupId,
+        }).then(value => {
+          // if (value) {
+          //   this.props.history.goBack();
+          //   Notification.info({
+          //     message: `Данный сотрудник уже привязан к договору`
+          //   });
+          // }
         })
       });
     }
