@@ -19,18 +19,14 @@ class GoalForm extends React.Component<Props & WrappedComponentProps> {
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="1">
           <AssignedGoalList assignedPerformancePlanId={this.props.assignedPerformancePlanId} setTotalWeight={this.props.setTotalWeight} readonly={this.props.readonly}/>
         </TabPane>
-        <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.approvers"})} key="2">
-          <div>
-          </div>
-        </TabPane>
-        <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="3">
-          <div>
-          </div>
-        </TabPane>
-        <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.tree"})} key="4">
-          <div>
-          </div>
-        </TabPane>
+        {/*<TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="3">*/}
+        {/*  <div>*/}
+        {/*  </div>*/}
+        {/*</TabPane>*/}
+        {/*<TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.tree"})} key="4">*/}
+        {/*  <div>*/}
+        {/*  </div>*/}
+        {/*</TabPane>*/}
       </Tabs>
     );
   }

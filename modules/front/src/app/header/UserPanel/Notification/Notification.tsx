@@ -6,6 +6,7 @@ import {RootStoreProp} from "../../../store";
 import NotificationDropdownMenu from "./NotificationDropdown/NotificationDropdown";
 import {observable, runInAction} from "mobx";
 import SockJS from "sockjs-client";
+import {CUBA_APP_NOTIFICATION_WS_URL} from "../../../../config";
 
 @inject("rootStore")
 @observer
@@ -14,7 +15,7 @@ class Notification extends React.Component<RootStoreProp> {
   @observable
   newNotifications: number;
 
-  ws = new SockJS('http://dev.uco.kz:8014/kzm-core/ws/handler');
+  ws = new SockJS(CUBA_APP_NOTIFICATION_WS_URL);
 
   state = {
     visible: false,
