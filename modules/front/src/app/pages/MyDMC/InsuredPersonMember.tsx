@@ -64,16 +64,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     /*  */
     familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
         view: "insuredPerson-browseView",
-        sort: "-updateTs",
-        filter: {
-            conditions: [
-                {
-                    property: "1",
-                    value: "1",
-                    operator: "<>"
-                }
-            ]
-        }
+        sort: "-updateTs"
     });
 
 
@@ -531,6 +522,15 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                             }}
                         />
 
+                        <ReadonlyField
+                            entityName={InsuredPerson.NAME}
+                            propertyName="statementFile"
+                            form={this.props.form}
+                            getFieldDecoratorOpts={{
+                                rules: [{ required: true }]
+                            }}
+                        />
+
                         {this.globalErrors.length > 0 && (
                             <Alert
                                 message={<MultilineText lines={toJS(this.globalErrors)} />}
@@ -596,16 +596,14 @@ export default injectIntl(
                     }
                 });
             });
-          
+
             restServices.documentService.calcAmount({
                 personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
                 insuranceContractId: props.form.getFieldsValue(["insuranceContract"])["insuranceContract"],
                 bith: props.form.getFieldsValue(["birthdate"])["birthdate"],
                 relativeTypeId: props.form.getFieldsValue(["relative"])["relative"],
             }).then(val => {
-                console.log(val);
-                //     this.dataInstance!.item!.amount!=val!;
-                props.form.setFieldsValue({ amount: val, totalAmount: val });
+                props.form.setFieldsValue({ amount: val });
             });
         }
     })(InsuredPersonMemberComponent)

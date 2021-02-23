@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormEvent } from "react";
-import { Alert, Button, Card, Col, Form, message, Modal, Row, Spin } from "antd";
+import { Alert, Button, Card, Col, Form, message, Modal, Row, Spin, Tag } from "antd";
 import { inject, observer } from "mobx-react";
 import { InsuredPersonManagement } from "./InsuredPersonManagement";
 import { FormComponentProps } from "antd/lib/form";
@@ -599,7 +599,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                   {this.dataInstance.item && this.dataInstance.status === 'DONE'
                     ? this.dataInstance.item!.insuranceContract!.attachments!
                     .map(a =>
-                    <a
+                    <Tag
                     style={{margin:"10px"}}
                     onClick={() => {
                         downloadFile((a.attachment as FileDescriptor).id,
@@ -607,7 +607,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                           (a.attachment as FileDescriptor).extension as string,
                           "");
                       }
-                      }> {(a.attachment as FileDescriptor).name}</a>)
+                      }> {(a.attachment as FileDescriptor).name}</Tag>)
                     : <></>}
                 </Card>
               </Col>
@@ -723,12 +723,12 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           contractId: value.insuranceContract!.id!,
           personGroupId: this.props.rootStore!.userInfo.personGroupId,
         }).then(value => {
-          // if (value) {
-          //   this.props.history.goBack();
-          //   Notification.info({
-          //     message: `Данный сотрудник уже привязан к договору`
-          //   });
-          // }
+          if (value) {
+            this.props.history.goBack();
+            Notification.info({
+              message: `Данный сотрудник уже привязан к договору`
+            });
+          }
         })
       });
     }

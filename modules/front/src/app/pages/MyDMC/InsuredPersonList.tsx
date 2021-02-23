@@ -1,42 +1,48 @@
 import * as React from "react";
-import {inject, observer} from "mobx-react";
-import {withRouter} from "react-router-dom";
+import { inject, observer } from "mobx-react";
+import { withRouter } from "react-router-dom";
 
-import {observable} from "mobx";
+import { observable } from "mobx";
 
-import {Button, Card, Modal} from "antd";
+import { Button, Card, List, Modal, Spin } from "antd";
 
-import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import { collection, DataTable, injectMainStore, MainStoreInjected, Msg } from "@cuba-platform/react";
 
-import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
-import {SerializedEntity} from "@cuba-platform/rest";
-import {InsuredPersonManagement} from "./InsuredPersonManagement";
-import {injectIntl, WrappedComponentProps} from "react-intl";
-import {RootStoreProp} from "../../store";
-import {RouteComponentProps} from "react-router";
+import { InsuredPerson } from "../../../cuba/entities/base/tsadv$InsuredPerson";
+import { SerializedEntity } from "@cuba-platform/rest";
+import { InsuredPersonManagement } from "./InsuredPersonManagement";
+import { injectIntl, WrappedComponentProps } from "react-intl";
+import { RootStoreProp } from "../../store";
+import { RouteComponentProps } from "react-router";
+import { Table } from "antd/es";
+import Column from "antd/lib/table/Column";
+import { restServices } from "../../../cuba/services";
+import { InsuranceContract } from "../../../cuba/entities/base/tsadv$InsuranceContract";
 
 @injectMainStore
 @observer
 @inject("rootStore")
 class InsuredPersonListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
-  dataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
-    view: "insuredPerson-browseView",
-    sort: "-updateTs",
-    filter: {
-      conditions: [
-        {
-          property: "employee.id",
-          operator: "=",
-          value: this.props.rootStore!.userInfo.personGroupId!
-        },
-        {
-          property: "type",
-          operator: "=",
-          value: "EMPLOYEE"
-        }
-      ]
-    }
-  });
+  // dataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
+  //   view: "insuredPerson-browseView",
+  //   sort: "-updateTs",
+  //   filter: {
+  //     conditions: [
+  //       {
+  //         property: "employee.id",
+  //         operator: "=",
+  //         value: this.props.rootStore!.userInfo.personGroupId!
+  //       },
+  //       {
+  //         property: "type",
+  //         operator: "=",
+  //         value: "EMPLOYEE"
+  //       }
+  //     ]
+  //   }
+  // });
+
+  @observable items: InsuredPerson[];
 
   fields = [
     "documentNumber",
@@ -48,31 +54,12 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
 
   @observable selectedRowKey: string | undefined;
 
-  showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
-    Modal.confirm({
-      title: this.props.intl.formatMessage(
-        {id: "management.browser.delete.areYouSure"},
-        {instanceName: e._instanceName}
-      ),
-      okText: this.props.intl.formatMessage({
-        id: "management.browser.delete.ok"
-      }),
-      cancelText: this.props.intl.formatMessage({
-        id: "management.browser.delete.cancel"
-      }),
-      onOk: () => {
-        this.selectedRowKey = undefined;
-
-        return this.dataCollection.delete(e);
-      }
-    });
-  };
 
   render() {
     const buttons = [
       <Button
         htmlType="button"
-        style={{margin: "12px"}}
+        style={{ margin: "12px" }}
         type="primary"
         onClick={this.subscribeToMIC}
       >
@@ -82,7 +69,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
       </Button>,
       <Button
         htmlType="button"
-        style={{margin: "12px"}}
+        style={{ margin: "12px" }}
         type="primary"
         onClick={this.subscribeFamilyMemberToMIC}
       >
@@ -93,29 +80,67 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
     ];
 
     return (
-      <Card style={{margin: "10px"}}>
-        <DataTable
-          dataCollection={this.dataCollection}
-          fields={this.fields}
-          onRowSelectionChange={this.handleRowSelectionChange}
-          hideSelectionColumn={true}
-          buttons={buttons}
-        />
+      <Card style={{ margin: "10px" }}>
+        <Spin spinning={this.items===undefined}>
+        {buttons}
+        <Table
+          dataSource={this.items}
+          rowKey={record => record.id}>
+          <Column
+            title={<Msg entityName={InsuranceContract.NAME} propertyName='contract' />}
+            dataIndex="insuranceContract.contract"
+            render={(text, record: InsuredPerson) => (
+              (React.createElement("div", null, record.insuranceContract!.contract!))
+            )}
+          />
+        
+        <Column
+            title={<Msg entityName={InsuranceContract.NAME} propertyName='startDate' />}
+            dataIndex="insuranceContract.startDate"
+            render={(text, record: InsuredPerson) => (
+              (React.createElement("div", null, record.insuranceContract!.startDate!))
+            )}
+          />
+        
+        <Column
+            title={<Msg entityName={InsuranceContract.NAME} propertyName='expirationDate' />}
+            dataIndex="insuranceContract.expirationDate"
+            render={(text, record: InsuredPerson) => (
+              (React.createElement("div", null, record.insuranceContract!.expirationDate!))
+            )}
+          />
+        
+        <Column
+            title={<Msg entityName={InsuredPerson.NAME} propertyName='attachDate' />}
+            dataIndex="attachDate"
+            render={(text, record: InsuredPerson) => (
+              (React.createElement("div", null, record.attachDate!))
+            )}
+          />
+        
+        <Column
+            title={<Msg entityName={InsuredPerson.NAME} propertyName='statusRequest' />}
+            dataIndex="statusRequest"
+            render={(text, record: InsuredPerson) => (
+              (React.createElement("div", null, record.statusRequest!.langValue!))
+            )}
+          />
+      
+       <Column
+            title={<Msg entityName={InsuredPerson.NAME} propertyName='totalAmount' />}
+            dataIndex="totalAmount"
+            render={(text, record: InsuredPerson) => (
+              (React.createElement("div", null, record.totalAmount!))
+            )}
+          />
+      
+        
+        </Table>
+        </Spin>
       </Card>
     );
   }
 
-  getRecordById(id: string): SerializedEntity<InsuredPerson> {
-    const record:
-      | SerializedEntity<InsuredPerson>
-      | undefined = this.dataCollection.items.find(record => record.id === id);
-
-    if (!record) {
-      throw new Error("Cannot find entity with id " + id);
-    }
-
-    return record;
-  }
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
     this.selectedRowKey = selectedRowKeys[0];
@@ -127,8 +152,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
   };
 
   subscribeFamilyMemberToMIC = () => {
-    console.log(this.dataCollection.items);
-    let sort = this.dataCollection.items.sort((a, b) => a.exclusionDate.compareTo(b.exclusionDate));
+    let sort = this.items.sort((a, b) => a.exclusionDate.compareTo(b.exclusionDate));
     if (sort[0] === undefined) {
       console.log("error");
       return;
@@ -136,7 +160,13 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
     this.props.history.push(InsuredPersonManagement.PATH + "/" + sort[0].id);
   };
 
-
+  componentDidMount(): void {
+    restServices.documentService.getMyInsuraces({}).then(val => {
+      console.log(val);
+      this.items = val;
+      this.setState(this.items = val);
+    })
+  }
 }
 
 const InsuredPersonList = withRouter(injectIntl(InsuredPersonListComponent));
