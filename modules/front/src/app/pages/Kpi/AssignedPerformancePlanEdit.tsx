@@ -41,7 +41,7 @@ import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
 import {OrganizationExt} from "../../../cuba/entities/base/base$OrganizationExt";
-import EntitySecurityState from "../../util/EntitySecurityState";
+import AbstractBprocEdit from "../bproc/abstract/AbstractBprocEdit";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -52,15 +52,13 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class AssignedPerformancePlanEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
+class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPerformancePlan, Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
 
   dataInstance = queryInstance<AssignedPerformancePlan>(
     AssignedPerformancePlan.NAME,
     "kpiEditPage",
     {appId: this.props.entityId}
   );
-
-  entitySecurityState: EntitySecurityState = new EntitySecurityState(AssignedPerformancePlan.NAME, this.props.entityId);
 
   @observable
   totalWeight: number;
@@ -311,7 +309,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
           </div>
           <Section size={"large"}>
             <StatusSteps steps={statusSteps}
-                         currentIndex={this.dataInstance.item ? statusesPerformancePlan.filter(s => s.id === this.dataInstance.item!.status).map((s, i) => i)[0] : undefined}/>
+                         currentIndex={this.dataInstance.item ? statusesPerformancePlan.filter(s => s.id === this.dataInstance.item!.stepStageStatus).map((s, i) => i)[0] : undefined}/>
           </Section>
           {this.readonly
             ? <></>
@@ -324,7 +322,8 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
             <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
             <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
           </div>}>
-            <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight} readonly={this.readonly}/>
+            <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight}
+                      readonly={this.readonly}/>
           </Section>
         </Card>
       </Page>
@@ -333,24 +332,33 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 
   @action
   setReadOnly = (): void => {
-    this.entitySecurityState.afterLoad = () => {
-      this.readonly = this.entitySecurityState.securityState.hiddenAttributes
-        && (this.entitySecurityState.securityState.hiddenAttributes.find(a => a === "performancePlan") != undefined);
-    };
-    this.entitySecurityState.loadSecurityState()
+    this.readonly = !!(this.dataInstance.item && this.dataInstance.item.stepStageStatus !== 'DRAFT');
   };
+
+  processDefinitionKey: string = AssignedPerformancePlan.PROCESS_DEFINITION_KEY;
 
   pageActions = (): JSX.Element[] => {
     if (!this.readonly) {
-      return [<Button buttonType={ButtonType.FOLLOW}
-                      onClick={this.sendOnApprove}>{this.props.intl.formatMessage({id: "sendOnApprove"})}</Button>]
+      return [this.getOutcomeBtns() || <></>];
     }
     return [];
   };
 
   componentDidMount() {
-    this.loadInstanceData();
+    super.componentDidMount();
     this.setReadOnly();
+  }
+
+  getUpdateEntityData = (): any => {
+    return {
+      personGroup: {
+        id: this.props.rootStore!.userInfo.personGroupId
+      },
+      // ...this.props.form.getFieldsValue(this.fields)
+    }
+  };
+
+  setReactionDisposer = () => {
     this.reactionDisposer = reaction(
       () => this.dataInstance.item,
       (item) => {
@@ -369,7 +377,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
         );
       }
     );
-  }
+  };
 
   componentWillUnmount() {
     this.reactionDisposer();
@@ -381,15 +389,12 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     } else {
       this.dataInstance.setItem(new AssignedPerformancePlan());
     }
-  };
+    const a = {};
+  }
 }
 
 export default injectIntl(
-  withLocalizedForm
-
-  <
-  EditorProps
-  > ({
+  withLocalizedForm<EditorProps>({
     onValuesChange: (props: any, changedValues: any) => {
       // Reset server-side errors when field is edited
       Object.keys(changedValues).forEach((fieldName: string) => {
@@ -401,7 +406,4 @@ export default injectIntl(
         }
       );
     }
-  })
-  (AssignedPerformancePlanEditComponent)
-)
-;
+  })(AssignedPerformancePlanEditComponent));
