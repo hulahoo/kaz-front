@@ -22,7 +22,7 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {withRouter} from "react-router";
-import AbstractBprocEdit from "../bproc/abstract/AbstractBprocEdit";
+import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 
 type EditorProps = {
   entityId: string;

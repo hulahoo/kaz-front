@@ -9,7 +9,7 @@ import {action, observable} from "mobx";
 import {BellNotification} from "../../../../store/BellNotificationStore";
 import {restServices} from "../../../../../cuba/services";
 import {Link, RouteComponentProps, withRouter} from "react-router-dom";
-import {ActivityManagement} from "../../../../pages/activity/ActivityManagement";
+import {ActivityManagement} from "../../../../pages/Activity/ActivityManagement";
 
 const scheduleNotificationTime: number = 10000;
 

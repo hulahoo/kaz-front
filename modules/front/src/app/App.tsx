@@ -14,10 +14,9 @@ import {CenteredLoader} from "./CenteredLoader";
 import {injectIntl, IntlFormatters, WrappedComponentProps} from "react-intl";
 import {getMenuIcon} from '../resources/icons/menu';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
-import UserSettings from "./pages/user-settings/UserSettings";
+import UserSettings from "./pages/UserSettings/UserSettings";
 import {RootStoreProp} from "./store";
-import MyKpiPage from "./pages/my-kpi/MyKpiPage";
-import {CertificateRequestManagement} from "./pages/certificateRequest/CertificateRequestManagement";
+import MyKpiPage from "./pages/MyKpi/MyKpiPage";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
@@ -29,10 +28,11 @@ import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
 import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
 import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {BooksManagement} from "./pages/Books/BooksManagement";
-import {ActivityManagement} from "./pages/activity/ActivityManagement";
-import {AbsenceRequestManagement} from "./pages/absenceRequest/AbsenceRequestManagement";
 import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
 import { ScheduleOffsetsRequestManagement } from "./pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
+import {CertificateRequestManagement} from "./pages/CertificateRequest/CertificateRequestManagement";
+import {ActivityManagement} from "./pages/Activity/ActivityManagement";
+import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
 
 @injectMainStore
 @inject("rootStore")

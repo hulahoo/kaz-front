@@ -41,7 +41,7 @@ import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
 import {OrganizationExt} from "../../../cuba/entities/base/base$OrganizationExt";
-import AbstractBprocEdit from "../bproc/abstract/AbstractBprocEdit";
+import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
 
 type Props = FormComponentProps & EditorProps;
