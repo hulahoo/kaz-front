@@ -26,17 +26,10 @@ class ExtTaskDataCards extends React.Component<TaskProps & MainStoreInjected & W
   mainStore = this.props.mainStore!;
 
   render() {
-
-    const messages = this.mainStore.messages!;
-
-    if (!messages) return <LoadingPage/>
-
-    const approvers = messages['bproc.participants'];
-
     return (
       <Card className="narrow-layout large-section section-container">
         <div
-          className={"section-header-container"}>{approvers}</div>
+          className={"section-header-container"}>{this.props.intl.formatMessage({id: "bproc.participants"})}</div>
         <Table
           dataSource={this.props.tasks}
           pagination={false}

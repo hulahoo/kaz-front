@@ -340,9 +340,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
             <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight}
                       readonly={this.readonly}/>
           </Section>
-          <Section size="large" sectionName="Согласующие">
-            {this.takCard()}
-          </Section>
+          {this.takCard()}
         </Card>
       </Page>
     );

@@ -91,7 +91,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   fields: any;
 
-  getOutcomeBtns = (isNeedBpm?: any):JSX.Element | null => {
+  getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
     const {status} = this.dataInstance;
 
     if (isNeedBpm !== false) isNeedBpm = true;
@@ -115,8 +115,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
             if (this.isValidatedSuccess) {
               this.update().then(() => this.updated = true);
             }
-          }
-          }
+          }}
           disabled={status !== "DONE" && status !== "ERROR"}
           loading={status === "LOADING"}
           style={{marginLeft: "8px"}}>

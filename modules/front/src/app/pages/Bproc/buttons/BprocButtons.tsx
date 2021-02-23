@@ -3,21 +3,15 @@ import {BprocFormData} from "../../../../cuba/entities/bproc/bproc_FormData";
 import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
-import {BprocFormOutcome} from "../../../../cuba/entities/bproc/bproc_FormOutcome";
 import {ProcessInstanceData} from "../../../../cuba/entities/base/bproc_ProcessInstanceData";
-import Button, {ButtonType} from "../../../components/Button/Button";
-import {injectMainStore} from "@cuba-platform/react";
+import {injectMainStore, withLocalizedForm} from "@cuba-platform/react";
 import {inject, observer} from "mobx-react";
-import {observable} from "mobx";
 import StartBprocModal from "../modal/StartBprocModal";
-import {Modal} from "antd";
-import {RouteComponentProps, withRouter} from "react-router-dom";
-import {restServices} from "../../../../cuba/services";
 import {WrappedFormUtils} from "antd/lib/form/Form";
-import TextArea from "antd/es/input/TextArea";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import Notification from "../../../util/notification/Notification";
 import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {FormComponentProps} from "antd/es/form";
+import OutcomeButtonModal from "../modal/OutcomeButtonModal";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
@@ -36,68 +30,7 @@ type TaskProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & RouteComponentProps> {
-
-  @observable
-  modalVisibleMap = new Map<string, boolean>();
-
-  comment: string | null;
-
-  showModal = (outcome: BprocFormOutcome) => {
-    this.modalVisibleMap.set(outcome.id!, true);
-  };
-
-  setComment = (comment: string | null) => {
-    this.comment = comment;
-  };
-
-  handleOk = (outcome: BprocFormOutcome) => {
-    this.modalVisibleMap.set(outcome.id!, false);
-
-    restServices.bprocTaskService.completeWithOutcome({
-      taskData: this.props.task!,
-      outcomeId: outcome.id!,
-      processVariables: {
-        "comment": this.comment
-      }
-    })
-      .then(value => {
-        this.props.history!.goBack();
-        Notification.success({
-          message: this.props.intl.formatMessage({id: "bproc." + outcome.id + ".success"})
-        });
-      })
-  };
-
-  handleCancel = (outcome: BprocFormOutcome) => {
-    this.modalVisibleMap.set(outcome.id!, false);
-  };
-
-  OutcomeButton = (outcome: BprocFormOutcome) => {
-    const title = this.props.intl.formatMessage({id: outcome.id!});
-    return <Button buttonType={ButtonType.FOLLOW}
-                   onClickCapture={() => this.showModal(outcome)}
-                   key={outcome.id}>
-      {title}
-      <Modal
-        title={title}
-        visible={this.modalVisibleMap.get(outcome.id!)}
-        onOk={() => this.handleOk(outcome)}
-        onCancel={() => this.handleCancel(outcome)}>
-        <TextArea
-          onChange={event => {
-            const {value} = event.currentTarget;
-            this.setComment(value);
-          }}
-          rows={4}
-          aria-errormessage="errer my eror"
-          id={outcome.id + "_textArea"}
-          required={outcome.id !== "APPROVE"}/>
-
-      </Modal>
-    </Button>;
-  }
-
+class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & FormComponentProps> {
   StartForm = () => {
     return <StartBprocModal
       employee={this.props.employee}
@@ -107,14 +40,15 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & R
       dataInstance={this.props.dataInstance}
       form={this.props.form}
       processDefinitionKey={this.props.processDefinitionKey}/>
-  }
+  };
 
   render() {
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
-        ? this.props.formData.outcomes.map(value => this.OutcomeButton(value))
+        ? this.props.formData.outcomes.map(value => <OutcomeButtonModal outcome={value}
+                                                                        task={this.props.task}/>)
         : "";
   }
 }
 
-export default withRouter(injectIntl(BprocButtons));
+export default injectIntl(BprocButtons);
