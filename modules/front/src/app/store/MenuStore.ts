@@ -3,6 +3,7 @@ import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
 import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
+import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
 import {AbsenceRequestManagement} from "../pages/absenceRequest/AbsenceRequestManagement";
 
 export interface MenuRouteItem extends RouteItem {
@@ -91,12 +92,12 @@ export default class MenuStore {
               menuLink: "/book",
               pathPattern: "/book",
               component: null
-            // }, {
-            //   id: "my-books",
-            //   caption: "Мои книги",
-            //   menuLink: "/my-books",
-            //   pathPattern: "/my-books",
-            //   component: null
+              // }, {
+              //   id: "my-books",
+              //   caption: "Мои книги",
+              //   menuLink: "/my-books",
+              //   pathPattern: "/my-books",
+              //   component: null
             }]
           } as MenuSubMenu,
           {
@@ -122,6 +123,13 @@ export default class MenuStore {
         menuLink: "/my-rating",
         pathPattern: "/my-rating",
         component: null,
+      },
+      {
+        id: "dmc-my",
+        caption: "Мои ДМС",
+        menuLink: "/my-dmc",
+        pathPattern: "/my-dmc",
+        component: InsuredPersonManagement,
       },
       {
         id: "team-rating",

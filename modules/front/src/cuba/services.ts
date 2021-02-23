@@ -16,6 +16,9 @@ import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
+import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
+import {List} from "antd";
+import {BaseUuidEntity} from "./entities/base/sys$BaseUuidEntity";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -308,6 +311,48 @@ export const restServices = {
           {...param}
         );
       }
+    },
+    documentService: {
+      getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "getInsuredPerson",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
+      getInsuredPersonMembers: (params: { insuredPersonId: any }, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "getInsuredPersonMembers",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
+      checkPersonInsure: (params: { personGroupId: any,contractId:any }, fetchOpts?: FetchOptions): Promise<Boolean> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "checkPersonInsure",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
+      calcAmount:(params: { insuranceContractId: any,personGroupExtId:any,relativeTypeId:any,bith:any }, fetchOpts?: FetchOptions): Promise<number> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "calcAmount",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
+      getMyInsuraces:(params: {}, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "getMyInsuraces",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
     }
   }
 ;

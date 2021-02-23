@@ -31,6 +31,7 @@ import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDat
 import {BooksManagement} from "./pages/Books/BooksManagement";
 import {ActivityManagement} from "./pages/activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/absenceRequest/AbsenceRequestManagement";
+import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -96,6 +97,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
                 <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
+                <Route exact={true} path="/my-dmc/:entityId?" component={InsuredPersonManagement}/>
                 <Route exact={true} path="/book/:entityId?" component={BooksManagement}/>
                 <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
                 <Route exact={true} path={ActivityManagement.PATH} component={ActivityManagement}/>
