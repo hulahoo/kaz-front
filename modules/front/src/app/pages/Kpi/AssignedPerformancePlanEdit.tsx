@@ -332,7 +332,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   @action
   setReadOnly = (): void => {
-    this.readonly = !!(this.dataInstance.item && this.dataInstance.item.stepStageStatus !== 'DRAFT');
+    this.readonly = !(this.dataInstance.item
+      && this.dataInstance.item.status!.code === 'DRAFT'
+      && this.dataInstance.item.assignedPerson!.id! === this.props.rootStore!.userInfo.personGroupId!);
   };
 
   processDefinitionKey: string = AssignedPerformancePlan.PROCESS_DEFINITION_KEY;
@@ -346,7 +348,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   componentDidMount() {
     super.componentDidMount();
-    this.setReadOnly();
   }
 
   getUpdateEntityData = (): any => {
@@ -362,6 +363,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     this.reactionDisposer = reaction(
       () => this.dataInstance.item,
       (item) => {
+        this.setReadOnly();
         this.props.form.setFieldsValue(
           {
             ...{
