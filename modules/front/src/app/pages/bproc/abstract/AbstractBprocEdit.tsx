@@ -91,7 +91,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   fields: any;
 
-  getOutcomeBtns = (isNeedBpm?: any) => {
+  getOutcomeBtns = (isNeedBpm?: any):JSX.Element | null => {
     const {status} = this.dataInstance;
 
     if (isNeedBpm !== false) isNeedBpm = true;
@@ -123,7 +123,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
           <FormattedMessage id="management.editor.submit"/>
         </Button>
       : null;
-  }
+  };
 
   processDefinitionKey: string;
 
@@ -177,7 +177,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         this.props.form.setFieldsValue(fieldValues);
       });
     }
+    this.setReactionDisposer();
+  }
 
+  setReactionDisposer = () => {
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
@@ -188,7 +191,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         );
       }
     );
-  }
+  };
 
   componentWillUnmount() {
     this.reactionDisposer();

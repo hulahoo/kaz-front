@@ -1,14 +1,17 @@
-import { StandardEntity } from "./sys$StandardEntity";
 import { PerformancePlan } from "./tsadv$PerformancePlan";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-export class AssignedPerformancePlan extends StandardEntity {
+import {AbstractBprocRequest} from "./AbstractBprocRequest";
+
+export class AssignedPerformancePlan extends AbstractBprocRequest {
   static NAME = "tsadv$AssignedPerformancePlan";
+  static PROCESS_DEFINITION_KEY = "kpi";
+
   performancePlan?: PerformancePlan | null;
   result?: any | null;
   gzp?: any | null;
   assignedPerson?: PersonGroupExt | null;
   assigned_by?: PersonGroupExt | null;
-  status?: any | null;
+  stepStageStatus?: any | null;
   startDate?: any | null;
   endDate?: any | null;
   kpiScore?: any | null;
@@ -38,7 +41,7 @@ export type AssignedPerformancePlanView<
       | "id"
       | "result"
       | "gzp"
-      | "status"
+      | "stepStageStatus"
       | "startDate"
       | "endDate"
       | "kpiScore"
@@ -58,7 +61,7 @@ export type AssignedPerformancePlanView<
       | "id"
       | "result"
       | "gzp"
-      | "status"
+      | "stepStageStatus"
       | "startDate"
       | "endDate"
       | "kpiScore"
@@ -79,22 +82,22 @@ export type AssignedPerformancePlanView<
       | "performancePlan"
       | "startDate"
       | "endDate"
-      | "status"
+      | "stepStageStatus"
       | "performancePlan"
       | "startDate"
       | "endDate"
-      | "status"
+      | "stepStageStatus"
       | "assignedPerson"
     >
   : V extends "assignedPerformancePlan-myKpi"
   ? Pick<
       AssignedPerformancePlan,
-      "id" | "performancePlan" | "startDate" | "endDate" | "status"
+      "id" | "performancePlan" | "startDate" | "endDate" | "stepStageStatus"
     >
   : V extends "assignedPerformancePlan-myKpi-edit"
   ? Pick<
       AssignedPerformancePlan,
-      "id" | "performancePlan" | "status" | "assignedPerson"
+      "id" | "performancePlan" | "stepStageStatus" | "assignedPerson"
     >
   : V extends "assignedPerformancePlan.browse"
   ? Pick<
@@ -102,7 +105,7 @@ export type AssignedPerformancePlanView<
       | "id"
       | "result"
       | "gzp"
-      | "status"
+      | "stepStageStatus"
       | "startDate"
       | "endDate"
       | "kpiScore"

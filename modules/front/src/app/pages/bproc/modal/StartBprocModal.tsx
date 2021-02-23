@@ -51,8 +51,10 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   @observable
   bprocRolesDefiner: BpmRolesDefiner | null;
 
+  @observable
   selectedHrRole: DicHrRole | null;
 
+  @observable
   selectedUser: UserExt | null;
 
   users = collection<UserExt>(UserExt.NAME, {
@@ -173,6 +175,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
   modal = () => {
     if (!this.items) return <div/>;
+
     return <Modal
       title={this.props.intl.formatMessage({id: "START"})}
       visible={this.modalVisible}
