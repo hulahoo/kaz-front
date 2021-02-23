@@ -42,6 +42,7 @@ import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
 import {OrganizationExt} from "../../../cuba/entities/base/base$OrganizationExt";
 import AbstractBprocEdit from "../bproc/abstract/AbstractBprocEdit";
+import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -85,7 +86,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     "endDate",
 
-    "hireDate"
+    "hireDate",
+
+    "status"
   ];
 
   @observable
@@ -296,6 +299,18 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                       )}
                     </Form.Item>
                   </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="status"
+                      form={this.props.form}
+                      disabled
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
+                        label: <Msg entityName={AssignedPerformancePlan.NAME} propertyName={"status"}/>
+                      }}
+                    />
+                  </Col>
                 </Row>
                 {this.globalErrors.length > 0 && (
                   <Alert
@@ -325,6 +340,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
             <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight}
                       readonly={this.readonly}/>
           </Section>
+          <Section size="large" sectionName="Согласующие">
+            {this.takCard()}
+          </Section>
         </Card>
       </Page>
     );
@@ -340,10 +358,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   processDefinitionKey: string = AssignedPerformancePlan.PROCESS_DEFINITION_KEY;
 
   pageActions = (): JSX.Element[] => {
-    if (!this.readonly) {
-      return [this.getOutcomeBtns() || <></>];
-    }
-    return [];
+    return [this.getOutcomeBtns() || <></>];
   };
 
   componentDidMount() {
@@ -374,6 +389,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
               startDate: moment(item!.performancePlan!.startDate),
               endDate: moment(item!.performancePlan!.endDate),
               hireDate: moment(item!.assignedPerson!.person!.hireDate),
+              status: (item!.status! as SerializedEntity<AbstractBprocRequest>)._instanceName,
             }
           }
         );
