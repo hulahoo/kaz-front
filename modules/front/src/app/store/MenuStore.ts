@@ -5,6 +5,7 @@ import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/Person
 import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
 import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
 import {AbsenceRequestManagement} from "../pages/absenceRequest/AbsenceRequestManagement";
+import { ScheduleOffsetsRequestManagement } from "../pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -130,6 +131,13 @@ export default class MenuStore {
         menuLink: "/my-dmc",
         pathPattern: "/my-dmc",
         component: InsuredPersonManagement,
+      },
+      {
+        id: "schedule-offsets",
+        caption: "График сменности",
+        menuLink: "/schedule-offsets",
+        pathPattern: "/schedule-offsets",
+        component: ScheduleOffsetsRequestManagement,
       },
       {
         id: "team-rating",

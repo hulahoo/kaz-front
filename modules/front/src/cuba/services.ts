@@ -19,6 +19,7 @@ import {SecurityState} from "../app/util/EntitySecurityState";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
 import {List} from "antd";
 import {BaseUuidEntity} from "./entities/base/sys$BaseUuidEntity";
+import { ScheduleOffsetsRequest } from "./entities/base/tsadv_ScheduleOffsetsRequest";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -349,6 +350,15 @@ export const restServices = {
         return getCubaREST()!.invokeService(
           "tsadv_DocumentService",
           "getMyInsuraces",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
+
+      getOffsetRequestsNew:(params: {}, fetchOpts?: FetchOptions): Promise<ScheduleOffsetsRequest> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "getOffsetRequestsNew",
           {...params},
           fetchOpts
         ).then((response: string) => JSON.parse(response));

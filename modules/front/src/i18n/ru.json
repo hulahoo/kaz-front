@@ -242,7 +242,7 @@
   "open": "Открыть",
   "CALENDAR": "Календарный",
   "WORK": "Рабочий",
-  "validation.absenceRequest.dateFrom" : "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
-  "validation.absenceRequest.dateTo" : "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\"",
+  "validation.absenceRequest.dateFrom": "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
+  "validation.absenceRequest.dateTo": "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\"",
   "sendOnApprove": "Отправить на согласование"
 }
