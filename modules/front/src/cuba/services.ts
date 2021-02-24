@@ -363,6 +363,15 @@ export const restServices = {
           fetchOpts
         ).then((response: string) => JSON.parse(response));
       },
+
+      calcTotalAmount: (params: { insuredPersonId: any }, fetchOpts?: FetchOptions): Promise<number> => {
+        return getCubaREST()!.invokeService(
+          "tsadv_DocumentService",
+          "calcTotalAmount",
+          {...params},
+          fetchOpts
+        ).then((response: string) => JSON.parse(response));
+      },
     }
   }
 ;

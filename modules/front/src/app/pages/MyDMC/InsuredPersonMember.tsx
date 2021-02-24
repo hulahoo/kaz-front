@@ -269,7 +269,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
             return <Redirect to={InsuredPersonManagement.PATH} />;
         }
 
-        console.log(this.props.form.getFieldValue("amount"));
         const { status } = this.dataInstance;
         let field_style = { marginBottom: "12px", margin: "10px", };
         let card_style = { margin: "10px" };

@@ -111,6 +111,7 @@
   "menu.certificateRequest": "Справка с места работы",
   "menu.dmc-my": "Мои ДМC",
   "menu.absence": "Отсутствие",
+  "menu.schedule-offsets": "Графики сменности",
   "absenceRequest": "Заявка на отсутствие",
   "absence": "Отсутствие",
   "settings": "Настройки",

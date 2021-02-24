@@ -10,7 +10,7 @@ import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl"
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
 import Notification from "../../util/notification/Notification";
 
-import {downloadFile} from "../../util/util";
+import { downloadFile } from "../../util/util";
 
 
 import {
@@ -486,10 +486,21 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                   />
 
                 </Card>
+                <Card style={{ margin: "10px" }}>
+                  <ReadonlyField disabled={true}
+                    entityName={InsuredPerson.NAME}
+                    propertyName="totalAmount"
+                    form={this.props.form}
+                    formItemOpts={{ style: field_style }}
+                    getFieldDecoratorOpts={{
+                      rules: [{ required: true }]
+                    }}
+                  />
+                </Card>
               </Col>
               <Col span={8}>
                 <Card size="small" title="Cведения по ДМС" style={card_style}>
-                  <ReadonlyField disabled={isMemberAttach}
+                  <ReadonlyField disabled={true}
                     entityName={InsuredPerson.NAME}
                     propertyName="insuranceContract"
                     form={this.props.form}
@@ -546,15 +557,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                   getFieldDecoratorOpts={{}}
                 />
 */}
-                  <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="totalAmount"
-                    form={this.props.form}
-                    formItemOpts={{ style: { display: "none", } }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
-                  />
+
 
                   <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
@@ -577,7 +580,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                     getFieldDecoratorOpts={{}}
                   />*/}
 
-                  <ReadonlyField disabled={isMemberAttach}
+                  <ReadonlyField
                     entityName={InsuredPerson.NAME}
                     propertyName="statementFile"
                     form={this.props.form}
@@ -597,17 +600,18 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 </Card>
                 <Card size="small" title="Приложения" style={card_style}>
                   {this.dataInstance.item && this.dataInstance.status === 'DONE'
+                    && this.dataInstance.item!.insuranceContract!.attachments!
                     ? this.dataInstance.item!.insuranceContract!.attachments!
-                    .map(a =>
-                    <Tag
-                    style={{margin:"10px"}}
-                    onClick={() => {
-                        downloadFile((a.attachment as FileDescriptor).id,
-                          (a.attachment as FileDescriptor).name as string,
-                          (a.attachment as FileDescriptor).extension as string,
-                          "");
-                      }
-                      }> {(a.attachment as FileDescriptor).name}</Tag>)
+                      .map(a =>
+                        <Tag
+                          style={{ margin: "10px" }}
+                          onClick={() => {
+                            downloadFile((a.attachment as FileDescriptor).id,
+                              (a.attachment as FileDescriptor).name as string,
+                              (a.attachment as FileDescriptor).extension as string,
+                              "");
+                          }
+                          }> {(a.attachment as FileDescriptor).name}</Tag>)
                     : <></>}
                 </Card>
               </Col>
@@ -660,9 +664,12 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
 
   refreshDs = () => {
-    // (new Promise(resolve => setTimeout(resolve, 4500))).then(val => {
-    //   this.getComponents(this.dataInstance.item!.insuranceContract!.attachments!)
-    // });
+    restServices.documentService.calcTotalAmount({
+      insuredPersonId: this.props!.entityId!
+    }).then(value => {
+      if (this.dataInstance.item!)
+        this.props.form.setFieldsValue({ totalAmount: value });
+    })
     // @ts-ignore
     restServices.documentService.getInsuredPersonMembers({
       insuredPersonId: this.props!.entityId!

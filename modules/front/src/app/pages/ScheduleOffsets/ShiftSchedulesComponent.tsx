@@ -1,10 +1,9 @@
 import * as React from "react";
 import { observer } from "mobx-react";
-import { Link } from "react-router-dom";
 
 import { observable } from "mobx";
 
-import { Modal, Button, Tabs } from "antd";
+import {  Tabs } from "antd";
 
 import {
     collection,
@@ -14,8 +13,6 @@ import {
 } from "@cuba-platform/react";
 
 import { ScheduleOffsetsRequest } from "../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
-import { SerializedEntity } from "@cuba-platform/rest";
-import { ScheduleOffsetsRequestManagement } from "./ScheduleOffsetsRequestManagement";
 import {
     FormattedMessage,
     injectIntl,
@@ -23,6 +20,7 @@ import {
 } from "react-intl";
 import Page from "../../hoc/PageContentHoc";
 import { AssignmentSchedule } from "../../../cuba/entities/base/tsadv$AssignmentSchedule";
+import { fonmatDefaultDateFromString } from "../../util/Date/Date";
 
 
 
@@ -99,6 +97,39 @@ class ShiftSchedulesComponent extends React.Component<MainStoreInjected & Wrappe
         this.requestsDataCollection.load();
     }
 
+    columnIndex = 0;
+    currentRowIndex = 0;
+
+
+    reqColumnIndex = 0;
+    reqCurrentRowIndex = 0;
+    
+
+    renderAssignTable = (text: string, record: AssignmentSchedule, index: number) => {
+        if (this.currentRowIndex != index) {
+            this.currentRowIndex = index;
+            this.columnIndex = 0;
+        }
+        this.columnIndex++
+        if (this.columnIndex === 2 || this.columnIndex === 3) {
+            return fonmatDefaultDateFromString(text);
+        } 
+        return text;
+    }
+
+    renderRequestTable = (text: string, record: AssignmentSchedule, index: number) => {
+        if (this.reqCurrentRowIndex != index) {
+            this.reqCurrentRowIndex = index;
+            this.reqColumnIndex = 0;
+        }
+        this.reqColumnIndex++
+        if (this.reqColumnIndex === 3 || this.reqColumnIndex === 9 || this.reqColumnIndex === 10 ) {
+            return fonmatDefaultDateFromString(text);
+        }
+        return text;
+    }
+
+
     render() {
         const { TabPane } = Tabs;
 
@@ -110,6 +141,11 @@ class ShiftSchedulesComponent extends React.Component<MainStoreInjected & Wrappe
                             dataCollection={this.assignmentsDataCollection}
                             fields={this.assignmentFields}
                             hideSelectionColumn={true}
+                            columnProps={
+                                {
+                                    render: this.renderAssignTable
+                                }
+                            }
                         />
                     </Page>
                 </TabPane>
@@ -119,6 +155,11 @@ class ShiftSchedulesComponent extends React.Component<MainStoreInjected & Wrappe
                             dataCollection={this.requestsDataCollection}
                             fields={this.requestFields}
                             hideSelectionColumn={true}
+                            columnProps={
+                                {
+                                    render: this.renderRequestTable
+                                }
+                            }
                         />
                     </Page>
                 </TabPane>
