@@ -105,6 +105,21 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                   message: this.props.intl.formatMessage({id: "START.success"})
                 });
               })
+                .catch((e: any) => {
+                  Notification.error({
+                    message: this.props.intl.formatMessage({id: "management.editor.error"})
+                  });
+                })
+            })
+              .catch((e: any) => {
+                Notification.error({
+                  message: this.props.intl.formatMessage({id: "management.editor.error"})
+                });
+              });
+          })
+          .catch((e: any) => {
+            Notification.error({
+              message: this.props.intl.formatMessage({id: "management.editor.error"})
             });
           });
       }

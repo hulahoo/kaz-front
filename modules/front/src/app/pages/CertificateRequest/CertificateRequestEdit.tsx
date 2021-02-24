@@ -95,7 +95,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
     const fieldValue = this.props.form.getFieldValue("receivingType");
 
     const val = this.receivingTypesDc.items.find(value => value.id === fieldValue)!;
-    const isNeedBpm = fieldValue && val.code === 'ON_HAND';
+    const isNeedBpm = fieldValue && val && val.code === 'ON_HAND';
 
     if (this.updated) {
       return <Redirect to={CertificateRequestManagement.PATH}/>;

@@ -53,11 +53,16 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
             message: this.props.intl.formatMessage({id: "bproc." + outcome.id + ".success"})
           });
         })
+        .catch((e: any) => {
+            Notification.error({
+              message: this.props.intl.formatMessage({id: "management.editor.error"})
+            });
+        });
     });
   };
 
   handleCancel = (outcome: BprocFormOutcome) => {
-    // this.modalVisibleMap.set(outcome.id!, false);
+    this.modalVisibleMap.set(outcome.id!, false);
   };
 
   render() {
@@ -76,7 +81,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
         onCancel={() => this.handleCancel(outcome)}>
         <Form.Item>
           {getFieldDecorator("comment", {
-            rules: [{required: true, message: "Необходимо заполнить комментарий"}]
+            rules: [{required: (outcome.id === "REJECT" || outcome.id === "REVISION"), message: "Необходимо заполнить комментарий"}]
           })(
             <TextArea
               rows={4}/>
