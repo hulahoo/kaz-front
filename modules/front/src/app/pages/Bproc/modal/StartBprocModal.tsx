@@ -15,7 +15,7 @@ import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import Notification from "../../../util/Notification/Notification";
+import Notification from "../../../util/notification/Notification";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
 import {RouteComponentProps, withRouter} from "react-router-dom";

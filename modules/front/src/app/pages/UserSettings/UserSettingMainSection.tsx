@@ -6,7 +6,7 @@ import {RootStoreProp} from "../../store";
 import CommonComponentHoc from "../../hoc/CommonComponent/CommonComponentHoc";
 import UserSettingsStore from "../../store/UserSettingsStore";
 import DefaultDropdown, {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
-import Notification from "../../util/Notification/Notification";
+import Notification from "../../util/notification/Notification";
 import {Icon, Modal} from "antd";
 import ChangePassword from "./ChangePassword/ChangePassword";
 import {action, observable} from "mobx";

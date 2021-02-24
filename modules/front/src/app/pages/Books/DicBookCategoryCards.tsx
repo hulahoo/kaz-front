@@ -1,6 +1,6 @@
 import * as React from "react";
 import {observer} from "mobx-react";
-import {Button, Icon, Rate, Select, Tabs} from "antd";
+import {Icon, Select, Tabs} from "antd";
 import {DicBookCategory} from "../../../cuba/entities/base/tsadv$DicBookCategory";
 import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
@@ -12,8 +12,6 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import {Book} from "../../../cuba/entities/base/tsadv$Book";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
-import {getCubaREST} from "@cuba-platform/react";
-import Notification from "../../util/Notification/Notification";
 import Section from "../../hoc/Section";
 
 export const bookFileProperties = ["fb2", "epub", "mobi", "kf8", "pdf", "djvu"];

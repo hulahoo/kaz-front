@@ -28,7 +28,7 @@ import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 import {GoalLibrary} from "../../../../cuba/entities/base/tsadv$GoalLibrary";
 import Section from "../../../hoc/Section";
 import Page from "../../../hoc/PageContentHoc";
-import Notification from "../../../util/Notification/Notification";
+import Notification from "../../../util/notification/Notification";
 import {FormComponentProps} from "antd/es/form";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";

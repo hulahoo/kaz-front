@@ -27,7 +27,7 @@ import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {DicApprovalStatus} from "../../../cuba/entities/base/tsadv$DicApprovalStatus";
 import {DicIssuingAuthority} from "../../../cuba/entities/base/tsadv_DicIssuingAuthority";
 import {RootStoreProp} from "../../store";
-import Notification from "../../util/Notification/Notification";
+import Notification from "../../util/notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
 import PageContentHoc from "../../hoc/PageContentHoc";
 import Page from "../../hoc/PageContentHoc";

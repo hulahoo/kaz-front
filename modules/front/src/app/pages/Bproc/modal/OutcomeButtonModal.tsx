@@ -10,7 +10,7 @@ import TextArea from "antd/es/input/TextArea";
 import {FormComponentProps} from "antd/es/form";
 import {observable} from "mobx";
 import {restServices} from "../../../../cuba/services";
-import Notification from "../../../util/Notification/Notification";
+import Notification from "../../../util/notification/Notification";
 import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 
 type Props = {

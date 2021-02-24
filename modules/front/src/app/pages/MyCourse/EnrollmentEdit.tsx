@@ -18,7 +18,7 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import CourseSectionList from "../../components/CourseSectionList";
 import {restServices} from "../../../cuba/services";
 import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
-import Notification from "../../util/Notification/Notification";
+import Notification from "../../util/notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {EnrollmentManagement} from "./EnrollmentManagement";
 import {restQueries} from "../../../cuba/queries";
