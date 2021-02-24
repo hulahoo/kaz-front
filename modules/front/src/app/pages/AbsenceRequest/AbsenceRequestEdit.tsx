@@ -1,14 +1,16 @@
 import * as React from "react";
+import {createElement} from "react";
 import {Alert, Card, Form} from "antd";
 import {inject, observer} from "mobx-react";
 import {toJS} from "mobx";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   collection,
   injectMainStore,
   instance,
   MainStoreInjected,
+  Msg,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -29,6 +31,8 @@ import {Redirect} from "react-router-dom";
 import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
 import {restServices} from "../../../cuba/services";
 import {rootStore, RootStoreProp} from "../../store";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
+import TextArea from "antd/es/input/TextArea";
 
 type EditorProps = {
   entityId: string;
@@ -54,6 +58,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     }
   });
 
+  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
+    view: "_minimal"
+  });
+
   fields = [
     "dateFrom",
 
@@ -71,7 +79,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
     "absenceDays",
 
-    "comment"
+    "comment",
+
+    "attachment"
   ];
 
   assignmentGroupId: string;
@@ -107,6 +117,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
       return <Redirect to={AbsenceRequestManagement.PATH}/>;
     }
 
+
+    const {getFieldDecorator} = this.props.form;
     const messages = this.mainStore.messages!;
 
     const isDraft = this.isDraft();
@@ -115,7 +127,11 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
       <Page pageName={this.props.intl.formatMessage({id: "absenceRequest"})}>
         <Section size="large">
           <div>
-            <Card className="narrow-layout" bordered={false}>
+            <Card className="narrow-layout card-actions-container" actions={[
+              <Button buttonType={ButtonType.FOLLOW}
+                      onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+              this.getOutcomeBtns()]}
+                  bordered={false}>
               <Form onSubmit={this.validate} layout="vertical">
 
                 <ReadonlyField
@@ -189,14 +205,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
-                  propertyName="vacationDurationType"
-                  form={this.props.form}
-                  disabled={true}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
                   propertyName="absenceDays"
                   form={this.props.form}
                   disabled={true}
@@ -211,33 +219,26 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
+                <div>
+                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
+                  <Form.Item>
+                    {getFieldDecorator("comment")(
+                      <TextArea
+                        rows={4}/>
+                    )}
+                  </Form.Item>
+                </div>
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
-                  propertyName="comment"
+                  propertyName="attachment"
                   form={this.props.form}
-                  disabled={isDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                />
+                  optionsContainer={this.filesDc}
+                  getFieldDecoratorOpts={{}}/>
 
                 {this.takCard()}
 
-                {this.globalErrors.length > 0 && (
-                  <Alert
-                    message={<MultilineText lines={toJS(this.globalErrors)}/>}
-                    type="error"
-                    style={{marginBottom: "24px"}}
-                  />
-                )}
-
-                <Form.Item style={{textAlign: "center"}}>
-
-                  {this.getOutcomeBtns()}
-
-                  <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
-                    <FormattedMessage id="management.editor.cancel"/>
-                  </Button>
-                </Form.Item>
               </Form>
             </Card>
 
@@ -268,7 +269,7 @@ const onValuesChange = (props: any, changedValues: any) => {
 
       const personGroupId = rootStore.userInfo.personGroupId;
 
-      if ((fieldName === "dateFrom" || fieldName === "type") && personGroupId && type && dateFrom) {
+      /*if ((fieldName === "dateFrom" || fieldName === "type") && personGroupId && type && dateFrom) {
         restServices.absenceService.vacationDurationType({
           personGroupId: personGroupId,
           absenceTypeId: type,
@@ -277,7 +278,7 @@ const onValuesChange = (props: any, changedValues: any) => {
           value = value ? value.substring(1, value.length - 1) : value;
           props.form.setFields({"vacationDurationType": {value: props.intl.formatMessage({id: value})}});
         });
-      }
+      }*/
       if ((fieldName === "type" || fieldName === "dateFrom" || fieldName === "dateTo")
         && type && dateTo && dateFrom && personGroupId) {
         restServices.absenceService.countDays({

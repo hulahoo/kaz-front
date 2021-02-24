@@ -38,8 +38,8 @@ class ExtTaskDataCards extends React.Component<TaskProps & MainStoreInjected & W
           <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='hrRole'/>}
                   dataIndex="hrRole"
                   key="hrRole"
-                  render={(text, record, index) => {
-                    return ((record as ExtTaskData).hrRole as DicHrRole).langValue;
+                  render={(text, record) => {
+                    return (record as ExtTaskData).hrRole ? ((record as ExtTaskData).hrRole as DicHrRole).langValue : "";
                   }}/>
           <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='assignee'/>}
                   dataIndex="assigneeOrCandidates"

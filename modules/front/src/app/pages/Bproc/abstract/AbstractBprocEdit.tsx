@@ -15,6 +15,7 @@ import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import BprocButtons from "../buttons/BprocButtons";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
+import Notification from "../../../util/notification/Notification";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -113,7 +114,12 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
           onClick={() => {
             this.validate();
             if (this.isValidatedSuccess) {
-              this.update().then(() => this.updated = true);
+              this.update().then(() => this.updated = true)
+                .catch((e: any) => {
+                  Notification.error({
+                    message: this.props.intl.formatMessage({id: "management.editor.error"})
+                  });
+                });
             }
           }}
           disabled={status !== "DONE" && status !== "ERROR"}

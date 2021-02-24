@@ -43,6 +43,8 @@ class AbsenceRequestListComponent extends React.Component<MainStoreInjected & Wr
   absenceRequestFields = [
     "requestNumber",
 
+    "type",
+
     "dateFrom",
 
     "dateTo",
@@ -84,20 +86,23 @@ class AbsenceRequestListComponent extends React.Component<MainStoreInjected & Wr
     });
   };
 
+  lastIndex = -1;
+
+  renderColumn = (text: string, record: AbsenceRequest, index: number) => {
+    if (text === record["requestNumber"] && this.lastIndex !== index) {
+      this.lastIndex = index;
+      return <Link to={AbsenceRequestManagement.PATH + "/" + record.id}>
+        {text}
+      </Link>
+    }
+
+    return text;
+  }
+
   @observable
   pageName = "absence";
 
   render() {
-    const openBtn = <Link
-      to={AbsenceRequestManagement.PATH + "/" + this.selectedRowKey}
-      key="edit">
-      <Button buttonType={ButtonType.PRIMARY}
-              style={{margin: "0 12px 12px 0"}}
-              disabled={!this.selectedRowKey}>
-        <FormattedMessage id="open"/>
-      </Button>
-    </Link>;
-
     const createBtn = <Link
       to={AbsenceRequestManagement.PATH + "/" + AbsenceRequestManagement.NEW_SUBPATH}
       key="create">
@@ -105,6 +110,7 @@ class AbsenceRequestListComponent extends React.Component<MainStoreInjected & Wr
               style={{margin: "0 12px 12px 0"}}><span><FormattedMessage id="management.browser.create"/></span>
       </Button>
     </Link>;
+
     return (
       <Page pageName={this.props.intl.formatMessage({id: this.pageName})}>
         <Section size="large">
@@ -124,14 +130,14 @@ class AbsenceRequestListComponent extends React.Component<MainStoreInjected & Wr
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "absenceRequest"})} key="2">
               <div>
-                <div style={{marginBottom: 16}}>
-                  {openBtn}
-                </div>
                 <DataTable
                   dataCollection={this.dataCollection}
                   fields={this.absenceRequestFields}
                   onRowSelectionChange={this.handleRowSelectionChange}
-                  // columnProps={}
+                  hideSelectionColumn={true}
+                  columnProps={{
+                    render: this.renderColumn
+                  }}
                 />
               </div>
             </TabPane>

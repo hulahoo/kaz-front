@@ -7,7 +7,6 @@ import {observer} from "mobx-react";
 import QuestionBlock from "./QuestionBlock";
 import Button, {ButtonType} from "../Button/Button";
 import Notification from "../../util/notification/Notification";
-import {rootStore} from "../../store";
 
 type AnswerModel = {
   id: string,
