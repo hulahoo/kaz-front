@@ -18,7 +18,7 @@ import {BookReview} from "../../../cuba/entities/base/tsadv$BookReview";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import {RootStoreProp} from "../../store";
 
 type EditorProps = {

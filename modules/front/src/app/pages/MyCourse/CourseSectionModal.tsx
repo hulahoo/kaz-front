@@ -3,7 +3,7 @@ import {Card, Icon, Modal} from "antd";
 import {observer} from "mobx-react";
 import {action, observable} from "mobx";
 import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
 import Test, {AnsweredTest} from "../../components/Test/Test";
 import Video from "../../components/Video";
