@@ -36,7 +36,7 @@ import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
 import {EnumValueInfo, SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";

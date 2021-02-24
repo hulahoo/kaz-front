@@ -24,7 +24,7 @@ import "../../../app/App.css";
 
 import {RootStoreProp} from "../../store";
 import {restQueries} from "../../../cuba/queries";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import PersonContactList from "../PersonContact/PersonContactList";
 import PersonDocumentList from "../PersonDocument/PersonDocumentList";
 import Button, {ButtonType} from "../../components/Button/Button";

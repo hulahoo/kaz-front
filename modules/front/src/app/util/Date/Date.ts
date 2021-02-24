@@ -13,7 +13,7 @@ export const format = (date: Date, pattern: string) => {
 
 export const formatDefaultDate = (date: Date) => {
   return format(date, 'dd.MM.yyyy')
-}
+};
 
 const wrapZero = (value: number):string => {
   if (value > 0 && value < 10) {
@@ -21,4 +21,4 @@ const wrapZero = (value: number):string => {
   } else {
     return value.toString();
   }
-}
+};
