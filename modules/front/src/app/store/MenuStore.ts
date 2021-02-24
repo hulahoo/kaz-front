@@ -2,9 +2,9 @@ import RootStore from "./RootStore";
 import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
-import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
+import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
 import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
-import {AbsenceRequestManagement} from "../pages/absenceRequest/AbsenceRequestManagement";
+import {AbsenceRequestManagement} from "../pages/AbsenceRequest/AbsenceRequestManagement";
 import { ScheduleOffsetsRequestManagement } from "../pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
 
 export interface MenuRouteItem extends RouteItem {

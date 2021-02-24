@@ -17,7 +17,7 @@ import "../../../app/App.css";
 
 import {AbsenceRequest} from "../../../cuba/entities/base/tsadv$AbsenceRequest";
 import {RouteComponentProps, withRouter} from "react-router";
-import AbstractBprocEdit from "../bproc/abstract/AbstractBprocEdit";
+import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import LoadingPage from "../LoadingPage";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";

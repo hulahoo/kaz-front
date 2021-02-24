@@ -253,5 +253,6 @@
   "CALENDAR": "Calendar",
   "WORK": "Work",
   "validation.absenceRequest.dateFrom": "\"Date from\" is required and cannot be more than \"Date to\"",
-  "validation.absenceRequest.dateTo": "\"Date to\" is required and cannot be less  than \"Date from\""
+  "validation.absenceRequest.dateTo": "\"Date to\" is required and cannot be less  than \"Date from\"",
+  "bproc.participants": "Participants in the approval process"
 }
