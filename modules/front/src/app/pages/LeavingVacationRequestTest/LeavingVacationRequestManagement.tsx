@@ -1,7 +1,7 @@
 import * as React from "react";
 import {RouteComponentProps} from "react-router";
 import {observer} from "mobx-react";
-import {LeavingVacationRequestEdit} from "./LeavingVacationRequestEdit";
+import LeavingVacationRequestEdit from "./LeavingVacationRequestEdit";
 
 type Props = RouteComponentProps<{ entityId: string }>;
 
