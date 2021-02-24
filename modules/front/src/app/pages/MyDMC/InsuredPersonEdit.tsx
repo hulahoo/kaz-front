@@ -489,7 +489,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
               </Col>
               <Col span={8}>
                 <Card size="small" title="Cведения по ДМС" style={card_style}>
-                  <ReadonlyField disabled={isMemberAttach}
+                  <ReadonlyField disabled={true}
                     entityName={InsuredPerson.NAME}
                     propertyName="insuranceContract"
                     form={this.props.form}
@@ -577,7 +577,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                     getFieldDecoratorOpts={{}}
                   />*/}
 
-                  <ReadonlyField disabled={isMemberAttach}
+                  <ReadonlyField 
                     entityName={InsuredPerson.NAME}
                     propertyName="statementFile"
                     form={this.props.form}
@@ -597,7 +597,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 </Card>
                 <Card size="small" title="Приложения" style={card_style}>
                   {this.dataInstance.item && this.dataInstance.status === 'DONE'
-                    ? this.dataInstance.item!.insuranceContract!.attachments!
+                    && this.dataInstance.item!.insuranceContract!.attachments!
+                     ? this.dataInstance.item!.insuranceContract!.attachments!
                     .map(a =>
                     <Tag
                     style={{margin:"10px"}}

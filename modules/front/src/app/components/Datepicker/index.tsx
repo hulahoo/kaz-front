@@ -4,7 +4,7 @@ import {DatePicker} from "antd";
 import {DatePickerProps} from "antd/lib/date-picker/interface";
 import moment from "moment";
 
-export const DEFAULT_DATE_FORMAT = "DD.MM.YYYY"
+export const DEFAULT_DATE_FORMAT = "DD.MM.yyyy"
 
 interface DefaultDatePickerProps extends DatePickerProps {
 }
