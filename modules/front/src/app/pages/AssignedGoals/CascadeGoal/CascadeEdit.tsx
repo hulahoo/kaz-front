@@ -28,7 +28,6 @@ import "../../../../app/App.css";
 import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {PerformancePlan} from "../../../../cuba/entities/base/tsadv$PerformancePlan";
 import {PersonGroupExt} from "../../../../cuba/entities/base/base$PersonGroupExt";
-import {DicRequestStatus} from "../../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {serviceCollection} from "../../../util/ServiceDataCollectionStore";
 import {restServices} from "../../../../cuba/services";
 import {RootStoreProp} from "../../../store";
@@ -48,7 +47,10 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
     {view: "assignedPerformancePlan-myKpi-edit", loadImmediately: false}
   );
 
-  managers = serviceCollection<PersonGroupExt>(restServices.employeeService.findManagerListByPositionGroup.bind(null, { positionGroupId: this.props.rootStore!.userInfo.loadPersonGroup(), showAll: false }))
+  managers = serviceCollection<PersonGroupExt>(restServices.employeeService.findManagerListByPositionGroup.bind(null, {
+    positionGroupId: this.props.rootStore!.userInfo.positionId,
+    showAll: false
+  }));
 
   performancePlansDc = collection<PerformancePlan>(PerformancePlan.NAME, {
     view: "_minimal"
