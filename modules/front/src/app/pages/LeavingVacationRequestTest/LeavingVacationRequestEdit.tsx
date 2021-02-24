@@ -28,14 +28,15 @@ import {LeavingVacationRequest} from "../../../cuba/entities/base/tsadv$LeavingV
 
 type EditorProps = {
   entityId: string;
+  absenceId?: string;
 };
 
 @inject("rootStore")
 @injectMainStore
 @observer
-class LeavingVacationRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, EditorProps> {
+class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacationRequest, EditorProps> {
   dataInstance = instance<AbsenceRequest>(LeavingVacationRequest.NAME, {
-    view: "absenceRequest.edit",
+    view: "leavingVacationRequest-editView",
     loadImmediately: false
   });
 
@@ -55,6 +56,14 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<AbsenceReque
   });
 
   fields = [
+    "requestNumber",
+
+    "requestDate",
+
+    "status",
+
+    "comment",
+
     "dateFrom",
 
     "type",
@@ -62,16 +71,6 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<AbsenceReque
     "dateTo",
 
     "absenceDays",
-
-    "requestNumber",
-
-    "requestDate",
-
-    "status",
-
-    "absenceDays",
-
-    "comment",
 
     "attachment"
   ];
@@ -261,16 +260,6 @@ const onValuesChange = (props: any, changedValues: any) => {
 
       const personGroupId = rootStore.userInfo.personGroupId;
 
-      /*if ((fieldName === "dateFrom" || fieldName === "type") && personGroupId && type && dateFrom) {
-        restServices.absenceService.vacationDurationType({
-          personGroupId: personGroupId,
-          absenceTypeId: type,
-          dateFrom: dateFrom
-        }).then(value => {
-          value = value ? value.substring(1, value.length - 1) : value;
-          props.form.setFields({"vacationDurationType": {value: props.intl.formatMessage({id: value})}});
-        });
-      }*/
       if ((fieldName === "type" || fieldName === "dateFrom" || fieldName === "dateTo")
         && type && dateTo && dateFrom && personGroupId) {
         restServices.absenceService.countDays({

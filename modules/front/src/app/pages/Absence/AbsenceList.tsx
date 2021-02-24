@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Modal, Tabs} from "antd";
+import {Tabs} from "antd";
 
 import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 
@@ -67,26 +67,6 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
 
   @observable selectedRowKey: string | undefined;
 
-  showDeletionDialog = (e: SerializedEntity<AbsenceRequest>) => {
-    Modal.confirm({
-      title: this.props.intl.formatMessage(
-        {id: "management.browser.delete.areYouSure"},
-        {instanceName: e._instanceName}
-      ),
-      okText: this.props.intl.formatMessage({
-        id: "management.browser.delete.ok"
-      }),
-      cancelText: this.props.intl.formatMessage({
-        id: "management.browser.delete.cancel"
-      }),
-      onOk: () => {
-        this.selectedRowKey = undefined;
-
-        return this.dataCollection.delete(e);
-      }
-    });
-  };
-
   lastIndex = -1;
 
   renderColumn = (text: string, record: AbsenceRequest, index: number) => {
@@ -103,14 +83,27 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
   @observable
   pageName = "absence";
 
+  isSelectedAbsenceTypeMaternity = (): boolean => {
+    if (!this.selectedRowKey) return false;
+    const absence = this.getAbsenceById(this.selectedRowKey);
+    return absence !== null && absence.type !== undefined && absence.type !== null && absence.type.code === "MATERNITY";
+  }
+
   render() {
-    const createBtn = <Link
+    const btns = [<Link
       to={AbsenceRequestManagement.PATH + "/" + AbsenceRequestManagement.NEW_SUBPATH}
       key="create">
       <Button buttonType={ButtonType.PRIMARY}
-              style={{margin: "0 12px 12px 0"}}><span><FormattedMessage id="management.browser.create"/></span>
+              style={{margin: "0 12px 12px 0"}}>
+        <span><FormattedMessage id="management.browser.create"/></span>
       </Button>
-    </Link>;
+    </Link>,
+      <Button buttonType={ButtonType.FOLLOW}
+              disabled={this.isSelectedAbsenceTypeMaternity()}
+              style={{margin: "0 12px 12px 0"}}>
+        <span><FormattedMessage id="create.absence"/></span>
+      </Button>
+    ];
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: this.pageName})}>
@@ -120,10 +113,11 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
             <TabPane tab={this.props.intl.formatMessage({id: "absence"})} key="1">
               <div>
                 <div style={{marginBottom: 16}}>
-                  {createBtn}
+                  {btns}
                 </div>
                 <DataTable
                   dataCollection={this.dataCollectionAbsence}
+                  onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
                   fields={this.absenceFields}
                   hideSelectionColumn={true}
                 />
@@ -134,7 +128,6 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
                 <DataTable
                   dataCollection={this.dataCollection}
                   fields={this.absenceRequestFields}
-                  onRowSelectionChange={this.handleRowSelectionChange}
                   hideSelectionColumn={true}
                   columnProps={{
                     render: this.renderColumn
@@ -148,10 +141,10 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
     );
   }
 
-  getRecordById(id: string): SerializedEntity<AbsenceRequest> {
+  getAbsenceById(id: string): SerializedEntity<Absence> {
     const record:
-      | SerializedEntity<AbsenceRequest>
-      | undefined = this.dataCollection.items.find(record => record.id === id);
+      | SerializedEntity<Absence>
+      | undefined = this.dataCollectionAbsence.items.find(record => record.id === id);
 
     if (!record) {
       throw new Error("Cannot find entity with id " + id);
@@ -159,14 +152,6 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
 
     return record;
   }
-
-  handleRowSelectionChange = (selectedRowKeys: string[]) => {
-    this.selectedRowKey = selectedRowKeys[0];
-  };
-
-  deleteSelectedRow = () => {
-    this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
-  };
 }
 
 const AbsenceList = injectIntl(AbsenceListComponent);
