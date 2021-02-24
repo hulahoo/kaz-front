@@ -24,7 +24,7 @@ import {
 import "../../../app/App.css";
 
 import {PersonContact} from "../../../cuba/entities/base/tsadv$PersonContact";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {DicPhoneType} from "../../../cuba/entities/base/tsadv$DicPhoneType";
 import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
