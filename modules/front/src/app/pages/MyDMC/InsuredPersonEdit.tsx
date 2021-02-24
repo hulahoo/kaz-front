@@ -8,7 +8,7 @@ import { Link, NavLink, Redirect, withRouter } from "react-router-dom";
 import { action, IReactionDisposer, observable, reaction, toJS } from "mobx";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 
 import {downloadFile} from "../../util/util";
 

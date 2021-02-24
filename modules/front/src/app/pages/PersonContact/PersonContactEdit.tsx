@@ -21,12 +21,10 @@ import {
 import "../../../app/App.css";
 
 import {PersonContact} from "../../../cuba/entities/base/tsadv$PersonContact";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {DicApprovalStatus} from "../../../cuba/entities/base/tsadv$DicApprovalStatus";
 import {DicPhoneType} from "../../../cuba/entities/base/tsadv$DicPhoneType";
 import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
-import PageContentHoc from "../../hoc/PageContentHoc";
 import {RootStoreProp} from "../../store";
 import Page from "../../hoc/PageContentHoc";
 import LoadingPage from "../LoadingPage";

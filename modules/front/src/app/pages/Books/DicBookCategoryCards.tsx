@@ -13,7 +13,7 @@ import {Book} from "../../../cuba/entities/base/tsadv$Book";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 import {getCubaREST} from "@cuba-platform/react";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import Section from "../../hoc/Section";
 
 export const bookFileProperties = ["fb2", "epub", "mobi", "kf8", "pdf", "djvu"];
