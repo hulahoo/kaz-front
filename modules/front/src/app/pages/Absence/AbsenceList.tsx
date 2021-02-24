@@ -15,7 +15,7 @@ import {RootStoreProp} from "../../store";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
+import {AbsenceRequestManagement} from "../AbsenceRequest/AbsenceRequestManagement";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 
 const {TabPane} = Tabs;
@@ -23,7 +23,8 @@ const {TabPane} = Tabs;
 @injectMainStore
 @inject("rootStore")
 @observer
-class AbsenceRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+
   dataCollection = collection<AbsenceRequest>(AbsenceRequest.NAME, {
     view: "absenceRequest.edit",
     sort: "-updateTs",
@@ -168,6 +169,6 @@ class AbsenceRequestListComponent extends React.Component<MainStoreInjected & Wr
   };
 }
 
-const AbsenceRequestList = injectIntl(AbsenceRequestListComponent);
+const AbsenceList = injectIntl(AbsenceListComponent);
 
-export default AbsenceRequestList;
+export default AbsenceList;

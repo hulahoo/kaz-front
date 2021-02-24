@@ -19,11 +19,12 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
 import {Redirect} from "react-router-dom";
-import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
 import {restServices} from "../../../cuba/services";
 import {rootStore, RootStoreProp} from "../../store";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import TextArea from "antd/es/input/TextArea";
+import {LeavingVacationRequestManagement} from "./LeavingVacationRequestManagement";
+import {LeavingVacationRequest} from "../../../cuba/entities/base/tsadv$LeavingVacationRequest";
 
 type EditorProps = {
   entityId: string;
@@ -32,8 +33,8 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, EditorProps> {
-  dataInstance = instance<AbsenceRequest>(AbsenceRequest.NAME, {
+class LeavingVacationRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, EditorProps> {
+  dataInstance = instance<AbsenceRequest>(LeavingVacationRequest.NAME, {
     view: "absenceRequest.edit",
     loadImmediately: false
   });
@@ -105,7 +106,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     }
 
     if (this.updated) {
-      return <Redirect to={AbsenceRequestManagement.PATH}/>;
+      return <Redirect to={LeavingVacationRequestManagement.PATH}/>;
     }
 
 
@@ -284,5 +285,5 @@ const onValuesChange = (props: any, changedValues: any) => {
     }
   });
 };
-const component = injectIntl(withLocalizedForm<EditorProps & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>>({onValuesChange})(AbsenceRequestEditComponent));
+const component = injectIntl(withLocalizedForm<EditorProps & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>>({onValuesChange})(LeavingVacationRequestEditComponent));
 export default withRouter(component);

@@ -22,8 +22,6 @@ export const downloadFile = (fileId: string, fileName: string, extension: string
 };
 
 export const link = (windowProperty: WindowProperty) => {
-  const c = require(`../../cuba/entities/base/${windowProperty.entityName!}.ts`);
-  console.log((c as any).PROCESS_DEFINITION_KEY);
   const entityName = windowProperty.entityName!.substring(Math.max(windowProperty.entityName!.indexOf("$"), windowProperty.entityName!.indexOf("_")) + 1);
   return entityName.charAt(0).toLocaleLowerCase() + entityName.substring(1);
 };

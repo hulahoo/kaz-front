@@ -1,3 +1,6 @@
+import moment from "moment";
+import { DEFAULT_DATE_PARSE_FORMAT } from "../../../cuba/services";
+
 export const DEFAULT_DATE_TIME_PATTERN = "dd.MM.yyyy hh:mm:ss";
 export const DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS = "dd.MM.yyyy hh:mm";
 export const DEFAULT_DATE_PATTERN = "dd.MM.yyyy";
@@ -14,6 +17,10 @@ export const format = (date: Date, pattern: string) => {
 export const formatDefaultDate = (date: Date) => {
   return format(date, 'dd.MM.yyyy')
 };
+
+export const fonmatDefaultDateFromString=(date: any)=>{
+  return moment(date,DEFAULT_DATE_PARSE_FORMAT).format('DD.MM.YYYY');
+}
 
 const wrapZero = (value: number):string => {
   if (value > 0 && value < 10) {

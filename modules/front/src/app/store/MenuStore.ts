@@ -4,8 +4,8 @@ import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
 import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
 import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
-import {AbsenceRequestManagement} from "../pages/AbsenceRequest/AbsenceRequestManagement";
-import { ScheduleOffsetsRequestManagement } from "../pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
+import {ScheduleOffsetsRequestManagement} from "../pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
+import AbsenceList from "../pages/Absence/AbsenceList";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -43,11 +43,11 @@ export default class MenuStore {
         pathPattern: "/my-team",
         component: null
       }, {
-        id: "absenceRequest",
+        id: "absence",
         caption: "Absence",
-        menuLink: "/absenceRequest",
-        pathPattern: "/absenceRequest",
-        component: AbsenceRequestManagement
+        menuLink: "/absence",
+        pathPattern: "/absence",
+        component: AbsenceList
       },
       {
         id: "help",
