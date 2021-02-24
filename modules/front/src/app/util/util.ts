@@ -1,5 +1,5 @@
 import {getCubaREST} from "@cuba-platform/react";
-import Notification from "./Notification/Notification";
+import Notification from "./notification/Notification";
 import {WindowProperty} from "../../cuba/entities/base/uactivity$WindowProperty";
 
 export const getBlobUrl = (fileId: string) => {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormEvent } from "react";
+import { createElement, FormEvent } from "react";
 import { Alert, Button, Card, Form, message } from "antd";
 import { observer } from "mobx-react";
 import { ScheduleOffsetsRequestManagement } from "./ScheduleOffsetsRequestManagement";
@@ -21,7 +21,8 @@ import {
   extractServerValidationErrors,
   constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText
+  MultilineText,
+  Msg
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
@@ -176,6 +177,7 @@ Props & WrappedComponentProps
 
     const { status } = this.dataInstance;
 
+    const { getFieldDecorator } = this.props.form;
     const { TextArea } = Input;
     let field_style = { marginBottom: "12px", margin: "10px", };
     let card_style = { margin: "10px", width: "500px" };
@@ -279,6 +281,18 @@ Props & WrappedComponentProps
           />
 
 
+
+          <div>
+            {createElement(Msg, { entityName: this.dataInstance.entityName, propertyName: "detailsOfActualWork" })}
+            <Form.Item>
+              {getFieldDecorator("detailsOfActualWork")(
+                <TextArea
+                  rows={4} />
+              )}
+            </Form.Item>
+          </div>
+
+          {/*                 
           <ReadonlyField
             entityName={ScheduleOffsetsRequest.NAME}
             propertyName="detailsOfActualWork"
@@ -290,9 +304,7 @@ Props & WrappedComponentProps
               }
             }}
             getFieldDecoratorOpts={{}}
-          >
-            <TextArea />
-          </ReadonlyField>
+          /> */}
           {/* 
           <ReadonlyField
             entityName={ScheduleOffsetsRequest.NAME}

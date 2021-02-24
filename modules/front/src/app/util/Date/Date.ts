@@ -19,7 +19,7 @@ export const formatDefaultDate = (date: Date) => {
 };
 
 export const fonmatDefaultDateFromString=(date: any)=>{
-  return moment(date,DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
+  return moment(date,DEFAULT_DATE_PARSE_FORMAT).format('DD.MM.YYYY');
 }
 
 const wrapZero = (value: number):string => {
