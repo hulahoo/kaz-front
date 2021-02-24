@@ -4,7 +4,7 @@ import RootStore from "./RootStore";
 import {restQueries} from "../../cuba/queries";
 import {action, observable} from "mobx";
 
-export default class  {
+export default class {
   rootStore: RootStore;
   _instanceName?: string;
   email?: string;
@@ -19,16 +19,18 @@ export default class  {
   position?: string;
   timeZone?: string;
   @observable personGroupId?: string;
+  @observable positionId?: string;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     this.loadUserInfo();
   }
 
-  loadPersonGroup = async () => {
+  loadAdditionalPersonInfo = async () => {
     return await restQueries.personGroupInfo(this.id!).then(personGroup => {
       if (personGroup) {
         this.personGroupId = personGroup.id;
+        this.positionId = personGroup.assignments![0].positionGroup!.position!.id;
       }
     })
   };
@@ -65,7 +67,7 @@ export default class  {
       this.name = response.name;
       this.position = response.position;
 
-      this.loadPersonGroup();
+      this.loadAdditionalPersonInfo();
     });
   }
 }

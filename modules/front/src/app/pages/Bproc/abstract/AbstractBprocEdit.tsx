@@ -15,7 +15,7 @@ import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import BprocButtons from "../buttons/BprocButtons";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
-import Notification from "../../../util/notification/Notification";
+import Notification from "../../../util/Notification/Notification";
 
 type Props = FormComponentProps & EditorProps;
 

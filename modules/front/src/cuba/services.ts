@@ -19,7 +19,8 @@ import {SecurityState} from "../app/util/EntitySecurityState";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
 import {List} from "antd";
 import {BaseUuidEntity} from "./entities/base/sys$BaseUuidEntity";
-import { ScheduleOffsetsRequest } from "./entities/base/tsadv_ScheduleOffsetsRequest";
+import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsRequest";
+import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -330,7 +331,7 @@ export const restServices = {
           fetchOpts
         ).then((response: string) => JSON.parse(response));
       },
-      checkPersonInsure: (params: { personGroupId: any,contractId:any }, fetchOpts?: FetchOptions): Promise<Boolean> => {
+      checkPersonInsure: (params: { personGroupId: any, contractId: any }, fetchOpts?: FetchOptions): Promise<Boolean> => {
         return getCubaREST()!.invokeService(
           "tsadv_DocumentService",
           "checkPersonInsure",
@@ -338,7 +339,7 @@ export const restServices = {
           fetchOpts
         ).then((response: string) => JSON.parse(response));
       },
-      calcAmount:(params: { insuranceContractId: any,personGroupExtId:any,relativeTypeId:any,bith:any }, fetchOpts?: FetchOptions): Promise<number> => {
+      calcAmount: (params: { insuranceContractId: any, personGroupExtId: any, relativeTypeId: any, bith: any }, fetchOpts?: FetchOptions): Promise<number> => {
         return getCubaREST()!.invokeService(
           "tsadv_DocumentService",
           "calcAmount",
@@ -346,7 +347,7 @@ export const restServices = {
           fetchOpts
         ).then((response: string) => JSON.parse(response));
       },
-      getMyInsuraces:(params: {}, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+      getMyInsuraces: (params: {}, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
         return getCubaREST()!.invokeService(
           "tsadv_DocumentService",
           "getMyInsuraces",
@@ -355,7 +356,7 @@ export const restServices = {
         ).then((response: string) => JSON.parse(response));
       },
 
-      getOffsetRequestsNew:(params: {}, fetchOpts?: FetchOptions): Promise<ScheduleOffsetsRequest> => {
+      getOffsetRequestsNew: (params: {}, fetchOpts?: FetchOptions): Promise<ScheduleOffsetsRequest> => {
         return getCubaREST()!.invokeService(
           "tsadv_DocumentService",
           "getOffsetRequestsNew",
@@ -363,6 +364,15 @@ export const restServices = {
           fetchOpts
         ).then((response: string) => JSON.parse(response));
       },
+    },
+    employeeService: {
+      findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean }): Promise<PersonGroupExt> => {
+        return getCubaREST()!.invokeService<string>(
+          "tsadv_EmployeeService",
+          "findManagerListByPositionGroup",
+          {...param}
+        ).then(r => JSON.parse(r));
+      }
     }
   }
 ;
