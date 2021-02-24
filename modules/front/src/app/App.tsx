@@ -29,10 +29,11 @@ import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
 import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {BooksManagement} from "./pages/Books/BooksManagement";
 import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
-import { ScheduleOffsetsRequestManagement } from "./pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
+import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
 import {CertificateRequestManagement} from "./pages/CertificateRequest/CertificateRequestManagement";
 import {ActivityManagement} from "./pages/Activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
+import AbsenceList from "./pages/Absence/AbsenceList";
 
 @injectMainStore
 @inject("rootStore")
@@ -104,8 +105,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
                 <Route exact={true} path={ActivityManagement.PATH} component={ActivityManagement}/>
                 <Route exact={true}
-                       path={AbsenceRequestManagement.PATH + "/:entityId?"}
+                       path={AbsenceRequestManagement.PATH + "/:entityId"}
                        component={AbsenceRequestManagement}/>
+                <Route exact={true} path="/absence" component={AbsenceList}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}
