@@ -58,7 +58,8 @@ dependencies {
     appComponent("com.haulmont.fts:fts-global:$cubaVersion")
     appComponent("com.haulmont.charts:charts-global:$cubaVersion")
     appComponent('com.haulmont.addon.restapi:restapi-global:7.1.1')
-    appComponent('kz.uco.tsadv:tsadv-global:2.0.98-SNAPSHOT')
+    appComponent('kz.uco.tsadv:tsadv-global:2.0.102-SNAPSHOT')
+    appComponent('kz.uco.mobile:mob-global:0.14-SNAPSHOT')
 }
 
 def postgres = 'org.postgresql:postgresql:42.2.5'
@@ -109,6 +110,9 @@ configure(coreModule) {
         compileOnly(servletApi)
         jdbc(postgres)
         testRuntime(postgres)
+        compile('org.telegram:telegrambots:3.3') {
+            exclude group: 'javax.validation', module: 'validation-api'
+        }
     }
 
     task cleanConf(description: 'Cleans up conf directory', type: Delete) {
@@ -147,6 +151,7 @@ configure(webModule) {
         compile(globalModule)
     }
 
+
     task webArchive(type: Zip) {
         from file("$buildDir/web")
         from file('web')
@@ -177,6 +182,7 @@ configure(webModule) {
         appJars(modulePrefix + '-global', modulePrefix + '-web')
     }
 }
+
 
 configure(frontModule) {
     apply(plugin: 'cuba')

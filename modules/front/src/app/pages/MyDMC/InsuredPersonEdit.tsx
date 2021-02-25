@@ -1,10 +1,10 @@
 import * as React from "react";
 import { FormEvent } from "react";
-import { Alert, Button, Card, Col, Form, message, Modal, Row, Spin, Tag } from "antd";
+import { Alert, Button, Card, Col, Form, Icon, message, Modal, Row, Spin, Tag, Upload } from "antd";
 import { inject, observer } from "mobx-react";
 import { InsuredPersonManagement } from "./InsuredPersonManagement";
 import { FormComponentProps } from "antd/lib/form";
-import { Link, NavLink, Redirect, withRouter } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
 import { action, IReactionDisposer, observable, reaction, toJS } from "mobx";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
@@ -19,7 +19,6 @@ import {
   constructFieldsWithErrors,
   DataTable,
   extractServerValidationErrors,
-  Field,
   instance,
   MultilineText,
   withLocalizedForm
@@ -44,9 +43,6 @@ import { restServices } from "../../../cuba/services";
 import { RouteComponentProps } from "react-router";
 import { SerializedEntity } from "@cuba-platform/rest";
 import { RootStoreProp } from "../../store";
-import { Attachment } from "../../../cuba/entities/base/tsadv$Attachment";
-import { getBlobUrl } from "../../util/util";
-import { CUBA_APP_URL } from "../../../config";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -289,6 +285,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     this.visible = value;
   }
 
+
+
   render() {
     if (this.updated) {
       return <Redirect to={InsuredPersonManagement.PATH} />;
@@ -297,7 +295,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     const { status } = this.dataInstance;
     let field_style = { marginBottom: "12px", margin: "10px", };
     let card_style = { margin: "10px" };
-
 
     const buttons = [
       <Button
@@ -569,17 +566,15 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                       rules: [{ required: true }]
                     }}
                   />
-
-
-                  {/*<ReadonlyField disabled={isMemberAttach}
+                  {/* <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="file"
                     form={this.props.form}
-                    formItemOpts={{style: field_style}}
+                    formItemOpts={{ style: field_style }}
                     optionsContainer={this.filesDc}
                     getFieldDecoratorOpts={{}}
-                  />*/}
-
+                  />
+                   */}
                   <ReadonlyField
                     entityName={InsuredPerson.NAME}
                     propertyName="statementFile"
@@ -605,6 +600,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                       .map(a =>
                         <Tag
                           style={{ margin: "10px" }}
+                          color={"blue"}
                           onClick={() => {
                             downloadFile((a.attachment as FileDescriptor).id,
                               (a.attachment as FileDescriptor).name as string,
