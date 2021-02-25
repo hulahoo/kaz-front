@@ -36,7 +36,6 @@ def globalModule = project(":${modulePrefix}-global")
 def coreModule = project(":${modulePrefix}-core")
 def webModule = project(":${modulePrefix}-web")
 def frontModule = project(":${modulePrefix}-front")
-def webToolkitModule = project(":${modulePrefix}-web-toolkit")
 
 def servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
 
@@ -65,7 +64,7 @@ dependencies {
 
 def postgres = 'org.postgresql:postgresql:42.2.5'
 
-configure([globalModule, coreModule, webModule, webToolkitModule]) {
+configure([globalModule, coreModule, webModule]) {
     apply(plugin: 'java')
     apply(plugin: 'maven')
     apply(plugin: 'cuba')
@@ -152,12 +151,6 @@ configure(webModule) {
         compile(globalModule)
     }
 
-    jar {
-        with copySpec {
-            from sourceSets.main.allJava
-            include "kz/uco/kzm/web/toolkit/ui/client/**"
-        }
-    }
 
     task webArchive(type: Zip) {
         from file("$buildDir/web")
@@ -190,37 +183,6 @@ configure(webModule) {
     }
 }
 
-configure(webToolkitModule) {
-    dependencies {
-        compile(webModule)
-    }
-
-    jar {
-        from sourceSets.main.allJava
-    }
-
-    task buildWidgetSet(type: CubaWidgetSetBuilding) {
-        widgetSetClass = 'kz.uco.kzm.web.toolkit.ui.AppWidgetSet'
-    }
-
-    task debugWidgetSet(type: CubaWidgetSetDebug) {
-        widgetSetClass = 'kz.uco.kzm.web.toolkit.ui.AppWidgetSet'
-    }
-
-    task webArchive(dependsOn: buildWidgetSet, type: Jar) {
-        from file("$buildDir/web")
-        classifier = 'client'
-    }
-
-    artifacts {
-        archives webArchive
-    }
-
-    task deploy(dependsOn: webArchive, type: Copy) {
-        from webArchive
-        into "$cuba.tomcat.dir/webapps/${modulePrefix}/WEB-INF/lib"
-    }
-}
 
 configure(frontModule) {
     apply(plugin: 'cuba')
@@ -264,7 +226,7 @@ task undeploy(type: Delete, dependsOn: ":${modulePrefix}-web:cleanConf") {
     delete("$cuba.tomcat.dir/webapps/${modulePrefix}-front")
 }
 
-task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefix}-web:deploy", ":${modulePrefix}-web-toolkit:deploy"], description: 'Redeploys applications and restarts local Tomcat') {
+task restart(dependsOn: ['stop', ":${modulePrefix}-core:deploy", ":${modulePrefix}-web:deploy"], description: 'Redeploys applications and restarts local Tomcat') {
     doLast {
         ant.waitfor(maxwait: 6, maxwaitunit: 'second', checkevery: 2, checkeveryunit: 'second') {
             not {
