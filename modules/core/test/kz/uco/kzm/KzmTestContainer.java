@@ -13,15 +13,13 @@ public class KzmTestContainer extends TestContainer {
 
     public KzmTestContainer() {
         super();
-        appComponents = new ArrayList<>(Arrays.asList(
-                "com.haulmont.cuba"
-                // add CUBA premium add-ons here
-                // "com.haulmont.bpm",
-                // "com.haulmont.charts",
-                // "com.haulmont.fts",
-                // "com.haulmont.reports",
-                // and custom app components if any
-        ));
+        appComponents = Arrays.asList(
+                "com.haulmont.cuba",
+                "com.haulmont.reports",
+                "com.haulmont.fts",
+                "com.haulmont.charts",
+                "kz.uco.tsadv",
+                "kz.uco.mobile");
         appPropertiesFiles = Arrays.asList(
                 // List the files defined in your web.xml
                 // in appPropertiesConfig context parameter of the core module
