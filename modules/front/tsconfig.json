@@ -40,6 +40,5 @@
   ],
   "include": [
     "src"
-  ],
-  "files": ["src/app/types/types.d.ts"]
+  ]
 }

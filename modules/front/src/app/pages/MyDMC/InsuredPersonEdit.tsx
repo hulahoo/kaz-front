@@ -9,7 +9,6 @@ import { action, IReactionDisposer, observable, reaction, toJS } from "mobx";
 import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
 import Notification from "../../util/Notification/Notification";
-import Animate from "rc-animate";
 
 import { downloadFile } from "../../util/util";
 
