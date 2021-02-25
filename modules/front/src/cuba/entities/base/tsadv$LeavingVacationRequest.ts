@@ -6,7 +6,7 @@ export class LeavingVacationRequest extends AbstractBprocRequest {
   requestType?: DicRequisitionType | null;
   vacation?: Absence | null;
   startDate?: any | null;
-  endData?: any | null;
+  endDate?: any | null;
   plannedStartDate?: any | null;
 }
 export type LeavingVacationRequestViewName =
@@ -22,7 +22,7 @@ export type LeavingVacationRequestView<
       LeavingVacationRequest,
       | "id"
       | "startDate"
-      | "endData"
+      | "endDate"
       | "plannedStartDate"
       | "legacyId"
       | "organizationBin"
@@ -36,7 +36,7 @@ export type LeavingVacationRequestView<
       LeavingVacationRequest,
       | "id"
       | "startDate"
-      | "endData"
+      | "endDate"
       | "plannedStartDate"
       | "legacyId"
       | "organizationBin"
@@ -46,13 +46,13 @@ export type LeavingVacationRequestView<
       | "comment"
     >
   : V extends "_minimal"
-  ? Pick<LeavingVacationRequest, "id" | "startDate" | "endData">
+  ? Pick<LeavingVacationRequest, "id" | "startDate" | "endDate">
   : V extends "leavingVacationRequest-browseView"
   ? Pick<
       LeavingVacationRequest,
       | "id"
       | "startDate"
-      | "endData"
+      | "endDate"
       | "plannedStartDate"
       | "legacyId"
       | "organizationBin"
@@ -69,7 +69,7 @@ export type LeavingVacationRequestView<
       LeavingVacationRequest,
       | "id"
       | "startDate"
-      | "endData"
+      | "endDate"
       | "plannedStartDate"
       | "legacyId"
       | "organizationBin"

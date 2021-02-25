@@ -1,14 +1,20 @@
 import * as React from "react";
 import {createElement} from "react";
-import {Card, Form} from "antd";
+import {Card, Form, Input} from "antd";
 import {inject, observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
-import {collection, injectMainStore, instance, MainStoreInjected, Msg, withLocalizedForm} from "@cuba-platform/react";
+import {
+  collection,
+  getCubaREST,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
+  Msg,
+  withLocalizedForm
+} from "@cuba-platform/react";
 
 import "../../../app/App.css";
-
-import {AbsenceRequest} from "../../../cuba/entities/base/tsadv$AbsenceRequest";
 import {RouteComponentProps, withRouter} from "react-router";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import LoadingPage from "../LoadingPage";
@@ -17,14 +23,14 @@ import Section from "../../hoc/Section";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
-import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
 import {Redirect} from "react-router-dom";
-import {restServices} from "../../../cuba/services";
 import {rootStore, RootStoreProp} from "../../store";
-import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import TextArea from "antd/es/input/TextArea";
 import {LeavingVacationRequestManagement} from "./LeavingVacationRequestManagement";
 import {LeavingVacationRequest} from "../../../cuba/entities/base/tsadv$LeavingVacationRequest";
+import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
+import {runInAction} from "mobx";
+import {Moment} from "moment";
 
 type EditorProps = {
   entityId: string;
@@ -35,23 +41,12 @@ type EditorProps = {
 @injectMainStore
 @observer
 class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacationRequest, EditorProps> {
-  dataInstance = instance<AbsenceRequest>(LeavingVacationRequest.NAME, {
+  dataInstance = instance<LeavingVacationRequest>(LeavingVacationRequest.NAME, {
     view: "leavingVacationRequest-editView",
     loadImmediately: false
   });
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "_minimal"
-  });
-
-  absenceTypesDc = collection<DicRequestStatus>(DicAbsenceType.NAME, {
-    view: "_minimal",
-    filter: {
-      conditions: [{property: "useInSelfService", operator: "=", value: 'TRUE'}]
-    }
-  });
-
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
   });
 
@@ -64,38 +59,36 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
     "comment",
 
-    "dateFrom",
+    "startDate",
 
-    "type",
+    "endDate",
 
-    "dateTo",
-
-    "absenceDays",
-
-    "attachment"
+    "plannedStartDate"
   ];
 
   assignmentGroupId: string;
 
   getUpdateEntityData = (): any => {
+    console.log({...this.dataInstance.item!.vacation});
     return {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
       },
+      vacation: {...this.dataInstance.item!.vacation},
       ...this.props.form.getFieldsValue(this.fields)
     }
   };
 
-  processDefinitionKey = "absenceRequest";
+  processDefinitionKey = "leavingVacationRequest";
 
   dateValidator = () => {
-    const dateFrom = this.props.form.getFieldValue("dateFrom");
-    const dateTo = this.props.form.getFieldValue("dateTo");
+    const plannedStartDate = this.props.form.getFieldValue("plannedStartDate");
+    const requestDate = this.props.form.getFieldValue("requestDate");
 
-    if (dateFrom) dateFrom.startOf('day');
-    if (dateTo) dateTo.startOf('day');
+    if (plannedStartDate) (plannedStartDate as Moment).startOf('days');
+    if (requestDate) (requestDate as Moment).startOf('days');
 
-    return dateFrom && dateTo && dateFrom <= dateTo;
+    return plannedStartDate && requestDate && plannedStartDate >= (requestDate as Moment).clone().add(30, 'days');
   }
 
   render() {
@@ -108,6 +101,7 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
       return <Redirect to={LeavingVacationRequestManagement.PATH}/>;
     }
 
+    const needBpm = this.dataInstance.item && this.dataInstance.item.vacation;
 
     const {getFieldDecorator} = this.props.form;
     const messages = this.mainStore.messages!;
@@ -115,13 +109,13 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
     const isDraft = this.isDraft();
 
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "absenceRequest"})}>
+      <Page pageName={this.props.intl.formatMessage({id: "leavingVacationRequest"})}>
         <Section size="large">
           <div>
             <Card className="narrow-layout card-actions-container" actions={[
               <Button buttonType={ButtonType.FOLLOW}
                       onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
-              this.getOutcomeBtns()]}
+              this.getOutcomeBtns(needBpm)]}
                   bordered={false}>
               <Form onSubmit={this.validate} layout="vertical">
 
@@ -144,62 +138,8 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.statusesDc}
                   getFieldDecoratorOpts={{
-                    rules: [{required: true,}],
+                    rules: [{required: true,}]
                   }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="type"
-                  form={this.props.form}
-                  disabled={isDraft}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.absenceTypesDc}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.type']})
-                    }
-                    ]
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="dateFrom"
-                  form={this.props.form}
-                  disabled={isDraft}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "validation.absenceRequest.dateFrom"}),
-                      validator: this.dateValidator
-                    }]
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="dateTo"
-                  form={this.props.form}
-                  disabled={isDraft}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "validation.absenceRequest.dateTo"}),
-                      validator: this.dateValidator
-                    }]
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="absenceDays"
-                  form={this.props.form}
-                  disabled={true}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
                 <ReadonlyField
@@ -210,23 +150,55 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
-                <div>
-                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
-                  <Form.Item>
-                    {getFieldDecorator("comment")(
-                      <TextArea
-                        rows={4}/>
-                    )}
-                  </Form.Item>
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "vacation"})}
+                  <Input disabled={true}
+                         value={needBpm && this.dataInstance.item!.vacation!.typeAndDate
+                           ? this.dataInstance.item!.vacation!.typeAndDate
+                           : ""}/>
                 </div>
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
-                  propertyName="attachment"
+                  propertyName="startDate"
                   form={this.props.form}
+                  disabled={true}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.filesDc}
-                  getFieldDecoratorOpts={{}}/>
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="endDate"
+                  form={this.props.form}
+                  disabled={true}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="plannedStartDate"
+                  form={this.props.form}
+                  disabled={isDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.plannedStartDate']}),
+                      validator: this.dateValidator
+                    }]
+                  }}
+                />
+
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
+                  <Form.Item>
+                    {getFieldDecorator("comment")(
+                      <TextArea
+                        disabled={isDraft}
+                        rows={4}/>
+                    )}
+                  </Form.Item>
+                </div>
 
                 {this.takCard()}
 
@@ -238,6 +210,22 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
       </Page>
     );
   }
+
+  protected initItem(request: LeavingVacationRequest): LeavingVacationRequest {
+    if (this.props.absenceId) {
+      getCubaREST()!.loadEntity(Absence.NAME, this.props.absenceId, {view: "absence.view"})
+        .then(value => {
+          runInAction(() => {
+            const absence = value as Absence;
+            request.vacation = absence;
+            request.startDate = absence.dateFrom;
+            request.endDate = absence.dateTo;
+            super.initItem(request);
+          });
+        });
+    } else super.initItem(request);
+    return request;
+  }
 }
 
 const onValuesChange = (props: any, changedValues: any) => {
@@ -248,30 +236,6 @@ const onValuesChange = (props: any, changedValues: any) => {
         value: changedValues[fieldName]
       }
     });
-
-    if (fieldName === "dateTo" || fieldName === "dateFrom") {
-      props.form.validateFields();
-    }
-
-    if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
-      const type = props.form.getFieldValue(`type`);
-      const dateFrom = props.form.getFieldValue(`dateFrom`);
-      const dateTo = props.form.getFieldValue(`dateTo`);
-
-      const personGroupId = rootStore.userInfo.personGroupId;
-
-      if ((fieldName === "type" || fieldName === "dateFrom" || fieldName === "dateTo")
-        && type && dateTo && dateFrom && personGroupId) {
-        restServices.absenceService.countDays({
-          dateFrom: dateFrom,
-          dateTo: dateTo,
-          absenceTypeId: type,
-          personGroupId: personGroupId
-        }).then(value => {
-          props.form.setFields({"absenceDays": {value: value}});
-        })
-      }
-    }
   });
 };
 const component = injectIntl(withLocalizedForm<EditorProps & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>>({onValuesChange})(LeavingVacationRequestEditComponent));

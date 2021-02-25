@@ -34,6 +34,7 @@ import {CertificateRequestManagement} from "./pages/CertificateRequest/Certifica
 import {ActivityManagement} from "./pages/Activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
 import AbsenceList from "./pages/Absence/AbsenceList";
+import {LeavingVacationRequestManagement} from "./pages/LeavingVacationRequestTest/LeavingVacationRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -108,6 +109,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        path={AbsenceRequestManagement.PATH + "/:entityId"}
                        component={AbsenceRequestManagement}/>
                 <Route exact={true} path="/absence" component={AbsenceList}/>
+                <Route exact={true}
+                       path={LeavingVacationRequestManagement.PATH + "/:entityId"}
+                       component={LeavingVacationRequestManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

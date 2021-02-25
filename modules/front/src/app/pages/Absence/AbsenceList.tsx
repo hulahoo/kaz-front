@@ -1,6 +1,6 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {Link} from "react-router-dom";
+import {Link, RouteComponentProps} from "react-router-dom";
 
 import {observable} from "mobx";
 
@@ -17,13 +17,14 @@ import Section from "../../hoc/Section";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {AbsenceRequestManagement} from "../AbsenceRequest/AbsenceRequestManagement";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
+import {LeavingVacationRequestManagement} from "../LeavingVacationRequestTest/LeavingVacationRequestManagement";
 
 const {TabPane} = Tabs;
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
 
   dataCollection = collection<AbsenceRequest>(AbsenceRequest.NAME, {
     view: "absenceRequest.edit",
@@ -83,25 +84,33 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
   @observable
   pageName = "absence";
 
+  isCreateLeavingVacationRequestDisabled = false;
+
   isSelectedAbsenceTypeMaternity = (): boolean => {
-    if (!this.selectedRowKey) return false;
+    if (this.selectedRowKey === null || this.selectedRowKey === undefined) return true;
     const absence = this.getAbsenceById(this.selectedRowKey);
-    return absence !== null && absence.type !== undefined && absence.type !== null && absence.type.code === "MATERNITY";
+    return !(absence !== null && absence.type !== undefined && absence.type !== null && absence.type.code === "MATERNITY");
   }
 
   render() {
+    this.isCreateLeavingVacationRequestDisabled = this.isSelectedAbsenceTypeMaternity();
+    console.log(this.isCreateLeavingVacationRequestDisabled);
     const btns = [<Link
       to={AbsenceRequestManagement.PATH + "/" + AbsenceRequestManagement.NEW_SUBPATH}
-      key="create">
+      key="createAbsenceRequest">
       <Button buttonType={ButtonType.PRIMARY}
               style={{margin: "0 12px 12px 0"}}>
         <span><FormattedMessage id="management.browser.create"/></span>
       </Button>
     </Link>,
-      <Button buttonType={ButtonType.FOLLOW}
-              disabled={this.isSelectedAbsenceTypeMaternity()}
+      <Button buttonType={ButtonType.PRIMARY}
+              key={"createLeavingVacationRequest"}
+              disabled={this.isCreateLeavingVacationRequestDisabled}
+              onClick={() => {
+                this.props.history!.push(LeavingVacationRequestManagement.PATH + "/new-" + this.selectedRowKey)
+              }}
               style={{margin: "0 12px 12px 0"}}>
-        <span><FormattedMessage id="create.absence"/></span>
+        <span><FormattedMessage id="create.leavingVacationRequest"/></span>
       </Button>
     ];
 

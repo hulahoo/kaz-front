@@ -213,6 +213,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   <Form.Item>
                     {getFieldDecorator("comment")(
                       <TextArea
+                        disabled={isDraft}
                         rows={4}/>
                     )}
                   </Form.Item>
@@ -222,6 +223,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   entityName={this.dataInstance.entityName}
                   propertyName="attachment"
                   form={this.props.form}
+                  disabled={isDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.filesDc}
                   getFieldDecoratorOpts={{}}/>

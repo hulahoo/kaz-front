@@ -255,5 +255,7 @@
   "WORK": "Work",
   "validation.absenceRequest.dateFrom": "\"Date from\" is required and cannot be more than \"Date to\"",
   "validation.absenceRequest.dateTo": "\"Date to\" is required and cannot be less  than \"Date from\"",
-  "bproc.participants": "Participants in the approval process"
+  "bproc.participants": "Participants in the approval process",
+  "create.leavingVacationRequest": "Create a request to leave the vacation",
+  "leavingVacationRequest": "Request to leave the vacation"
 }

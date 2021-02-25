@@ -246,5 +246,7 @@
   "validation.absenceRequest.dateFrom": "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
   "validation.absenceRequest.dateTo": "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\"",
   "sendOnApprove": "Отправить на согласование",
-  "bproc.participants": "Участники процесса утверждения"
+  "bproc.participants": "Участники процесса утверждения",
+  "create.leavingVacationRequest": "Создать заявку на выход из отпуска",
+  "leavingVacationRequest": "Заявка на выход из отпуска"
 }
