@@ -29,6 +29,7 @@ import {RefObject} from "react";
 import CourseSectionModal from "./CourseSectionModal";
 import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 import moment from "moment";
+import {log} from "util";
 
 type Props = {
   entityId: string;
@@ -101,7 +102,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       if ((response.count == 0)) {
         getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
           courseSection: {
-            id: this.selectedCourseSection,
+            id: this.selectedCourseSection.item!.id,
           },
           attemptDate: moment().toISOString(),
           activeAttempt: false,
@@ -116,6 +117,8 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
             const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
             if (nextSection) {
               this.setSelectedSectionId(nextSection.id);
+              this.finishedCourseSection(this.selectedCourseSection.item!.id);
+
               this.playIconClick();
             } else {
               this.visibleModal = false;
@@ -138,6 +141,18 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
         } else {
           this.visibleModal = false;
         }
+      }
+    })
+  };
+
+  finishedCourseSection = (courseSectionId: string) => {
+    this.dataInstance.course!.sections!.filter(s => s.id === courseSectionId).forEach(s => {
+      if (s.courseSectionAttempts) {
+        console.log('1');
+        s.courseSectionAttempts.push(new CourseSectionAttempt());
+      } else {
+        console.log('2');
+        s.courseSectionAttempts = [new CourseSectionAttempt()];
       }
     })
   };

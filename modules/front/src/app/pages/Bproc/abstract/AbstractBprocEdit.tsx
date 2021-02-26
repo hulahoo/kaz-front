@@ -4,7 +4,7 @@ import {RootStoreProp} from "../../../store";
 import {MainStoreInjected} from "@cuba-platform/react";
 import {RouteComponentProps} from "react-router-dom";
 import {FormComponentProps} from "antd/lib/form";
-import {IReactionDisposer, observable, reaction} from "mobx";
+import {action, IReactionDisposer, observable, reaction} from "mobx";
 import {ProcessInstanceData} from "../../../../cuba/entities/base/bproc_ProcessInstanceData";
 import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 import {BprocFormData} from "../../../../cuba/entities/bproc/bproc_FormData";
@@ -23,6 +23,8 @@ type Props = FormComponentProps & EditorProps;
 type EditorProps = {
   entityId: string;
 };
+
+type openModalStatus = "LOADING" | "DONE";
 
 abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends React.Component<K & Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
 
@@ -64,28 +66,28 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   processDefinitionKey: string;
 
-  validate = () => {
+  validate = (): Promise<boolean> => {
+    let isValidatedSuccess = true;
     this.props.form.validateFields((err, values) => {
-
-      this.isValidatedSuccess = !err;
-
+      isValidatedSuccess = !err;
       if (err) {
         message.error(
           this.props.intl.formatMessage({
             id: "management.editor.validationError"
           })
         );
-        return;
       }
     });
+    return new Promise(resolve => resolve(isValidatedSuccess));
   };
+
 
   getUpdateEntityData = (): any => {
   };
 
   update = () => {
     return this.dataInstance.update(this.getUpdateEntityData());
-  }
+  };
 
   takCard() {
     if (!this.tasks) return <div/>;
@@ -95,7 +97,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   isDraft = () => {
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
-  }
+  };
 
   getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
     const {status} = this.dataInstance;
@@ -108,8 +110,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         formData={this.formData}
                         validate={this.validate}
                         update={this.update}
-                        isValidatedSuccess={() => this.isValidatedSuccess}
                         processInstanceData={this.processInstanceData}
+                        afterSendOnApprove={this.afterSendOnApprove}
                         isStartForm={this.isStartForm}
                         processDefinitionKey={this.processDefinitionKey}
                         form={this.props.form}
@@ -117,15 +119,16 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         : <Button
           buttonType={ButtonType.PRIMARY}
           onClick={() => {
-            this.validate();
-            if (this.isValidatedSuccess) {
-              this.update().then(() => this.updated = true)
-                .catch((e: any) => {
-                  Notification.error({
-                    message: this.props.intl.formatMessage({id: "management.editor.error"})
+            this.validate().then(isValid => {
+              if (isValid) {
+                this.update().then(() => this.updated = true)
+                  .catch((e: any) => {
+                    Notification.error({
+                      message: this.props.intl.formatMessage({id: "management.editor.error"})
+                    });
                   });
-                });
-            }
+              }
+            });
           }}
           disabled={status !== "DONE" && status !== "ERROR"}
           loading={status === "LOADING"}
@@ -136,10 +139,15 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   };
 
   componentDidMount() {
-    const entityName = this.dataInstance.entityName;
+    this.setReactionDisposer();
+    this.loadBpmProcessData();
+  }
+
+  loadBpmProcessData = () => {
     const processDefinitionKey = this.processDefinitionKey;
     if (this.props.entityId !== "new") {
       this.dataInstance.load(this.props.entityId);
+
       restServices.bprocService.processInstanceData({
         processInstanceBusinessKey: this.props.entityId,
         processDefinitionKey: processDefinitionKey
@@ -160,6 +168,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                   .then(formData => {
                     this.formData = formData;
                     this.isStartForm = false;
+                    console.log(this.formData);
                   });
             })
         } else {
@@ -173,6 +182,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         }
       })
     } else {
+      const processDefinitionKey = this.processDefinitionKey;
+      const entityName = this.dataInstance.entityName;
+
       restServices.portalHelperService.newEntity({entityName: entityName}).then((response: string) => {
 
         restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
@@ -207,6 +219,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         });
       }
     );
+  };
+
+  afterSendOnApprove = () => {
+
   };
 
   componentWillUnmount() {

@@ -34,10 +34,10 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps & 
     e.preventDefault();
     this.performingLoginRequest = true;
     this.props
-      .mainStore!.login(this.props.rootStore!.login.login, this.props.rootStore!.login.password)
+      .mainStore!.login(this.props.rootStore!.login.login!, this.props.rootStore!.login.password!)
       .then(
         action(() => {
-          this.props.rootStore!.userInfo.loadUserInfo()
+          this.props.rootStore!.userInfo.loadUserInfo();
           this.performingLoginRequest = false;
         })
       )
