@@ -59,7 +59,6 @@ export type LeavingVacationRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
-      | "requestType"
       | "vacation"
       | "status"
     >
@@ -76,7 +75,6 @@ export type LeavingVacationRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
-      | "requestType"
       | "vacation"
       | "status"
     >
