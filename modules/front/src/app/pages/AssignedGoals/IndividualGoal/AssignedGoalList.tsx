@@ -169,8 +169,12 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
     this.reactionDisposer = reaction(
       () => this.dataCollection,
       (item) => {
-        if (this.dataCollection.length > 0 && this.props.setTotalWeight) {
-          this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
+        if (this.props.setTotalWeight) {
+          if (this.dataCollection.length > 0) {
+            this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
+          } else {
+            this.props.setTotalWeight(0);
+          }
         }
       }
     );
@@ -189,9 +193,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   };
 
   getGoalUrl = (assignedGoal: AssignedGoal): string => {
-    return this.props.match.url[this.props.match.url.length - 1] === '/'
-      ? `${this.props.match.url}goal/${assignedGoal.goalLibrary ? "library" : "individual"}/${assignedGoal.id}`
-      : `${this.props.match.url}/goal/${assignedGoal.goalLibrary ? "library" : "individual"}/${assignedGoal.id}`;
+    return `${this.props.match.url}${this.props.match.url[this.props.match.url.length - 1] === '/' ? '' : '/'}goal/${assignedGoal.goalLibrary ? "library" : assignedGoal.assignedByPersonGroup ? "cascade" : "individual"}/${assignedGoal.id}`;
   };
 }
 

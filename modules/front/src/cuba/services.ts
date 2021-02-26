@@ -374,7 +374,7 @@ export const restServices = {
     },
   },
   employeeService: {
-    findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean }): Promise<PersonGroupExt> => {
+    findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean, viewName: string }): Promise<PersonGroupExt[]> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_EmployeeService",
         "findManagerListByPositionGroup",

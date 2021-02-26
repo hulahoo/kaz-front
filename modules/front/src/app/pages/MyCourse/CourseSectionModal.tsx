@@ -73,7 +73,8 @@ class CourseSectionModal extends Component<Props> {
                className="course-section-modal-body"/>
         </Card>
       }
-      if (cs.sectionObject.content.contentType === "URL") {
+      if (cs.sectionObject.content.contentType === "URL"
+        || cs.sectionObject.content.contentType === "SCORM_ZIP") {
         return <Card className={"modal-body card-actions-container"}
                      actions={[<Button buttonType={ButtonType.PRIMARY} onClick={this.props.onFinishSection}>Завершить
                        раздел</Button>]}>

@@ -34,6 +34,7 @@ import {CertificateRequestManagement} from "./pages/CertificateRequest/Certifica
 import {ActivityManagement} from "./pages/Activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
 import AbsenceList from "./pages/Absence/AbsenceList";
+import {CascadeGoalManagement} from "./pages/AssignedGoals/CascadeGoal/CascadeGoalManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -42,7 +43,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
   render() {
     const {initialized, locale, loginRequired, metadata} = this.props.mainStore!;
 
-    if (!initialized || !locale) {
+    if (!initialized || !locale || !this.props.rootStore!.userInfo.initialized) {
       return <CenteredLoader/>;
     }
 
@@ -95,6 +96,8 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/kpi/:appId/goal/individual/:entityId?" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/library/:entityId?"
                        component={LibraryAssignedGoalManagement}/>
+                <Route exact={true} path="/kpi/:appId/goal/cascade/:entityId?"
+                       component={CascadeGoalManagement}/>
                 <Route exact={true} path="/learning-history" component={LearningHistory}/>
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
                 <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>

@@ -12,7 +12,7 @@ import {
   clearFieldErrors,
   constructFieldsWithErrors,
   extractServerValidationErrors,
-  Field,
+  Field, FileUpload,
   injectMainStore,
   instance,
   MainStoreInjected,

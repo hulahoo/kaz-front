@@ -1,16 +1,24 @@
-import {DataCollectionStore, DataInstanceStore, getCubaREST, getMainStore, MainStore} from "@cuba-platform/react";
+import {
+  DataCollectionStore,
+  DataContainerStatus,
+  DataInstanceStore,
+  getCubaREST,
+  getMainStore,
+  MainStore
+} from "@cuba-platform/react";
 import {PredefinedView} from "@cuba-platform/rest";
 import {observable, runInAction, toJS} from "mobx";
 
 type ServiceFunction<T> = () => Promise<T>
 
 export class ServiceDataCollectionStore<T> extends DataCollectionStore<T> {
+
   constructor(service: ServiceFunction<T>, entityName?: string) {
     super(entityName || "");
     this.load = () => {
       this.changedItems.clear();
       this.status = "LOADING";
-      this.loading(service.call(null));
+      this.loading(service());
     };
   }
 
@@ -18,9 +26,10 @@ export class ServiceDataCollectionStore<T> extends DataCollectionStore<T> {
     promise
       .then((resp: any) => {
         runInAction(() => {
-          this.items = resp.result;
-          this.count = resp.count;
+          this.items = resp;
+          // this.count = resp.count;
           this.status = 'DONE';
+          this.afterLoad();
         });
       })
       .catch(() => {
@@ -29,8 +38,12 @@ export class ServiceDataCollectionStore<T> extends DataCollectionStore<T> {
         });
       });
   }
+
+  afterLoad = () => {
+
+  }
 }
 
-export function serviceCollection<T>(service: ServiceFunction<T>, entityName?: string): DataCollectionStore<T> {
+export function serviceCollection<T>(service: ServiceFunction<T>, entityName?: string): ServiceDataCollectionStore<T> {
   return new ServiceDataCollectionStore<T>(service, entityName);
 }

@@ -24,11 +24,11 @@ import Candidate from "../component/Candidate";
 type StartBproc = {
   processDefinitionKey: string;
   employee?: UserExt | null;
-  validate(): void;
+  validate(): Promise<boolean>;
   update(): Promise<any>;
-  isValidatedSuccess(): boolean;
+  afterSendOnApprove?: () => void;
   dataInstance: DataInstanceStore<CertificateRequest>;
-  form: WrappedFormUtils
+  form: WrappedFormUtils;
 }
 
 @inject("rootStore")
@@ -37,7 +37,7 @@ type StartBproc = {
 class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & RootStoreProp & WrappedComponentProps & RouteComponentProps> {
 
   @observable
-  modalVisible: boolean = false;
+  modalVisible: boolean;
 
   @observable
   mainStore = this.props.mainStore!;
@@ -62,16 +62,18 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   });
 
   showModalOrMessage = () => {
+  debugger;
     if (this.bprocActorMessage) {
       Notification.error({
         message: this.bprocActorMessage
       });
       return;
     }
-    this.props.validate();
-    if (this.props.isValidatedSuccess()) {
-      this.modalVisible = true;
-    }
+    this.props.validate().then((isValid) => {
+      if (isValid) {
+        this.modalVisible = true;
+      }
+    });
   };
 
   handleOk = (e: any) => {
@@ -100,7 +102,10 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                   rolesLinks: this.bprocRolesDefiner!.links
                 }
               }).then(response => {
-                this.props.history!.goBack();
+                this.modalVisible = false;
+                if (this.props.afterSendOnApprove) {
+                  this.props.afterSendOnApprove();
+                }
                 Notification.success({
                   message: this.props.intl.formatMessage({id: "START.success"})
                 });
@@ -188,90 +193,88 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
     this.items = this.items.filter(r => r.id !== row.id);
   };
 
-  modal = () => {
-    if (!this.items) return <div/>;
-
-    return <Modal
-      title={this.props.intl.formatMessage({id: "START"})}
-      visible={this.modalVisible}
-      onOk={this.handleOk}
-      width={700}
-      onCancel={this.handleCancel}>
-      <div>
-        <div>
-          <Row type={"flex"} justify={"center"} align={"bottom"}>
-            <Col span={8}>
-              <Form.Item style={{margin: 0}} label={"Роль"}>
-                <Select style={{width: '100%'}} onChange={this.onChangeBprocRole}>
-                  {this.bprocRolesDefiner && this.bprocRolesDefiner.links ? this.bprocRolesDefiner.links.filter(l => l.isAddableApprover && l.hrRole).map(l =>
-                      <Select.Option
-                        key={l.hrRole!.id}>{(l.hrRole as SerializedEntity<DicHrRole>)._instanceName}</Select.Option>) :
-                    <Select.Option key="empty"/>
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={1}/>
-            <Col span={8}>
-              <Form.Item style={{margin: 0}} label={"Пользователь"}>
-                <Select style={{width: '100%'}} showSearch allowClear
-                        filterOption={(input, option) =>
-                          (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
-                        onChange={this.onChangeUser}>
-                  {this.users.items.length > 0 ? this.users.items.map(l =>
-                      <Select.Option title={(l as SerializedEntity<UserExt>).fullNameWithLogin!}
-                                     key={l.id}>{(l as SerializedEntity<UserExt>).fullNameWithLogin!}</Select.Option>) :
-                    <Select.Option key="empty"/>
-                  }
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={1}/>
-            <Col span={6}>
-              <Form.Item style={{margin: 0}}>
-                <Button type={"primary"}
-                        disabled={!(this.selectedHrRole && this.selectedUser)}
-                        onClick={this.addBprocUser}>Добавить</Button>
-              </Form.Item>
-            </Col>
-          </Row>
-        </div>
-        <Table dataSource={Array.from(this.items)}
-               pagination={false} showHeader={true}
-               rowKey={record => record.id}>
-          <Column key='role' title={"Роли"}
-                  render={(text, record) => (record as NotPersisitBprocActors).hrRole!.langValue1}/>
-          <Column key='candidates' title={"Пользователи"} render={(text, record) => {
-            return <Candidate candidates={((record as NotPersisitBprocActors).users as UserExt[] | null)}/>
-          }}/>
-          <Column
-            key="action"
-            render={(text, record: SerializedEntity<NotPersisitBprocActors>) => {
-              return record.isSystemRecord ? null : <Button type="link"
-                                                            style={{padding: 0}}
-                                                            onClick={() => this.showDeletionDialog(record)}>
-                <Icon type="delete" style={{fontSize: '18px', cursor: 'pointer'}}/>
-              </Button>
-            }}
-          />
-        </Table>
-      </div>
-    </Modal>
-  }
-
   render() {
     if (!this.bprocRolesDefiner) return <LoadingPage/>;
+    if (!this.items) return <div/>;
 
     return (
-      <CustomButton buttonType={ButtonType.FOLLOW}
-                    onClickCapture={this.showModalOrMessage}
-                    key="start">
-        {this.props.intl.formatMessage({
-          id: "START"
-        })}
-        {this.modal()}
-      </CustomButton>
+      <>
+        <CustomButton buttonType={ButtonType.FOLLOW}
+                      onClick={this.showModalOrMessage}
+                      key="start">
+          {this.props.intl.formatMessage({
+            id: "START"
+          })}
+        </CustomButton>
+        <Modal
+          title={this.props.intl.formatMessage({id: "START"})}
+          visible={this.modalVisible}
+          onOk={this.handleOk}
+          width={700}
+          onCancel={this.handleCancel}>
+          <div>
+            <div>
+              <Row type={"flex"} justify={"center"} align={"bottom"}>
+                <Col span={8}>
+                  <Form.Item style={{margin: 0}} label={"Роль"}>
+                    <Select style={{width: '100%'}} onChange={this.onChangeBprocRole}>
+                      {this.bprocRolesDefiner && this.bprocRolesDefiner.links ? this.bprocRolesDefiner.links.filter(l => l.isAddableApprover && l.hrRole).map(l =>
+                          <Select.Option
+                            key={l.hrRole!.id}>{(l.hrRole as SerializedEntity<DicHrRole>)._instanceName}</Select.Option>) :
+                        <Select.Option key="empty"/>
+                      }
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col span={1}/>
+                <Col span={8}>
+                  <Form.Item style={{margin: 0}} label={"Пользователь"}>
+                    <Select style={{width: '100%'}} showSearch allowClear
+                            filterOption={(input, option) =>
+                              (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }
+                            onChange={this.onChangeUser}>
+                      {this.users.items.length > 0 ? this.users.items.map(l =>
+                          <Select.Option title={(l as SerializedEntity<UserExt>).fullNameWithLogin!}
+                                         key={l.id}>{(l as SerializedEntity<UserExt>).fullNameWithLogin!}</Select.Option>) :
+                        <Select.Option key="empty"/>
+                      }
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col span={1}/>
+                <Col span={6}>
+                  <Form.Item style={{margin: 0}}>
+                    <Button type={"primary"}
+                            disabled={!(this.selectedHrRole && this.selectedUser)}
+                            onClick={this.addBprocUser}>Добавить</Button>
+                  </Form.Item>
+                </Col>
+              </Row>
+            </div>
+            <Table dataSource={Array.from(this.items)}
+                   pagination={false} showHeader={true}
+                   rowKey={record => record.id}>
+              <Column key='role' title={"Роли"}
+                      render={(text, record) => (record as NotPersisitBprocActors).hrRole!.langValue1}/>
+              <Column key='candidates' title={"Пользователи"} render={(text, record) => {
+                return <Candidate candidates={((record as NotPersisitBprocActors).users as UserExt[] | null)}/>
+              }}/>
+              <Column
+                key="action"
+                render={(text, record: SerializedEntity<NotPersisitBprocActors>) => {
+                  return record.isSystemRecord ? null : <Button type="link"
+                                                                style={{padding: 0}}
+                                                                onClick={() => this.showDeletionDialog(record)}>
+                    <Icon type="delete" style={{fontSize: '18px', cursor: 'pointer'}}/>
+                  </Button>
+                }}
+              />
+            </Table>
+          </div>
+        </Modal>
+      </>
+
     )
   }
 

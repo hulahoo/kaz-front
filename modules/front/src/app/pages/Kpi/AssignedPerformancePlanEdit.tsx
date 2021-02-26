@@ -156,8 +156,24 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     this.totalWeight = value;
   };
 
-  sendOnApprove = () => {
-    getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
+  validate = ():Promise<boolean> => {
+    let isValidatedSuccess = true;
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        message.error(
+          this.props.intl.formatMessage({
+            id: "management.editor.validationError"
+          })
+        );
+        isValidatedSuccess = false;
+      }
+    });
+
+    if (!isValidatedSuccess) {
+      return new Promise<boolean>((resolve, reject) => resolve(false));
+    }
+
+    return getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
       conditions: [
         {
           property: "assignedPerformancePlan",
@@ -173,8 +189,11 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
             id: "goal.validation.error.totalWeightSum"
           })
         });
-        return;
+        return new Promise<boolean>((resolve, reject) => resolve(false));
       }
+      return new Promise<boolean>((resolve, reject) => resolve(true));
+    }).catch(() => {
+      return new Promise<boolean>((resolve, reject) => resolve(false));
     });
   };
 
@@ -200,7 +219,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     }, {
       id: goalCreatePathUrl + "library/new",
       value: this.props.intl.formatMessage({id: "fromLibrary"})
-    }, {id: goalCreatePathUrl + "cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
+    }, {id: goalCreatePathUrl + "cascade/new", value: this.props.intl.formatMessage({id: "cascade"})}];
 
     return (
       <Page
@@ -401,11 +420,15 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   loadInstanceData = () => {
     if (this.props.entityId !== AssignedPerformancePlanManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
+      this.dataInstance.load();
     } else {
       this.dataInstance.setItem(new AssignedPerformancePlan());
     }
-    const a = {};
+  }
+
+  afterSendOnApprove = () => {
+    this.formData = null;
+    this.loadBpmProcessData();
   }
 }
 

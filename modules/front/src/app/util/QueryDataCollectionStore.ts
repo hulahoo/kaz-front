@@ -19,6 +19,8 @@ export class QueryDataCollectionStore<T> extends DataCollectionStore<T> {
           this.items = resp.result;
           this.count = resp.count;
           this.status = 'DONE';
+
+          this.afterLoad();
         });
       })
       .catch(() => {
@@ -26,6 +28,10 @@ export class QueryDataCollectionStore<T> extends DataCollectionStore<T> {
           this.status = 'ERROR';
         });
       });
+  };
+
+  afterLoad = (): void => {
+
   }
 }
 
