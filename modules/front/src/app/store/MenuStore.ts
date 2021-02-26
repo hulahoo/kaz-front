@@ -76,7 +76,7 @@ export default class MenuStore {
             pathPattern: "/course",
             component: null
           },
-          {id: "calendar", caption: "Каледнарь", menuLink: "/calendar", pathPattern: "/calendar", component: null},
+          {id: "calendar", caption: "Календарь", menuLink: "/calendar", pathPattern: "/calendar", component: null},
           {
             id: "my-courses",
             caption: "Мои курсы",

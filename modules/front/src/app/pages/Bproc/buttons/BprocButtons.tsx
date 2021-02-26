@@ -17,9 +17,9 @@ type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
   formData: BprocFormData;
   employee?: UserExt | null;
-  validate(): void;
+  validate(): Promise<boolean>;
   update(): Promise<any>;
-  isValidatedSuccess(): boolean;
+  afterSendOnApprove?: () => void
   isStartForm: boolean;
   task: ExtTaskData | null;
   processInstanceData: ProcessInstanceData | null;
@@ -36,9 +36,9 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
       employee={this.props.employee}
       validate={this.props.validate}
       update={this.props.update}
-      isValidatedSuccess={this.props.isValidatedSuccess}
       dataInstance={this.props.dataInstance}
       form={this.props.form}
+      afterSendOnApprove={this.props.afterSendOnApprove}
       processDefinitionKey={this.props.processDefinitionKey}/>
   };
 

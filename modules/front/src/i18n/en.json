@@ -11,6 +11,7 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.CascadeGoalManagement": "CascadeGoalManagement",
   "router.ScheduleOffsetsRequestManagement": "ScheduleOffsetsRequestManagement",
   "router.ActivityCards": "ActivityCards",
   "router.ExtTaskDataCards": "ExtTaskDataCards",
