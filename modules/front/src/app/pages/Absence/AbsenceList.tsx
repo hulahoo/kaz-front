@@ -7,8 +7,6 @@ import {observable} from "mobx";
 import {Tabs} from "antd";
 
 import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
-
-import {AbsenceRequest} from "../../../cuba/entities/base/tsadv$AbsenceRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
@@ -18,6 +16,8 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import {AbsenceRequestManagement} from "../AbsenceRequest/AbsenceRequestManagement";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {LeavingVacationRequestManagement} from "../LeavingVacationRequestTest/LeavingVacationRequestManagement";
+import {AllAbsenceRequest} from "../../../cuba/entities/base/tsadv_AllAbsenceRequest";
+import {link} from "../../util/util";
 
 const {TabPane} = Tabs;
 
@@ -26,8 +26,8 @@ const {TabPane} = Tabs;
 @observer
 class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
 
-  dataCollection = collection<AbsenceRequest>(AbsenceRequest.NAME, {
-    view: "absenceRequest.edit",
+  dataCollection = collection<AllAbsenceRequest>(AllAbsenceRequest.NAME, {
+    view: "allAbsenceRequest-view",
     sort: "-updateTs",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
@@ -47,9 +47,9 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
 
     "type",
 
-    "dateFrom",
+    "startDate",
 
-    "dateTo",
+    "endDate",
 
     "status",
 
@@ -70,10 +70,10 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
 
   lastIndex = -1;
 
-  renderColumn = (text: string, record: AbsenceRequest, index: number) => {
+  renderColumn = (text: string, record: AllAbsenceRequest, index: number) => {
     if (text === record["requestNumber"] && this.lastIndex !== index) {
       this.lastIndex = index;
-      return <Link to={AbsenceRequestManagement.PATH + "/" + record.id}>
+      return <Link to={link(record.entityName!) + "/" + record.id}>
         {text}
       </Link>
     }
@@ -94,7 +94,6 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
 
   render() {
     this.isCreateLeavingVacationRequestDisabled = this.isSelectedAbsenceTypeMaternity();
-    console.log(this.isCreateLeavingVacationRequestDisabled);
     const btns = [<Link
       to={AbsenceRequestManagement.PATH + "/" + AbsenceRequestManagement.NEW_SUBPATH}
       key="createAbsenceRequest">

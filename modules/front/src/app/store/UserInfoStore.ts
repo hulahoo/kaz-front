@@ -1,4 +1,3 @@
-import {getCubaREST} from "@cuba-platform/react";
 import {UserInfo} from "@cuba-platform/rest/dist-node/model";
 import RootStore from "./RootStore";
 import {restQueries} from "../../cuba/queries";

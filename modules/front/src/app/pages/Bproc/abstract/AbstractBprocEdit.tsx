@@ -4,7 +4,7 @@ import {RootStoreProp} from "../../../store";
 import {MainStoreInjected} from "@cuba-platform/react";
 import {RouteComponentProps} from "react-router-dom";
 import {FormComponentProps} from "antd/lib/form";
-import {action, IReactionDisposer, observable, reaction} from "mobx";
+import {IReactionDisposer, observable, reaction} from "mobx";
 import {ProcessInstanceData} from "../../../../cuba/entities/base/bproc_ProcessInstanceData";
 import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 import {BprocFormData} from "../../../../cuba/entities/bproc/bproc_FormData";
@@ -16,7 +16,7 @@ import BprocButtons from "../buttons/BprocButtons";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
 import Notification from "../../../util/Notification/Notification";
-import moment from "moment";
+import moment from "moment/moment";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -172,8 +172,6 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                   });
             })
         } else {
-          this.props.form.setFieldsValue({"requestDate": moment()});
-
           restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
             .then(formData => {
               this.formData = formData;
@@ -185,7 +183,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       const processDefinitionKey = this.processDefinitionKey;
       const entityName = this.dataInstance.entityName;
 
-      restServices.portalHelperService.newEntity({entityName: entityName}).then((response: string) => {
+      restServices.portalHelperService.newEntity({entityName: entityName}).then((response: T) => {
 
         restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
           .then(formData => {
@@ -193,18 +191,17 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
             this.isStartForm = true;
           });
 
-        this.initItem(JSON.parse(response));
+        this.initItem(response);
       });
     }
     this.setReactionDisposer();
   }
 
-  protected initItem(request: T): T {
+  protected initItem(request: T): void {
     this.dataInstance.setItem(request);
 
     const fieldValues = this.dataInstance.getFieldValues(this.fields);
     this.props.form.setFieldsValue(fieldValues);
-    return request;
   }
 
   setReactionDisposer = () => {
@@ -213,10 +210,15 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         return this.dataInstance.item;
       },
       () => {
-        this.props.form.setFieldsValue({
-          ...this.dataInstance.getFieldValues(this.fields),
-          "requestDate": this.isCalledProcessInstanceData && !this.processInstanceData ? moment() : this.dataInstance.item!.requestDate
-        });
+        const obj = {
+          ...this.dataInstance.getFieldValues(this.fields)
+        };
+        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
+          const now = moment();
+          now.locale(this.props.rootStore!.userInfo.locale!);
+          obj["requestDate"] = now;
+        }
+        this.props.form.setFieldsValue(obj);
       }
     );
   };

@@ -56,7 +56,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
                            onClick={() => {
                              if (find) {
                                if (find.type!.code !== "NOTIFICATION")
-                                 this.props.history!.push(`../${link(find!.type!.windowProperty!)}/${find!.referenceId}`);
+                                 this.props.history!.push(`../${link(find!.type!.windowProperty!.entityName!)}/${find!.referenceId}`);
                                else
                                  this.props.history!.push(find.id);
                              }

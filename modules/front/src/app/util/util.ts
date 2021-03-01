@@ -21,7 +21,7 @@ export const downloadFile = (fileId: string, fileName: string, extension: string
   });
 };
 
-export const link = (windowProperty: WindowProperty) => {
-  const entityName = windowProperty.entityName!.substring(Math.max(windowProperty.entityName!.indexOf("$"), windowProperty.entityName!.indexOf("_")) + 1);
-  return entityName.charAt(0).toLocaleLowerCase() + entityName.substring(1);
+export const link = (entityName: string) => {
+  const link = entityName!.substring(Math.max(entityName!.indexOf("$"), entityName!.indexOf("_")) + 1);
+  return "/" + link.charAt(0).toLocaleLowerCase() + link.substring(1);
 };
