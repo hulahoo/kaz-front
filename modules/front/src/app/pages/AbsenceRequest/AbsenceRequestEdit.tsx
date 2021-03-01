@@ -93,7 +93,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     if (dateFrom) dateFrom.startOf('day');
     if (dateTo) dateTo.startOf('day');
 
-    return dateFrom && dateTo && dateFrom <= dateTo;
+    return (dateFrom && dateTo && dateFrom <= dateTo) === true;
   }
 
   render() {
