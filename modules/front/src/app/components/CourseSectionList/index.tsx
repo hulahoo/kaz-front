@@ -5,7 +5,7 @@ import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
 
 type Props<T> = {
   dataInstance?: T[] | null,
-  selectedItem?: string;
+  selectedItem?: string | null;
   clickItemHandler?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 

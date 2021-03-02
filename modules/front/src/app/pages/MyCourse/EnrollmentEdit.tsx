@@ -45,7 +45,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   dataInstance: SerializedEntity<Enrollment>;
 
   @observable
-  selectedSectionId: string;
+  selectedSectionId: string | null = null;
 
   @observable
   selectedCourseSection = instance<CourseSection>(CourseSection.NAME, {
@@ -78,7 +78,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   };
 
   @action
-  setSelectedSectionId = (value: string) => {
+  setSelectedSectionId = (value: string | null) => {
     this.selectedSectionId = value;
   };
 
@@ -148,10 +148,8 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   finishedCourseSection = (courseSectionId: string) => {
     this.dataInstance.course!.sections!.filter(s => s.id === courseSectionId).forEach(s => {
       if (s.courseSectionAttempts) {
-        console.log('1');
         s.courseSectionAttempts.push(new CourseSectionAttempt());
       } else {
-        console.log('2');
         s.courseSectionAttempts = [new CourseSectionAttempt()];
       }
     })
@@ -179,7 +177,12 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                                    clickItemHandler={this.clickSection}
                                    selectedItem={this.selectedSectionId}/>
                 <hr/>
-                <Meta title="Анкета обратной связи" className={"course-section-item course-section-item-feedback"}/>
+                <div onClick={this.clickSection}>
+                  <div key="feedback" id="feedback">
+                    <Meta title="Анкета обратной связи"
+                          className="course-section-item course-section-item-feedback"/>
+                  </div>
+                </div>
               </Col>
             </Row>
           </Section>
