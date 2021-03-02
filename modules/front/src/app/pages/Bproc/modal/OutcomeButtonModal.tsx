@@ -16,6 +16,7 @@ import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 type Props = {
   outcome: BprocFormOutcome
   task: ExtTaskData | null;
+  afterSendOnApprove?: () => void;
 }
 
 @observer
@@ -39,7 +40,6 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
         );
         return;
       }
-      this.modalVisibleMap.set(outcome.id!, true);
       restServices.bprocTaskService.completeWithOutcome({
         taskData: this.props.task!,
         outcomeId: outcome.id!,
@@ -48,7 +48,10 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
         }
       })
         .then(value => {
-          this.props.history!.goBack();
+          this.modalVisibleMap.set(outcome.id!, false);
+          if (this.props.afterSendOnApprove) {
+            this.props.afterSendOnApprove();
+          }
           Notification.success({
             message: this.props.intl.formatMessage({id: "bproc." + outcome.id + ".success"})
           });
@@ -92,7 +95,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
   }
 }
 
-export default injectIntl(withLocalizedForm({
+export default injectIntl(withLocalizedForm<Props>({
   onValuesChange: (props: any, changedValues: any) => {
     // Reset server-side errors when field is edited
     Object.keys(changedValues).forEach((fieldName: string) => {

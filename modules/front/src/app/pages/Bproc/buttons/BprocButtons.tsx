@@ -46,6 +46,7 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
         ? this.props.formData.outcomes.map(value => <OutcomeButtonModal outcome={value}
+                                                                        afterSendOnApprove={this.props.afterSendOnApprove}
                                                                         task={this.props.task}/>)
         : "";
   }

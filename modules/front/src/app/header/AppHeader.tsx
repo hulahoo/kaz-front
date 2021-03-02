@@ -36,7 +36,7 @@ class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProp
         </div>
         <div className={"additional-panel"}>
           <div className={"search-container"}>
-            <SearchComponent/>
+            {/*<SearchComponent/>*/}
           </div>
           <UserPanel/>
         </div>

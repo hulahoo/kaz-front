@@ -59,6 +59,7 @@ export default class {
   };
 
   loadUserInfo = async () => {
+    this.initialized = false;
     return await this.rootStore.cubaRest.getUserInfo().then((response: UserInfo) => {
       this.timeZone = response.timeZone;
       this._instanceName = response._instanceName;

@@ -14,6 +14,7 @@ import {EnrollmentManagement} from "./EnrollmentManagement";
 import PanelCard from "../../components/CourseCard";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
+import Section from "../../hoc/Section";
 
 @inject("rootStore")
 @observer
@@ -22,6 +23,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
   @observable
   status = "LOADING";
 
+  @observable
   dataCollection: DicCategory[] = [];
 
   onSearch = (value: string) => {
@@ -34,6 +36,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
           this.dataCollection = response
         })
       });
+    } else {
+      this.loadData();
     }
   };
 
@@ -42,44 +46,50 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.my-courses"})}>
-        <Spin spinning={this.status === 'LOADING'}>
-          <SearchInput onSearch={this.onSearch}/>
-          <Tabs>
-            {this.status === 'DONE' ? this.dataCollection.map(category => <TabPane tab={category.langValue1}
-                                                                                   key={category.id}>
-              <div className={"courses-cards-wrapper"}>
-                <div className={"courses-cards"}>
-                  {category.courses!.map(course => <Link
-                    to={EnrollmentManagement.PATH + "/" + course.enrollments![0].id}><PanelCard key={course.id}
-                                                                                                loading={false} {...course}
-                                                                                                name={course.name!}
-                                                                                                header={(<>
-                                                                                                  {!(course as
-                                                                                                    any).isOnline ?
-                                                                                                    <img
-                                                                                                      src={require("../../../resources/icons/online.png")}
-                                                                                                      alt="online"
-                                                                                                      className={"icon-online"}/> :
-                                                                                                    null}
-                                                                                                  <ImageLogo
-                                                                                                    type="base64"
-                                                                                                    imgSrc={course.logo}
-                                                                                                    name={course.name!}/>
-                                                                                                </>)}>
+        <Section size="large" visible={false}>
+          <Spin spinning={this.status === 'LOADING'}>
+            <SearchInput onSearch={this.onSearch}/>
+            <Tabs>
+              {this.status === 'DONE' ? this.dataCollection.map(category => <TabPane tab={category.langValue1}
+                                                                                     key={category.id}>
+                <div className={"courses-cards-wrapper"}>
+                  <div className={"courses-cards"}>
+                    {category.courses!.map(course => <Link
+                      to={EnrollmentManagement.PATH + "/" + course.enrollments![0].id}><PanelCard key={course.id}
+                                                                                                  loading={false} {...course}
+                                                                                                  name={course.name!}
+                                                                                                  header={(<>
+                                                                                                    {!(course as
+                                                                                                      any).isOnline ?
+                                                                                                      <img
+                                                                                                        src={require("../../../resources/icons/online.png")}
+                                                                                                        alt="online"
+                                                                                                        className={"icon-online"}/> :
+                                                                                                      null}
+                                                                                                    <ImageLogo
+                                                                                                      type="base64"
+                                                                                                      imgSrc={course.logo}
+                                                                                                      name={course.name!}/>
+                                                                                                  </>)}>
 
-                    <Meta title={course.name}
-                          description={<><Rate disabled defaultValue={course.avgRate} allowHalf/> (90)</>}/>
-                  </PanelCard></Link>)}
+                      <Meta title={course.name}
+                            description={<><Rate disabled defaultValue={course.avgRate} allowHalf/> (90)</>}/>
+                    </PanelCard></Link>)}
+                  </div>
                 </div>
-              </div>
-            </TabPane>) : <></>}
-          </Tabs>
-        </Spin>
+              </TabPane>) : <></>}
+            </Tabs>
+          </Spin>
+        </Section>
       </Page>
     );
   }
 
   componentDidMount(): void {
+    this.loadData();
+  }
+
+  loadData = () => {
     restServices.enrollmentService.searchEnrollments({userId: this.props.rootStore!.userInfo.personGroupId!}).then(response => {
       runInAction(() => {
         this.dataCollection = response;

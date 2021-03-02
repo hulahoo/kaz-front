@@ -23,6 +23,8 @@ class CourseList<T> extends React.Component {
           this.dataCollection.items = findedCourses
         })
       });
+    } else {
+      this.dataCollection.load();
     }
   };
 
