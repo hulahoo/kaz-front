@@ -50,7 +50,7 @@ class ActivityEdit extends React.Component<EditorProps & MainStoreInjected & Roo
       return <Redirect to={ActivityManagement.PATH_NOTIFICATIONS}/>
 
     if (item && item.type && item.type.code !== "NOTIFICATION" && item.type.windowProperty)
-      return <Redirect to={link(item.type.windowProperty) + "/" + item.referenceId}/>
+      return <Redirect to={link(item.type.windowProperty!.entityName!) + "/" + item.referenceId}/>
 
     const notificationHeader = this.props.rootStore!.userInfo.language === "ru" ? item.notificationHeaderRu : item.notificationHeaderEn;
     const notificationBody = this.props.rootStore!.userInfo.language === "ru" ? item.notificationBodyRu : item.notificationBodyEn;

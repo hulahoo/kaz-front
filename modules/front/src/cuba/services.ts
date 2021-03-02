@@ -17,8 +17,6 @@ import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
-import {List} from "antd";
-import {BaseUuidEntity} from "./entities/base/sys$BaseUuidEntity";
 import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsRequest";
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 
@@ -169,13 +167,12 @@ export const restServices = {
     }
   },
   portalHelperService: {
-    newEntity: (param ?: { entityName: string }, fetchOpts?: FetchOptions) => {
+    newEntity: <T>(param ?: { entityName: string }): Promise<T> => {
       return getCubaREST()!.invokeService(
         "tsadv_PortalHelperService",
         "newEntity",
-        {...param},
-        fetchOpts
-      );
+        {...param}
+      ).then((value: string) => JSON.parse(value));
     }
   },
   bprocService: {

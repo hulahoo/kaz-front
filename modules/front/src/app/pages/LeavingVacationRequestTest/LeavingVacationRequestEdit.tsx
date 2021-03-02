@@ -29,7 +29,6 @@ import TextArea from "antd/es/input/TextArea";
 import {LeavingVacationRequestManagement} from "./LeavingVacationRequestManagement";
 import {LeavingVacationRequest} from "../../../cuba/entities/base/tsadv$LeavingVacationRequest";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
-import {runInAction} from "mobx";
 import {Moment} from "moment";
 
 type EditorProps = {
@@ -88,7 +87,9 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
     if (plannedStartDate) (plannedStartDate as Moment).startOf('days');
     if (requestDate) (requestDate as Moment).startOf('days');
 
-    return plannedStartDate && requestDate && plannedStartDate >= (requestDate as Moment).clone().add(30, 'days');
+    const isValid = plannedStartDate && requestDate && plannedStartDate >= (requestDate as Moment).clone().add(30, 'days');
+
+    return isValid === true;
   }
 
   render() {
@@ -211,20 +212,18 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
     );
   }
 
-  protected initItem(request: LeavingVacationRequest): LeavingVacationRequest {
+  protected initItem(request: LeavingVacationRequest): void {
     if (this.props.absenceId) {
       getCubaREST()!.loadEntity(Absence.NAME, this.props.absenceId, {view: "absence.view"})
         .then(value => {
-          runInAction(() => {
-            const absence = value as Absence;
-            request.vacation = absence;
-            request.startDate = absence.dateFrom;
-            request.endDate = absence.dateTo;
-            super.initItem(request);
-          });
+          const absence = value as Absence;
+          console.log(value);
+          request.vacation = absence;
+          request.startDate = absence.dateFrom;
+          request.endDate = absence.dateTo;
+          super.initItem(request);
         });
     } else super.initItem(request);
-    return request;
   }
 }
 

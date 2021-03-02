@@ -62,7 +62,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   });
 
   showModalOrMessage = () => {
-  debugger;
+    debugger;
     if (this.bprocActorMessage) {
       Notification.error({
         message: this.bprocActorMessage
