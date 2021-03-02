@@ -1,13 +1,13 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-import { DicRequestStatus } from "./tsadv$DicRequestStatus";
+import { VacationScheduleRequest } from "./tsadv_VacationScheduleRequest";
 export class VacationSchedule extends AbstractParentEntity {
   static NAME = "tsadv_VacationSchedule";
   personGroup?: PersonGroupExt | null;
   startDate?: any | null;
   endDate?: any | null;
   absenceDays?: number | null;
-  status?: DicRequestStatus | null;
+  request?: VacationScheduleRequest | null;
 }
 export type VacationScheduleViewName =
   | "_base"
@@ -52,6 +52,5 @@ export type VacationScheduleView<
       | "organizationBin"
       | "integrationUserLogin"
       | "personGroup"
-      | "status"
     >
   : never;

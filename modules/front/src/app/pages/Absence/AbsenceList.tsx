@@ -15,16 +15,20 @@ import Section from "../../hoc/Section";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {AbsenceRequestManagement} from "../AbsenceRequest/AbsenceRequestManagement";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
-import {LeavingVacationRequestManagement} from "../LeavingVacationRequestTest/LeavingVacationRequestManagement";
+import {LeavingVacationRequestManagement} from "../LeavingVacationRequest/LeavingVacationRequestManagement";
 import {AllAbsenceRequest} from "../../../cuba/entities/base/tsadv_AllAbsenceRequest";
 import {link} from "../../util/util";
+import {VacationSchedule} from "../../../cuba/entities/base/tsadv_VacationSchedule";
+import {VacationScheduleRequestManagement} from "../VacationScheduleRequest/VacationScheduleRequestManagement";
 
 const {TabPane} = Tabs;
+
+type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
+class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
 
   dataCollection = collection<AllAbsenceRequest>(AllAbsenceRequest.NAME, {
     view: "allAbsenceRequest-view",
@@ -34,6 +38,15 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
     }
   });
 
+  dataCollectionVacationSchedule = collection<VacationSchedule>(VacationSchedule.NAME, {
+      view: "_local",
+      sort: "-updateTs",
+      filter: {
+        conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
+      }
+    }
+  );
+
   dataCollectionAbsence = collection<Absence>(Absence.NAME, {
     view: "absence.view",
     sort: "-updateTs",
@@ -41,6 +54,24 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
   });
+
+  absenceFields = [
+    "type",
+
+    "dateFrom",
+
+    "dateTo",
+
+    "absenceDays"
+  ];
+
+  vacationScheduleFields = [
+    "startDate",
+
+    "endDate",
+
+    "absenceDays"
+  ];
 
   absenceRequestFields = [
     "requestNumber",
@@ -54,16 +85,6 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
     "status",
 
     "requestDate"
-  ];
-
-  absenceFields = [
-    "type",
-
-    "dateFrom",
-
-    "dateTo",
-
-    "absenceDays"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -113,10 +134,13 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
       </Button>
     ];
 
+    const {activeTab} = this.props.match.params;
+    const defaultActiveKey = activeTab ? activeTab : "1";
+
     return (
       <Page pageName={this.props.intl.formatMessage({id: this.pageName})}>
         <Section size="large">
-          <Tabs defaultActiveKey="1"
+          <Tabs defaultActiveKey={defaultActiveKey}
                 onChange={activeKey => this.pageName = "absence" + (activeKey === "1" ? "" : "Request")}>
             <TabPane tab={this.props.intl.formatMessage({id: "absence"})} key="1">
               <div>
@@ -131,7 +155,26 @@ class AbsenceListComponent extends React.Component<MainStoreInjected & WrappedCo
                 />
               </div>
             </TabPane>
-            <TabPane tab={this.props.intl.formatMessage({id: "absenceRequest"})} key="2">
+            <TabPane tab={this.props.intl.formatMessage({id: "vacationScheduleRequest"})} key="2">
+              <div>
+                <div style={{marginBottom: 16}}>
+                  <Link
+                    to={VacationScheduleRequestManagement.PATH + "/" + VacationScheduleRequestManagement.NEW_SUBPATH}>
+                    <Button type={ButtonType.PRIMARY}
+                            key="vacationScheduleRequestCreateBtn"
+                            style={{margin: "0 12px 12px 0"}}>
+                      <span><FormattedMessage id="new.request"/></span>
+                    </Button>
+                  </Link>
+                </div>
+                <DataTable
+                  dataCollection={this.dataCollectionVacationSchedule}
+                  fields={this.vacationScheduleFields}
+                  hideSelectionColumn={true}
+                />
+              </div>
+            </TabPane>
+            <TabPane tab={this.props.intl.formatMessage({id: "absenceRequest"})} key="3">
               <div>
                 <DataTable
                   dataCollection={this.dataCollection}

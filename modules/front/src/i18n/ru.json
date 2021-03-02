@@ -248,5 +248,7 @@
   "sendOnApprove": "Отправить на согласование",
   "bproc.participants": "Участники процесса утверждения",
   "create.leavingVacationRequest": "Создать заявку на выход из отпуска",
-  "leavingVacationRequest": "Заявка на выход из отпуска"
+  "leavingVacationRequest": "Заявка на выход из отпуска",
+  "new.request": "Новая заявка",
+  "vacationScheduleRequest": "Заявки на график отпусков"
 }
