@@ -117,6 +117,15 @@ export const restServices = {
       ).then((response: string) => {
         return JSON.parse(response);
       });
+    },
+    searchCourses: (params: { courseName: string }): Promise<DicCategory[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "searchCourses",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
     }
   },
   kpiService: {

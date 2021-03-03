@@ -10,6 +10,8 @@ import {restQueries} from "../../../cuba/queries";
 import {runInAction} from "mobx";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
+import {restServices} from "../../../cuba/services";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 @observer
 class CourseList<T> extends React.Component {
@@ -18,12 +20,13 @@ class CourseList<T> extends React.Component {
 
   onSearch = (value: string) => {
     if (value) {
-      restQueries.searchCourses(value).then(findedCourses => {
+      restServices.courseService.searchCourses({courseName: value}).then((foundCategoryWithCourses: Array<SerializedEntity<DicCategory>>) => {
         runInAction(() => {
-          this.dataCollection.items = findedCourses
+          this.dataCollection.items = foundCategoryWithCourses;
         })
       });
     } else {
+      this.dataCollection.clear();
       this.dataCollection.load();
     }
   };
