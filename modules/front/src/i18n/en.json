@@ -258,5 +258,7 @@
   "validation.absenceRequest.dateTo": "\"Date to\" is required and cannot be less  than \"Date from\"",
   "bproc.participants": "Participants in the approval process",
   "create.leavingVacationRequest": "Create a request to leave the vacation",
-  "leavingVacationRequest": "Request to leave the vacation"
+  "leavingVacationRequest": "Request to leave the vacation",
+  "new.request": "New request",
+  "vacationScheduleRequest": "Vacation schedule request"
 }

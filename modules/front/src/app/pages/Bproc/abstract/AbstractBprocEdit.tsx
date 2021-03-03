@@ -24,8 +24,6 @@ type EditorProps = {
   entityId: string;
 };
 
-type openModalStatus = "LOADING" | "DONE";
-
 abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends React.Component<K & Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
 
   dataInstance: DataInstanceStore<T>;

@@ -1,42 +1,42 @@
-import {AbstractBprocRequest} from "./AbstractBprocRequest";
-import {AssignmentGroupExt} from "./base$AssignmentGroupExt";
-import {FileDescriptor} from "./sys$FileDescriptor";
-import {DicAbsenceType} from "./tsadv$DicAbsenceType";
-import {PersonGroupExt} from "./base$PersonGroupExt";
-import {DicAbsencePurpose} from "./tsadv_DicAbsencePurpose";
-
+import { AbstractBprocRequest } from "./AbstractBprocRequest";
+import { DicAbsenceType } from "./tsadv$DicAbsenceType";
+import { PersonGroupExt } from "./base$PersonGroupExt";
 export class AllAbsenceRequest extends AbstractBprocRequest {
   static NAME = "tsadv_AllAbsenceRequest";
-  startDate?: any | null;
-  endDate?: any | null;
-  absenceDays?: number | null;
   type?: DicAbsenceType | null;
   personGroup?: PersonGroupExt | null;
   entityName?: string | null;
+  startDate?: any | null;
+  endDate?: any | null;
+  absenceDays?: number | null;
 }
-
 export type AllAbsenceRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
   | "allAbsenceRequest-view";
-export type AllAbsenceRequestView<V extends AllAbsenceRequestViewName> = V extends "_base"
-  ? Pick<AllAbsenceRequest,
-    | "id"
-    | "requestDate"
-    | "startDate"
-    | "endDate"
-    | "absenceDays"
-    | "legacyId"
-    | "organizationBin"
-    | "integrationUserLogin"
-    | "requestNumber"
-    | "entityName"
-    | "comment">
-  : V extends "_local"
-    ? Pick<AllAbsenceRequest,
+export type AllAbsenceRequestView<
+  V extends AllAbsenceRequestViewName
+> = V extends "_base"
+  ? Pick<
+      AllAbsenceRequest,
       | "id"
+      | "requestNumber"
       | "requestDate"
+      | "entityName"
+      | "startDate"
+      | "endDate"
+      | "absenceDays"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "comment"
+    >
+  : V extends "_local"
+  ? Pick<
+      AllAbsenceRequest,
+      | "id"
+      | "entityName"
       | "startDate"
       | "endDate"
       | "absenceDays"
@@ -44,23 +44,27 @@ export type AllAbsenceRequestView<V extends AllAbsenceRequestViewName> = V exten
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
+      | "requestDate"
+      | "comment"
+    >
+  : V extends "_minimal"
+  ? Pick<AllAbsenceRequest, "id" | "requestNumber" | "requestDate">
+  : V extends "allAbsenceRequest-view"
+  ? Pick<
+      AllAbsenceRequest,
+      | "id"
       | "entityName"
-      | "comment">
-    : V extends "_minimal"
-      ? Pick<AllAbsenceRequest, "id" | "requestDate">
-      : V extends "allAbsenceRequest-view"
-        ? Pick<AllAbsenceRequest,
-          | "id"
-          | "startDate"
-          | "endDate"
-          | "absenceDays"
-          | "organizationBin"
-          | "integrationUserLogin"
-          | "requestNumber"
-          | "entityName"
-          | "requestDate"
-          | "comment"
-          | "type"
-          | "personGroup"
-          | "status">
-              : never;
+      | "startDate"
+      | "endDate"
+      | "absenceDays"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "type"
+      | "personGroup"
+      | "status"
+    >
+  : never;

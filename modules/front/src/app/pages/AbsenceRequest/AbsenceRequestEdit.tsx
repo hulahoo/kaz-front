@@ -208,7 +208,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
-                <div>
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
                   <Form.Item>
                     {getFieldDecorator("comment")(
@@ -260,16 +260,6 @@ const onValuesChange = (props: any, changedValues: any) => {
 
       const personGroupId = rootStore.userInfo.personGroupId;
 
-      /*if ((fieldName === "dateFrom" || fieldName === "type") && personGroupId && type && dateFrom) {
-        restServices.absenceService.vacationDurationType({
-          personGroupId: personGroupId,
-          absenceTypeId: type,
-          dateFrom: dateFrom
-        }).then(value => {
-          value = value ? value.substring(1, value.length - 1) : value;
-          props.form.setFields({"vacationDurationType": {value: props.intl.formatMessage({id: value})}});
-        });
-      }*/
       if ((fieldName === "type" || fieldName === "dateFrom" || fieldName === "dateTo")
         && type && dateTo && dateFrom && personGroupId) {
         restServices.absenceService.countDays({
