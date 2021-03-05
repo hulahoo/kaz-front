@@ -52,12 +52,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.learn-history"})}>
         <Section visible={false} size={"large"}>
-          <div className={"button-group"}>
-            <Button buttonType={ButtonType.FOLLOW} className={"button-icon"}><ExcelSvg
-              style={{width: '14px'}}/>{this.props.intl.formatMessage({id: "learningHistory.certificate.downloadExcel"})}
-            </Button>
-          </div>
-          <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
+         <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
                  size="default" bordered={false} rowKey="id">
             <Column title={<>№</>}
                     dataIndex="rowNumber"

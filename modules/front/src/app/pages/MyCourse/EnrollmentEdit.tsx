@@ -9,34 +9,35 @@ import "../../../app/App.css";
 
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 import Section from "../../hoc/Section";
-import {Card, Col, Icon, Modal, Row, Spin} from "antd";
+import {Col, Icon, Row, Spin} from "antd";
 import Img from "../../components/Img";
 import NoImage from "../../components/NoImage";
 import Page from "../../hoc/PageContentHoc";
-import {Meta} from "antd/es/list/Item";
 import {SerializedEntity} from "@cuba-platform/rest";
-import CourseSectionList from "../../components/CourseSectionList";
+import CourseSectionList, {ListItem} from "../../components/CourseSectionList";
 import {restServices} from "../../../cuba/services";
 import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
 import Notification from "../../util/Notification/Notification";
-import Button, {ButtonType} from "../../components/Button/Button";
 import {EnrollmentManagement} from "./EnrollmentManagement";
 import {restQueries} from "../../../cuba/queries";
-import Video from "../../components/Video";
-import Test from "../../components/Test/Test";
-import * as ReactDOM from "react-dom";
-import {RefObject} from "react";
 import CourseSectionModal from "./CourseSectionModal";
 import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 import moment from "moment";
-import {log} from "util";
+import {LearningFeedbackTemplate} from "../../../cuba/entities/base/tsadv$LearningFeedbackTemplate";
+import {CourseSectionRenderType} from "./RenderModalBody/RenderModalBody";
 
 type Props = {
   entityId: string;
 };
 
+export type SelectedSection = {
+  id: string,
+  type: CourseSectionRenderType
+}
+
 @observer
 class EnrollmentEditComponent extends React.Component<Props & WrappedComponentProps> {
+
 
   @observable
   status: DataContainerStatus = "CLEAN";
@@ -45,46 +46,108 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   dataInstance: SerializedEntity<Enrollment>;
 
   @observable
-  selectedSectionId: string | null = null;
+  feedbacks: Array<SerializedEntity<LearningFeedbackTemplate>> | null;
 
   @observable
-  selectedCourseSection = instance<CourseSection>(CourseSection.NAME, {
-    view: "course.section.with.format.session",
-    loadImmediately: false
-  });
+  selectedSection: SelectedSection | null = null;
 
   @observable
   visibleModal: boolean = false;
 
-  clickSection = (e: React.MouseEvent<HTMLDivElement>) => {
-    const courseSectionId = e.currentTarget.children.item(0)!.id;
-    this.setSelectedSectionId(courseSectionId);
+  render() {
+    const courseSections = this.dataInstance ? this.dataInstance.course!.sections!.map(s => {
+      return {
+        hasAttempt: s.courseSectionAttempts!.length > 0,
+        id: s.id,
+        text: s.sectionName,
+        type: "course-section"
+      } as ListItem
+    }) : [];
+
+    return (
+      // @ts-ignore
+      <Page>
+        <Spin spinning={this.status === 'LOADING'}>
+          <Section size={"large"} sectionName={this.dataInstance ? this.dataInstance!.course!.name! : null}>
+            <Row>
+              <Col span={16} style={{height: '350px'}}>
+                <div className="course-logo">
+                  {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
+                    <>
+                      <Icon type="caret-right" className={"play-icon"} onClick={this.playIconClick}/>
+                      <Img isBase src={this.dataInstance.course!.logo}
+                           alt={this.dataInstance.course!.name!}
+                           style={{borderRadius: '4px', width: '100%', height: '100%'}}/></>}
+                </div>
+              </Col>
+              <Col span={8} style={{paddingLeft: "30px"}}>
+                <CourseSectionList dataInstance={courseSections}
+                                   clickItemHandler={this.clickSection}
+                                   selectedItem={this.selectedSection ? this.selectedSection.id : null}/>
+                <hr/>
+                <div className={"course-feedback-sections"}>
+                  <CourseSectionList dataInstance={this.feedbacks ? this.feedbacks.map(f => {
+                    return {
+                      id: f.id,
+                      hasAttempt: false,
+                      text: f._instanceName,
+                      type: "feedback"
+                    }
+                  }) : null} clickItemHandler={this.clickSection}
+                                     selectedItem={this.selectedSection ? this.selectedSection.id : null}/>
+                </div>
+              </Col>
+            </Row>
+          </Section>
+          {this.visibleModal ? <CourseSectionModal
+            courseId={this.dataInstance.course!.id}
+            onFinishSection={this.finishSection}
+            onCloseModal={this.onCloseModal}
+            selectedSection={this.selectedSection!}
+            enrollmentId={this.props.entityId}/> : <></>}
+        </Spin>
+      </Page>);
+  }
+
+  @action
+  setVisibleModal = (value: boolean) => {
+    this.visibleModal = value;
   };
 
+  @action
+  setSelectedSection = (value: SelectedSection | null) => {
+    this.selectedSection = value;
+  };
+
+  @action
+  onCloseModal = () => {
+    this.setVisibleModal(false);
+  };
+
+  componentDidMount() {
+    if (this.props.entityId !== EnrollmentManagement.NEW_SUBPATH) {
+      this.loadData();
+    }
+  }
+
   playIconClick = () => {
-    if (!this.selectedSectionId) {
+    if (!this.selectedSection) {
       Notification.info({
         message: "Не выбран раздел курса"
       });
       return;
     }
-
-    this.selectedCourseSection.load(this.selectedSectionId);
     this.setVisibleModal(true);
   };
 
-  onCloseModal = () => {
-    this.setVisibleModal(false);
-  };
+  clickSection = (e: React.MouseEvent<HTMLDivElement>) => {
+    const courseSectionId = (e.currentTarget.children.item(0)! as any).id!;
+    const sectionType = (e.currentTarget.children.item(0)! as any).getAttribute('type') as CourseSectionRenderType;
 
-  @action
-  setSelectedSectionId = (value: string | null) => {
-    this.selectedSectionId = value;
-  };
-
-  @action
-  setVisibleModal = (value: boolean) => {
-    this.visibleModal = value;
+    this.setSelectedSection({
+      type: sectionType,
+      id: courseSectionId
+    });
   };
 
   finishSection = () => {
@@ -96,13 +159,13 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       }, {
         property: "courseSection",
         operator: "=",
-        value: this.selectedSectionId
+        value: this.selectedSection!.id
       }]
     }, {view: "course-section-attempt"}).then(response => {
       if ((response.count == 0)) {
         getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
           courseSection: {
-            id: this.selectedCourseSection.item!.id,
+            id: this.selectedSection!.id,
           },
           attemptDate: moment().toISOString(),
           activeAttempt: false,
@@ -111,14 +174,16 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
             id: this.props.entityId
           }
         } as CourseSectionAttempt).then(respones => {
-          const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSectionId);
+          const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
           if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
             const nextSelectedSectionIndex = selectedSectionIndex + 1;
             const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
             if (nextSection) {
-              this.setSelectedSectionId(nextSection.id);
-              this.finishedCourseSection(this.selectedCourseSection.item!.id);
-
+              this.finishedCourseSection(this.selectedSection!.id);
+              this.setSelectedSection({
+                type: "course-section",
+                id: nextSection.id
+              });
               this.playIconClick();
             } else {
               this.visibleModal = false;
@@ -128,12 +193,16 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           }
         });
       } else {
-        const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSectionId);
+        const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
         if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
           const nextSelectedSectionIndex = selectedSectionIndex + 1;
           const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
           if (nextSection) {
-            this.setSelectedSectionId(nextSection.id);
+            this.setVisibleModal(false);
+            this.setSelectedSection({
+              type: "course-section",
+              id: nextSection.id
+            });
             this.playIconClick();
           } else {
             this.visibleModal = false;
@@ -155,52 +224,6 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     })
   };
 
-  render() {
-    return (
-      // @ts-ignore
-      <Page>
-        <Spin spinning={this.status === 'LOADING'}>
-          <Section size={"large"} sectionName={this.dataInstance ? this.dataInstance!.course!.name! : null}>
-            <Row>
-              <Col span={16} style={{height: '350px'}}>
-                <div className="course-logo">
-                  {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
-                    <>
-                      <Icon type="caret-right" className={"play-icon"} onClick={this.playIconClick}/>
-                      <Img isBase src={this.dataInstance.course!.logo}
-                           alt={this.dataInstance.course!.name!}
-                           style={{borderRadius: '4px', width: '100%', height: '100%'}}/></>}
-                </div>
-              </Col>
-              <Col span={8} style={{paddingLeft: "30px"}}>
-                <CourseSectionList dataInstance={this.dataInstance ? this.dataInstance.course!.sections : null}
-                                   clickItemHandler={this.clickSection}
-                                   selectedItem={this.selectedSectionId}/>
-                <hr/>
-                <div onClick={this.clickSection}>
-                  <div key="feedback" id="feedback">
-                    <Meta title="Анкета обратной связи"
-                          className="course-section-item course-section-item-feedback"/>
-                  </div>
-                </div>
-              </Col>
-            </Row>
-          </Section>
-          {this.visibleModal ? <CourseSectionModal
-            onFinishSection={this.finishSection}
-            onCloseModal={this.onCloseModal}
-            selectedCourseSection={this.selectedCourseSection.item}
-            enrollmentId={this.props.entityId}/> : <></>}
-        </Spin>
-      </Page>);
-  }
-
-  componentDidMount() {
-    if (this.props.entityId !== EnrollmentManagement.NEW_SUBPATH) {
-      this.loadData();
-    }
-  }
-
   loadData = () => {
     this.status = "LOADING";
     restQueries.enrollment(this.props.entityId).then((response: SerializedEntity<Enrollment>[]) => {
@@ -209,11 +232,19 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           this.dataInstance = response[0]
         });
         this.status = "DONE";
+
+        this.loadFeedback();
       }
     }).catch(() => {
       this.status = "DONE";
     });
   };
+
+  loadFeedback = () => {
+    restQueries.courseFeedbacks(this.dataInstance.course!.id, "COURSE").then(r => {
+      this.feedbacks = r;
+    })
+  }
 }
 
 export default injectIntl(EnrollmentEditComponent);

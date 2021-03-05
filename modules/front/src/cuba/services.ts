@@ -19,6 +19,8 @@ import {SecurityState} from "../app/util/EntitySecurityState";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
 import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsRequest";
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
+import {AnsweredFeedback} from "../app/pages/MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent";
+import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQuestion";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -170,6 +172,22 @@ export const restServices = {
       return getCubaREST()!.invokeService(
         "tsadv_LmsService",
         "finishTest",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    finishFeedback: (params: { answeredFeedback: AnsweredFeedback }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "finishFeedback",
+        {...params},
+        fetchOpts
+      );
+    },
+    loadFeedbackData: (params: { feedbackTemplateId: string }, fetchOpts?: FetchOptions):Promise<LearningFeedbackQuestion[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "loadFeedbackData",
         {...params},
         fetchOpts
       ).then((response: string) => JSON.parse(response));

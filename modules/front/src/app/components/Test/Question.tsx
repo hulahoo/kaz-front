@@ -6,7 +6,7 @@ export type QuestionModel = {
   id: string,
   text: string,
   type: string,
-  answers: AnswerModel[]
+  answers?: AnswerModel[]
 }
 
 export type AnswerModel = {
@@ -15,8 +15,7 @@ export type AnswerModel = {
 }
 
 export interface TestComponentProps {
-  question: QuestionModel,
-  testSectionId: string,
+  question: QuestionModel
 }
 
 export interface TestComponentHandlers {

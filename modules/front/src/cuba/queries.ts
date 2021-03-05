@@ -10,6 +10,7 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {PerformancePlan} from "./entities/base/tsadv$PerformancePlan";
+import {LearningFeedbackTemplate} from "./entities/base/tsadv$LearningFeedbackTemplate";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -27,14 +28,6 @@ export var restQueries = {
   personGroupInfo: (userId: string) => {
     return getCubaREST()!.query<PersonGroupExt>(PersonGroupExt.NAME, "personGroupInfo", {
       userId: userId
-    }).then(response => {
-      return response[0]
-    })
-  },
-  currentUserAssignment: (userId: string): Promise<AssignmentExt> => {
-    return getCubaREST()!.query<AssignmentExt>(AssignmentExt.NAME, "currentUserAssignment", {
-      userId: userId,
-      currentDate: moment.now()
     }).then(response => {
       return response[0]
     })
@@ -68,6 +61,13 @@ export var restQueries = {
     return getCubaREST()!.query<AssignedPerformancePlan>(AssignedPerformancePlan.NAME, "kpiTeamPerformancePlan", {
       personGroupId: personGroupId,
       performancePlanId: performancePlanId,
+    })
+  },
+  courseFeedbacks: (courseId: string, usageType: string): Promise<SerializedEntity<LearningFeedbackTemplate>[]> => {
+    return getCubaREST()!.query<LearningFeedbackTemplate>(LearningFeedbackTemplate.NAME, "courseFeedbacks", {
+      courseId: courseId,
+      systemDate: moment().toISOString(),
+      usageType: usageType,
     })
   }
 };

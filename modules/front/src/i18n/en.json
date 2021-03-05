@@ -260,5 +260,9 @@
   "create.leavingVacationRequest": "Create a request to leave the vacation",
   "leavingVacationRequest": "Request to leave the vacation",
   "new.request": "New request",
-  "vacationScheduleRequest": "Vacation schedule request"
+  "vacationScheduleRequest": "Vacation schedule request",
+  "course.section.finish": "Finish section",
+  "course.feedback.finish": "Send",
+  "course.section.test.finish": "Finish test",
+  "feedback.modal.title": "Thanks for feedback"
 }

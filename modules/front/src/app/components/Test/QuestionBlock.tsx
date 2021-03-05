@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import Question from "./Question";
 import {Icon} from "antd";
-import {AnsweredQuestion, TestModel} from "./Test";
+import {AnsweredQuestion, TestModel, TestSectionModel} from "./Test";
 import {action, observable} from "mobx";
 import {observer} from "mobx-react";
 
 type Props = {
-  test: TestModel
+  testSections: TestSectionModel[]
   addRemoveAnswer: (a: AnsweredQuestion) => void
 }
 
@@ -23,13 +23,14 @@ class QuestionBlock extends Component<Props> {
 
   render() {
     return (<div className="test-container">
-        {this.props.test.testSections.map(ts => <div className={"test-section"}>
-          <div className={"test-section-title"}>
-            <span>{ts.name}</span>
-          </div>
+        {this.props.testSections.map(ts => <div className={"test-section"}>
+          {ts.name ?
+            <div className={"test-section-title"}>
+              <span>{ts.name}</span>
+            </div>
+            : null}
           {ts.questionsAndAnswers.map((question, index) => <div
             className={"question-container" + (this.questionIndex === index ? " visible" : "")}><Question
-            testSectionId={ts.id}
             addRemoveAnswer={this.props.addRemoveAnswer}
             question={question}/>
             <div className="question-control-block">

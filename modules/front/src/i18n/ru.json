@@ -250,5 +250,9 @@
   "create.leavingVacationRequest": "Создать заявку на выход из отпуска",
   "leavingVacationRequest": "Заявка на выход из отпуска",
   "new.request": "Новая заявка",
-  "vacationScheduleRequest": "Заявки на график отпусков"
+  "vacationScheduleRequest": "Заявки на график отпусков",
+  "course.section.finish": "Завершить раздел",
+  "course.feedback.finish": "Отправить",
+  "course.section.test.finish": "Завершить тест",
+  "feedback.modal.title": "Благодарим за отзыв!"
 }
