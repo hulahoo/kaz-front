@@ -107,7 +107,8 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/my-dmc/:entityId?" component={InsuredPersonManagement}/>
                 <Route exact={true} path="/schedule-offsets/:entityId?" component={ScheduleOffsetsRequestManagement}/>
                 <Route exact={true} path="/book/:entityId?" component={BooksManagement}/>
-                <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
+                <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?" + "/:homework?"}
+                       component={EnrollmentManagement}/>
                 <Route exact={true} path={ActivityManagement.PATH} component={ActivityManagement}/>
                 <Route exact={true}
                        path={AbsenceRequestManagement.PATH + "/:entityId"}

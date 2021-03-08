@@ -264,5 +264,8 @@
   "course.section.finish": "Finish section",
   "course.feedback.finish": "Send",
   "course.section.test.finish": "Finish test",
-  "feedback.modal.title": "Thanks for feedback"
+  "feedback.modal.title": "Thanks for feedback",
+  "homework": "Homework",
+  "previous": "Previous",
+  "next": "Next"
 }

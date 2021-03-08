@@ -3,7 +3,7 @@ import {observer} from "mobx-react";
 import {action, observable, runInAction} from "mobx";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
-import {DataContainerStatus, getCubaREST, instance,} from "@cuba-platform/react";
+import {DataContainerStatus, getCubaREST,} from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
@@ -13,10 +13,9 @@ import {Col, Icon, Row, Spin} from "antd";
 import Img from "../../components/Img";
 import NoImage from "../../components/NoImage";
 import Page from "../../hoc/PageContentHoc";
+import {Meta} from "antd/es/list/Item";
 import {SerializedEntity} from "@cuba-platform/rest";
 import CourseSectionList, {ListItem} from "../../components/CourseSectionList";
-import {restServices} from "../../../cuba/services";
-import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
 import Notification from "../../util/Notification/Notification";
 import {EnrollmentManagement} from "./EnrollmentManagement";
 import {restQueries} from "../../../cuba/queries";
@@ -25,6 +24,7 @@ import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSect
 import moment from "moment";
 import {LearningFeedbackTemplate} from "../../../cuba/entities/base/tsadv$LearningFeedbackTemplate";
 import {CourseSectionRenderType} from "./RenderModalBody/RenderModalBody";
+import {Link} from "react-router-dom";
 
 type Props = {
   entityId: string;
@@ -54,7 +54,27 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   @observable
   visibleModal: boolean = false;
 
+  @observable
+  isHasHomework: boolean = false;
+
   render() {
+
+    const homeworkTitle = <>
+      <Icon type="check-circle" className={"done"} theme="twoTone" twoToneColor="#12BF66"
+            style={{fontSize: '32px'}}/>
+      <div>{this.props.intl.formatMessage({id: "homework"})}</div>
+    </>;
+    const linkHomework = this.isHasHomework && this.dataInstance
+      ? <Link
+        to={EnrollmentManagement.PATH + "/" + this.props.entityId + "/" + EnrollmentManagement.HOMEWORK}>
+        <div key="homework" id="homework">
+          <Meta title={homeworkTitle}
+                className={"course-section-item"}>
+          </Meta>
+        </div>
+      </Link>
+      : null;
+
     const courseSections = this.dataInstance ? this.dataInstance.course!.sections!.map(s => {
       return {
         hasAttempt: s.courseSectionAttempts!.length > 0,
@@ -84,6 +104,9 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                 <CourseSectionList dataInstance={courseSections}
                                    clickItemHandler={this.clickSection}
                                    selectedItem={this.selectedSection ? this.selectedSection.id : null}/>
+                <div>
+                  {linkHomework}
+                </div>
                 <hr/>
                 <div className={"course-feedback-sections"}>
                   <CourseSectionList dataInstance={this.feedbacks ? this.feedbacks.map(f => {
@@ -128,6 +151,10 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     if (this.props.entityId !== EnrollmentManagement.NEW_SUBPATH) {
       this.loadData();
     }
+
+    restQueries.homeworksByEnrollment(this.props.entityId).then(value => {
+      this.isHasHomework = value.length > 0;
+    });
   }
 
   playIconClick = () => {
