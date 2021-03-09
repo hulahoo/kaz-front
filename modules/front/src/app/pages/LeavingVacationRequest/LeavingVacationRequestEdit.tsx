@@ -62,13 +62,14 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
     "endDate",
 
-    "plannedStartDate"
+    "plannedStartDate",
+
+    "attachment"
   ];
 
   assignmentGroupId: string;
 
   getUpdateEntityData = (): any => {
-    console.log({...this.dataInstance.item!.vacation});
     return {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
@@ -82,12 +83,12 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
   dateValidator = () => {
     const plannedStartDate = this.props.form.getFieldValue("plannedStartDate");
-    const requestDate = this.props.form.getFieldValue("requestDate");
+    const endDate = this.props.form.getFieldValue("endDate");
 
     if (plannedStartDate) (plannedStartDate as Moment).startOf('days');
-    if (requestDate) (requestDate as Moment).startOf('days');
+    if (endDate) (endDate as Moment).startOf('days');
 
-    const isValid = plannedStartDate && requestDate && plannedStartDate >= (requestDate as Moment).clone().add(30, 'days');
+    const isValid = plannedStartDate && endDate && plannedStartDate >= (endDate as Moment).clone().add(30, 'days');
 
     return isValid === true;
   }
@@ -105,7 +106,6 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
     const needBpm = this.dataInstance.item && this.dataInstance.item.vacation;
 
     const {getFieldDecorator} = this.props.form;
-    const messages = this.mainStore.messages!;
 
     const isDraft = this.isDraft();
 
@@ -184,7 +184,7 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                   getFieldDecoratorOpts={{
                     rules: [{
                       required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.plannedStartDate']}),
+                      message: this.props.intl.formatMessage({id: "leavingVacationRequest.plannedStartDate.validating"}),
                       validator: this.dateValidator
                     }]
                   }}
@@ -200,6 +200,14 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                     )}
                   </Form.Item>
                 </div>
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="attachment"
+                  form={this.props.form}
+                  disabled={isDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
 
                 {this.takCard()}
 
@@ -217,7 +225,6 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
       getCubaREST()!.loadEntity(Absence.NAME, this.props.absenceId, {view: "absence.view"})
         .then(value => {
           const absence = value as Absence;
-          console.log(value);
           request.vacation = absence;
           request.startDate = absence.dateFrom;
           request.endDate = absence.dateTo;

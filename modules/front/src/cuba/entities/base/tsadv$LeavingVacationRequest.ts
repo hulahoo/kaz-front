@@ -1,11 +1,13 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { Absence } from "./tsadv$Absence";
+import {FileDescriptor} from "./sys$FileDescriptor";
 export class LeavingVacationRequest extends AbstractBprocRequest {
   static NAME = "tsadv$LeavingVacationRequest";
   vacation?: Absence | null;
   startDate?: any | null;
   endDate?: any | null;
   plannedStartDate?: any | null;
+  attachment?: FileDescriptor | null;
 }
 export type LeavingVacationRequestViewName =
   | "_base"
@@ -76,5 +78,6 @@ export type LeavingVacationRequestView<
       | "comment"
       | "vacation"
       | "status"
+      | "attachment"
     >
   : never;

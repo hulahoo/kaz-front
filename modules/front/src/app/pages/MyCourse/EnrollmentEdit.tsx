@@ -1,8 +1,8 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {action, observable, runInAction} from "mobx";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {DataContainerStatus, getCubaREST} from "@cuba-platform/react";
+import {DataContainerStatus, getCubaREST, injectMainStore} from "@cuba-platform/react";
 import "../../../app/App.css";
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 import Section from "../../hoc/Section";
@@ -21,8 +21,11 @@ import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSect
 import moment from "moment";
 import {LearningFeedbackTemplate} from "../../../cuba/entities/base/tsadv$LearningFeedbackTemplate";
 import {CourseSectionRenderType} from "./RenderModalBody/RenderModalBody";
-import {Link} from "react-router-dom";
 import MyEducationManagement from "../MyEducation/MyEducationManagement";
+import {Link, RouteComponentProps} from "react-router-dom";
+import {StudentHomework} from "../../../cuba/entities/base/tsadv_StudentHomework";
+import {RootStoreProp} from "../../store";
+import {withRouter} from "react-router";
 
 type Props = {
   entityId: string;
@@ -33,8 +36,10 @@ export type SelectedSection = {
   type: CourseSectionRenderType
 }
 
+@inject("rootStore")
+@injectMainStore
 @observer
-class EnrollmentEditComponent extends React.Component<Props & WrappedComponentProps> {
+class EnrollmentEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
 
 
   @observable
@@ -55,10 +60,14 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   @observable
   isHasHomework: boolean = false;
 
+  @observable
+  isHomeworkDone: boolean = false;
+
   render() {
     const homeworkTitle = <>
-      <Icon type="check-circle" className={"done"} theme="twoTone" twoToneColor="#12BF66"
-            style={{fontSize: '32px'}}/>
+      {this.isHomeworkDone ? <Icon type="check-circle" className={"done"} theme="twoTone"
+                                   twoToneColor="#12BF66"
+                                   style={{fontSize: '32px'}}/> : null}
       <div>{this.props.intl.formatMessage({id: "homework"})}</div>
     </>;
     const linkHomework = this.isHasHomework && this.dataInstance
@@ -151,6 +160,27 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
     restQueries.homeworksByEnrollment(this.props.entityId).then(value => {
       this.isHasHomework = value.length > 0;
+      if (this.isHasHomework) {
+        getCubaREST()!.searchEntitiesWithCount(StudentHomework.NAME, {
+          conditions: [{
+            property: "homework.id",
+            operator: "in",
+            value: value.map(record => record.id!)
+          }, {
+            property: "personGroup.id",
+            operator: "=",
+            value: this.props.rootStore!.userInfo.personGroupId!
+          }, {
+            property: "isDone",
+            operator: "=",
+            value: 'TRUE'
+          }]
+        })
+          .then(homeworkCount => {
+            console.log(homeworkCount.count);
+            this.isHomeworkDone = homeworkCount.count >= value.length;
+          })
+      }
     });
   }
 
@@ -271,4 +301,4 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   }
 }
 
-export default injectIntl(EnrollmentEditComponent);
+export default withRouter(injectIntl(EnrollmentEditComponent));

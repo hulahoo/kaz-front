@@ -166,7 +166,6 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                   .then(formData => {
                     this.formData = formData;
                     this.isStartForm = false;
-                    console.log(this.formData);
                   });
             })
         } else {

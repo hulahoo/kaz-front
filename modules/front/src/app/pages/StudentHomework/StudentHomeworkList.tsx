@@ -7,7 +7,7 @@ import {observable, toJS} from "mobx";
 import {Card, Form, Tabs, Tag} from "antd";
 
 import {FileUpload, getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 import {Homework} from "../../../cuba/entities/base/tsadv_Homework";
 import {restQueries} from "../../../cuba/queries";
 import {RootStoreProp} from "../../store";
@@ -60,6 +60,8 @@ class StudentHomeworkListComponent extends React.Component<Props & MainStoreInje
     getCubaREST()!.commitEntity(StudentHomework.NAME, toJS(this.studentHomework))
       .then(value => {
         this.isStudentHomeworkChanged = false;
+        if (this.studentHomework.id === null)
+          this.studentHomework = value;
         Notification.success({message: this.props.intl.formatMessage({id: "management.editor.success"})});
       })
       .catch((e: any) => {
@@ -67,6 +69,11 @@ class StudentHomeworkListComponent extends React.Component<Props & MainStoreInje
           message: this.props.intl.formatMessage({id: "management.editor.error"})
         });
       });
+  }
+
+  saveAndClose = () => {
+    this.save();
+    this.props.history!.goBack();
   }
 
   onChangeTab = (increment: number) => {
@@ -106,13 +113,8 @@ class StudentHomeworkListComponent extends React.Component<Props & MainStoreInje
       </Button>);
     }
     arr.push(<Button buttonType={ButtonType.FOLLOW}
-                     onClick={this.save}>
-      <FormattedMessage id="management.editor.submit"/>
-    </Button>);
-    arr.push(<Button buttonType={ButtonType.FOLLOW}
-                     disabled={false}
-                     onClick={this.props.history!.goBack}>
-      {this.props.intl.formatMessage({id: "close"})}
+                     onClick={this.saveAndClose}>
+      {this.props.intl.formatMessage({id: "saveAndClose"})}
     </Button>);
     return arr;
   }

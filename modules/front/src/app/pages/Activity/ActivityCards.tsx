@@ -81,11 +81,6 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
       </Page>
     );
   }
-
-  componentDidMount(): void {
-    console.log('componentDidMount');
-  }
-
 }
 
 const component = injectIntl(ActivityCards);
