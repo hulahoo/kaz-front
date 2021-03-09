@@ -66,6 +66,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
   };
 
   componentDidMount(): void {
+    super.componentDidMount();
     restServices.lmsService.startAndLoadTest({
       enrollmentId: this.props.enrollmentId,
       courseSectionObjectId: this.props.courseSection.sectionObject!.id

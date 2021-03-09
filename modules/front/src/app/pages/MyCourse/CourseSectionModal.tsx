@@ -60,6 +60,7 @@ class CourseSectionModal extends Component<Props> {
 
   getSectionBody = () => {
     const params = ((this.sectionData as DataInstanceStore<CourseSection>).item ? {
+      courseId: this.props.courseId,
       courseSection: ((this.sectionData as DataInstanceStore<CourseSection>).item! as CourseSection),
       changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
     } : {
