@@ -259,6 +259,7 @@
   "bproc.participants": "Participants in the approval process",
   "create.leavingVacationRequest": "Create a request to leave the vacation",
   "leavingVacationRequest": "Request to leave the vacation",
+  "leavingVacationRequest.plannedStartDate.validating": "In the case of going to work before the expiration of unpaid leave to care for a child before the child reaches the age of three years, the employee must notify the employer of his intention one month before starting work. You have specified a shorter period. Choose another date",
   "new.request": "New request",
   "vacationScheduleRequest": "Vacation schedule",
   "course.section.finish": "Finish section",
@@ -267,5 +268,6 @@
   "feedback.modal.title": "Thanks for feedback",
   "homework": "Homework",
   "previous": "Previous",
-  "next": "Next"
+  "next": "Next",
+  "saveAndClose": "Save and close"
 }
