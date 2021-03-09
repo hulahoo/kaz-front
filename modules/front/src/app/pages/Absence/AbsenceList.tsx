@@ -18,8 +18,8 @@ import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {LeavingVacationRequestManagement} from "../LeavingVacationRequest/LeavingVacationRequestManagement";
 import {AllAbsenceRequest} from "../../../cuba/entities/base/tsadv_AllAbsenceRequest";
 import {link} from "../../util/util";
-import {VacationSchedule} from "../../../cuba/entities/base/tsadv_VacationSchedule";
 import {VacationScheduleRequestManagement} from "../VacationScheduleRequest/VacationScheduleRequestManagement";
+import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 
 const {TabPane} = Tabs;
 
@@ -38,7 +38,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
     }
   });
 
-  dataCollectionVacationSchedule = collection<VacationSchedule>(VacationSchedule.NAME, {
+  dataCollectionVacationSchedule = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
       view: "_local",
       sort: "-updateTs",
       filter: {
@@ -66,6 +66,8 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
   ];
 
   vacationScheduleFields = [
+    "requestNumber",
+
     "startDate",
 
     "endDate",
@@ -95,6 +97,19 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
     if (text === record["requestNumber"] && this.lastIndex !== index) {
       this.lastIndex = index;
       return <Link to={link(record.entityName!) + "/" + record.id}>
+        {text}
+      </Link>
+    }
+
+    return text;
+  }
+
+  lastVacationScheduleRequestIndex = -1;
+
+  renderVacationScheduleRequestColumn = (text: string, record: VacationScheduleRequest, index: number) => {
+    if (text === record.requestNumber && this.lastVacationScheduleRequestIndex !== index) {
+      this.lastVacationScheduleRequestIndex = index;
+      return <Link to={VacationScheduleRequestManagement.PATH + "/" + record.id}>
         {text}
       </Link>
     }
@@ -171,6 +186,9 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                   dataCollection={this.dataCollectionVacationSchedule}
                   fields={this.vacationScheduleFields}
                   hideSelectionColumn={true}
+                  columnProps={{
+                    render: this.renderVacationScheduleRequestColumn
+                  }}
                 />
               </div>
             </TabPane>

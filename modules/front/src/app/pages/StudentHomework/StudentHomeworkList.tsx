@@ -1,151 +1,213 @@
 import * as React from "react";
-import { observer } from "mobx-react";
-import { Link } from "react-router-dom";
+import {createElement} from "react";
+import {inject, observer} from "mobx-react";
 
-import { observable } from "mobx";
+import {observable, toJS} from "mobx";
 
-import { Modal, Button } from "antd";
+import {Card, Form, Tabs, Tag} from "antd";
 
-import {
-  collection,
-  injectMainStore,
-  MainStoreInjected,
-  DataTable
-} from "@cuba-platform/react";
+import {FileUpload, getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {Homework} from "../../../cuba/entities/base/tsadv_Homework";
+import {restQueries} from "../../../cuba/queries";
+import {RootStoreProp} from "../../store";
+import {RouteComponentProps} from "react-router-dom";
+import Page from "../../hoc/PageContentHoc";
+import Section from "../../hoc/Section";
+import Button, {ButtonType} from "../../components/Button/Button";
+import LoadingPage from "../LoadingPage";
+import {withRouter} from "react-router";
+import {StudentHomework} from "../../../cuba/entities/base/tsadv_StudentHomework";
+import TextArea from "antd/es/input/TextArea";
+import {downloadFile} from "../../util/util";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
+import Notification from "../../util/Notification/Notification";
 
-import { StudentHomework } from "../../../cuba/entities/base/tsadv_StudentHomework";
-import { SerializedEntity } from "@cuba-platform/rest";
-import { StudentHomeworkManagement } from "./StudentHomeworkManagement";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+const {TabPane} = Tabs;
 
+type Props = {
+  enrollmentId: string,
+}
+
+@inject("rootStore")
 @injectMainStore
 @observer
-class StudentHomeworkListComponent extends React.Component<
-  MainStoreInjected & WrappedComponentProps
-> {
-  dataCollection = collection<StudentHomework>(StudentHomework.NAME, {
-    view: "_local",
-    sort: "-updateTs"
-  });
+class StudentHomeworkListComponent extends React.Component<Props & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
 
-  fields = [
-    "answer",
+  @observable courseId: string;
 
-    "isDone",
+  @observable homeworks: Homework[];
 
-    "trainerComment",
+  @observable studentHomework = new StudentHomework();
 
-    "legacyId",
+  isStudentHomeworkChanged = false
 
-    "organizationBin",
-
-    "integrationUserLogin"
-  ];
+  newFileId: string | undefined | null;
 
   @observable selectedRowKey: string | undefined;
 
-  showDeletionDialog = (e: SerializedEntity<StudentHomework>) => {
-    Modal.confirm({
-      title: this.props.intl.formatMessage(
-        { id: "management.browser.delete.areYouSure" },
-        { instanceName: e._instanceName }
-      ),
-      okText: this.props.intl.formatMessage({
-        id: "management.browser.delete.ok"
-      }),
-      cancelText: this.props.intl.formatMessage({
-        id: "management.browser.delete.cancel"
-      }),
-      onOk: () => {
-        this.selectedRowKey = undefined;
+  @observable defaultActiveKey = -1;
 
-        return this.dataCollection.delete(e);
-      }
-    });
-  };
+  @observable answer = "";
+
+  save = () => {
+    this.studentHomework.personGroup = {id: this.props.rootStore!.userInfo.personGroupId!};
+    if (this.newFileId !== undefined && this.newFileId !== null) this.studentHomework.answerFile = {id: this.newFileId};
+    else if (this.newFileId === null) this.studentHomework.answerFile = null;
+
+    this.studentHomework.answer = this.answer;
+
+    getCubaREST()!.commitEntity(StudentHomework.NAME, toJS(this.studentHomework))
+      .then(value => {
+        this.isStudentHomeworkChanged = false;
+        Notification.success({message: this.props.intl.formatMessage({id: "management.editor.success"})});
+      })
+      .catch((e: any) => {
+        Notification.error({
+          message: this.props.intl.formatMessage({id: "management.editor.error"})
+        });
+      });
+  }
+
+  onChangeTab = (increment: number) => {
+    if (this.isStudentHomeworkChanged && this.defaultActiveKey >= 0) this.save();
+
+    this.defaultActiveKey = increment + this.defaultActiveKey
+    if (!this.homeworks || this.defaultActiveKey >= this.homeworks.length || this.defaultActiveKey < 0) return;
+    const homework = this.homeworks[this.defaultActiveKey];
+    restQueries.studentHomework(homework.id, this.props.rootStore!.userInfo.personGroupId!)
+      .then(value => {
+        if (value.length > 0) {
+          this.studentHomework = value[0];
+        } else {
+          const studentHomework = new StudentHomework();
+          studentHomework.homework = homework;
+          this.studentHomework = studentHomework
+        }
+        this.answer = this.studentHomework.answer ? this.studentHomework.answer : "";
+        this.isStudentHomeworkChanged = false;
+        this.newFileId = undefined;
+      });
+  }
+
+  getActions = () => {
+    const arr = new Array<any>();
+    if (this.defaultActiveKey >= 1) {
+      arr.push(<Button buttonType={ButtonType.FOLLOW}
+                       onClick={() => this.onChangeTab(-1)}>
+        {this.props.intl.formatMessage({id: "previous"})}
+      </Button>);
+    }
+
+    if (this.homeworks !== null && this.defaultActiveKey < this.homeworks.length - 1) {
+      arr.push(<Button buttonType={ButtonType.FOLLOW}
+                       onClick={() => this.onChangeTab(1)}>
+        {this.props.intl.formatMessage({id: "next"})}
+      </Button>);
+    }
+    arr.push(<Button buttonType={ButtonType.FOLLOW}
+                     onClick={this.save}>
+      <FormattedMessage id="management.editor.submit"/>
+    </Button>);
+    arr.push(<Button buttonType={ButtonType.FOLLOW}
+                     disabled={false}
+                     onClick={this.props.history!.goBack}>
+      {this.props.intl.formatMessage({id: "close"})}
+    </Button>);
+    return arr;
+  }
 
   render() {
-    const buttons = [
-      <Link
-        to={
-          StudentHomeworkManagement.PATH +
-          "/" +
-          StudentHomeworkManagement.NEW_SUBPATH
-        }
-        key="create"
-      >
-        <Button
-          htmlType="button"
-          style={{ margin: "0 12px 12px 0" }}
-          type="primary"
-          icon="plus"
-        >
-          <span>
-            <FormattedMessage id="management.browser.create" />
-          </span>
-        </Button>
-      </Link>,
-      <Link
-        to={StudentHomeworkManagement.PATH + "/" + this.selectedRowKey}
-        key="edit"
-      >
-        <Button
-          htmlType="button"
-          style={{ margin: "0 12px 12px 0" }}
-          disabled={!this.selectedRowKey}
-          type="default"
-        >
-          <FormattedMessage id="management.browser.edit" />
-        </Button>
-      </Link>,
-      <Button
-        htmlType="button"
-        style={{ margin: "0 12px 12px 0" }}
-        disabled={!this.selectedRowKey}
-        onClick={this.deleteSelectedRow}
-        key="remove"
-        type="default"
-      >
-        <FormattedMessage id="management.browser.remove" />
-      </Button>
-    ];
+    if (!this.homeworks || this.homeworks.length < 1) {
+      return <LoadingPage/>;
+    }
 
+    const fileInfo = this.studentHomework && this.studentHomework.answerFile ? {
+      id: this.studentHomework.answerFile!.id!,
+      name: this.studentHomework.answerFile!.name!
+    } : undefined;
+
+    const pageName = this.props.intl.formatMessage({id: "homework"});
     return (
-      <DataTable
-        dataCollection={this.dataCollection}
-        fields={this.fields}
-        onRowSelectionChange={this.handleRowSelectionChange}
-        hideSelectionColumn={true}
-        buttons={buttons}
-      />
+      <Page pageName={pageName}>
+        <Section size="large">
+          <div>
+            <Card className="narrow-layout card-actions-container" actions={this.getActions()}>
+              <Tabs tabPosition='top'
+                    onChange={activeKey => {
+                      if ("" + this.defaultActiveKey !== activeKey)
+                        this.onChangeTab(parseInt(activeKey) - this.defaultActiveKey)
+                    }}
+                    activeKey={"" + this.defaultActiveKey}>
+                {
+                  this.homeworks.map((record, index) => {
+                    const file = record.instructionFile ?
+                      <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                        {createElement(Msg, {entityName: Homework.NAME, propertyName: "instructionFile"})}
+                        <Tag
+                          style={{margin: "10px"}}
+                          color={"blue"}
+                          onClick={() => {
+                            downloadFile((record.instructionFile as FileDescriptor).id,
+                              (record.instructionFile as FileDescriptor).name as string,
+                              (record.instructionFile as FileDescriptor).extension as string,
+                              "");
+                          }
+                          }> {(record.instructionFile as FileDescriptor).name}</Tag>
+                      </div> : <span/>;
+                    return <TabPane tab={pageName + " " + (1 + index)} key={"" + index}>
+                      <div>
+                        <Card className="narrow-layout">
+                          <Form layout="vertical">
+                            <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                              {createElement(Msg, {entityName: Homework.NAME, propertyName: "instructions"})}
+                              <TextArea
+                                disabled={true}
+                                value={record.instructions!}
+                                rows={4}/>
+                            </div>
+                            {file}
+
+                            <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                              {createElement(Msg, {entityName: StudentHomework.NAME, propertyName: "answer"})}
+                              <TextArea
+                                value={this.answer}
+                                onChange={event => {
+                                  this.answer = event.currentTarget.value;
+                                  this.isStudentHomeworkChanged = true;
+                                }}
+                                rows={4}/>
+                            </div>
+
+                            <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                              {/*{createElement(Msg, {entityName: StudentHomework.NAME, propertyName: "answerFile"})}*/}
+                              <FileUpload value={fileInfo} onChange={arg => {
+                                this.newFileId = arg === null ? null : arg.id;
+                                this.isStudentHomeworkChanged = true;
+                              }}/>
+                            </div>
+                          </Form>
+                        </Card>
+                      </div>
+                    </TabPane>
+                  })
+                }
+              </Tabs>
+            </Card>
+          </div>
+        </Section>
+      </Page>
     );
   }
 
-  getRecordById(id: string): SerializedEntity<StudentHomework> {
-    const record:
-      | SerializedEntity<StudentHomework>
-      | undefined = this.dataCollection.items.find(record => record.id === id);
-
-    if (!record) {
-      throw new Error("Cannot find entity with id " + id);
-    }
-
-    return record;
+  componentDidMount() {
+    restQueries.homeworksByEnrollment(this.props.enrollmentId).then(value => {
+      this.homeworks = value;
+      this.onChangeTab(1);
+    });
   }
-
-  handleRowSelectionChange = (selectedRowKeys: string[]) => {
-    this.selectedRowKey = selectedRowKeys[0];
-  };
-
-  deleteSelectedRow = () => {
-    this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
-  };
 }
 
-const StudentHomeworkList = injectIntl(StudentHomeworkListComponent);
+const StudentHomeworkList = withRouter(injectIntl(StudentHomeworkListComponent));
 
 export default StudentHomeworkList;

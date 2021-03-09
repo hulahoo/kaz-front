@@ -33,6 +33,8 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import TextArea from "antd/es/input/TextArea";
 import {withRouter} from "react-router";
 import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
+import Section from "../../hoc/Section";
+import Page from "../../hoc/PageContentHoc";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -63,8 +65,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
     "requestDate",
 
-    "status",
-
     "startDate",
 
     "endDate",
@@ -73,7 +73,11 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
     "balance",
 
-    "comment"
+    "comment",
+
+    "sentToOracle",
+
+    "attachment"
   ];
 
   @observable
@@ -94,6 +98,9 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
         .update({
           personGroup: {
             id: this.props.rootStore!.userInfo.personGroupId
+          },
+          status: {
+            id: this.dataInstance.item!.status!.id
           },
           ...this.props.form.getFieldsValue(this.fields)
         })
@@ -143,128 +150,132 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
   render() {
     if (this.updated) {
-      return <Redirect to={"/absence/3"}/>;
+      return <Redirect to={"/absence/2"}/>;
     }
 
     const {getFieldDecorator} = this.props.form;
 
     const {status} = this.dataInstance;
 
-    const isNotDraft = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== 'DRAFT' : true;
-
-    const saveBtn = isNotDraft ? null
-      : <Button
-        buttonType={ButtonType.PRIMARY}
-        htmlType="submit"
-        disabled={status !== "DONE" && status !== "ERROR"}
-        loading={status === "LOADING"}
-        style={{marginLeft: "8px"}}
-      >
-        <FormattedMessage id="management.editor.submit"/>
-      </Button>;
+    const isNotDraft = false;
 
     return (
-      <Card className="narrow-layout">
-        <Form onSubmit={this.handleSubmit} layout="vertical">
+      <Page pageName={this.props.intl.formatMessage({id: "vacationScheduleRequest"})}>
+        <Section size="large">
+          <div>
+            <Card className="narrow-layout card-actions-container" actions={[
+              <Button
+                buttonType={ButtonType.PRIMARY}
+                disabled={status !== "DONE" && status !== "ERROR"}
+                loading={status === "LOADING"}
+                onClick={this.handleSubmit}
+                style={{marginLeft: "8px"}}>
+                <FormattedMessage id="management.editor.submit"/>
+              </Button>,
+              <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
+                <FormattedMessage id="management.editor.cancel"/>
+              </Button>]}
+                  bordered={false}>
+              <Form layout="vertical">
 
-          <ReadonlyField
-            entityName={VacationScheduleRequest.NAME}
-            propertyName="requestNumber"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{
-              rules: [{required: true}]
-            }}
-            disabled={true}
-          />
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="requestNumber"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                  disabled={true}
+                />
 
-          <ReadonlyField
-            entityName={VacationScheduleRequest.NAME}
-            propertyName="requestDate"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{
-              rules: [{required: true}]
-            }}
-            disabled={true}
-          />
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="requestDate"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{required: true}]
+                  }}
+                  disabled={true}
+                />
 
-          <ReadonlyField
-            entityName={VacationScheduleRequest.NAME}
-            propertyName="status"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            optionsContainer={this.statussDc}
-            getFieldDecoratorOpts={{
-              rules: [{required: true}]
-            }}
-            disabled={true}
-          />
-
-          <ReadonlyField
-            entityName={VacationScheduleRequest.NAME}
-            propertyName="startDate"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{}}
-            disabled={isNotDraft}
-          />
-
-          <ReadonlyField
-            entityName={VacationScheduleRequest.NAME}
-            propertyName="endDate"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{}}
-            disabled={isNotDraft}
-          />
-
-          <ReadonlyField
-            entityName={VacationScheduleRequest.NAME}
-            propertyName="absenceDays"
-            form={this.props.form}
-            formItemOpts={{style: {marginBottom: "12px"}}}
-            getFieldDecoratorOpts={{}}
-            disabled={true}
-          />
-
-          {/*<ReadonlyField*/}
-          {/*  entityName={VacationScheduleRequest.NAME}*/}
-          {/*  propertyName="balance"*/}
-          {/*  form={this.props.form}*/}
-          {/*  formItemOpts={{style: {marginBottom: "12px"}}}*/}
-          {/*  getFieldDecoratorOpts={{}}*/}
-          {/*  disabled={true}*/}
-          {/*/>*/}
-
-          <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-            {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
-            <Form.Item>
-              {getFieldDecorator("comment")(
-                <TextArea
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="startDate"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{}}
                   disabled={isNotDraft}
-                  rows={4}/>
-              )}
-            </Form.Item>
+                />
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="endDate"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{}}
+                  disabled={isNotDraft}
+                />
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="absenceDays"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{}}
+                  disabled={true}
+                />
+
+                {/*<ReadonlyField*/}
+                {/*  entityName={VacationScheduleRequest.NAME}*/}
+                {/*  propertyName="balance"*/}
+                {/*  form={this.props.form}*/}
+                {/*  formItemOpts={{style: {marginBottom: "12px"}}}*/}
+                {/*  getFieldDecoratorOpts={{}}*/}
+                {/*  disabled={true}*/}
+                {/*/>*/}
+
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
+                  <Form.Item>
+                    {getFieldDecorator("comment")(
+                      <TextArea
+                        disabled={isNotDraft}
+                        rows={4}/>
+                    )}
+                  </Form.Item>
+                </div>
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="attachment"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{}}
+                />
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="sentToOracle"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{}}
+                  disabled={true}
+                />
+
+                {this.globalErrors.length > 0 && (
+                  <Alert
+                    message={<MultilineText lines={toJS(this.globalErrors)}/>}
+                    type="error"
+                    style={{marginBottom: "24px"}}
+                  />
+                )}
+              </Form>
+            </Card>
           </div>
-
-          {this.globalErrors.length > 0 && (
-            <Alert
-              message={<MultilineText lines={toJS(this.globalErrors)}/>}
-              type="error"
-              style={{marginBottom: "24px"}}
-            />
-          )}
-
-          <Form.Item style={{textAlign: "center"}}>
-            <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
-              <FormattedMessage id="management.editor.cancel"/>
-            </Button>
-            {saveBtn}
-          </Form.Item>
-
-        </Form>
-      </Card>
+        </Section>
+      </Page>
     );
   }
 
@@ -308,10 +319,8 @@ const component = injectIntl(
           props.form.validateFields();
         }
 
-        console.log(fieldName);
         if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
 
-          console.log(rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId);
           const startDate = props.form.getFieldValue(`startDate`);
           const endDate = props.form.getFieldValue(`endDate`);
 

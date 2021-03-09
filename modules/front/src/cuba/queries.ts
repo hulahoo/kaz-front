@@ -1,6 +1,5 @@
 import {getCubaREST} from "@cuba-platform/react";
 import {AssignedPerformancePlan} from "./entities/base/tsadv$AssignedPerformancePlan";
-import {PersonalDataRequest} from "./entities/base/tsadv$PersonalDataRequest";
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 import {AssignmentExt} from "./entities/base/base$AssignmentExt";
 import moment from "moment";
@@ -11,6 +10,8 @@ import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {PerformancePlan} from "./entities/base/tsadv$PerformancePlan";
 import {LearningFeedbackTemplate} from "./entities/base/tsadv$LearningFeedbackTemplate";
+import {Homework} from "./entities/base/tsadv_Homework";
+import {StudentHomework} from "./entities/base/tsadv_StudentHomework";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -68,6 +69,17 @@ export var restQueries = {
       courseId: courseId,
       systemDate: moment().toISOString(),
       usageType: usageType,
+    })
+  },
+  homeworksByEnrollment: (enrollmentId: string): Promise<SerializedEntity<Homework>[]> => {
+    return getCubaREST()!.query<Homework>(Homework.NAME, "homeworksByEnrollment", {
+      enrollmentId: enrollmentId
+    })
+  },
+  studentHomework: (homeworkId: string, personGroupId: string): Promise<SerializedEntity<StudentHomework>[]> => {
+    return getCubaREST()!.query<StudentHomework>(StudentHomework.NAME, "studentHomework", {
+      homeworkId: homeworkId,
+      personGroupId: personGroupId
     })
   }
 };
