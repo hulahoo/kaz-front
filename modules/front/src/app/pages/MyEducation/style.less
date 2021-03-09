@@ -1,0 +1,39 @@
+@import "../../../theme-vars";
+
+.section-list-container {
+  margin: 0 40px !important;
+
+  .ant-col {
+    .section-container {
+      width: 100%;
+      font-size: 14px;
+      color: @primary-2;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .section-container:hover {
+      font-weight: normal;
+    }
+  }
+
+  .ant-col:not(:last-child) {
+    .section-container {
+      margin: 0 40px 0 0 !important;
+    }
+  }
+
+  .ant-col:last-child {
+    .section-container {
+      margin: 0 !important;
+    }
+  }
+}
+
+.education-section-container {
+  .education-section-icon {
+    width: 62px;
+    display: block;
+    margin: 0 auto
+  }
+}

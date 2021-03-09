@@ -56,7 +56,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                 <div className={"courses-cards-wrapper"}>
                   <div className={"courses-cards"}>
                     {category.courses!.map(course => <Link
-                      to={CourseManagement.PATH + "/" + course.id}><PanelCard key={course.id}
+                      to={"/" + CourseManagement.PATH + "/" + course.id}><PanelCard key={course.id}
                                                                                                   loading={false} {...course}
                                                                                                   name={course.name!}
                                                                                                   header={(<>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
@@ -105,4 +106,4 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
   };
 }
 
-export default injectIntl(LearningHistory);
+export default withRouter(injectIntl(LearningHistory));

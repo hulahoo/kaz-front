@@ -62,7 +62,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
               ? <Button buttonType={ButtonType.PRIMARY} loading={this.props.subscribing}
                         onClick={(e) => {
                           e.preventDefault();
-                          this.props.history!.push(EnrollmentManagement.PATH + "/" + this.props.enrollmentId)
+                          this.props.history!.push("/" + EnrollmentManagement.PATH + "/" + this.props.enrollmentId)
                         }}>{this.props.intl.formatMessage({id: "enrollment.continue"})}</Button>
               : <Button buttonType={ButtonType.PRIMARY} loading={this.props.subscribing}
                         onClick={this.props.subscribe}>{this.props.intl.formatMessage({id: this.props.materialInfoType + ".subscribe"})}</Button>

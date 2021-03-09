@@ -22,6 +22,7 @@ import moment from "moment";
 import {LearningFeedbackTemplate} from "../../../cuba/entities/base/tsadv$LearningFeedbackTemplate";
 import {CourseSectionRenderType} from "./RenderModalBody/RenderModalBody";
 import {Link} from "react-router-dom";
+import MyEducationManagement from "../MyEducation/MyEducationManagement";
 
 type Props = {
   entityId: string;
@@ -62,7 +63,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     </>;
     const linkHomework = this.isHasHomework && this.dataInstance
       ? <Link
-        to={EnrollmentManagement.PATH + "/" + this.props.entityId + "/" + EnrollmentManagement.HOMEWORK}>
+        to={"/" + EnrollmentManagement.PATH + "/" + this.props.entityId + "/" + EnrollmentManagement.HOMEWORK}>
         <div key="homework" id="homework">
           <Meta title={homeworkTitle}
                 className={"course-section-item"}>

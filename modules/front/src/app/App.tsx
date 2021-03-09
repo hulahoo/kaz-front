@@ -37,6 +37,9 @@ import AbsenceList from "./pages/Absence/AbsenceList";
 import {LeavingVacationRequestManagement} from "./pages/LeavingVacationRequest/LeavingVacationRequestManagement";
 import {CascadeGoalManagement} from "./pages/AssignedGoals/CascadeGoal/CascadeGoalManagement";
 import {VacationScheduleRequestManagement} from "./pages/VacationScheduleRequest/VacationScheduleRequestManagement";
+import MyEducation from "./pages/MyEducation/MyEducation";
+import MyEducationManagement from "./pages/MyEducation/MyEducationManagement";
+import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -100,14 +103,15 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        component={LibraryAssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/cascade/:entityId?"
                        component={CascadeGoalManagement}/>
-                <Route exact={true} path="/learning-history" component={LearningHistory}/>
+                <Route exact={true} path={"/" + LearningHistoryManagement.PATH} component={LearningHistory}/>
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
                 <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-dmc/:entityId?" component={InsuredPersonManagement}/>
                 <Route exact={true} path="/schedule-offsets/:entityId?" component={ScheduleOffsetsRequestManagement}/>
-                <Route exact={true} path="/book/:entityId?" component={BooksManagement}/>
-                <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?" + "/:homework?"}
+                <Route exact={true} path={"/" + BooksManagement.PATH + "/:entityId?"} component={BooksManagement}/>
+                <Route exact={true} path={"/" + MyEducationManagement.PATH} component={MyEducation}/>
+                <Route exact={true} path={"/" + EnrollmentManagement.PATH + "/:entityId?" + "/:homework?"}
                        component={EnrollmentManagement}/>
                 <Route exact={true} path={ActivityManagement.PATH} component={ActivityManagement}/>
                 <Route exact={true}

@@ -68,48 +68,11 @@ export default class MenuStore {
         items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
       } as MenuSubMenu,
       {
-        id: "my-education", caption: "Обучение", items: [
-          {
-            id: "course-catalog",
-            caption: "Каталог курсов",
-            menuLink: "/course",
-            pathPattern: "/course",
-            component: null
-          },
-          {id: "calendar", caption: "Календарь", menuLink: "/calendar", pathPattern: "/calendar", component: null},
-          {
-            id: "my-courses",
-            caption: "Мои курсы",
-            menuLink: "/my-course",
-            pathPattern: "/my-course",
-            component: null,
-          },
-          {
-            id: "library",
-            caption: "Библиотека",
-            items: [{
-              id: "books",
-              caption: "Мои книги",
-              menuLink: "/book",
-              pathPattern: "/book",
-              component: null
-              // }, {
-              //   id: "my-books",
-              //   caption: "Мои книги",
-              //   menuLink: "/my-books",
-              //   pathPattern: "/my-books",
-              //   component: null
-            }]
-          } as MenuSubMenu,
-          {
-            id: "learn-history",
-            caption: "История обучения",
-            menuLink: "/learning-history",
-            pathPattern: "/learning-history",
-            component: PersonalDataRequestManagement
-          }
-        ]
-      } as MenuSubMenu,
+        id: "my-education", caption: "Обучение",
+        menuLink: "/my-education",
+        pathPattern: "/my-education",
+        component: AbsenceList
+      },
       {id: "my-kpi", caption: "Мой KPI", menuLink: "/kpi", pathPattern: "/kpi", component: null},
       {
         id: "team-kpi",
