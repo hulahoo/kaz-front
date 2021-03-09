@@ -108,6 +108,7 @@ export type AssignedGoalView<V extends AssignedGoalViewName> = V extends "_base"
       | "category"
       | "goal"
       | "goalLibrary"
+      | "assignedByPersonGroup"
     >
   : V extends "assignedGoal-view"
   ? Pick<

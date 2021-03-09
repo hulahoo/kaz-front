@@ -175,7 +175,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                 })(
                   <Select onChange={this.onChangeManager}>{this.managers ? this.managers.items.map(m => <Select.Option
                     value={m.id}
-                    position-group-id={m.assignments![0].positionGroup!.id}>{(m.assignments![0].positionGroup!.position! as SerializedEntity<PositionExt>)._instanceName}</Select.Option>) : null}</Select>
+                    position-group-id={m.currentAssignment!.positionGroup!.id}>{(m.currentAssignment!.positionGroup!.position! as SerializedEntity<PositionExt>)._instanceName}</Select.Option>) : null}</Select>
                 )}
               </Form.Item>
               <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goal'/>}
@@ -261,7 +261,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
       this.dataInstance.setItem(assignedGoal);
     }
     this.assignedPerformancePlan.afterLoad = () => {
-      const positionGroupId = this.assignedPerformancePlan.item!.assignedPerson!.assignments![0].positionGroup!.id;
+      const positionGroupId = this.assignedPerformancePlan.item!.assignedPerson!.currentAssignment!.positionGroup!.id;
       this.managers = serviceCollection<PersonGroupExt>(restServices.employeeService.findManagerListByPositionGroup.bind(null, {
         positionGroupId: positionGroupId,
         showAll: false,
@@ -270,7 +270,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
       this.managers.load();
 
       this.managers.afterLoad = () => {
-        this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: this.dataInstance.item!.assignedByPersonGroup!.assignments![0].positionGroup!.id});
+        this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: this.dataInstance.item!.assignedByPersonGroup!.currentAssignment!.positionGroup!.id});
         this.goalsDs.load();
       };
     };

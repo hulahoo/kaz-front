@@ -94,6 +94,7 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
       Enrollment,
       | "id"
       | "course"
+      | "course"
       | "personGroup"
       | "status"
       | "date"

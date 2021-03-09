@@ -87,8 +87,10 @@ export type PersonGroupExtViewName =
   | "_minimal"
   | "assignment.card.personGroup"
   | "person-group-ext-intern"
+  | "personGroup-for-absenceRequest"
   | "personGroup-relevantPerson-fullNameCyrillic"
   | "personGroup-view"
+  | "personGroup-with-position"
   | "personGroup.add.reserve"
   | "personGroup.browse"
   | "personGroup.candidate"
@@ -106,6 +108,7 @@ export type PersonGroupExtViewName =
   | "personGroupBeneficiary"
   | "personGroupExt-Mic"
   | "personGroupExt-absenceEdit"
+  | "personGroupExt-for-absenceRequest"
   | "personGroupExt-for-beneficary-request-edit"
   | "personGroupExt-for-integration-rest"
   | "personGroupExt-for-load-attribute"
@@ -137,6 +140,7 @@ export type PersonGroupExtView<
       PersonGroupExt,
       | "id"
       | "person"
+      | "list"
       | "linkedinAccessToken"
       | "linkedinProfileLink"
       | "linkedinTokenExpiresInDate"
@@ -156,7 +160,7 @@ export type PersonGroupExtView<
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<PersonGroupExt, "id" | "person">
+  ? Pick<PersonGroupExt, "id" | "person" | "list">
   : V extends "assignment.card.personGroup"
   ? Pick<
       PersonGroupExt,
@@ -187,8 +191,20 @@ export type PersonGroupExtView<
       | "person"
       | "fullName"
     >
+  : V extends "personGroup-for-absenceRequest"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "company"
+    >
   : V extends "personGroup-relevantPerson-fullNameCyrillic"
-  ? Pick<PersonGroupExt, "id" | "person" | "relevantPerson">
+  ? Pick<PersonGroupExt, "id" | "person" | "list" | "relevantPerson">
   : V extends "personGroup-view"
   ? Pick<
       PersonGroupExt,
@@ -199,6 +215,21 @@ export type PersonGroupExtView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "person"
+    >
+  : V extends "personGroup-with-position"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
+      | "assignments"
+      | "currentAssignment"
       | "person"
     >
   : V extends "personGroup.add.reserve"
@@ -255,7 +286,7 @@ export type PersonGroupExtView<
   : V extends "personGroup.contacts"
   ? Pick<PersonGroupExt, "id" | "list" | "person" | "personContacts">
   : V extends "personGroup.for.absences"
-  ? Pick<PersonGroupExt, "id" | "person" | "list">
+  ? Pick<PersonGroupExt, "id" | "person" | "list" | "list">
   : V extends "personGroup.linkedin"
   ? Pick<
       PersonGroupExt,
@@ -320,7 +351,7 @@ export type PersonGroupExtView<
   : V extends "personGroup.scrum.competence"
   ? Pick<PersonGroupExt, "id" | "list" | "person">
   : V extends "personGroup.search"
-  ? Pick<PersonGroupExt, "id" | "person" | "list">
+  ? Pick<PersonGroupExt, "id" | "person" | "list" | "list">
   : V extends "personGroup.search.candidate"
   ? Pick<PersonGroupExt, "id" | "list" | "person">
   : V extends "personGroup.with.positionGroup"
@@ -388,6 +419,18 @@ export type PersonGroupExtView<
       | "integrationUserLogin"
       | "list"
     >
+  : V extends "personGroupExt-for-absenceRequest"
+  ? Pick<
+      PersonGroupExt,
+      | "id"
+      | "linkedinAccessToken"
+      | "linkedinProfileLink"
+      | "linkedinTokenExpiresInDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "company"
+    >
   : V extends "personGroupExt-for-beneficary-request-edit"
   ? Pick<
       PersonGroupExt,
@@ -416,7 +459,7 @@ export type PersonGroupExtView<
       | "company"
     >
   : V extends "personGroupExt-for-load-attribute"
-  ? Pick<PersonGroupExt, "id" | "person" | "list">
+  ? Pick<PersonGroupExt, "id" | "person" | "list" | "list">
   : V extends "personGroupExt-for-person-data"
   ? Pick<
       PersonGroupExt,
@@ -511,12 +554,13 @@ export type PersonGroupExtView<
       | "assignments"
     >
   : V extends "personGroupExt-view-for-selvservice-requisition"
-  ? Pick<PersonGroupExt, "id" | "person" | "fullName">
+  ? Pick<PersonGroupExt, "id" | "person" | "list" | "fullName">
   : V extends "personGroupExt.card"
   ? Pick<
       PersonGroupExt,
       | "id"
       | "person"
+      | "list"
       | "list"
       | "retirement"
       | "disability"
@@ -538,12 +582,13 @@ export type PersonGroupExtView<
       | "beneficiary"
     >
   : V extends "personGroupExt.edit"
-  ? Pick<PersonGroupExt, "id" | "person">
+  ? Pick<PersonGroupExt, "id" | "person" | "list">
   : V extends "personGroupExt.for.enrollment.lookup"
   ? Pick<
       PersonGroupExt,
       | "id"
       | "person"
+      | "list"
       | "list"
       | "fullName"
       | "assignments"
@@ -592,7 +637,7 @@ export type PersonGroupExtView<
       | "currentAssignment"
     >
   : V extends "personGroupExt.mobile"
-  ? Pick<PersonGroupExt, "id" | "person" | "assignments" | "person">
+  ? Pick<PersonGroupExt, "id" | "person" | "list" | "assignments" | "person">
   : V extends "personGroupExt.rcg.feedback"
   ? Pick<
       PersonGroupExt,

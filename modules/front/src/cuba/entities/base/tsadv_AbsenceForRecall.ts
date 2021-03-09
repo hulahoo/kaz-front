@@ -32,6 +32,8 @@ export type AbsenceForRecallView<
   ? Pick<
       AbsenceForRecall,
       | "id"
+      | "requestNumber"
+      | "requestDate"
       | "recallDateFrom"
       | "recallDateTo"
       | "dateFrom"
@@ -44,8 +46,6 @@ export type AbsenceForRecallView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
       | "comment"
     >
   : V extends "_local"
@@ -68,6 +68,8 @@ export type AbsenceForRecallView<
       | "requestDate"
       | "comment"
     >
+  : V extends "_minimal"
+  ? Pick<AbsenceForRecall, "id" | "requestNumber" | "requestDate">
   : V extends "absenceForRecall.edit"
   ? Pick<
       AbsenceForRecall,

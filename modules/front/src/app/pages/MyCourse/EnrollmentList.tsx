@@ -15,6 +15,7 @@ import PanelCard from "../../components/CourseCard";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 import Section from "../../hoc/Section";
+import {CourseManagement} from "../Course/CourseManagement";
 
 @inject("rootStore")
 @observer
@@ -55,7 +56,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                 <div className={"courses-cards-wrapper"}>
                   <div className={"courses-cards"}>
                     {category.courses!.map(course => <Link
-                      to={EnrollmentManagement.PATH + "/" + course.enrollments![0].id}><PanelCard key={course.id}
+                      to={CourseManagement.PATH + "/" + course.id}><PanelCard key={course.id}
                                                                                                   loading={false} {...course}
                                                                                                   name={course.name!}
                                                                                                   header={(<>

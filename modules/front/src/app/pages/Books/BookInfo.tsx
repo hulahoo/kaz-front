@@ -95,7 +95,6 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                   avgRate={this.dataInstance.item.reviews
                     ? this.dataInstance.item.reviews.map(r => (r.rating as number)).reduce((i1, i2) => i1 + i2, 0)
                     : 0}
-                  hasEnrollment={false}
                   imageProps={{
                     type: "promise",
                     imgSrcProp: this.dataInstance.item.image ? getBlobUrl(this.dataInstance.item.image.id) : undefined

@@ -171,6 +171,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
     const messages = this.props.mainStore!.messages!;
     const {Option} = Select;
+    const {status} = this.dataInstance;
 
     return (
       <Page pageName={""}>
@@ -180,7 +181,15 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               <Button htmlType="button" buttonType={ButtonType.FOLLOW}>
                 <FormattedMessage id="management.editor.cancel"/>
               </Button>
-            </Link>]
+            </Link>,
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={status !== "DONE" && status !== "ERROR"}
+                loading={status === "LOADING"}
+                style={{marginLeft: "8px"}}>
+                <FormattedMessage id="management.editor.submit"/>
+              </Button>]
           } bordered={false}>
             <Section size={"large"}>
               <Row className={"form-row"}>

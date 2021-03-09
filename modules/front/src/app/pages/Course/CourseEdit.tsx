@@ -166,7 +166,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                 name={this.dataInstance.name}
                 finished={this.dataInstance.finished}
                 avgRate={this.dataInstance.avgRate}
-                hasEnrollment={this.dataInstance.hasEnrollment}
+                enrollmentId={this.dataInstance.enrollmentId}
                 materialInfoType="course"
                 imageProps={{
                   type: "base64",

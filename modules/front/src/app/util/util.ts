@@ -25,3 +25,7 @@ export const link = (entityName: string) => {
   const link = entityName!.substring(Math.max(entityName!.indexOf("$"), entityName!.indexOf("_")) + 1);
   return "/" + link.charAt(0).toLocaleLowerCase() + link.substring(1);
 };
+
+export const wrapSrcBase64 = (url: string) => {
+  return "data:image/png;base64, " + url;
+};

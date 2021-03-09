@@ -26,6 +26,8 @@ export type ScheduleOffsetsRequestView<
   ? Pick<
       ScheduleOffsetsRequest,
       | "id"
+      | "requestNumber"
+      | "requestDate"
       | "purposeText"
       | "dateOfNewSchedule"
       | "dateOfStartNewSchedule"
@@ -35,8 +37,6 @@ export type ScheduleOffsetsRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
       | "comment"
     >
   : V extends "_local"
@@ -56,6 +56,8 @@ export type ScheduleOffsetsRequestView<
       | "requestDate"
       | "comment"
     >
+  : V extends "_minimal"
+  ? Pick<ScheduleOffsetsRequest, "id" | "requestNumber" | "requestDate">
   : V extends "scheduleOffsetsRequest-for-my-team"
   ? Pick<
       ScheduleOffsetsRequest,

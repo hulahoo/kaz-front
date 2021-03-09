@@ -427,6 +427,6 @@ export type CourseInfo = {
   description: string
   educationPeriod: number
   educationDuration: number
-  hasEnrollment: boolean
+  enrollmentId: string
   selfEnrollment: boolean
 }

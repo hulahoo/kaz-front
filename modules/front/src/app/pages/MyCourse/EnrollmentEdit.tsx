@@ -2,11 +2,8 @@ import * as React from "react";
 import {observer} from "mobx-react";
 import {action, observable, runInAction} from "mobx";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-
 import {DataContainerStatus, getCubaREST, instance,} from "@cuba-platform/react";
-
 import "../../../app/App.css";
-
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 import Section from "../../hoc/Section";
 import {Col, Icon, Row, Spin} from "antd";
@@ -15,8 +12,6 @@ import NoImage from "../../components/NoImage";
 import Page from "../../hoc/PageContentHoc";
 import {SerializedEntity} from "@cuba-platform/rest";
 import CourseSectionList, {ListItem} from "../../components/CourseSectionList";
-import {restServices} from "../../../cuba/services";
-import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
 import Notification from "../../util/Notification/Notification";
 import {EnrollmentManagement} from "./EnrollmentManagement";
 import {restQueries} from "../../../cuba/queries";
@@ -57,7 +52,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   render() {
     const courseSections = this.dataInstance ? this.dataInstance.course!.sections!.map(s => {
       return {
-        hasAttempt: s.courseSectionAttempts!.length > 0,
+        hasAttempt: s.courseSectionAttempts!.filter(a => a.enrollment!.id === this.props.entityId).length > 0,
         id: s.id,
         text: s.sectionName,
         type: "course-section"

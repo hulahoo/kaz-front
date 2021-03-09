@@ -49,9 +49,7 @@ class CourseSectionModal extends Component<Props> {
                    width={900}
                    className={"course-section-modal" + (this.fullScreenModal ? " fullscreen" : "")}
                    destroyOnClose>
-        {/*<Spin spinning={loading}>*/}
-          {!loading ? this.getSectionBody() : null}
-        {/*</Spin>*/}
+        {!loading ? this.getSectionBody() : null}
       </Modal>
     );
   }

@@ -54,7 +54,7 @@ export type PositionGroupExtView<
   ? Pick<
       PositionGroupExt,
       | "id"
-      | "positionName"
+      | "position"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -65,9 +65,9 @@ export type PositionGroupExtView<
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<PositionGroupExt, "id" | "positionName">
+  ? Pick<PositionGroupExt, "id" | "position">
   : V extends "position.analytic.update"
-  ? Pick<PositionGroupExt, "id" | "positionName" | "analytics">
+  ? Pick<PositionGroupExt, "id" | "position" | "analytics">
   : V extends "positionExt-receptionAssignment"
   ? Pick<
       PositionGroupExt,
@@ -98,7 +98,7 @@ export type PositionGroupExtView<
   : V extends "positionGroup.forAssess"
   ? Pick<
       PositionGroupExt,
-      "id" | "positionName" | "competenceElements" | "analytics"
+      "id" | "position" | "competenceElements" | "analytics"
     >
   : V extends "positionGroup.list"
   ? Pick<
@@ -106,7 +106,7 @@ export type PositionGroupExtView<
       "id" | "list" | "vacationConditionsList" | "analytics" | "position"
     >
   : V extends "positionGroup.scheduleView"
-  ? Pick<PositionGroupExt, "id" | "positionName" | "list" | "assignments">
+  ? Pick<PositionGroupExt, "id" | "position" | "list" | "assignments">
   : V extends "positionGroup.timecard"
   ? Pick<
       PositionGroupExt,

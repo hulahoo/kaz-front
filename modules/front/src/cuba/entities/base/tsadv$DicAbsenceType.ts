@@ -17,6 +17,15 @@ export class DicAbsenceType extends AbstractDictionary {
   cancelParentAbsence?: boolean | null;
   availableForTimecard?: boolean | null;
   isRequiredOrderNumber?: boolean | null;
+  includeCalcGzp?: boolean | null;
+  maxDay?: number | null;
+  minDay?: number | null;
+  daysAdvance?: number | null;
+  daysBeforeAbsence?: number | null;
+  manyDays?: number | null;
+  availableForRecallAbsence?: boolean | null;
+  availableForChangeDate?: boolean | null;
+  availableForLeavingVacation?: boolean | null;
 }
 export type DicAbsenceTypeViewName =
   | "_base"
@@ -45,6 +54,15 @@ export type DicAbsenceTypeView<
       | "cancelParentAbsence"
       | "availableForTimecard"
       | "isRequiredOrderNumber"
+      | "includeCalcGzp"
+      | "maxDay"
+      | "minDay"
+      | "daysAdvance"
+      | "daysBeforeAbsence"
+      | "manyDays"
+      | "availableForRecallAbsence"
+      | "availableForChangeDate"
+      | "availableForLeavingVacation"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -84,6 +102,15 @@ export type DicAbsenceTypeView<
       | "cancelParentAbsence"
       | "availableForTimecard"
       | "isRequiredOrderNumber"
+      | "includeCalcGzp"
+      | "maxDay"
+      | "minDay"
+      | "daysAdvance"
+      | "daysBeforeAbsence"
+      | "manyDays"
+      | "availableForRecallAbsence"
+      | "availableForChangeDate"
+      | "availableForLeavingVacation"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -125,6 +152,15 @@ export type DicAbsenceTypeView<
       | "cancelParentAbsence"
       | "availableForTimecard"
       | "isRequiredOrderNumber"
+      | "includeCalcGzp"
+      | "maxDay"
+      | "minDay"
+      | "daysAdvance"
+      | "daysBeforeAbsence"
+      | "manyDays"
+      | "availableForRecallAbsence"
+      | "availableForChangeDate"
+      | "availableForLeavingVacation"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

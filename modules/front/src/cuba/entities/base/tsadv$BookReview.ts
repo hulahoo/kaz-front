@@ -1,10 +1,10 @@
 import { StandardEntity } from "./sys$StandardEntity";
 import { Book } from "./tsadv$Book";
-import { PersonExt } from "./base$PersonExt";
+import { PersonGroupExt } from "./base$PersonGroupExt";
 export class BookReview extends StandardEntity {
   static NAME = "tsadv$BookReview";
   book?: Book | null;
-  author?: PersonExt | null;
+  author?: PersonGroupExt | null;
   postDate?: any | null;
   reviewText?: string | null;
   rating?: any | null;
@@ -14,7 +14,8 @@ export type BookReviewViewName =
   | "_local"
   | "_minimal"
   | "bookReview-browse-view"
-  | "bookReview-edit-view";
+  | "bookReview-edit-view"
+  | "portal-book-info-reviews";
 export type BookReviewView<V extends BookReviewViewName> = V extends "_base"
   ? Pick<
       BookReview,
@@ -34,4 +35,6 @@ export type BookReviewView<V extends BookReviewViewName> = V extends "_base"
       BookReview,
       "id" | "postDate" | "reviewText" | "rating" | "book" | "author"
     >
+  : V extends "portal-book-info-reviews"
+  ? Pick<BookReview, "id" | "postDate" | "reviewText" | "rating" | "author">
   : never;

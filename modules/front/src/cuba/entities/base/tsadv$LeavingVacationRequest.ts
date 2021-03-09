@@ -1,5 +1,4 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
-import { DicRequisitionType } from "./tsadv$DicRequisitionType";
 import { Absence } from "./tsadv$Absence";
 export class LeavingVacationRequest extends AbstractBprocRequest {
   static NAME = "tsadv$LeavingVacationRequest";

@@ -29,7 +29,8 @@ export type BookViewName =
   | "book-browse-view"
   | "book-edit-view"
   | "book-library-view"
-  | "book.with.books";
+  | "book.with.books"
+  | "portal-book-info";
 export type BookView<V extends BookViewName> = V extends "_base"
   ? Pick<
       Book,
@@ -123,5 +124,24 @@ export type BookView<V extends BookViewName> = V extends "_base"
       | "epub"
       | "mobi"
       | "kf8"
+    >
+  : V extends "portal-book-info"
+  ? Pick<
+      Book,
+      | "id"
+      | "bookNameLang1"
+      | "bookDescriptionLang1"
+      | "authorLang1"
+      | "publishDate"
+      | "isbn"
+      | "active"
+      | "averageScore"
+      | "language"
+      | "djvu"
+      | "epub"
+      | "fb2"
+      | "pdf"
+      | "mobi"
+      | "reviews"
     >
   : never;
