@@ -28,11 +28,12 @@ import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
 import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
 import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {BooksManagement} from "./pages/Books/BooksManagement";
+import {OrgStructureRequestManagement} from "./pages/orgStructureRequest/OrgStructureRequestManagement";
 import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
 import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
-import {CertificateRequestManagement} from "./pages/CertificateRequest/CertificateRequestManagement";
-import {ActivityManagement} from "./pages/Activity/ActivityManagement";
-import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
+import {CertificateRequestManagement} from "./pages/certificateRequest/CertificateRequestManagement";
+import {ActivityManagement} from "./pages/activity/ActivityManagement";
+import {AbsenceRequestManagement} from "./pages/absenceRequest/AbsenceRequestManagement";
 import AbsenceList from "./pages/Absence/AbsenceList";
 import {LeavingVacationRequestManagement} from "./pages/LeavingVacationRequest/LeavingVacationRequestManagement";
 import {CascadeGoalManagement} from "./pages/AssignedGoals/CascadeGoal/CascadeGoalManagement";
@@ -128,6 +129,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={PortalFeedbackQuestionManagement.PATH}
                        component={PortalFeedbackQuestionManagement}/>
+                <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

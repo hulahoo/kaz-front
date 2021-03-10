@@ -16,6 +16,10 @@ import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
+import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
+import {OrgRequestGrade, OrgRequestRow} from "../app/pages/orgStructureRequest/OrgStructureRequestEdit";
+import {OrganizationSaveModel} from "../app/pages/orgStructureRequest/OrganizationEditor";
+import {PositionSaveModel} from "../app/pages/orgStructureRequest/PositionEditor";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
 import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsRequest";
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
@@ -413,6 +417,49 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     }
+  },
+  orgStructureService: {
+    initialCreate: (): Promise<OrgStructureRequest> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_OrgStructureRequestService",
+        "initialCreate", {},
+      ).then((value: string) => JSON.parse(value));
+    },
+    getMergedOrgStructure: (param: { requestId: string }): Promise<Array<OrgRequestRow>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "getMergedOrgStructure",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    saveOrganization: (param: { organizationRequestSaveModel: OrganizationSaveModel }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "saveOrganization",
+        {...param}
+      );
+    },
+    savePosition: (param: { positionRequestSaveModel: PositionSaveModel }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "savePosition",
+        {...param}
+      );
+    },
+    exclude: (param: { requestId: string, requestDetailId: string, elementGroupId: string, elementType: string }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "exclude",
+        {...param}
+      );
+    },
+    getGrades: (): Promise<Array<OrgRequestGrade>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "getGrades",
+        null
+      ).then(r => JSON.parse(r));
+    },
   }
 };
 

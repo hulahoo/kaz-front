@@ -98,6 +98,20 @@
   }
 }
 
+.compact-form {
+  .ant-form-item {
+    margin-bottom: 8px !important;
+  }
+}
+
+.card-actions-block {
+  margin: 20px 30px;
+
+  * {
+    margin-right: 10px;
+  }
+}
+
 .form-row {
   width: 100%;
 
@@ -224,6 +238,87 @@ img.ant-menu-item-icon {
 
 .ant-list-item-meta-title {
   color: @primary-2 !important;
+}
+
+.ant-btn {
+  > .anticon {
+    &:nth-child(1) {
+      margin-right: 5px;
+    }
+
+    &:nth-child(2) {
+      margin-left: 5px;
+    }
+  }
+
+  &.b-btn {
+    font-size: 14px !important;
+    font-family: Arial, sans-serif;
+    font-weight: normal !important;
+  }
+}
+
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+
+.kzm-tree-table {
+  overflow-x: auto;
+
+  .ant-table {
+    border: none !important;
+
+    .ant-table-content {
+      > .ant-table-body {
+        margin: 0 !important;
+
+        > table {
+          border-collapse: collapse;
+          font-family: Arial, sans-serif;
+          letter-spacing: 0.25px;
+
+          thead {
+            tr {
+              th {
+                white-space: nowrap !important;
+                background: #FAFAFA !important;
+                border: 1px solid #e8e8e8 !important;
+
+                .ant-table-column-title {
+                  font-size: 14px;
+                }
+              }
+            }
+          }
+
+          tbody {
+            tr {
+              td {
+                border-radius: 0 !important;
+                white-space: nowrap !important;
+                font-size: 13px;
+                border: 1px solid #e8e8e8 !important;
+                transition: none !important;
+
+                .ant-table-row-expand-icon {
+                  width: 14px;
+                  height: 14px;
+                }
+              }
+
+              &:nth-child(odd):not(:hover):not(.ant-table-row-selected) > td {
+                background: white !important;
+              }
+
+              &:hover > td, &:focus > td {
+                background: rgb(230, 247, 255) !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .card-actions-container .ant-card-actions li {
