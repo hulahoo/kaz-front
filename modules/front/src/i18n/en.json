@@ -272,5 +272,6 @@
   "saveAndClose": "Save and close",
   "notes": "Notes",
   "ask.question": "Ask a question",
-  "your.question.accepted": "Your question has been accepted"
+  "your.question.accepted": "Your question has been accepted",
+  "summited.less.than.30.days": "The application was submitted less than 30 calendar days before the planned exit date"
 }

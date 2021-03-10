@@ -263,5 +263,6 @@
   "saveAndClose": "Сохранить и закрыть",
   "notes":"Заметки",
   "ask.question": "Задать вопрос",
-  "your.question.accepted": "Ваш вопрос принят"
+  "your.question.accepted": "Ваш вопрос принят",
+  "summited.less.than.30.days": "Заявка подана менее чем за 30 календарных дней до планируемой даты выход"
 }

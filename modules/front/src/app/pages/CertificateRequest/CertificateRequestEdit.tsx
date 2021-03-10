@@ -101,7 +101,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
       return <Redirect to={CertificateRequestManagement.PATH}/>;
     }
 
-    const isDraft = this.isDraft();
+    const isNotDraft = this.isNotDraft();
 
     const messages = this.mainStore.messages!;
 
@@ -151,7 +151,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   entityName={CertificateRequest.NAME}
                   propertyName="receivingType"
                   form={this.props.form}
-                  disabled={isDraft}
+                  disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.receivingTypesDc}
                   getFieldDecoratorOpts={{
@@ -166,7 +166,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   entityName={CertificateRequest.NAME}
                   propertyName="certificateType"
                   form={this.props.form}
-                  disabled={isDraft}
+                  disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.certificateTypesDc}
                   getFieldDecoratorOpts={{
@@ -181,7 +181,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   entityName={CertificateRequest.NAME}
                   propertyName="language"
                   form={this.props.form}
-                  disabled={isDraft}
+                  disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.languagesDc}
                   getFieldDecoratorOpts={{
@@ -196,7 +196,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   entityName={CertificateRequest.NAME}
                   propertyName="showSalary"
                   form={this.props.form}
-                  disabled={isDraft}
+                  disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     valuePropName: "checked"
@@ -207,7 +207,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   entityName={CertificateRequest.NAME}
                   propertyName="numberOfCopy"
                   form={this.props.form}
-                  disabled={isDraft}
+                  disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{

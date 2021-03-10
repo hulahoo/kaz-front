@@ -30,6 +30,8 @@ import {LeavingVacationRequestManagement} from "./LeavingVacationRequestManageme
 import {LeavingVacationRequest} from "../../../cuba/entities/base/tsadv$LeavingVacationRequest";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {Moment} from "moment";
+import {observable, reaction} from "mobx";
+import moment from "moment/moment";
 
 type EditorProps = {
   entityId: string;
@@ -81,16 +83,19 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
   processDefinitionKey = "leavingVacationRequest";
 
+  @observable isLessThan30Days: boolean = false;
+
   dateValidator = () => {
     const plannedStartDate = this.props.form.getFieldValue("plannedStartDate");
-    const endDate = this.props.form.getFieldValue("endDate");
+    const requestDate = this.props.form.getFieldValue("requestDate");
 
     if (plannedStartDate) (plannedStartDate as Moment).startOf('days');
-    if (endDate) (endDate as Moment).startOf('days');
+    if (requestDate) (requestDate as Moment).startOf('days');
 
-    const isValid = plannedStartDate && endDate && plannedStartDate >= (endDate as Moment).clone().add(30, 'days');
+    const isValid = plannedStartDate && requestDate && plannedStartDate > (requestDate as Moment).clone().add(30, 'days');
 
-    return isValid === true;
+    this.isLessThan30Days = !(isValid === true);
+    return plannedStartDate !== null && plannedStartDate !== undefined;
   }
 
   render() {
@@ -107,7 +112,15 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
     const {getFieldDecorator} = this.props.form;
 
-    const isDraft = this.isDraft();
+    const messages = this.mainStore.messages!;
+
+    const isNotDraft = this.isNotDraft();
+
+    const warningDateMessage = this.isLessThan30Days ?
+      <div style={{color: "red", marginBottom: "15px"}}>
+        <label>{this.props.intl.formatMessage({id: isNotDraft ? "summited.less.than.30.days" : "leavingVacationRequest.plannedStartDate.validating"})}</label>
+      </div>
+      : null;
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "leavingVacationRequest"})}>
@@ -179,23 +192,24 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                   entityName={this.dataInstance.entityName}
                   propertyName="plannedStartDate"
                   form={this.props.form}
-                  disabled={isDraft}
+                  disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
                       required: true,
-                      message: this.props.intl.formatMessage({id: "leavingVacationRequest.plannedStartDate.validating"}),
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.plannedStartDate']}),
                       validator: this.dateValidator
                     }]
                   }}
                 />
+                {warningDateMessage}
 
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
                   <Form.Item>
                     {getFieldDecorator("comment")(
                       <TextArea
-                        disabled={isDraft}
+                        disabled={isNotDraft}
                         rows={4}/>
                     )}
                   </Form.Item>
@@ -205,7 +219,7 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                   entityName={this.dataInstance.entityName}
                   propertyName="attachment"
                   form={this.props.form}
-                  disabled={isDraft}
+                  disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
@@ -219,6 +233,26 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
       </Page>
     );
   }
+
+  setReactionDisposer = () => {
+    this.reactionDisposer = reaction(
+      () => {
+        return this.dataInstance.item;
+      },
+      () => {
+        const obj = {
+          ...this.dataInstance.getFieldValues(this.fields)
+        };
+        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
+          const now = moment();
+          now.locale(this.props.rootStore!.userInfo.locale!);
+          obj["requestDate"] = now;
+        }
+        this.props.form.setFieldsValue(obj);
+        this.dateValidator();
+      }
+    );
+  };
 
   protected initItem(request: LeavingVacationRequest): void {
     if (this.props.absenceId) {
