@@ -8,7 +8,7 @@
 @import "/src/app/components/DefaultInputNumber/style";
 @import "/src/app/components/Dropdown/style";
 @import "/src/app/components/Dropdown/DropdownButton/style";
-@import "/src/app/util/notification/style";
+@import "/src/app/util/Notification/style";
 @import "/src/app/header/UserPanel/style";
 @import "/src/app/header/UserPanel/Notification/NotificationDropdown/style";
 @import "/src/app/components/Table/style";
@@ -20,6 +20,8 @@
 @import "/src/app/pages/MyCourse/style";
 @import "/src/app/components/NoImage/style";
 @import "/src/app/components/Test/style";
+@import "/src/app/components/Carousel/style";
+@import "/src/app/pages/MyEducation/style";
 
 .additional-panel {
   display: flex;
@@ -317,6 +319,16 @@ img.ant-menu-item-icon {
       }
     }
   }
+}
+
+.card-actions-container .ant-card-actions li {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.card-actions-container .ant-card-actions li button {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
 }
 
 @radio-dot-color: @primary-1 !important;

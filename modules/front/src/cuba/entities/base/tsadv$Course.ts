@@ -97,15 +97,16 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       Course,
       | "id"
       | "name"
+      | "party"
       | "description"
       | "logo"
       | "category"
       | "targetAudience"
       | "activeFlag"
+      | "shortDescription"
       | "selfEnrollment"
       | "learningType"
-      | "party"
-      | "shortDescription"
+      | "isOnline"
     >
   : V extends "course.edit"
   ? Pick<
@@ -146,6 +147,8 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "learningType"
       | "isOnline"
       | "courseSchedule"
+      | "educationPeriod"
+      | "educationDuration"
     >
   : V extends "course.tree"
   ? Pick<

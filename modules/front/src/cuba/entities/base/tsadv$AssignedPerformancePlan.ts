@@ -1,14 +1,16 @@
-import { StandardEntity } from "./sys$StandardEntity";
+import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PerformancePlan } from "./tsadv$PerformancePlan";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-export class AssignedPerformancePlan extends StandardEntity {
+export class AssignedPerformancePlan extends AbstractBprocRequest {
   static NAME = "tsadv$AssignedPerformancePlan";
+  static PROCESS_DEFINITION_KEY = "kpi";
+
   performancePlan?: PerformancePlan | null;
   result?: any | null;
   gzp?: any | null;
   assignedPerson?: PersonGroupExt | null;
   assigned_by?: PersonGroupExt | null;
-  status?: any | null;
+  stepStageStatus?: any | null;
   startDate?: any | null;
   endDate?: any | null;
   kpiScore?: any | null;
@@ -36,9 +38,11 @@ export type AssignedPerformancePlanView<
   ? Pick<
       AssignedPerformancePlan,
       | "id"
+      | "requestNumber"
+      | "requestDate"
       | "result"
       | "gzp"
-      | "status"
+      | "stepStageStatus"
       | "startDate"
       | "endDate"
       | "kpiScore"
@@ -51,6 +55,10 @@ export type AssignedPerformancePlanView<
       | "adjustedBonus"
       | "adjustedScore"
       | "maxBonusPercent"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "comment"
     >
   : V extends "_local"
   ? Pick<
@@ -58,7 +66,7 @@ export type AssignedPerformancePlanView<
       | "id"
       | "result"
       | "gzp"
-      | "status"
+      | "stepStageStatus"
       | "startDate"
       | "endDate"
       | "kpiScore"
@@ -71,30 +79,52 @@ export type AssignedPerformancePlanView<
       | "adjustedBonus"
       | "adjustedScore"
       | "maxBonusPercent"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
     >
+  : V extends "_minimal"
+  ? Pick<AssignedPerformancePlan, "id" | "requestNumber" | "requestDate">
   : V extends "assignedPerformancePlan-kpi-team"
   ? Pick<
       AssignedPerformancePlan,
       | "id"
+      | "requestNumber"
+      | "requestDate"
       | "performancePlan"
       | "startDate"
       | "endDate"
-      | "status"
+      | "stepStageStatus"
       | "performancePlan"
       | "startDate"
       | "endDate"
-      | "status"
+      | "stepStageStatus"
       | "assignedPerson"
     >
   : V extends "assignedPerformancePlan-myKpi"
   ? Pick<
       AssignedPerformancePlan,
-      "id" | "performancePlan" | "startDate" | "endDate" | "status"
+      | "id"
+      | "requestNumber"
+      | "requestDate"
+      | "performancePlan"
+      | "startDate"
+      | "endDate"
+      | "stepStageStatus"
     >
   : V extends "assignedPerformancePlan-myKpi-edit"
   ? Pick<
       AssignedPerformancePlan,
-      "id" | "performancePlan" | "status" | "assignedPerson"
+      | "id"
+      | "requestNumber"
+      | "requestDate"
+      | "performancePlan"
+      | "stepStageStatus"
+      | "assignedPerson"
+      | "status"
     >
   : V extends "assignedPerformancePlan.browse"
   ? Pick<
@@ -102,7 +132,7 @@ export type AssignedPerformancePlanView<
       | "id"
       | "result"
       | "gzp"
-      | "status"
+      | "stepStageStatus"
       | "startDate"
       | "endDate"
       | "kpiScore"
@@ -115,8 +145,15 @@ export type AssignedPerformancePlanView<
       | "adjustedBonus"
       | "adjustedScore"
       | "maxBonusPercent"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
       | "performancePlan"
       | "assignedPerson"
       | "assigned_by"
+      | "status"
     >
   : never;

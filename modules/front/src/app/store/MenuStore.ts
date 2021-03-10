@@ -2,8 +2,10 @@ import RootStore from "./RootStore";
 import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
-import {CertificateRequestManagement} from "../../app/pages/certificateRequest/CertificateRequestManagement";
-import {AbsenceRequestManagement} from "../pages/absenceRequest/AbsenceRequestManagement";
+import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
+import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
+import {ScheduleOffsetsRequestManagement} from "../pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
+import AbsenceList from "../pages/Absence/AbsenceList";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -41,11 +43,11 @@ export default class MenuStore {
         pathPattern: "/my-team",
         component: null
       }, {
-        id: "absenceRequest",
+        id: "absence",
         caption: "Absence",
-        menuLink: "/absenceRequest",
-        pathPattern: "/absenceRequest",
-        component: AbsenceRequestManagement
+        menuLink: "/absence",
+        pathPattern: "/absence",
+        component: AbsenceList
       },
       {
         id: "help",
@@ -66,48 +68,11 @@ export default class MenuStore {
         items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
       } as MenuSubMenu,
       {
-        id: "my-education", caption: "Обучение", items: [
-          {
-            id: "course-catalog",
-            caption: "Каталог курсов",
-            menuLink: "/course",
-            pathPattern: "/course",
-            component: null
-          },
-          {id: "calendar", caption: "Каледнарь", menuLink: "/calendar", pathPattern: "/calendar", component: null},
-          {
-            id: "my-courses",
-            caption: "Мои курсы",
-            menuLink: "/my-course",
-            pathPattern: "/my-course",
-            component: null,
-          },
-          {
-            id: "library",
-            caption: "Библиотека",
-            items: [{
-              id: "books",
-              caption: "Мои книги",
-              menuLink: "/book",
-              pathPattern: "/book",
-              component: null
-            // }, {
-            //   id: "my-books",
-            //   caption: "Мои книги",
-            //   menuLink: "/my-books",
-            //   pathPattern: "/my-books",
-            //   component: null
-            }]
-          } as MenuSubMenu,
-          {
-            id: "learn-history",
-            caption: "История обучения",
-            menuLink: "/learning-history",
-            pathPattern: "/learning-history",
-            component: PersonalDataRequestManagement
-          }
-        ]
-      } as MenuSubMenu,
+        id: "my-education", caption: "Обучение",
+        menuLink: "/my-education",
+        pathPattern: "/my-education",
+        component: AbsenceList
+      },
       {id: "my-kpi", caption: "Мой KPI", menuLink: "/kpi", pathPattern: "/kpi", component: null},
       {
         id: "team-kpi",
@@ -122,6 +87,20 @@ export default class MenuStore {
         menuLink: "/my-rating",
         pathPattern: "/my-rating",
         component: null,
+      },
+      {
+        id: "dmc-my",
+        caption: "Мои ДМС",
+        menuLink: "/my-dmc",
+        pathPattern: "/my-dmc",
+        component: InsuredPersonManagement,
+      },
+      {
+        id: "schedule-offsets",
+        caption: "График сменности",
+        menuLink: "/schedule-offsets",
+        pathPattern: "/schedule-offsets",
+        component: ScheduleOffsetsRequestManagement,
       },
       {
         id: "team-rating",

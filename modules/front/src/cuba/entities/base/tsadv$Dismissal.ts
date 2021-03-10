@@ -28,6 +28,7 @@ export type DismissalViewName =
   | "_local"
   | "_minimal"
   | "dismissal.card"
+  | "dismissal.edit"
   | "dismissal.forNotification"
   | "dismissal.view";
 export type DismissalView<V extends DismissalViewName> = V extends "_base"
@@ -70,6 +71,22 @@ export type DismissalView<V extends DismissalViewName> = V extends "_base"
       | "lcArticle"
       | "dismissalReason"
       | "status"
+    >
+  : V extends "dismissal.edit"
+  ? Pick<
+      Dismissal,
+      | "id"
+      | "dismissalDate"
+      | "requestDate"
+      | "orderNumber"
+      | "orderDate"
+      | "finalCalculationDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "status"
+      | "personGroup"
+      | "lcArticle"
     >
   : V extends "dismissal.forNotification"
   ? Pick<

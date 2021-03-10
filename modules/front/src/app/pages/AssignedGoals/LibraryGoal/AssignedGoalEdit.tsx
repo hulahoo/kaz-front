@@ -28,7 +28,7 @@ import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 import {GoalLibrary} from "../../../../cuba/entities/base/tsadv$GoalLibrary";
 import Section from "../../../hoc/Section";
 import Page from "../../../hoc/PageContentHoc";
-import Notification from "../../../util/notification/Notification";
+import Notification from "../../../util/Notification/Notification";
 import {FormComponentProps} from "antd/es/form";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
@@ -171,6 +171,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
     const messages = this.props.mainStore!.messages!;
     const {Option} = Select;
+    const {status} = this.dataInstance;
 
     return (
       <Page pageName={""}>
@@ -180,7 +181,15 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               <Button htmlType="button" buttonType={ButtonType.FOLLOW}>
                 <FormattedMessage id="management.editor.cancel"/>
               </Button>
-            </Link>]
+            </Link>,
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={status !== "DONE" && status !== "ERROR"}
+                loading={status === "LOADING"}
+                style={{marginLeft: "8px"}}>
+                <FormattedMessage id="management.editor.submit"/>
+              </Button>]
           } bordered={false}>
             <Section size={"large"}>
               <Row className={"form-row"}>

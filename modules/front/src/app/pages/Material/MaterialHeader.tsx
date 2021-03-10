@@ -3,13 +3,15 @@ import {Col, Form, Rate, Row} from "antd";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Button, {ButtonType} from "../../components/Button/Button";
 import ImageLogo, {ImageLogoProps} from "../../components/ImageLogo";
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import {EnrollmentManagement} from "../MyCourse/EnrollmentManagement";
 
 type MaterialHeaderProps = {
   name: string;
   avgRate: number;
   reviewsCount: number;
   finished: number;
-  hasEnrollment: boolean;
+  enrollmentId?: string;
   subscribing?: boolean;
   showEnrollment?: boolean;
   imageProps?: ImageLogoProps;
@@ -20,7 +22,7 @@ type MaterialHeaderHandlers = {
   subscribe?: () => void;
 }
 
-class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderProps & MaterialHeaderHandlers> {
+class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderProps & MaterialHeaderHandlers & RouteComponentProps> {
   render() {
     const {showEnrollment = true} = this.props;
 
@@ -56,8 +58,12 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
             </Row>
           </div>
           {showEnrollment
-            ? this.props.hasEnrollment
-              ? <FormattedMessage id={this.props.intl.formatMessage({id: this.props.materialInfoType + ".enrolled"})}/>
+            ? this.props.enrollmentId
+              ? <Button buttonType={ButtonType.PRIMARY} loading={this.props.subscribing}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          this.props.history!.push("/" + EnrollmentManagement.PATH + "/" + this.props.enrollmentId)
+                        }}>{this.props.intl.formatMessage({id: "enrollment.continue"})}</Button>
               : <Button buttonType={ButtonType.PRIMARY} loading={this.props.subscribing}
                         onClick={this.props.subscribe}>{this.props.intl.formatMessage({id: this.props.materialInfoType + ".subscribe"})}</Button>
             : <></>}
@@ -72,4 +78,4 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
   }
 }
 
-export default injectIntl(MaterialHeader);
+export default withRouter(injectIntl(MaterialHeader));

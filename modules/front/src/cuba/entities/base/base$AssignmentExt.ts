@@ -34,6 +34,7 @@ export type AssignmentExtViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "assignedPerformancePlan-assignment"
   | "assignmanetExt.view.for.positionEdit"
   | "assignment-for-talents"
   | "assignment-portal-kpi"
@@ -58,7 +59,9 @@ export type AssignmentExtViewName =
   | "assignmentExt.bpm.view"
   | "assignmentExtBrowse.view"
   | "assignmentForManger.browse"
-  | "assignmentRequisitionEdit";
+  | "assignmentRequisitionEdit"
+  | "portal-assignment-group"
+  | "portal-assignment-group";
 export type AssignmentExtView<
   V extends AssignmentExtViewName
 > = V extends "_base"
@@ -68,6 +71,8 @@ export type AssignmentExtView<
       | "organizationGroup"
       | "jobGroup"
       | "group"
+      | "endDate"
+      | "startDate"
       | "orderNumber"
       | "orderDate"
       | "durationProbationPeriod"
@@ -79,8 +84,6 @@ export type AssignmentExtView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
       | "writeHistory"
       | "assignDate"
     >
@@ -105,7 +108,29 @@ export type AssignmentExtView<
       | "assignDate"
     >
   : V extends "_minimal"
-  ? Pick<AssignmentExt, "id" | "organizationGroup" | "jobGroup" | "group">
+  ? Pick<
+      AssignmentExt,
+      | "id"
+      | "organizationGroup"
+      | "jobGroup"
+      | "group"
+      | "endDate"
+      | "startDate"
+    >
+  : V extends "assignedPerformancePlan-assignment"
+  ? Pick<
+      AssignmentExt,
+      | "id"
+      | "organizationGroup"
+      | "jobGroup"
+      | "group"
+      | "endDate"
+      | "startDate"
+      | "personGroup"
+      | "jobGroup"
+      | "organizationGroup"
+      | "positionGroup"
+    >
   : V extends "assignmanetExt.view.for.positionEdit"
   ? Pick<
       AssignmentExt,
@@ -113,6 +138,8 @@ export type AssignmentExtView<
       | "organizationGroup"
       | "jobGroup"
       | "group"
+      | "endDate"
+      | "startDate"
       | "group"
       | "personGroup"
       | "startDate"
@@ -126,6 +153,8 @@ export type AssignmentExtView<
       | "organizationGroup"
       | "jobGroup"
       | "group"
+      | "endDate"
+      | "startDate"
       | "gradeGroup"
       | "positionGroup"
     >
@@ -678,6 +707,50 @@ export type AssignmentExtView<
       | "endDate"
       | "writeHistory"
       | "assignDate"
+      | "personGroup"
+    >
+  : V extends "portal-assignment-group"
+  ? Pick<
+      AssignmentExt,
+      | "id"
+      | "orderNumber"
+      | "orderDate"
+      | "durationProbationPeriod"
+      | "unit"
+      | "probationEndDate"
+      | "primaryFlag"
+      | "fte"
+      | "temporaryEndDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "assignDate"
+      | "group"
+      | "personGroup"
+    >
+  : V extends "portal-assignment-group"
+  ? Pick<
+      AssignmentExt,
+      | "id"
+      | "orderNumber"
+      | "orderDate"
+      | "durationProbationPeriod"
+      | "unit"
+      | "probationEndDate"
+      | "primaryFlag"
+      | "fte"
+      | "temporaryEndDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
+      | "writeHistory"
+      | "assignDate"
+      | "group"
       | "personGroup"
     >
   : never;

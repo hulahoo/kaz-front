@@ -19,6 +19,8 @@ export class QueryDataCollectionStore<T> extends DataCollectionStore<T> {
           this.items = resp.result;
           this.count = resp.count;
           this.status = 'DONE';
+
+          this.afterLoad();
         });
       })
       .catch(() => {
@@ -26,10 +28,14 @@ export class QueryDataCollectionStore<T> extends DataCollectionStore<T> {
           this.status = 'ERROR';
         });
       });
+  };
+
+  afterLoad = (): void => {
+
   }
 }
 
-export function queryCollection<T>(entityName: string, queryName: string, params: any): DataCollectionStore<T> {
+export function queryCollection<T>(entityName: string, queryName: string, params: any): QueryDataCollectionStore<T> {
   const queryDataCollectionStore = new QueryDataCollectionStore<T>(entityName, queryName, params);
   if (typeof params.loadImmediately === 'undefined' || params.loadImmediately) {
     queryDataCollectionStore.load();

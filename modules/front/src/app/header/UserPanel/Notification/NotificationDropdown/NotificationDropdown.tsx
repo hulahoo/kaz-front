@@ -9,7 +9,8 @@ import {action, observable} from "mobx";
 import {BellNotification} from "../../../../store/BellNotificationStore";
 import {restServices} from "../../../../../cuba/services";
 import {Link, RouteComponentProps, withRouter} from "react-router-dom";
-import {ActivityManagement} from "../../../../pages/activity/ActivityManagement";
+import {ActivityManagement} from "../../../../pages/Activity/ActivityManagement";
+import {ActivityLinkMap} from "../../../../util/ActivityLinkMap";
 
 const scheduleNotificationTime: number = 10000;
 
@@ -45,7 +46,8 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
               <ul className={"notifications-tab-content"}>
                 {this.bellTasks ? this.bellTasks.map(task => {
                   return <li key={task.id}>
-                    <Link to={"/" + task.link + "/" + task.entityId}>
+                    <Link
+                      to={"/" + (ActivityLinkMap[task.link] ? ActivityLinkMap[task.link] : task.link) + "/" + task.entityId}>
                       <div className={"bell-notification-name"}
                            onClick={() => this.props.setVisibleFalse()}>{task.name}</div>
                       <div

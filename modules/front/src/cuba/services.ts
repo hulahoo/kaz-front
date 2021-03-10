@@ -20,6 +20,12 @@ import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
 import {OrgRequestGrade, OrgRequestRow} from "../app/pages/orgStructureRequest/OrgStructureRequestEdit";
 import {OrganizationSaveModel} from "../app/pages/orgStructureRequest/OrganizationEditor";
 import {PositionSaveModel} from "../app/pages/orgStructureRequest/PositionEditor";
+import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
+import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsRequest";
+import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
+import {AnsweredFeedback} from "../app/pages/MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent";
+import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQuestion";
+import {DicCompany} from "./entities/base/base_DicCompany";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -118,6 +124,15 @@ export const restServices = {
       ).then((response: string) => {
         return JSON.parse(response);
       });
+    },
+    searchCourses: (params: { courseName: string }): Promise<DicCategory[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "searchCourses",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
     }
   },
   kpiService: {
@@ -165,16 +180,31 @@ export const restServices = {
         {...params},
         fetchOpts
       ).then((response: string) => JSON.parse(response));
+    },
+    finishFeedback: (params: { answeredFeedback: AnsweredFeedback }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "finishFeedback",
+        {...params},
+        fetchOpts
+      );
+    },
+    loadFeedbackData: (params: { feedbackTemplateId: string }, fetchOpts?: FetchOptions): Promise<LearningFeedbackQuestion[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "loadFeedbackData",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
     }
   },
   portalHelperService: {
-    newEntity: (param ?: { entityName: string }, fetchOpts?: FetchOptions) => {
+    newEntity: <T>(param ?: { entityName: string }): Promise<T> => {
       return getCubaREST()!.invokeService(
         "tsadv_PortalHelperService",
         "newEntity",
-        {...param},
-        fetchOpts
-      );
+        {...param}
+      ).then((value: string) => JSON.parse(value));
     }
   },
   bprocService: {
@@ -313,6 +343,81 @@ export const restServices = {
       );
     }
   },
+  documentService: {
+    getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "getInsuredPerson",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    getInsuredPersonMembers: (params: { insuredPersonId: any }, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "getInsuredPersonMembers",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    checkPersonInsure: (params: { personGroupId: any, contractId: any }, fetchOpts?: FetchOptions): Promise<Boolean> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "checkPersonInsure",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    calcAmount: (params: { insuranceContractId: any, personGroupExtId: any, relativeTypeId: any, bith: any }, fetchOpts?: FetchOptions): Promise<number> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "calcAmount",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    getMyInsuraces: (params: {}, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "getMyInsuraces",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+
+    getOffsetRequestsNew: (params: {}, fetchOpts?: FetchOptions): Promise<ScheduleOffsetsRequest> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "getOffsetRequestsNew",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    calcTotalAmount: (params: { insuredPersonId: any }, fetchOpts?: FetchOptions): Promise<number> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "calcTotalAmount",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+  },
+  employeeService: {
+    findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean, viewName: string }): Promise<PersonGroupExt[]> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "findManagerListByPositionGroup",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    getCompanyByPersonGroupId: (param: { personGroupId: string }): Promise<DicCompany> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "getCompanyByPersonGroupId",
+        {...param}
+      ).then(r => JSON.parse(r));
+    }
+  },
   orgStructureService: {
     initialCreate: (): Promise<OrgStructureRequest> => {
       return getCubaREST()!.invokeService(
@@ -377,6 +482,6 @@ export type CourseInfo = {
   description: string
   educationPeriod: number
   educationDuration: number
-  hasEnrollment: boolean
+  enrollmentId: string
   selfEnrollment: boolean
 }

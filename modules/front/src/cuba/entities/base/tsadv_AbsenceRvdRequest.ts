@@ -20,7 +20,8 @@ export type AbsenceRvdRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
-  | "absenceRvdRequest-for-ss-structure-person";
+  | "absenceRvdRequest-for-ss-structure-person"
+  | "absenceRvdRequest.edit";
 export type AbsenceRvdRequestView<
   V extends AbsenceRvdRequestViewName
 > = V extends "_base"
@@ -83,6 +84,29 @@ export type AbsenceRvdRequestView<
       | "comment"
       | "personGroup"
       | "type"
+      | "purpose"
+      | "status"
+    >
+  : V extends "absenceRvdRequest.edit"
+  ? Pick<
+      AbsenceRvdRequest,
+      | "id"
+      | "purposeText"
+      | "timeOfStarting"
+      | "timeOfFinishing"
+      | "totalHours"
+      | "compencation"
+      | "vacationDay"
+      | "acquainted"
+      | "agree"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "type"
+      | "personGroup"
       | "purpose"
       | "status"
     >

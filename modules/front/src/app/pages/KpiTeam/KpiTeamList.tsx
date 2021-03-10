@@ -1,7 +1,7 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
 
-import {action, observable, runInAction} from "mobx";
+import {action, observable} from "mobx";
 
 import {Col, Modal, Row, Select, Table} from "antd";
 
@@ -116,7 +116,7 @@ class KpiTeamListComponent extends React.Component<MainStoreInjected & WrappedCo
                     dataIndex={"status"}
                     key={"status"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
               return <span>
-                {getEnumCaption(record.status, getPropertyInfoNN("status", AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!)}
+                {getEnumCaption(record.stepStageStatus, getPropertyInfoNN("status", AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!)}
                 </span>
             }}/>
             <Column title={this.props.intl.formatMessage({id: "assessmentPeriod"})}

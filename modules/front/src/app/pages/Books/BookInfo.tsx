@@ -18,7 +18,7 @@ import {BookReview} from "../../../cuba/entities/base/tsadv$BookReview";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import {RootStoreProp} from "../../store";
 
 type EditorProps = {
@@ -95,7 +95,6 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                   avgRate={this.dataInstance.item.reviews
                     ? this.dataInstance.item.reviews.map(r => (r.rating as number)).reduce((i1, i2) => i1 + i2, 0)
                     : 0}
-                  hasEnrollment={false}
                   imageProps={{
                     type: "promise",
                     imgSrcProp: this.dataInstance.item.image ? getBlobUrl(this.dataInstance.item.image.id) : undefined

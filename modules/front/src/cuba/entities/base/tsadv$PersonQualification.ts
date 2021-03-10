@@ -80,7 +80,7 @@ export type PersonQualificationView<
       | "organizationBin"
       | "integrationUserLogin"
       | "type"
-      | "attachment"
       | "personGroup"
+      | "attachment"
     >
   : never;

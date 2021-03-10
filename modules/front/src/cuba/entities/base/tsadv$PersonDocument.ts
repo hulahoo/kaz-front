@@ -91,10 +91,11 @@ export type PersonDocumentView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "issuingAuthority"
       | "documentType"
+      | "personGroup"
       | "status"
       | "file"
-      | "personGroup"
     >
   : V extends "personDocument.forNotification"
   ? Pick<

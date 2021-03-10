@@ -76,7 +76,8 @@
   }
 }
 
-.course-section-item.selected {
+.course-section-item.selected,
+.course-feedback-sections .course-section-item.selected {
   border-color: @primary-1;
 }
 
@@ -112,7 +113,6 @@
           }
         }
       }
-
     }
   }
 }
@@ -122,14 +122,15 @@
   border-color: @primary-4;
 }
 
-.course-section-item:active {
+.course-section-item:active,
+.course-section-item:hover:active {
   border-color: @primary-3;
 }
 
-.course-section-item-feedback {
+.course-feedback-sections .course-section-item {
   border-color: @follow-button-color;
 }
 
-.course-section-item-feedback:hover {
+.course-feedback-sections .course-section-item:hover {
   border-color: @follow-button-hover-color;
 }

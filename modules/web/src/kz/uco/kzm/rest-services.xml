@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns="http://schemas.haulmont.com/cuba/rest-services-v2.xsd">
+    <service name="mobile_MobileRestService">
+        <method name="getAppVersions" anonymousAllowed="true"/>
+        <method name="saveFcmTokenBySessionUser">
+            <param name="token" type="java.lang.String"/>
+            <param name="deviceId" type="java.lang.String"/>
+            <param name="deviceInfo" type="java.lang.String"/>
+        </method>
+    </service>
+</services>

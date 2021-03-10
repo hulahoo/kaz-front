@@ -13,6 +13,10 @@ export class Address extends AbstractParentEntity {
   country?: DicCountry | null;
   postalCode?: string | null;
   cityName?: string | null;
+  factAddress?: string | null;
+  registrationAddress?: string | null;
+  factAddressKATOCode?: string | null;
+  registrationAddressKATOCode?: string | null;
   city?: DicCity | null;
   language?: DicLanguage | null;
   startDate?: any | null;
@@ -27,6 +31,10 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "address"
       | "postalCode"
       | "cityName"
+      | "factAddress"
+      | "registrationAddress"
+      | "factAddressKATOCode"
+      | "registrationAddressKATOCode"
       | "startDate"
       | "endDate"
       | "legacyId"
@@ -40,6 +48,10 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "address"
       | "postalCode"
       | "cityName"
+      | "factAddress"
+      | "registrationAddress"
+      | "factAddressKATOCode"
+      | "registrationAddressKATOCode"
       | "startDate"
       | "endDate"
       | "legacyId"
@@ -55,6 +67,10 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "address"
       | "postalCode"
       | "cityName"
+      | "factAddress"
+      | "registrationAddress"
+      | "factAddressKATOCode"
+      | "registrationAddressKATOCode"
       | "startDate"
       | "endDate"
       | "legacyId"

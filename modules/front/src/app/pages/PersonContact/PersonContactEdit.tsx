@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Form, message} from "antd";
+import {Alert, Card, Form} from "antd";
 import {inject, observer} from "mobx-react";
 import {PersonContactManagement} from "./PersonContactManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -9,11 +9,14 @@ import {IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
-  clearFieldErrors, collection,
+  clearFieldErrors,
+  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
-  Field, injectMainStore,
-  instance, MainStoreInjected,
+  Field,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -21,12 +24,10 @@ import {
 import "../../../app/App.css";
 
 import {PersonContact} from "../../../cuba/entities/base/tsadv$PersonContact";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {DicApprovalStatus} from "../../../cuba/entities/base/tsadv$DicApprovalStatus";
 import {DicPhoneType} from "../../../cuba/entities/base/tsadv$DicPhoneType";
 import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
-import PageContentHoc from "../../hoc/PageContentHoc";
 import {RootStoreProp} from "../../store";
 import Page from "../../hoc/PageContentHoc";
 import LoadingPage from "../LoadingPage";

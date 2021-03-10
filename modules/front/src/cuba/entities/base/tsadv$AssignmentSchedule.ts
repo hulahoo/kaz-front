@@ -11,12 +11,14 @@ export class AssignmentSchedule extends AbstractParentEntity {
   endDate?: any | null;
   colorsSet?: any | null;
   name?: string | null;
+  endPolicyCode?: string | null;
 }
 export type AssignmentScheduleViewName =
   | "_base"
   | "_local"
   | "_minimal"
   | "assignmentSchedule-for-my-team"
+  | "assignmentSchedule.edit"
   | "assignmentSchedule.view";
 export type AssignmentScheduleView<
   V extends AssignmentScheduleViewName
@@ -24,9 +26,11 @@ export type AssignmentScheduleView<
   ? Pick<
       AssignmentSchedule,
       | "id"
+      | "schedule"
       | "startDate"
       | "endDate"
       | "colorsSet"
+      | "endPolicyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -38,12 +42,13 @@ export type AssignmentScheduleView<
       | "startDate"
       | "endDate"
       | "colorsSet"
+      | "endPolicyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<AssignmentSchedule, "id">
+  ? Pick<AssignmentSchedule, "id" | "schedule">
   : V extends "assignmentSchedule-for-my-team"
   ? Pick<
       AssignmentSchedule,
@@ -51,13 +56,28 @@ export type AssignmentScheduleView<
       | "startDate"
       | "endDate"
       | "colorsSet"
+      | "endPolicyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "assignmentGroup"
-      | "name"
       | "schedule"
       | "offset"
+      | "name"
+    >
+  : V extends "assignmentSchedule.edit"
+  ? Pick<
+      AssignmentSchedule,
+      | "id"
+      | "startDate"
+      | "endDate"
+      | "colorsSet"
+      | "endPolicyCode"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "schedule"
+      | "assignmentGroup"
     >
   : V extends "assignmentSchedule.view"
   ? Pick<
@@ -66,11 +86,13 @@ export type AssignmentScheduleView<
       | "startDate"
       | "endDate"
       | "colorsSet"
+      | "endPolicyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "assignmentGroup"
       | "schedule"
       | "offset"
+      | "name"
     >
   : never;

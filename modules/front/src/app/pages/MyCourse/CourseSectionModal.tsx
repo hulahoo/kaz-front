@@ -1,20 +1,19 @@
 import React, {Component} from 'react';
-import {Card, Icon, Modal} from "antd";
+import {Modal, Spin} from "antd";
 import {observer} from "mobx-react";
-import {action, observable} from "mobx";
 import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
-import Notification from "../../util/notification/Notification";
-import Button, {ButtonType} from "../../components/Button/Button";
-import Test, {AnsweredTest} from "../../components/Test/Test";
-import Video from "../../components/Video";
-import {queryInstance} from "../../util/QueryDataInstanceStore";
-import {AssignedPerformancePlan} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
-import {instance} from "@cuba-platform/react";
-import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
+import RenderModalBodyImpl, {RenderModalBody} from "./RenderModalBody/RenderModalBody";
 import {restServices} from "../../../cuba/services";
+import {action, observable} from "mobx";
+import {SelectedSection} from "./EnrollmentEdit";
+import {DataInstanceStore, instance} from "@cuba-platform/react";
+import {FeedbackCourse} from "./RenderModalBody/Feedback/FeedbackComponent";
+import {LearningFeedbackQuestion} from "../../../cuba/entities/base/tsadv$LearningFeedbackQuestion";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 type Props = {
-  selectedCourseSection?: CourseSection,
+  courseId: string,
+  selectedSection: SelectedSection
   enrollmentId: string,
   onCloseModal?: () => void
   onFinishTest?: () => void
@@ -25,6 +24,9 @@ type Props = {
 class CourseSectionModal extends Component<Props> {
 
   @observable
+  sectionData: DataInstanceStore<CourseSection> | LearningFeedbackQuestion[];
+
+  @observable
   fullScreenModal: boolean = false;
 
   @action
@@ -33,73 +35,74 @@ class CourseSectionModal extends Component<Props> {
   };
 
   render() {
-    const isTest: boolean = this.props.selectedCourseSection ? this.props.selectedCourseSection.sectionObject!.test != undefined : false;
+    const loading = (this.sectionData
+      ? this.props.selectedSection.type === "feedback"
+        ? ((this.sectionData as LearningFeedbackQuestion[]) == undefined)
+        : (this.sectionData as DataInstanceStore<CourseSection>).status != "DONE"
+      : true);
 
     return (<Modal visible={true}
                    onCancel={this.props.onCloseModal}
                    footer={null}
-                   closable={!isTest}
-                   maskClosable={!isTest}
+                   closable={!this.isTest(loading)}
+                   maskClosable={!this.isTest(loading)}
                    width={900}
                    className={"course-section-modal" + (this.fullScreenModal ? " fullscreen" : "")}
                    destroyOnClose>
-        {this.props.selectedCourseSection ? this.getSectionBody(this.props.selectedCourseSection) : null}
+        {!loading ? this.getSectionBody() : null}
       </Modal>
     );
   }
 
-  //TODO: переписать
-  getSectionBody = (cs: CourseSection) => {
-    if (!cs.sectionObject) {
-      Notification.error({message: "У раздела отсутствует объект раздела!"});
-      return;
-    }
-
-    if (cs.sectionObject.test) {
-      return <Test test={{
-        enrollmentId: this.props.enrollmentId,
-        courseSectionObjectId: cs.sectionObject.id
-      }} onFullScreenClick={this.setFullScreenModal.bind(null, !this.fullScreenModal)}
-                   finishTimeHandler={this.props.onFinishSection}/>
-    } else if (cs.sectionObject.content) {
-      if (cs.sectionObject.content.contentType === "HTML") {
-        return <Card className={"modal-body card-actions-container"}
-                     actions={[<Button buttonType={ButtonType.PRIMARY} onClick={this.props.onFinishSection}>Завершить
-                       раздел</Button>]}>
-          <div className="fullscreen-icon">
-            <Icon type="fullscreen" onClick={this.setFullScreenModal.bind(null, !this.fullScreenModal)}/>
-          </div>
-          <div dangerouslySetInnerHTML={{__html: cs.sectionObject.content.html!}}
-               className="course-section-modal-body"/>
-        </Card>
-      }
-      if (cs.sectionObject.content.contentType === "URL") {
-        return <Card className={"modal-body card-actions-container"}
-                     actions={[<Button buttonType={ButtonType.PRIMARY} onClick={this.props.onFinishSection}>Завершить
-                       раздел</Button>]}>
-          <div className="fullscreen-icon">
-            <Icon type="fullscreen" onClick={this.setFullScreenModal.bind(null, !this.fullScreenModal)}/>
-          </div>
-          <div className="course-section-modal-body">
-            <iframe width="100%" height="100%" src={cs.sectionObject.content.url!}/>
-          </div>
-        </Card>
-      }
-      if (cs.sectionObject.content.contentType === "VIDEO") {
-        return <Card className={"modal-body card-actions-container"}
-                     actions={[<Button buttonType={ButtonType.PRIMARY} onClick={this.props.onFinishSection}>Завершить
-                       раздел</Button>]}>
-          <div className="fullscreen-icon">
-            <Icon type="fullscreen" onClick={this.setFullScreenModal.bind(null, !this.fullScreenModal)}/>
-          </div>
-          <div className="course-section-modal-body">
-            <Video fileId={cs.sectionObject.content.file!.id!}/>
-          </div>
-        </Card>
-      }
-    }
-    return null;
+  isTest = (loading: boolean): boolean => {
+    return !loading ? this.props.selectedSection.type === "course-section" && (this.sectionData as DataInstanceStore<CourseSection>).item!.sectionObject ? (this.sectionData as DataInstanceStore<CourseSection>).item!.sectionObject!.test != undefined : false : false;
   };
+
+  getSectionBody = () => {
+    const params = ((this.sectionData as DataInstanceStore<CourseSection>).item ? {
+      courseId: this.props.courseId,
+      courseSection: ((this.sectionData as DataInstanceStore<CourseSection>).item! as CourseSection),
+      changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
+    } : {
+      courseId: this.props.courseId,
+      templateId: this.props.selectedSection.id,
+      okFinishFeedbackHandler: this.props.onFinishSection,
+      onCloseModal: this.props.onCloseModal,
+      changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
+      feedbacks: (this.sectionData as LearningFeedbackQuestion[]).map(lfq => {
+        return {
+          id: lfq.id,
+          answers: lfq.answers,
+          questionLangValue1: (lfq as SerializedEntity<LearningFeedbackQuestion>).questionLangValue1,
+          questionType: lfq.questionType,
+        } as FeedbackCourse
+      })
+    });
+    const renderModalBody: RenderModalBody = new RenderModalBodyImpl();
+    return renderModalBody.renderBody(this.props.selectedSection.type, {
+      ...params,
+      onFinishSection: this.props.onFinishSection,
+      enrollmentId: this.props.enrollmentId
+    });
+  };
+
+  componentDidMount(): void {
+    switch (this.props.selectedSection.type) {
+      case "feedback": {
+        restServices.lmsService.loadFeedbackData({feedbackTemplateId: this.props.selectedSection.id}).then((response: LearningFeedbackQuestion[]) => {
+          this.sectionData = response;
+        });
+        break;
+      }
+      case "course-section": {
+        this.sectionData = instance<CourseSection>(CourseSection.NAME, {
+          view: "course.section.with.format.session",
+        });
+        this.sectionData.load(this.props.selectedSection.id);
+        break;
+      }
+    }
+  }
 }
 
 export default CourseSectionModal;

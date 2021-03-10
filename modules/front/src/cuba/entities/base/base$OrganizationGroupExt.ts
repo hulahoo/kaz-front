@@ -56,13 +56,14 @@ export type OrganizationGroupExtView<
   ? Pick<
       OrganizationGroupExt,
       | "id"
-      | "organizationName"
-      | "is_internal"
+      | "organization"
+      | "list"
       | "organizationNameLang1"
       | "organizationNameLang2"
       | "organizationNameLang3"
       | "organizationNameLang4"
       | "organizationNameLang5"
+      | "is_internal"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -82,9 +83,30 @@ export type OrganizationGroupExtView<
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<OrganizationGroupExt, "id" | "organizationName">
+  ? Pick<
+      OrganizationGroupExt,
+      | "id"
+      | "organization"
+      | "list"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
+    >
   : V extends "organization.analytic.update"
-  ? Pick<OrganizationGroupExt, "id" | "organizationName" | "analytics">
+  ? Pick<
+      OrganizationGroupExt,
+      | "id"
+      | "organization"
+      | "list"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
+      | "analytics"
+    >
   : V extends "organizationGroup.browse"
   ? Pick<
       OrganizationGroupExt,
@@ -147,7 +169,13 @@ export type OrganizationGroupExtView<
   ? Pick<
       OrganizationGroupExt,
       | "id"
-      | "organizationName"
+      | "organization"
+      | "list"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
       | "list"
       | "company"
       | "legacyId"
@@ -204,6 +232,16 @@ export type OrganizationGroupExtView<
   : V extends "organizationGroupExt.for.attestation.lookup"
   ? Pick<
       OrganizationGroupExt,
-      "id" | "organizationName" | "list" | "organization" | "organizationName"
+      | "id"
+      | "organization"
+      | "list"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
+      | "list"
+      | "organization"
+      | "organizationName"
     >
   : never;

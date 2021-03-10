@@ -98,6 +98,7 @@ export type PersonEducationView<
       | "organizationBin"
       | "integrationUserLogin"
       | "personGroup"
+      | "educationType"
       | "degree"
       | "level"
     >

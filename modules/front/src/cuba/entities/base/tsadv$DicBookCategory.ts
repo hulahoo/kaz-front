@@ -12,6 +12,7 @@ export type DicBookCategoryViewName =
   | "book-category-view"
   | "dicBookCategory-browse"
   | "dicBookCategory-edit"
+  | "dicBookCategory-view"
   | "portal-books-category-browse";
 export type DicBookCategoryView<
   V extends DicBookCategoryViewName
@@ -154,6 +155,19 @@ export type DicBookCategoryView<
       | "isDefault"
       | "order"
       | "company"
+    >
+  : V extends "dicBookCategory-view"
+  ? Pick<
+      DicBookCategory,
+      | "id"
+      | "langValue"
+      | "langValue1"
+      | "langValue2"
+      | "langValue3"
+      | "langValue4"
+      | "langValue5"
+      | "books"
+      | "order"
     >
   : V extends "portal-books-category-browse"
   ? Pick<

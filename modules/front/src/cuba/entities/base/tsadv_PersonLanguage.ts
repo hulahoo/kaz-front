@@ -8,7 +8,11 @@ export class PersonLanguage extends AbstractParentEntity {
   language?: DicLanguage | null;
   languageLevel?: DicLanguageLevel | null;
 }
-export type PersonLanguageViewName = "_base" | "_local" | "_minimal";
+export type PersonLanguageViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "personLanguage.edit";
 export type PersonLanguageView<
   V extends PersonLanguageViewName
 > = V extends "_base"
@@ -20,5 +24,16 @@ export type PersonLanguageView<
   ? Pick<
       PersonLanguage,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+    >
+  : V extends "personLanguage.edit"
+  ? Pick<
+      PersonLanguage,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "personGroup"
+      | "language"
+      | "languageLevel"
     >
   : never;

@@ -14,10 +14,9 @@ import {CenteredLoader} from "./CenteredLoader";
 import {injectIntl, IntlFormatters, WrappedComponentProps} from "react-intl";
 import {getMenuIcon} from '../resources/icons/menu';
 import {MenuRouteItem, MenuSubMenu} from "./store/MenuStore";
-import UserSettings from "./pages/user-settings/UserSettings";
+import UserSettings from "./pages/UserSettings/UserSettings";
 import {RootStoreProp} from "./store";
-import MyKpiPage from "./pages/my-kpi/MyKpiPage";
-import {CertificateRequestManagement} from "./pages/certificateRequest/CertificateRequestManagement";
+import MyKpiPage from "./pages/MyKpi/MyKpiPage";
 import {PersonDocumentManagement} from "./pages/PersonDocument/PersonDocumentManagement";
 import {PersonContactManagement} from "./pages/PersonContact/PersonContactManagement";
 import {AssignedPerformancePlanManagement} from "./pages/Kpi/AssignedPerformancePlanManagement";
@@ -29,9 +28,20 @@ import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
 import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
 import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {BooksManagement} from "./pages/Books/BooksManagement";
-import {ActivityManagement} from "./pages/activity/ActivityManagement";
-import {AbsenceRequestManagement} from "./pages/absenceRequest/AbsenceRequestManagement";
 import {OrgStructureRequestManagement} from "./pages/orgStructureRequest/OrgStructureRequestManagement";
+import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
+import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
+import {CertificateRequestManagement} from "./pages/CertificateRequest/CertificateRequestManagement";
+import {ActivityManagement} from "./pages/Activity/ActivityManagement";
+import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
+import AbsenceList from "./pages/Absence/AbsenceList";
+import {LeavingVacationRequestManagement} from "./pages/LeavingVacationRequest/LeavingVacationRequestManagement";
+import {CascadeGoalManagement} from "./pages/AssignedGoals/CascadeGoal/CascadeGoalManagement";
+import {VacationScheduleRequestManagement} from "./pages/VacationScheduleRequest/VacationScheduleRequestManagement";
+import MyEducation from "./pages/MyEducation/MyEducation";
+import MyEducationManagement from "./pages/MyEducation/MyEducationManagement";
+import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryManagement";
+import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -40,7 +50,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
   render() {
     const {initialized, locale, loginRequired, metadata} = this.props.mainStore!;
 
-    if (!initialized || !locale) {
+    if (!initialized || !locale || !this.props.rootStore!.userInfo.initialized) {
       return <CenteredLoader/>;
     }
 
@@ -93,16 +103,32 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/kpi/:appId/goal/individual/:entityId?" component={AssignedGoalManagement}/>
                 <Route exact={true} path="/kpi/:appId/goal/library/:entityId?"
                        component={LibraryAssignedGoalManagement}/>
-                <Route exact={true} path="/learning-history" component={LearningHistory}/>
+                <Route exact={true} path="/kpi/:appId/goal/cascade/:entityId?"
+                       component={CascadeGoalManagement}/>
+                <Route exact={true} path={"/" + LearningHistoryManagement.PATH} component={LearningHistory}/>
                 <Route exact={true} path="/course/:entityId?" component={CourseManagement}/>
                 <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
-                <Route exact={true} path="/book/:entityId?" component={BooksManagement}/>
-                <Route exact={true} path={EnrollmentManagement.PATH + "/:entityId?"} component={EnrollmentManagement}/>
+                <Route exact={true} path="/my-dmc/:entityId?" component={InsuredPersonManagement}/>
+                <Route exact={true} path="/schedule-offsets/:entityId?" component={ScheduleOffsetsRequestManagement}/>
+                <Route exact={true} path={"/" + BooksManagement.PATH + "/:entityId?"} component={BooksManagement}/>
+                <Route exact={true} path={"/" + MyEducationManagement.PATH} component={MyEducation}/>
+                <Route exact={true} path={"/" + EnrollmentManagement.PATH + "/:entityId?" + "/:homework?"}
+                       component={EnrollmentManagement}/>
                 <Route exact={true} path={ActivityManagement.PATH} component={ActivityManagement}/>
                 <Route exact={true}
-                       path={AbsenceRequestManagement.PATH + "/:entityId?"}
+                       path={AbsenceRequestManagement.PATH + "/:entityId"}
                        component={AbsenceRequestManagement}/>
+                <Route exact={true} path="/absence/:activeTab?" component={AbsenceList}/>
+                <Route exact={true}
+                       path={LeavingVacationRequestManagement.PATH + "/:entityId"}
+                       component={LeavingVacationRequestManagement}/>
+                <Route exact={true}
+                       path={VacationScheduleRequestManagement.PATH + "/:entityId"}
+                       component={VacationScheduleRequestManagement}/>
+                <Route exact={true}
+                       path={PortalFeedbackQuestionManagement.PATH}
+                       component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
@@ -113,7 +139,8 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
           </Layout>
         </Layout>
       </Layout>
-    );
+    )
+      ;
   }
 
   menuItem = (

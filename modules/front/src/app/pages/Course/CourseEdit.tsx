@@ -8,7 +8,7 @@ import {inject, observer} from "mobx-react";
 import {CourseInfo, CourseTrainerInfo, restServices} from "../../../cuba/services";
 import {Card, Col, Form, Input, List, Modal, Rate, Row, Spin} from "antd";
 import LoadingPage from "../LoadingPage";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
 import Section from "../../hoc/Section";
 import moment from "moment";
@@ -166,7 +166,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                 name={this.dataInstance.name}
                 finished={this.dataInstance.finished}
                 avgRate={this.dataInstance.avgRate}
-                hasEnrollment={this.dataInstance.hasEnrollment}
+                enrollmentId={this.dataInstance.enrollmentId}
                 materialInfoType="course"
                 imageProps={{
                   type: "base64",

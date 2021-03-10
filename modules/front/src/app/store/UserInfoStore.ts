@@ -1,10 +1,9 @@
-import {getCubaREST} from "@cuba-platform/react";
 import {UserInfo} from "@cuba-platform/rest/dist-node/model";
 import RootStore from "./RootStore";
 import {restQueries} from "../../cuba/queries";
 import {action, observable} from "mobx";
 
-export default class  {
+export default class {
   rootStore: RootStore;
   _instanceName?: string;
   email?: string;
@@ -18,18 +17,26 @@ export default class  {
   name?: string;
   position?: string;
   timeZone?: string;
-  @observable personGroupId?: string;
+  personGroupId?: string;
+  positionId?: string;
+  positionGroupId?: string;
+  @observable initialized: boolean = false;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
     this.loadUserInfo();
   }
 
-  loadPersonGroup = async () => {
+  loadAdditionalPersonInfo = async () => {
     return await restQueries.personGroupInfo(this.id!).then(personGroup => {
       if (personGroup) {
         this.personGroupId = personGroup.id;
+        this.positionId = personGroup.assignments![0].positionGroup!.position!.id;
+        this.positionGroupId = personGroup.assignments![0].positionGroup!.id;
       }
+      this.initialized = true;
+    }).catch(() => {
+      this.initialized = true;
     })
   };
 
@@ -48,9 +55,11 @@ export default class  {
     this.position = undefined;
     this.timeZone = undefined;
     this.personGroupId = undefined;
+    this.positionGroupId = undefined;
   };
 
   loadUserInfo = async () => {
+    this.initialized = false;
     return await this.rootStore.cubaRest.getUserInfo().then((response: UserInfo) => {
       this.timeZone = response.timeZone;
       this._instanceName = response._instanceName;
@@ -65,7 +74,9 @@ export default class  {
       this.name = response.name;
       this.position = response.position;
 
-      this.loadPersonGroup();
+      this.loadAdditionalPersonInfo();
+    }).catch(() => {
+      this.initialized = true;
     });
   }
 }

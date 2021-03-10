@@ -13,13 +13,13 @@ export type GradeView<V extends GradeViewName> = V extends "_base"
       Grade,
       | "id"
       | "gradeName"
+      | "endDate"
+      | "startDate"
       | "recognitionNominate"
       | "bonusPercent"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
       | "writeHistory"
     >
   : V extends "_local"
@@ -37,7 +37,7 @@ export type GradeView<V extends GradeViewName> = V extends "_base"
       | "writeHistory"
     >
   : V extends "_minimal"
-  ? Pick<Grade, "id" | "gradeName">
+  ? Pick<Grade, "id" | "gradeName" | "endDate" | "startDate">
   : V extends "grade.edit"
   ? Pick<
       Grade,

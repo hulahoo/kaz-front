@@ -36,12 +36,13 @@ import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
 import {EnumValueInfo, SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
 import {OrganizationExt} from "../../../cuba/entities/base/base$OrganizationExt";
-import EntitySecurityState from "../../util/EntitySecurityState";
+import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
+import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -52,15 +53,13 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class AssignedPerformancePlanEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
+class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPerformancePlan, Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
 
   dataInstance = queryInstance<AssignedPerformancePlan>(
     AssignedPerformancePlan.NAME,
     "kpiEditPage",
     {appId: this.props.entityId}
   );
-
-  entitySecurityState: EntitySecurityState = new EntitySecurityState(AssignedPerformancePlan.NAME, this.props.entityId);
 
   @observable
   totalWeight: number;
@@ -87,7 +86,9 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 
     "endDate",
 
-    "hireDate"
+    "hireDate",
+
+    "status"
   ];
 
   @observable
@@ -155,8 +156,24 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     this.totalWeight = value;
   };
 
-  sendOnApprove = () => {
-    getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
+  validate = ():Promise<boolean> => {
+    let isValidatedSuccess = true;
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        message.error(
+          this.props.intl.formatMessage({
+            id: "management.editor.validationError"
+          })
+        );
+        isValidatedSuccess = false;
+      }
+    });
+
+    if (!isValidatedSuccess) {
+      return new Promise<boolean>((resolve, reject) => resolve(false));
+    }
+
+    return getCubaREST()!.searchEntities<AssignedGoal>(AssignedGoal.NAME, {
       conditions: [
         {
           property: "assignedPerformancePlan",
@@ -172,8 +189,11 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
             id: "goal.validation.error.totalWeightSum"
           })
         });
-        return;
+        return new Promise<boolean>((resolve, reject) => resolve(false));
       }
+      return new Promise<boolean>((resolve, reject) => resolve(true));
+    }).catch(() => {
+      return new Promise<boolean>((resolve, reject) => resolve(false));
     });
   };
 
@@ -199,7 +219,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
     }, {
       id: goalCreatePathUrl + "library/new",
       value: this.props.intl.formatMessage({id: "fromLibrary"})
-    }, {id: goalCreatePathUrl + "cascade", value: this.props.intl.formatMessage({id: "cascade"})}];
+    }, {id: goalCreatePathUrl + "cascade/new", value: this.props.intl.formatMessage({id: "cascade"})}];
 
     return (
       <Page
@@ -298,6 +318,18 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
                       )}
                     </Form.Item>
                   </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={AssignedPerformancePlan.NAME}
+                      propertyName="status"
+                      form={this.props.form}
+                      disabled
+                      formItemOpts={{
+                        style: {marginBottom: "12px"},
+                        label: <Msg entityName={AssignedPerformancePlan.NAME} propertyName={"status"}/>
+                      }}
+                    />
+                  </Col>
                 </Row>
                 {this.globalErrors.length > 0 && (
                   <Alert
@@ -311,7 +343,7 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
           </div>
           <Section size={"large"}>
             <StatusSteps steps={statusSteps}
-                         currentIndex={this.dataInstance.item ? statusesPerformancePlan.filter(s => s.id === this.dataInstance.item!.status).map((s, i) => i)[0] : undefined}/>
+                         currentIndex={this.dataInstance.item ? statusesPerformancePlan.filter(s => s.id === this.dataInstance.item!.stepStageStatus).map((s, i) => i)[0] : undefined}/>
           </Section>
           {this.readonly
             ? <></>
@@ -324,8 +356,10 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
             <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
             <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
           </div>}>
-            <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight} readonly={this.readonly}/>
+            <GoalForm assignedPerformancePlanId={this.props.entityId} setTotalWeight={this.setTotalWeight}
+                      readonly={this.readonly}/>
           </Section>
+          {this.takCard()}
         </Card>
       </Page>
     );
@@ -333,27 +367,35 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 
   @action
   setReadOnly = (): void => {
-    this.entitySecurityState.afterLoad = () => {
-      this.readonly = this.entitySecurityState.securityState.hiddenAttributes
-        && (this.entitySecurityState.securityState.hiddenAttributes.find(a => a === "performancePlan") != undefined);
-    };
-    this.entitySecurityState.loadSecurityState()
+    this.readonly = !(this.dataInstance.item
+      && this.dataInstance.item.status!.code === 'DRAFT'
+      && this.dataInstance.item.assignedPerson!.id! === this.props.rootStore!.userInfo.personGroupId!);
   };
 
+  processDefinitionKey: string = AssignedPerformancePlan.PROCESS_DEFINITION_KEY;
+
   pageActions = (): JSX.Element[] => {
-    if (!this.readonly) {
-      return [<Button buttonType={ButtonType.FOLLOW}
-                      onClick={this.sendOnApprove}>{this.props.intl.formatMessage({id: "sendOnApprove"})}</Button>]
-    }
-    return [];
+    return [this.getOutcomeBtns() || <></>];
   };
 
   componentDidMount() {
-    this.loadInstanceData();
-    this.setReadOnly();
+    super.componentDidMount();
+  }
+
+  getUpdateEntityData = (): any => {
+    return {
+      personGroup: {
+        id: this.props.rootStore!.userInfo.personGroupId
+      },
+      // ...this.props.form.getFieldsValue(this.fields)
+    }
+  };
+
+  setReactionDisposer = () => {
     this.reactionDisposer = reaction(
       () => this.dataInstance.item,
       (item) => {
+        this.setReadOnly();
         this.props.form.setFieldsValue(
           {
             ...{
@@ -364,12 +406,13 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
               startDate: moment(item!.performancePlan!.startDate),
               endDate: moment(item!.performancePlan!.endDate),
               hireDate: moment(item!.assignedPerson!.person!.hireDate),
+              status: (item!.status! as SerializedEntity<AbstractBprocRequest>)._instanceName,
             }
           }
         );
       }
     );
-  }
+  };
 
   componentWillUnmount() {
     this.reactionDisposer();
@@ -377,19 +420,20 @@ class AssignedPerformancePlanEditComponent extends React.Component<Props & Wrapp
 
   loadInstanceData = () => {
     if (this.props.entityId !== AssignedPerformancePlanManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
+      this.dataInstance.load();
     } else {
       this.dataInstance.setItem(new AssignedPerformancePlan());
     }
-  };
+  }
+
+  afterSendOnApprove = () => {
+    this.formData = null;
+    this.loadBpmProcessData();
+  }
 }
 
 export default injectIntl(
-  withLocalizedForm
-
-  <
-  EditorProps
-  > ({
+  withLocalizedForm<EditorProps>({
     onValuesChange: (props: any, changedValues: any) => {
       // Reset server-side errors when field is edited
       Object.keys(changedValues).forEach((fieldName: string) => {
@@ -401,7 +445,4 @@ export default injectIntl(
         }
       );
     }
-  })
-  (AssignedPerformancePlanEditComponent)
-)
-;
+  })(AssignedPerformancePlanEditComponent));

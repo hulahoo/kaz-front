@@ -26,7 +26,7 @@ import Section from "../../../hoc/Section";
 import Page from "../../../hoc/PageContentHoc";
 import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import Button, {ButtonType} from "../../../components/Button/Button";
-import Notification from "../../../util/notification/Notification";
+import Notification from "../../../util/Notification/Notification";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
 
 type Props = FormComponentProps & EditorProps;

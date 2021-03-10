@@ -1,18 +1,13 @@
-import { AbstractParentEntity } from "./AbstractParentEntity";
-import { DicRequestStatus } from "./tsadv$DicRequestStatus";
-import { DicRequisitionType } from "./tsadv$DicRequisitionType";
+import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { Absence } from "./tsadv$Absence";
-export class LeavingVacationRequest extends AbstractParentEntity {
+import {FileDescriptor} from "./sys$FileDescriptor";
+export class LeavingVacationRequest extends AbstractBprocRequest {
   static NAME = "tsadv$LeavingVacationRequest";
-  requestNumber?: any | null;
-  statusRequest?: DicRequestStatus | null;
-  requestDate?: any | null;
-  requestType?: DicRequisitionType | null;
   vacation?: Absence | null;
   startDate?: any | null;
-  endData?: any | null;
+  endDate?: any | null;
   plannedStartDate?: any | null;
-  comment?: string | null;
+  attachment?: FileDescriptor | null;
 }
 export type LeavingVacationRequestViewName =
   | "_base"
@@ -27,63 +22,62 @@ export type LeavingVacationRequestView<
       LeavingVacationRequest,
       | "id"
       | "startDate"
-      | "endData"
-      | "requestNumber"
-      | "requestDate"
+      | "endDate"
       | "plannedStartDate"
-      | "comment"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
     >
   : V extends "_local"
   ? Pick<
       LeavingVacationRequest,
       | "id"
-      | "requestNumber"
-      | "requestDate"
       | "startDate"
-      | "endData"
+      | "endDate"
       | "plannedStartDate"
-      | "comment"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
     >
   : V extends "_minimal"
-  ? Pick<LeavingVacationRequest, "id" | "startDate" | "endData">
+  ? Pick<LeavingVacationRequest, "id" | "startDate" | "endDate">
   : V extends "leavingVacationRequest-browseView"
   ? Pick<
       LeavingVacationRequest,
       | "id"
-      | "requestNumber"
-      | "requestDate"
       | "startDate"
-      | "endData"
+      | "endDate"
       | "plannedStartDate"
-      | "comment"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "statusRequest"
-      | "requestType"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
       | "vacation"
+      | "status"
     >
   : V extends "leavingVacationRequest-editView"
   ? Pick<
       LeavingVacationRequest,
       | "id"
-      | "requestNumber"
-      | "requestDate"
       | "startDate"
-      | "endData"
+      | "endDate"
       | "plannedStartDate"
-      | "comment"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "statusRequest"
-      | "requestType"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
       | "vacation"
+      | "status"
+      | "attachment"
     >
   : never;

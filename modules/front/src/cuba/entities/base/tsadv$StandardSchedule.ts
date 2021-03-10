@@ -28,6 +28,7 @@ export type StandardScheduleView<
   ? Pick<
       StandardSchedule,
       | "id"
+      | "legacyId"
       | "scheduleName"
       | "description"
       | "startDate"
@@ -35,7 +36,6 @@ export type StandardScheduleView<
       | "period"
       | "scheduleType"
       | "isHolidayWorkDay"
-      | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
@@ -55,7 +55,7 @@ export type StandardScheduleView<
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<StandardSchedule, "id">
+  ? Pick<StandardSchedule, "id" | "legacyId">
   : V extends "schedule.view"
   ? Pick<
       StandardSchedule,

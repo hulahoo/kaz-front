@@ -1,13 +1,11 @@
 buildscript {
     ext.cubaVersion = '7.2.10'
     repositories {
+        mavenLocal()
         maven {
             url 'https://dl.bintray.com/cuba-platform/main'
-
         }
         jcenter()
-
-
         maven {
             url 'http://apps.uco.kz/nexus/content/groups/uco-group/'
             credentials {
@@ -15,7 +13,6 @@ buildscript {
                 password(rootProject.hasProperty('repoPass') ? rootProject['repoPass'] : '!uco@')
             }
         }
-
         maven {
             url 'https://cuba-platform.bintray.com/premium'
             credentials {
@@ -23,7 +20,6 @@ buildscript {
                 password(rootProject.hasProperty('premiumRepoPass') ? rootProject['premiumRepoPass'] : System.getenv('CUBA_PREMIUM_PASSWORD'))
             }
         }
-
     }
     dependencies {
         classpath "com.haulmont.gradle:cuba-plugin:$cubaVersion"
@@ -58,7 +54,8 @@ dependencies {
     appComponent("com.haulmont.fts:fts-global:$cubaVersion")
     appComponent("com.haulmont.charts:charts-global:$cubaVersion")
     appComponent('com.haulmont.addon.restapi:restapi-global:7.1.1')
-    appComponent('kz.uco.tsadv:tsadv-global:2.0.83-SNAPSHOT')
+    appComponent('kz.uco.tsadv:tsadv-global:2.0.148-SNAPSHOT')
+    appComponent('kz.uco.mobile:mob-global:0.15-SNAPSHOT')
 }
 
 def postgres = 'org.postgresql:postgresql:42.2.5'
@@ -109,6 +106,9 @@ configure(coreModule) {
         compileOnly(servletApi)
         jdbc(postgres)
         testRuntime(postgres)
+        compile('org.telegram:telegrambots:3.3') {
+            exclude group: 'javax.validation', module: 'validation-api'
+        }
     }
 
     task cleanConf(description: 'Cleans up conf directory', type: Delete) {
@@ -147,6 +147,7 @@ configure(webModule) {
         compile(globalModule)
     }
 
+
     task webArchive(type: Zip) {
         from file("$buildDir/web")
         from file('web')
@@ -176,7 +177,12 @@ configure(webModule) {
         appName = "${modulePrefix}"
         appJars(modulePrefix + '-global', modulePrefix + '-web')
     }
+
+    task buildScssThemes(type: CubaWebScssThemeCreation)
+    task deployThemes(type: CubaDeployThemeTask, dependsOn: buildScssThemes)
+    assemble.dependsOn buildScssThemes
 }
+
 
 configure(frontModule) {
     apply(plugin: 'cuba')
