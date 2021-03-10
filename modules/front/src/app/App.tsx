@@ -40,6 +40,7 @@ import {VacationScheduleRequestManagement} from "./pages/VacationScheduleRequest
 import MyEducation from "./pages/MyEducation/MyEducation";
 import MyEducationManagement from "./pages/MyEducation/MyEducationManagement";
 import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryManagement";
+import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -124,6 +125,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={VacationScheduleRequestManagement.PATH + "/:entityId"}
                        component={VacationScheduleRequestManagement}/>
+                <Route exact={true}
+                       path={PortalFeedbackQuestionManagement.PATH}
+                       component={PortalFeedbackQuestionManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

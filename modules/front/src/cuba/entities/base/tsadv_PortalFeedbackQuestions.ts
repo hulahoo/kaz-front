@@ -46,5 +46,6 @@ export type PortalFeedbackQuestionsView<
       | "integrationUserLogin"
       | "user"
       | "portalFeedback"
+      | "createTs"
     >
   : never;

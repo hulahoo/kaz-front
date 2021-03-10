@@ -270,5 +270,7 @@
   "previous": "Previous",
   "next": "Next",
   "saveAndClose": "Save and close",
-  "notes": "Notes"
+  "notes": "Notes",
+  "ask.question": "Ask a question",
+  "your.question.accepted": "Your question has been accepted"
 }

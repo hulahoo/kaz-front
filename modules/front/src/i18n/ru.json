@@ -7,7 +7,7 @@
   "management.browser.remove": "Удалить",
   "management.browser.noItems": "Нет данных",
   "management.editor.validationError": "Ошибка валидации. Пожалуйста, проверьте введенные данные.",
-  "management.editor.success": "Сущность успешно сохранена",
+  "management.editor.success": "Запись успешно сохранена",
   "management.editor.error": "Ошибка",
   "management.editor.cancel": "Отмена",
   "management.editor.submit": "Сохранить",
@@ -261,5 +261,7 @@
   "previous": "Предыдущий",
   "next": "Следующий",
   "saveAndClose": "Сохранить и закрыть",
-  "notes":"Заметки"
+  "notes":"Заметки",
+  "ask.question": "Задать вопрос",
+  "your.question.accepted": "Ваш вопрос принят"
 }
