@@ -2,10 +2,14 @@
   "management.browser.delete.areYouSure": "Вы уверены, что хотите удалить {instanceName}?",
   "management.browser.delete.ok": "Удалить",
   "management.browser.delete.cancel": "Отмена",
+  "management.browser.exclude.areYouSure": "Вы действительно хотите упразднить {type} \"{name}\"?",
+  "management.browser.exclude.ok": "Упразднить",
+  "management.browser.exclude.cancel": "Отмена",
   "management.browser.create": "Создать",
   "management.browser.edit": "Редактировать",
   "management.browser.remove": "Удалить",
   "management.browser.noItems": "Нет данных",
+  "management.browser.refresh": "Обновить",
   "management.editor.validationError": "Ошибка валидации. Пожалуйста, проверьте введенные данные.",
   "management.editor.success": "Сущность успешно сохранена",
   "management.editor.error": "Ошибка",
@@ -110,6 +114,7 @@
   "menu.job-offers": "Job Offers",
   "menu.certificateRequest": "Справка с места работы",
   "menu.absenceRequest": "Отсутствие",
+  "menu.org-structure-request": "Заявка по Орг.структуре",
   "absenceRequest": "Заявка на отсутствие",
   "absence": "Отсутствие",
   "settings": "Настройки",
@@ -241,6 +246,8 @@
   "open": "Открыть",
   "CALENDAR": "Календарный",
   "WORK": "Рабочий",
-  "validation.absenceRequest.dateFrom" : "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
-  "validation.absenceRequest.dateTo" : "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\""
+  "validation.absenceRequest.dateFrom": "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
+  "validation.absenceRequest.dateTo": "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\"",
+  "exclude.type.1": "организацию",
+  "exclude.type.2": "позицию"
 }

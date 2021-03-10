@@ -31,6 +31,7 @@ import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDat
 import {BooksManagement} from "./pages/Books/BooksManagement";
 import {ActivityManagement} from "./pages/activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/absenceRequest/AbsenceRequestManagement";
+import {OrgStructureRequestManagement} from "./pages/orgStructureRequest/OrgStructureRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -102,6 +103,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={AbsenceRequestManagement.PATH + "/:entityId?"}
                        component={AbsenceRequestManagement}/>
+                <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

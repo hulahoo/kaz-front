@@ -1,8 +1,4 @@
 {
-  "router.ActivityCards": "ActivityCards",
-  "router.ExtTaskDataCards": "ExtTaskDataCards",
-  "router.DicBookCategoryCards": "DicBookCategoryCards",
-  "router.BookCards": "BookCards",
   "management.browser.delete.areYouSure": "Are you sure you want to delete {instanceName}?",
   "management.browser.delete.ok": "Delete",
   "management.browser.delete.cancel": "Cancel",
@@ -10,11 +6,17 @@
   "management.browser.edit": "Edit",
   "management.browser.remove": "Remove",
   "management.browser.noItems": "No data",
+  "management.browser.refresh": "Refresh",
   "management.editor.validationError": "Validation Error. Please check the data you entered.",
   "management.editor.success": "Entity has been updated",
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.OrgStructureRequestManagement": "OrgStructureRequestManagement",
+  "router.ActivityCards": "ActivityCards",
+  "router.ExtTaskDataCards": "ExtTaskDataCards",
+  "router.DicBookCategoryCards": "DicBookCategoryCards",
+  "router.BookCards": "BookCards",
   "router.KpiTeamManagement": "KpiTeamManagement",
   "router.EnrollmentManagement": "EnrollmentManagement",
   "router.CertificateRequestManagement": "CertificateRequestManagement",
@@ -249,6 +251,6 @@
   "open": "Open",
   "CALENDAR": "Calendar",
   "WORK": "Work",
-  "validation.absenceRequest.dateFrom" : "\"Date from\" is required and cannot be more than \"Date to\"",
-  "validation.absenceRequest.dateTo" : "\"Date to\" is required and cannot be less  than \"Date from\""
+  "validation.absenceRequest.dateFrom": "\"Date from\" is required and cannot be more than \"Date to\"",
+  "validation.absenceRequest.dateTo": "\"Date to\" is required and cannot be less  than \"Date from\""
 }

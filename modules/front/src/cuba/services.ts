@@ -16,6 +16,10 @@ import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
+import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
+import {OrgRequestGrade, OrgRequestRow} from "../app/pages/orgStructureRequest/OrgStructureRequestEdit";
+import {OrganizationSaveModel} from "../app/pages/orgStructureRequest/OrganizationEditor";
+import {PositionSaveModel} from "../app/pages/orgStructureRequest/PositionEditor";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -45,272 +49,314 @@ export type PairModel<K, V> = {
 }
 
 export const restServices = {
-    userMenuService: {
-      getTimeZones: (params?: {}, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_UserSettingService",
-          "getTimeZones",
-          {...params},
-          fetchOpts
-        );
-      },
-      changePassword: (params: { oldPassword: string, newPassword: string }, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_LmsService",
-          "changePassword",
-          {...params},
-          fetchOpts
-        );
-      },
+  userMenuService: {
+    getTimeZones: (params?: {}, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_UserSettingService",
+        "getTimeZones",
+        {...params},
+        fetchOpts
+      );
     },
-    notificationsService: {
-      notifications: (params?: {}, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_NotificationService",
-          "notifications",
-          {...params},
-          fetchOpts
-        );
-      },
-      tasks: (params?: {}, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_NotificationService",
-          "tasks",
-          {...params},
-          fetchOpts
-        );
-      }
+    changePassword: (params: { oldPassword: string, newPassword: string }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "changePassword",
+        {...params},
+        fetchOpts
+      );
     },
-    learningService: {
-      learningHistory: (params: { personGroupId: string }): Promise<Course[]> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_LearningService",
-          "learningHistory",
-          {...params}
-        ).then((response: string) => {
-          return JSON.parse(response);
-        });
-      }
+  },
+  notificationsService: {
+    notifications: (params?: {}, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_NotificationService",
+        "notifications",
+        {...params},
+        fetchOpts
+      );
     },
-    courseService: {
-      courseInfo: (params: { courseId: string, personGroupId: string }): Promise<CourseInfo> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_CourseService",
-          "courseInfo",
-          {...params}
-        ).then((response: string) => {
-          const courseInfo: CourseInfo = JSON.parse(response) as CourseInfo;
-          courseInfo.startDate = moment(courseInfo.startDate, DEFAULT_DATE_PARSE_FORMAT);
-          courseInfo.endDate = moment(courseInfo.endDate, DEFAULT_DATE_PARSE_FORMAT);
-
-          return courseInfo;
-        });
-      },
-      courseTrainerInfo: (params: { trainerId: string }): Promise<CourseTrainerInfo> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_CourseService",
-          "courseTrainerInfo",
-          {...params}
-        ).then((response: string) => {
-          return JSON.parse(response);
-        });
-      }
-    },
-    kpiService: {
-      kpiAssignedGoals: (params: { appId: string }): Promise<PairModel<string, SerializedEntity<AssignedGoal>[]>[]> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_KpiService",
-          "kpiAssignedGoals",
-          {...params}
-        ).then((response: string) => JSON.parse(response));
-      }
-    },
-    enrollmentService: {
-      searchEnrollments: (params: { courseName?: string, userId: string }): Promise<SerializedEntity<DicCategory>[]> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_EnrollmentService",
-          "searchEnrollment",
-          {...params}
-        ).then((response: string) => JSON.parse(response));
-      }
-    },
-    lmsService: {
-      loadCourseSectionData: (params: { enrollmentId: string, courseSectionId: string }, fetchOpts?: FetchOptions): Promise<SerializedEntity<CourseSection>> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_LmsService",
-          "loadCourseSectionData",
-          {...params},
-          fetchOpts
-        ).then((response: string) => JSON.parse(response));
-      },
-      startAndLoadTest: (params: { courseSectionObjectId: string, enrollmentId: string }, fetchOpts?: FetchOptions): Promise<TestModel> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_LmsService",
-          "startAndLoadTest",
-          {...params},
-          fetchOpts
-        ).then((response: string) => JSON.parse(response));
-      },
-      finishTest: (params: { answeredTest: AnsweredTest }, fetchOpts?: FetchOptions): Promise<{
-        score: number,
-        maxScore: number
-      }> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_LmsService",
-          "finishTest",
-          {...params},
-          fetchOpts
-        ).then((response: string) => JSON.parse(response));
-      }
-    },
-    portalHelperService: {
-      newEntity: (param ?: { entityName: string }, fetchOpts?: FetchOptions) => {
-        return getCubaREST()!.invokeService(
-          "tsadv_PortalHelperService",
-          "newEntity",
-          {...param},
-          fetchOpts
-        );
-      }
-    },
-    bprocService: {
-      tasks: (param: { processInstanceData: ProcessInstanceData }): Promise<Array<SerializedEntity<ExtTaskData>>> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_BprocService",
-          "getProcessTasks",
-          {...param}
-        ).then((value: string) => JSON.parse(value));
-      },
-      getActiveTask: (param: { processInstanceData: ProcessInstanceData }): Promise<ExtTaskData> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_BprocService",
-          "getActiveTask",
-          {...param}
-        ).then((value: string) => {
-          return JSON.parse(value);
-        });
-      },
-      processInstanceData: (param: { processInstanceBusinessKey: string, processDefinitionKey: string }): Promise<ProcessInstanceData> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_BprocService",
-          "getProcessInstanceData",
-          {...param}
-        ).then((value: string) => {
-          if (value) return JSON.parse(value);
-          return value;
-        });
-      },
-      getProcessDefinitionData: (param: { processDefinitionKey: string }): Promise<ProcessDefinitionData> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_BprocService",
-          "getProcessDefinitionData",
-          {...param}
-        ).then((value: string) => JSON.parse(value));
-      },
-      getStartFormData: (param: { processDefinitionKey: string }): Promise<BprocFormData> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_BprocService",
-          "getStartFormData",
-          {...param}
-        ).then((value: string) => JSON.parse(value));
-      }
-    },
-    bprocFormService: {
-      getStartFormData: (param: { processDefinitionId: string }): Promise<BprocFormData> => {
-        return getCubaREST()!.invokeService(
-          "bproc_BprocFormService",
-          "getStartFormData",
-          {...param}
-        ).then((value: string) => JSON.parse(value));
-      },
-      getTaskFormData: (param: { taskId: string }): Promise<BprocFormData> => {
-        return getCubaREST()!.invokeService(
-          "bproc_BprocFormService",
-          "getTaskFormData",
-          {...param}
-        ).then((value: string) => JSON.parse(value));
-      }
-    },
-    startBprocService: {
-      getBpmRolesDefiner: (param: { processDefinitionKey: string, initiatorPersonGroupId: string }): Promise<BpmRolesDefiner> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_StartBprocService",
-          "getBpmRolesDefiner",
-          {...param}
-        ).then((value: string) => JSON.parse(value));
-      },
-      getNotPersisitBprocActors: (param: {
-        employee: UserExt | null,
-        initiatorPersonGroupId: string,
-        bpmRolesDefiner: BpmRolesDefiner
-      }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_StartBprocService",
-          "getNotPersisitBprocActors",
-          {...param}
-        ).then((value: string) => {
-          return JSON.parse(value);
-        })
-      },
-      saveBprocActors: (param: { entityId: string, notPersisitBprocActors: Array<NotPersisitBprocActors> }): Promise<void> => {
-        return getCubaREST()!.invokeService(
-          "tsadv_StartBprocService",
-          "saveBprocActors",
-          {...param}
-        );
-      }
-    },
-    bprocRuntimeService: {
-      startProcessInstanceByKey: (param: { processDefinitionKey: string, businessKey: string, variables: any }): Promise<void> => {
-        return getCubaREST()!.invokeService(
-          "bproc_BprocRuntimeService",
-          "startProcessInstanceByKey",
-          {...param}
-        );
-      }
-    },
-    bprocTaskService: {
-      completeWithOutcome: (param: { taskData: ExtTaskData, outcomeId: string, processVariables: any }): Promise<void> => {
-        return getCubaREST()!.invokeService(
-          "bproc_BprocTaskService",
-          "completeWithOutcome",
-          {...param}
-        );
-      }
-    },
-    fileDownload: {
-      download: (fileId: string) => {
-        return getCubaREST()!.getFile(fileId)
-          .then(value => value);
-      }
-    },
-    portalAccessEntityAttributesService: {
-      entityAttributesSecurityState: (param: { entityName: string, entityId: string }): Promise<SecurityState> => {
-        return getCubaREST()!.invokeService<string>(
-          "tsadv_PortalAccessEntityAttributesService",
-          "entityAttributesSecurityState",
-          {...param}
-        ).then(r => JSON.parse(r));
-      }
-    },
-    absenceService: {
-      vacationDurationType: (param: { personGroupId: string, absenceTypeId: string, dateFrom: Date | null }): Promise<string> => {
-        return getCubaREST()!.invokeService<string>(
-          "tsadv_AbsenceService",
-          "getVacationDurationType",
-          {...param}
-        );
-      },
-      countDays: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
-        return getCubaREST()!.invokeService<string>(
-          "tsadv_AbsenceService",
-          "countDays",
-          {...param}
-        );
-      }
+    tasks: (params?: {}, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_NotificationService",
+        "tasks",
+        {...params},
+        fetchOpts
+      );
     }
+  },
+  learningService: {
+    learningHistory: (params: { personGroupId: string }): Promise<Course[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LearningService",
+        "learningHistory",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
+    }
+  },
+  courseService: {
+    courseInfo: (params: { courseId: string, personGroupId: string }): Promise<CourseInfo> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "courseInfo",
+        {...params}
+      ).then((response: string) => {
+        const courseInfo: CourseInfo = JSON.parse(response) as CourseInfo;
+        courseInfo.startDate = moment(courseInfo.startDate, DEFAULT_DATE_PARSE_FORMAT);
+        courseInfo.endDate = moment(courseInfo.endDate, DEFAULT_DATE_PARSE_FORMAT);
+
+        return courseInfo;
+      });
+    },
+    courseTrainerInfo: (params: { trainerId: string }): Promise<CourseTrainerInfo> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "courseTrainerInfo",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
+    }
+  },
+  kpiService: {
+    kpiAssignedGoals: (params: { appId: string }): Promise<PairModel<string, SerializedEntity<AssignedGoal>[]>[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_KpiService",
+        "kpiAssignedGoals",
+        {...params}
+      ).then((response: string) => JSON.parse(response));
+    }
+  },
+  enrollmentService: {
+    searchEnrollments: (params: { courseName?: string, userId: string }): Promise<SerializedEntity<DicCategory>[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_EnrollmentService",
+        "searchEnrollment",
+        {...params}
+      ).then((response: string) => JSON.parse(response));
+    }
+  },
+  lmsService: {
+    loadCourseSectionData: (params: { enrollmentId: string, courseSectionId: string }, fetchOpts?: FetchOptions): Promise<SerializedEntity<CourseSection>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "loadCourseSectionData",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    startAndLoadTest: (params: { courseSectionObjectId: string, enrollmentId: string }, fetchOpts?: FetchOptions): Promise<TestModel> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "startAndLoadTest",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    finishTest: (params: { answeredTest: AnsweredTest }, fetchOpts?: FetchOptions): Promise<{
+      score: number,
+      maxScore: number
+    }> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_LmsService",
+        "finishTest",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    }
+  },
+  portalHelperService: {
+    newEntity: (param ?: { entityName: string }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_PortalHelperService",
+        "newEntity",
+        {...param},
+        fetchOpts
+      );
+    }
+  },
+  bprocService: {
+    tasks: (param: { processInstanceData: ProcessInstanceData }): Promise<Array<SerializedEntity<ExtTaskData>>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_BprocService",
+        "getProcessTasks",
+        {...param}
+      ).then((value: string) => JSON.parse(value));
+    },
+    getActiveTask: (param: { processInstanceData: ProcessInstanceData }): Promise<ExtTaskData> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_BprocService",
+        "getActiveTask",
+        {...param}
+      ).then((value: string) => {
+        return JSON.parse(value);
+      });
+    },
+    processInstanceData: (param: { processInstanceBusinessKey: string, processDefinitionKey: string }): Promise<ProcessInstanceData> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_BprocService",
+        "getProcessInstanceData",
+        {...param}
+      ).then((value: string) => {
+        if (value) return JSON.parse(value);
+        return value;
+      });
+    },
+    getProcessDefinitionData: (param: { processDefinitionKey: string }): Promise<ProcessDefinitionData> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_BprocService",
+        "getProcessDefinitionData",
+        {...param}
+      ).then((value: string) => JSON.parse(value));
+    },
+    getStartFormData: (param: { processDefinitionKey: string }): Promise<BprocFormData> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_BprocService",
+        "getStartFormData",
+        {...param}
+      ).then((value: string) => JSON.parse(value));
+    }
+  },
+  bprocFormService: {
+    getStartFormData: (param: { processDefinitionId: string }): Promise<BprocFormData> => {
+      return getCubaREST()!.invokeService(
+        "bproc_BprocFormService",
+        "getStartFormData",
+        {...param}
+      ).then((value: string) => JSON.parse(value));
+    },
+    getTaskFormData: (param: { taskId: string }): Promise<BprocFormData> => {
+      return getCubaREST()!.invokeService(
+        "bproc_BprocFormService",
+        "getTaskFormData",
+        {...param}
+      ).then((value: string) => JSON.parse(value));
+    }
+  },
+  startBprocService: {
+    getBpmRolesDefiner: (param: { processDefinitionKey: string, initiatorPersonGroupId: string }): Promise<BpmRolesDefiner> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_StartBprocService",
+        "getBpmRolesDefiner",
+        {...param}
+      ).then((value: string) => JSON.parse(value));
+    },
+    getNotPersisitBprocActors: (param: {
+      employee: UserExt | null,
+      initiatorPersonGroupId: string,
+      bpmRolesDefiner: BpmRolesDefiner
+    }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_StartBprocService",
+        "getNotPersisitBprocActors",
+        {...param}
+      ).then((value: string) => {
+        return JSON.parse(value);
+      })
+    },
+    saveBprocActors: (param: { entityId: string, notPersisitBprocActors: Array<NotPersisitBprocActors> }): Promise<void> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_StartBprocService",
+        "saveBprocActors",
+        {...param}
+      );
+    }
+  },
+  bprocRuntimeService: {
+    startProcessInstanceByKey: (param: { processDefinitionKey: string, businessKey: string, variables: any }): Promise<void> => {
+      return getCubaREST()!.invokeService(
+        "bproc_BprocRuntimeService",
+        "startProcessInstanceByKey",
+        {...param}
+      );
+    }
+  },
+  bprocTaskService: {
+    completeWithOutcome: (param: { taskData: ExtTaskData, outcomeId: string, processVariables: any }): Promise<void> => {
+      return getCubaREST()!.invokeService(
+        "bproc_BprocTaskService",
+        "completeWithOutcome",
+        {...param}
+      );
+    }
+  },
+  fileDownload: {
+    download: (fileId: string) => {
+      return getCubaREST()!.getFile(fileId)
+        .then(value => value);
+    }
+  },
+  portalAccessEntityAttributesService: {
+    entityAttributesSecurityState: (param: { entityName: string, entityId: string }): Promise<SecurityState> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PortalAccessEntityAttributesService",
+        "entityAttributesSecurityState",
+        {...param}
+      ).then(r => JSON.parse(r));
+    }
+  },
+  absenceService: {
+    vacationDurationType: (param: { personGroupId: string, absenceTypeId: string, dateFrom: Date | null }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AbsenceService",
+        "getVacationDurationType",
+        {...param}
+      );
+    },
+    countDays: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AbsenceService",
+        "countDays",
+        {...param}
+      );
+    }
+  },
+  orgStructureService: {
+    initialCreate: (): Promise<OrgStructureRequest> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_OrgStructureRequestService",
+        "initialCreate", {},
+      ).then((value: string) => JSON.parse(value));
+    },
+    getMergedOrgStructure: (param: { requestId: string }): Promise<Array<OrgRequestRow>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "getMergedOrgStructure",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    saveOrganization: (param: { organizationRequestSaveModel: OrganizationSaveModel }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "saveOrganization",
+        {...param}
+      );
+    },
+    savePosition: (param: { positionRequestSaveModel: PositionSaveModel }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "savePosition",
+        {...param}
+      );
+    },
+    exclude: (param: { requestId: string, requestDetailId: string, elementGroupId: string, elementType: string }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "exclude",
+        {...param}
+      );
+    },
+    getGrades: (): Promise<Array<OrgRequestGrade>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "getGrades",
+        null
+      ).then(r => JSON.parse(r));
+    },
   }
-;
+};
 
 export type CourseInfo = {
   name: string
