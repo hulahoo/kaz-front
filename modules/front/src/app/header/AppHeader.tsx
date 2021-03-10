@@ -1,4 +1,4 @@
-import {Button, Dropdown, Icon, Modal} from "antd";
+import {Button, Icon} from "antd";
 import * as React from "react";
 import {inject, observer} from "mobx-react";
 import "./AppHeader.css";
@@ -12,7 +12,6 @@ import CommonComponentHoc from "../hoc/CommonComponent/CommonComponentHoc";
 // import {ChangeEvent} from "react";
 // import SockJS from "sockjs-client";
 import {RootStoreProp} from "../store";
-import {observable, runInAction} from "mobx";
 
 @injectMainStore
 @inject("rootStore")

@@ -21,6 +21,7 @@ import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsReque
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 import {AnsweredFeedback} from "../app/pages/MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent";
 import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQuestion";
+import {DicCompany} from "./entities/base/base_DicCompany";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -184,7 +185,7 @@ export const restServices = {
         fetchOpts
       );
     },
-    loadFeedbackData: (params: { feedbackTemplateId: string }, fetchOpts?: FetchOptions):Promise<LearningFeedbackQuestion[]> => {
+    loadFeedbackData: (params: { feedbackTemplateId: string }, fetchOpts?: FetchOptions): Promise<LearningFeedbackQuestion[]> => {
       return getCubaREST()!.invokeService(
         "tsadv_LmsService",
         "loadFeedbackData",
@@ -402,6 +403,13 @@ export const restServices = {
       return getCubaREST()!.invokeService<string>(
         "tsadv_EmployeeService",
         "findManagerListByPositionGroup",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    getCompanyByPersonGroupId: (param: { personGroupId: string }): Promise<DicCompany> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "getCompanyByPersonGroupId",
         {...param}
       ).then(r => JSON.parse(r));
     }

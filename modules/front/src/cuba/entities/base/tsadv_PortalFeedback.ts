@@ -25,6 +25,11 @@ export type PortalFeedbackView<
       "id" | "email" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
   : V extends "portalFeedback.edit"
+  ?  Pick<
+      PortalFeedback,
+      "id" | "category"
+    >
+  : V extends "portalFeedback-portal"
   ? Pick<
       PortalFeedback,
       | "id"

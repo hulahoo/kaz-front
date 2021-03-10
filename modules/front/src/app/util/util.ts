@@ -1,6 +1,6 @@
 import {getCubaREST} from "@cuba-platform/react";
 import Notification from "./Notification/Notification";
-import {WindowProperty} from "../../cuba/entities/base/uactivity$WindowProperty";
+import {AbstractDictionary} from "../../cuba/entities/base/AbstractDictionary";
 
 export const getBlobUrl = (fileId: string) => {
   return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob))
@@ -29,3 +29,17 @@ export const link = (entityName: string) => {
 export const wrapSrcBase64 = (url: string) => {
   return "data:image/png;base64, " + url;
 };
+
+export const dicValue = (dictionary: AbstractDictionary, lang: string) => {
+  lang = lang.toLocaleLowerCase();
+  switch (lang) {
+    case "ru":
+      return dictionary["langValue1"];
+    case "en":
+      return dictionary["langValue3"];
+    case "kz":
+      return dictionary["langValue2"];
+  }
+  return dictionary["langValue1"];
+};
+
