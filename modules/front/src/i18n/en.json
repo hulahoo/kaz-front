@@ -195,7 +195,7 @@
   "course.certificate.false": "not issued",
   "learningHistory.certificate.downloadExcel": "Download EXCEL",
   "learningHistory.testResult": "Result",
-  "learningHistory.certificate": "Download EXCEL",
+  "learningHistory.certificate": "Certificate",
   "learningHistory.overview": "Certificate",
   "period": "Period",
   "goal.management.editor.success": "Goal successfully changed",

@@ -3,7 +3,7 @@ import {ChangeEvent, FormEvent} from "react";
 import {Button, Form, Icon, Input, message} from "antd";
 import {inject, observer} from "mobx-react";
 import {action, observable} from "mobx";
-import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import "./Login.css";
 import logo from "../header/logo.png";
 import {LanguageSwitcher} from "../../i18n/LanguageSwitcher";
@@ -33,12 +33,14 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps & 
   doLogin = (e: FormEvent) => {
     e.preventDefault();
     this.performingLoginRequest = true;
-    this.props
-      .mainStore!.login(this.props.rootStore!.login.login!, this.props.rootStore!.login.password!)
+    const {login, password} = this.props.rootStore!.login;
+    getCubaREST()!.login(login!, password!, {tokenEndpoint: "auth/token"})
       .then(
         action(() => {
           this.props.rootStore!.userInfo.loadUserInfo();
           this.performingLoginRequest = false;
+          this.props.mainStore!.userName = login;
+          this.props.mainStore!.authenticated = true;
         })
       )
       .catch(
