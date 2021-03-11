@@ -11,7 +11,7 @@ import {OrgStructureRequestDetail} from "../../../cuba/entities/base/tsadv_OrgSt
 import {FormComponentProps} from "antd/lib/form";
 import {OrgRequestRow} from "./OrgStructureRequestEdit";
 import {restServices} from "../../../cuba/services";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 
 export class OrganizationSaveModel {
   rId: string;

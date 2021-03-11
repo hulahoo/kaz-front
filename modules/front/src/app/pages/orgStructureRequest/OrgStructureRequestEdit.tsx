@@ -44,7 +44,7 @@ import TextArea from "antd/es/input/TextArea";
 import {ClickParam} from "antd/lib/menu";
 import OrganizationEditor from "./OrganizationEditor";
 import {restServices} from "../../../cuba/services";
-import Notification from "../../util/notification/Notification";
+import Notification from "../../util/Notification/Notification";
 import {EnumValueInfo} from "@cuba-platform/rest/dist-browser/model";
 import PositionEditor from "./PositionEditor";
 import {CheckboxChangeEvent} from "antd/lib/checkbox";
