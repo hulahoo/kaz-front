@@ -1,5 +1,5 @@
-import {default as React} from "react";
-import {injectMainStore, instance, MainStoreInjected} from "@cuba-platform/react";
+import {createElement, default as React} from "react";
+import {injectMainStore, instance, MainStoreInjected, Msg, withLocalizedForm} from "@cuba-platform/react";
 import Page from "../../hoc/PageContentHoc";
 import {RootStoreProp} from "../../store";
 import {inject, observer} from "mobx-react";
@@ -8,12 +8,13 @@ import LoadingPage from "../LoadingPage";
 import {Redirect, RouteComponentProps} from "react-router-dom";
 import {Activity} from "../../../cuba/entities/base/uactivity$Activity";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {observable} from "mobx";
-import {ActivityManagement} from "./ActivityManagement";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
-import {FormattedMessage} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {withRouter} from "react-router";
 import {link} from "../../util/util";
+import Section from "../../hoc/Section";
+import {FormComponentProps} from "antd/lib/form";
+import Notification from "../../util/Notification/Notification";
 
 type EditorProps = {
   entityId: string;
@@ -22,17 +23,31 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class ActivityEdit extends React.Component<EditorProps & MainStoreInjected & RootStoreProp & RouteComponentProps> {
+class ActivityEdit extends React.Component<EditorProps & WrappedComponentProps & FormComponentProps & MainStoreInjected & RootStoreProp & RouteComponentProps> {
 
   dataInstance = instance<SerializedEntity<Activity>>(Activity.NAME, {
     view: "portal-activity",
     loadImmediately: false
   });
 
-  @observable updated = false;
-
   update = () => {
-    return this.dataInstance.update({status: "done"});
+    return this.dataInstance.update({status: "done", name: "name"}); //todo delete from entity @Notnull fot column name
+  }
+
+  close = () => {
+    this.props.history!.goBack();
+  }
+
+  updateAndClose = () => {
+    this.update()
+      .then(value => this.close())
+      .catch((a: any) =>
+        Notification.error({
+          message: this.props.intl.formatMessage({
+            id: "management.editor.error"
+          })
+        })
+      )
   }
 
   render() {
@@ -46,9 +61,6 @@ class ActivityEdit extends React.Component<EditorProps & MainStoreInjected & Roo
 
     const item = this.dataInstance.item! as Activity;
 
-    if (this.updated)
-      return <Redirect to={ActivityManagement.PATH_NOTIFICATIONS}/>
-
     if (item && item.type && item.type.code !== "NOTIFICATION" && item.type.windowProperty)
       return <Redirect to={link(item.type.windowProperty!.entityName!) + "/" + item.referenceId}/>
 
@@ -57,7 +69,7 @@ class ActivityEdit extends React.Component<EditorProps & MainStoreInjected & Roo
 
     const buttons = [
       <Button
-        onClick={() => this.update().then(() => this.updated = true)}
+        onClick={this.updateAndClose}
         buttonType={ButtonType.PRIMARY}
         disabled={status !== "DONE" && status !== "ERROR"}
         style={{marginLeft: "8px"}}>
@@ -71,16 +83,25 @@ class ActivityEdit extends React.Component<EditorProps & MainStoreInjected & Roo
     ]
 
     return (
-      <Page>
-        <Card className="narrow-layout card-actions-container">
-          <div className="notification-header">
-            <div dangerouslySetInnerHTML={{__html: notificationHeader as string}}/>
+      <Page pageName={this.props.intl.formatMessage({id: "notifications"})}>
+        <Section size="large">
+          <div>
+            <Card className="narrow-layout card-actions-container" actions={buttons}>
+              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "notificationHeader"})}
+                <div className={"ant-input ant-input-disabled"}
+                     dangerouslySetInnerHTML={{__html: (notificationHeader ? notificationHeader : "") as string}}/>
+              </div>
+
+              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "notificationBody"})}
+
+                <div className={"ant-input ant-input-disabled"}
+                     dangerouslySetInnerHTML={{__html: (notificationBody ? notificationBody : "") as string}}/>
+              </div>
+            </Card>
           </div>
-          <div className="notification-body">
-            <div dangerouslySetInnerHTML={{__html: notificationBody as string}}/>
-          </div>
-          {buttons}
-        </Card>
+        </Section>
       </Page>
     );
   }
@@ -90,4 +111,16 @@ class ActivityEdit extends React.Component<EditorProps & MainStoreInjected & Roo
   }
 }
 
-export default withRouter(ActivityEdit);
+export default injectIntl(
+  withLocalizedForm<EditorProps>({
+    onValuesChange: (props: any, changedValues: any) => {
+      // Reset server-side errors when field is edited
+      Object.keys(changedValues).forEach((fieldName: string) => {
+        props.form.setFields({
+          [fieldName]: {
+            value: changedValues[fieldName]
+          }
+        });
+      });
+    }
+  })(withRouter(ActivityEdit)));

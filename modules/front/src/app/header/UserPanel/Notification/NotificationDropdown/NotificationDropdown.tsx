@@ -47,9 +47,9 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
                 {this.bellTasks ? this.bellTasks.map(task => {
                   return <li key={task.id}>
                     <Link
+                      onClick={() => this.props.setVisibleFalse()}
                       to={"/" + (ActivityLinkMap[task.link] ? ActivityLinkMap[task.link] : task.link) + "/" + task.entityId}>
-                      <div className={"bell-notification-name"}
-                           onClick={() => this.props.setVisibleFalse()}>{task.name}</div>
+                      <div className={"bell-notification-name"}>{task.name}</div>
                       <div
                         className={"bell-notification-date"}>{format(task.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>
                     </Link>
@@ -69,7 +69,8 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
               <ul className={"notifications-tab-content"}>
                 {this.bellNotifications ? this.bellNotifications.map(notification => {
                   return <li key={notification.id}>
-                    <Link to={"/activity/" + notification.entityId}>
+                    <Link to={"/activity/" + notification.id}
+                          onClick={() => this.props.setVisibleFalse()}>
                       <div className={"bell-notification-name"}>{notification.name}</div>
                       <div
                         className={"bell-notification-date"}>{format(notification.createTs, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>

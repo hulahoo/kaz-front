@@ -86,7 +86,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   processDefinitionKey = "absenceRequest";
 
-  dateValidator = () => {
+  dateValidator = (fieldName: string) => {
     const dateFrom = this.props.form.getFieldValue("dateFrom");
     const dateTo = this.props.form.getFieldValue("dateTo");
 
@@ -249,10 +249,6 @@ const onValuesChange = (props: any, changedValues: any) => {
       }
     });
 
-    if (fieldName === "dateTo" || fieldName === "dateFrom") {
-      props.form.validateFields();
-    }
-
     if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
       const type = props.form.getFieldValue(`type`);
       const dateFrom = props.form.getFieldValue(`dateFrom`);
@@ -273,6 +269,8 @@ const onValuesChange = (props: any, changedValues: any) => {
       }
     }
   });
+  if (changedValues["dateTo"] != null) props.form.validateFields(['dateFrom'], {force: true});
+  if (changedValues["dateFrom"] != null) props.form.validateFields(['dateTo'], {force: true});
 };
 const component = injectIntl(withLocalizedForm<EditorProps & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>>({onValuesChange})(AbsenceRequestEditComponent));
 export default withRouter(component);
