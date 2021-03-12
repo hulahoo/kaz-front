@@ -32,10 +32,16 @@ type Props = {
 
 export interface AnsweredTest {
   attemptId: string
-  questionsAndAnswers: AnsweredQuestion[],
+  testSections: AnsweredTestSections[]
+}
+
+export interface AnsweredTestSections {
+  testSectionId?: string,
+  questionsAndAnswers: AnsweredQuestion[]
 }
 
 export interface AnsweredQuestion {
+  testSectionId?: string,
   questionId: string,
   answer: string[]
 }

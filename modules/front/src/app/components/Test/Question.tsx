@@ -15,7 +15,8 @@ export type AnswerModel = {
 }
 
 export interface TestComponentProps {
-  question: QuestionModel
+  question: QuestionModel,
+  testSectionId: string
 }
 
 export interface TestComponentHandlers {
@@ -30,7 +31,7 @@ class Question extends React.Component<TestComponentProps & TestComponentHandler
         <div className={"question-title"}>{this.props.question.text}</div>
         <div className={"question-options"}>
           <Answer answers={this.props.question.answers} type={this.props.question.type}
-                  addRemoveAnswer={this.props.addRemoveAnswer} questionId={this.props.question.id}/>
+                  addRemoveAnswer={this.props.addRemoveAnswer} questionId={this.props.question.id} testSectionId={this.props.testSectionId}/>
         </div>
       </div>);
   }

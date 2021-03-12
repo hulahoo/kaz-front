@@ -8,7 +8,8 @@ import {AnsweredQuestion} from "./Test";
 export interface AnswerComponentProps {
   answers?: AnswerModel[],
   type: string,
-  questionId: string
+  questionId: string,
+  testSectionId: string
 }
 
 export interface AnswerComponentHandlers {
@@ -19,6 +20,7 @@ class Answer extends React.Component<AnswerComponentProps & AnswerComponentHandl
 
   answerChangeHandler = (e: RadioChangeEvent | React.FocusEvent<HTMLInputElement>) => {
     this.props.addRemoveAnswer({
+      testSectionId: this.props.testSectionId,
       questionId: this.props.questionId,
       answer: [e.target.value]
     } as AnsweredQuestion);

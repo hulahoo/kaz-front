@@ -31,7 +31,7 @@ class FeedbackQuestionAnswerComponent extends React.Component<FeedbackQuestionAn
     return <div className={"question-container"}>
       <div className={"question-title"}>{this.props.feedback.questionLangValue1}</div>
       <div className={"question-options"}>
-        <Answer answers={answers} type={this.props.feedback.questionType}
+        <Answer answers={answers} type={this.props.feedback.questionType} testSectionId={""}
                 addRemoveAnswer={this.props.addRemoveAnswer} questionId={this.props.feedback.id}/>
       </div>
     </div>;
