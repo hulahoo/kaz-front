@@ -221,7 +221,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   };
 
   afterSendOnApprove = () => {
-
+    this.props.history!.goBack();
   };
 
   componentWillUnmount() {

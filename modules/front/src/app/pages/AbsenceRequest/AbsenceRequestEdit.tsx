@@ -18,8 +18,6 @@ import {ReadonlyField} from "../../components/ReadonlyField";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
-import {Redirect} from "react-router-dom";
-import {AbsenceRequestManagement} from "./AbsenceRequestManagement";
 import {restServices} from "../../../cuba/services";
 import {rootStore, RootStoreProp} from "../../store";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
@@ -86,6 +84,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   processDefinitionKey = "absenceRequest";
 
+  afterSendOnApprove = () => {
+    this.props.history!.push("/absence/3");
+  };
+
   dateValidator = (fieldName: string) => {
     const dateFrom = this.props.form.getFieldValue("dateFrom");
     const dateTo = this.props.form.getFieldValue("dateTo");
@@ -101,11 +103,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     if (!this.dataInstance) {
       return <LoadingPage/>
     }
-
-    if (this.updated) {
-      return <Redirect to={AbsenceRequestManagement.PATH}/>;
-    }
-
 
     const {getFieldDecorator} = this.props.form;
     const messages = this.mainStore.messages!;
