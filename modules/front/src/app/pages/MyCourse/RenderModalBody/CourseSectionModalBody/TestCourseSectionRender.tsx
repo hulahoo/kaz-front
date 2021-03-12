@@ -25,12 +25,31 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
   answeredTest: AnsweredTest;
 
   addRemoveAnswer = (a: AnsweredQuestion) => {
-    for (let i = this.answeredTest.questionsAndAnswers!.length - 1; i > -1; i--) {
-      if (this.answeredTest.questionsAndAnswers![i].questionId === a.questionId) {
-        this.answeredTest.questionsAndAnswers!.splice(i, 1);
+    const answeredTestSections = this.answeredTest.testSections;
+    for (let i = answeredTestSections!.length - 1; i > -1; i--) {
+      const testSection = answeredTestSections[i];
+
+      if (testSection.testSectionId === a.testSectionId) {
+        for (let j = testSection.questionsAndAnswers.length - 1; j > -1; j--) {
+          if (testSection.questionsAndAnswers[j].questionId === a.questionId) {
+            testSection.questionsAndAnswers!.splice(j, 1);
+            break;
+          }
+        }
+        testSection.questionsAndAnswers!.push({
+          questionId: a.questionId,
+          answer: a.answer
+        });
+        return;
       }
     }
-    this.answeredTest.questionsAndAnswers!.push(a);
+    this.answeredTest.testSections.push({
+      testSectionId: a.testSectionId,
+      questionsAndAnswers: [{
+        questionId: a.questionId,
+        answer: a.answer
+      }]
+    });
   };
 
   confirmModalFinishTest = () => {
@@ -58,7 +77,8 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
   };
 
   cardActionButtons = () => {
-    return [<Button buttonType={ButtonType.PRIMARY} onClick={this.confirmModalFinishTest}>{this.props.intl.formatMessage({id: "course.section.test.finish"})}</Button>]
+    return [<Button buttonType={ButtonType.PRIMARY}
+                    onClick={this.confirmModalFinishTest}>{this.props.intl.formatMessage({id: "course.section.test.finish"})}</Button>]
   };
 
   onFinishSection = () => {
@@ -73,7 +93,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
     }).then(response => {
       runInAction(() => {
         this.test = response;
-        this.answeredTest = {attemptId: this.test.attemptId, questionsAndAnswers: []};
+        this.answeredTest = {attemptId: this.test.attemptId, testSections: []};
       })
     });
   }
