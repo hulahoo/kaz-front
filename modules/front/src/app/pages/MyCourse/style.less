@@ -32,24 +32,29 @@
   border-radius: @default-border-radius;
   cursor: pointer;
 
-  display: flex;
-  align-items: center !important;
+  //display: flex;
+  //align-items: center !important;
 
   .ant-list-item-meta-avatar {
     margin-left: 10px;
   }
 
+  @ant-list-item-meta-title-margin: 14px;
+
   .ant-list-item-meta-title {
-    margin: 14px;
+    margin: @ant-list-item-meta-title-margin;
     text-align: center;
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    //display: flex;
+    //align-items: center;
+    //justify-content: center;
 
+    @done-font-size: 24px;
     .done {
       position: absolute;
-      left: 0;
+      font-size: 24px;
+      left: calc(0px - @ant-list-item-meta-title-margin - (@done-font-size / 2));
+      top: calc(0px - @ant-list-item-meta-title-margin - (@done-font-size / 2));
     }
   }
 }

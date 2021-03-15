@@ -34,8 +34,7 @@ class CourseSectionList extends Component<Props<CourseSection>> {
               // @ts-ignore
               <Meta title={<>
                 {item.hasAttempt ?
-                  <Icon type="check-circle" className={"done"} theme="twoTone" twoToneColor="#12BF66"
-                        style={{fontSize: '32px'}}/> : null}
+                  <Icon type="check-circle" className={"done"} theme="twoTone" twoToneColor="#12BF66"/> : null}
                 <div>{item.text}</div>
               </>}
                     className={"course-section-item" + (this.props.selectedItem === item.id ? " selected" : "") + (item.styleClass ? " " + item.styleClass : "")}

@@ -26,6 +26,7 @@ import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 import {AnsweredFeedback} from "../app/pages/MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent";
 import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQuestion";
 import {DicCompany} from "./entities/base/base_DicCompany";
+import {Enrollment} from "./entities/base/tsadv$Enrollment";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -129,6 +130,15 @@ export const restServices = {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "searchCourses",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
+    },
+    courseEnrollmentInfo: (params: { enrollmentId: string }): Promise<Enrollment> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "courseEnrollmentInfo",
         {...params}
       ).then((response: string) => {
         return JSON.parse(response);

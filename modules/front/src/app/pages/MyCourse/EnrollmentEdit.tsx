@@ -26,6 +26,7 @@ import {Link, RouteComponentProps} from "react-router-dom";
 import {StudentHomework} from "../../../cuba/entities/base/tsadv_StudentHomework";
 import {RootStoreProp} from "../../store";
 import {withRouter} from "react-router";
+import {restServices} from "../../../cuba/services";
 
 type Props = {
   entityId: string;
@@ -40,7 +41,6 @@ export type SelectedSection = {
 @injectMainStore
 @observer
 class EnrollmentEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
-
 
   @observable
   status: DataContainerStatus = "CLEAN";
@@ -83,7 +83,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
     const courseSections = this.dataInstance ? this.dataInstance.course!.sections!.map(s => {
       return {
-        hasAttempt: s.courseSectionAttempts!.filter(a => a.enrollment!.id === this.props.entityId).length > 0,
+        hasAttempt: s.courseSectionAttempts!.length > 0,
         id: s.id,
         text: s.sectionName,
         type: "course-section"
@@ -191,6 +191,23 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       });
       return;
     }
+
+    let isPrevRequiredCourseSectionPassed = true;
+
+    const indexSelectedCourseSection = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
+    for (let i = indexSelectedCourseSection - 1; i >= 0; i--) {
+      const courseSection = this.dataInstance.course!.sections![i];
+      if (courseSection.mandatory && (courseSection.courseSectionAttempts!.length === 0)) {
+        isPrevRequiredCourseSectionPassed = false;
+      }
+    }
+
+    if (!isPrevRequiredCourseSectionPassed) {
+      Notification.info({
+        message: "Необходимо пройти предыдущий раздел"
+      });
+      return;
+    }
     this.setVisibleModal(true);
   };
 
@@ -280,15 +297,13 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
   loadData = () => {
     this.status = "LOADING";
-    restQueries.enrollment(this.props.entityId).then((response: SerializedEntity<Enrollment>[]) => {
-      if (response && response.length > 0) {
-        runInAction(() => {
-          this.dataInstance = response[0]
-        });
-        this.status = "DONE";
+    restServices.courseService.courseEnrollmentInfo({enrollmentId: this.props.entityId}).then((response: SerializedEntity<Enrollment>) => {
+      runInAction(() => {
+        this.dataInstance = response
+      });
+      this.status = "DONE";
 
-        this.loadFeedback();
-      }
+      this.loadFeedback();
     }).catch(() => {
       this.status = "DONE";
     });
