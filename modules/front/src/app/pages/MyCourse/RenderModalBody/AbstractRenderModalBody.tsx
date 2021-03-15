@@ -13,6 +13,7 @@ import Notification from "../../../util/Notification/Notification";
 type AbstractRenderModalBodyProps = {
   changeModalScreenSize: () => void,
   courseId: string
+  loadingFinishCourse?: boolean
 }
 
 @observer
@@ -71,10 +72,11 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
   saveNote = (): Promise<any> => {
     this.note.course = {
       id: this.props.courseId
-    }
+    };
+
     this.note.personGroup = {
       id: rootStore.userInfo!.personGroupId!
-    }
+    };
     this.note.note = this.noteValue;
 
     return getCubaREST()!.commitEntity(CoursePersonNote.NAME, toJS(this.note))
@@ -84,7 +86,7 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
         console.log(value);
       })
       .catch(() => Notification.error({message: "Error"}));
-  }
+  };
 
   getModalBody = (): React.ReactNode => {
     return null;
@@ -97,7 +99,7 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
   cardActionButtons = (): React.ReactNode[] => {
     return [<Button buttonType={ButtonType.FOLLOW}
                     onClickCapture={() => this.noteVisible = true}><FormattedMessage id="notes"/></Button>,
-      <Button buttonType={ButtonType.PRIMARY}
+      <Button buttonType={ButtonType.PRIMARY} loading={this.props.loadingFinishCourse}
               onClick={this.onFinishSection}><FormattedMessage id="course.section.finish"/></Button>];
   }
 }

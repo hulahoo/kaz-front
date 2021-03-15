@@ -241,7 +241,7 @@
   "bproc.SEND_FOR_APPROVAL.success": "Заявка отправлено на утверждение",
   "candidates": "Кандидаты",
   "APPROVE": "Утвердить",
-  "REJECT": "На доработку",
+  "REJECT": "Отклонить",
   "REVISION": "На доработку",
   "START": "Запустить процесс",
   "tasks": "Задачи",

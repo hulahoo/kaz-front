@@ -38,7 +38,7 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
         </Link>
       </div>
       <Notification/>
-      <img src={require('../../../resources/img/default-avatar.svg')} className={"panel-element user-img"}/>
+      <img src={require('../../../resources/img/default-avatar.svg')} className="panel-element user-img"/>
       <Dropdown overlay={menu} trigger={['click']}>
         <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
           <span className="panelelement">{appState.userName}</span>
