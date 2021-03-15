@@ -3,7 +3,7 @@ import {inject, observer} from "mobx-react";
 import {Button, Dropdown, Icon, Menu, Modal} from "antd";
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, withRouter, RouteComponentProps} from "react-router-dom";
 import Notification from "./Notification/Notification";
 import {rootStore} from "../../store";
 import {PortalFeedbackQuestionManagement} from "../../pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
@@ -11,7 +11,7 @@ import {PortalFeedbackQuestionManagement} from "../../pages/PortalFeedbackQuesti
 @injectMainStore
 @inject("rootStore")
 @observer
-class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps> {
+class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps & RouteComponentProps> {
 
   render() {
     const appState = this.props.mainStore!;
@@ -54,6 +54,7 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
       okText: this.props.intl.formatMessage({id: "header.logout.ok"}),
       cancelText: this.props.intl.formatMessage({id: "header.logout.cancel"}),
       onOk: () => {
+        this.props.history.push("./");
         this.props.mainStore!.logout()
           .then(() => {
             rootStore.userInfo.clearUserInfo();
@@ -64,4 +65,4 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
   };
 }
 
-export default injectIntl(UserPanel);
+export default injectIntl(withRouter(UserPanel));

@@ -83,7 +83,6 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
       .then((value) => {
         this.noteVisible = false;
         this.note = value;
-        console.log(value);
       })
       .catch(() => Notification.error({message: "Error"}));
   };
