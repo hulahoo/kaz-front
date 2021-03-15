@@ -73,13 +73,16 @@ export default class MenuStore {
         pathPattern: "/my-education",
         component: AbsenceList
       },
-      {id: "my-kpi", caption: "Мой KPI", menuLink: "/kpi", pathPattern: "/kpi", component: null},
       {
-        id: "team-kpi",
-        caption: "KPI команды",
-        menuLink: "/kpi-team",
-        pathPattern: "/kpi-team",
-        component: null,
+        id: "kpi",
+        caption: "Отпуска",
+        items: [{id: "my-kpi", caption: "Мой KPI", menuLink: "/kpi", pathPattern: "/kpi", component: null}, {
+          id: "team-kpi",
+          caption: "KPI команды",
+          menuLink: "/kpi-team",
+          pathPattern: "/kpi-team",
+          component: null,
+        }],
       },
       {
         id: "my-rating",
