@@ -1,6 +1,6 @@
 import React from "react";
 import {inject, observer} from "mobx-react";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {RootStoreProp} from "../../store";
 import CommonComponentHoc from "../../hoc/CommonComponent/CommonComponentHoc";
@@ -51,16 +51,16 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
       const response: ChangePasswordResponse = JSON.parse(r);
       if (response.status === 'ERROR') {
         Notification.error({
-          message: 'Не удалось изменить пароль',
+          message: this.props.intl.formatMessage({id: "password.change.error"}),
           description: response.message
         })
       } else {
         Notification.success({
-          message: 'Пароль успешно изменен!',
+          message: this.props.intl.formatMessage({id: "password.change.success"}),
         })
       }
     })
-  }
+  };
 
   render() {
     const userSettingsStore: UserSettingsStore = this.props.rootStore!.userSettings;
@@ -79,11 +79,11 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
       {name: this.props.intl.formatMessage({id: 'time-zone'})});
 
     const ChangePasswordBtnComponent = CommonComponentHoc(
-      <Button children={<><i className={"icon"}><KeySvg /></i><span>Изменить пароль</span></>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+      <Button children={<><i className={"icon"}><KeySvg /></i><span><FormattedMessage id="password.change"/></span></>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
               onClick={this.changeVisibleModalChangePassword}/>, {});
 
     const SubmitBtnPasswordComponent = CommonComponentHoc(
-      <Button children={<span>Сохранить</span>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+      <Button children={<span><FormattedMessage id="save"/></span>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
               onClick={this.handleSubmitSaveButton}/>, {});
 
     return <form autoComplete={"off"}>

@@ -1,3 +1,8 @@
 export const getMenuIcon = (menuId: string) => {
-  return require(`./${menuId}.svg`)
+  try {
+    const iconPath = require(`./${menuId}.svg`);
+    return iconPath;
+  } catch (e) {
+    return undefined;
+  }
 };

@@ -15,6 +15,7 @@ import {
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {
+  FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
@@ -137,7 +138,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                   }
                   return 0
                 }}/>
-        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+        <Column title={<FormattedMessage id="kpi.goals.weight"/>}
                 dataIndex="weight"
                 key="weight"
                 sorter={(a: any, b: any) => {

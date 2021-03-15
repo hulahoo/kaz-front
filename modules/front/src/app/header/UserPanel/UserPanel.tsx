@@ -54,7 +54,7 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
       okText: this.props.intl.formatMessage({id: "header.logout.ok"}),
       cancelText: this.props.intl.formatMessage({id: "header.logout.cancel"}),
       onOk: () => {
-        this.props.history.push("./");
+        this.props.history.push("/");
         this.props.mainStore!.logout()
           .then(() => {
             rootStore.userInfo.clearUserInfo();

@@ -158,8 +158,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
           key={keyString}
           title={
             <span>
-            <img src={MenuIcon} className={"ant-menu-item-icon"}/>
-            <span>{this.props.intl.formatMessage({id: "menu." + (item as any).id})}</span>
+              {MenuIcon
+                ? <img src={MenuIcon} className={"ant-menu-item-icon"}/>
+                : null}
+              <span>{this.props.intl.formatMessage({id: "menu." + (item as any).id})}</span>
           </span>
           }>
           {(item as SubMenu).items.map((ri, index) =>
@@ -175,7 +177,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
 
     return (
       <Menu.Item key={keyString}>
-        <img src={MenuIcon} className={"ant-menu-item-icon"}/>
+        {MenuIcon
+          ? <img src={MenuIcon} className={"ant-menu-item-icon"}/>
+          : null}
         <NavLink to={menuRouteItem.menuLink}>
           {this.props.intl.formatMessage({id: "menu." + (item as any).id})}
         </NavLink>
