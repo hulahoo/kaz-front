@@ -54,7 +54,7 @@ dependencies {
     appComponent("com.haulmont.fts:fts-global:$cubaVersion")
     appComponent("com.haulmont.charts:charts-global:$cubaVersion")
     appComponent('com.haulmont.addon.restapi:restapi-global:7.1.1')
-    appComponent('kz.uco.tsadv:tsadv-global:2.0.164-SNAPSHOT')
+    appComponent('kz.uco.tsadv:tsadv-global:2.0.165-SNAPSHOT')
     appComponent('kz.uco.mobile:mob-global:0.15-SNAPSHOT')
 }
 
