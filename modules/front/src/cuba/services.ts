@@ -426,6 +426,13 @@ export const restServices = {
         "getCompanyByPersonGroupId",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+    findManagerListByPositionGroupReturnListPosition: (param: { personGroupId: string }): Promise<DicCompany> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "findManagerListByPositionGroupReturnListPosition",
+        {...param}
+      ).then(r => JSON.parse(r));
     }
   },
   orgStructureService: {

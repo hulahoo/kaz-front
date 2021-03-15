@@ -37,6 +37,7 @@ import Button, {ButtonType} from "../../../components/Button/Button";
 import Section from "../../../hoc/Section";
 import Page from "../../../hoc/PageContentHoc";
 import Notification from "../../../util/Notification/Notification";
+import {PositionGroupExt} from "../../../../cuba/entities/base/base$PositionGroupExt";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -67,6 +68,9 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
     "kpiEditPage",
     {appId: this.props.appId}
   );
+
+  @observable
+  positionGroups: ServiceDataCollectionStore<PositionGroupExt>;
 
   @observable
   managers: ServiceDataCollectionStore<PersonGroupExt>;
@@ -163,20 +167,21 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
             </Button>
           ]} bordered={false}>
             <Section size={"large"}>
-              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='assignedByPersonGroup'/>}
-                         key='assignedByPersonGroup'
+              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='positionGroup'/>}
+                         key='positionGroup'
                          style={{marginBottom: '12px'}}>
-                {this.props.form.getFieldDecorator('assignedByPersonGroup', {
+                {this.props.form.getFieldDecorator('positionGroup', {
                   rules: [{
                     required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'assignedByPersonGroup']})
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'positionGroup']})
                   }],
                   validateTrigger: ["onChange", "onBlur"]
                 })(
-                  <Select onChange={this.onChangeManager}>{this.managers ? this.managers.items.map(m => <Select.Option
-                    value={m.id}
-                    position-group-id={m.currentAssignment!.positionGroup!.id}>{(m.currentAssignment!.positionGroup!.position! as SerializedEntity<PositionExt>)._instanceName}</Select.Option>) : null}</Select>
-                )}
+                  <Select onChange={this.onChangeManager}>{this.positionGroups
+                    ? this.positionGroups.items.map(pg =>
+                      <Select.Option
+                        value={pg.id}>{pg._instanceName}</Select.Option>)
+                    : null}</Select>)}
               </Form.Item>
               <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goal'/>}
                          key='goal'
@@ -188,8 +193,9 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                   }]
                 })(
                   <Select onChange={this.onChangeGoal}>{this.goalsDs ? this.goalsDs.items.map(g => {
-                    return <Select.Option
-                      value={g.id}>{(g as SerializedEntity<Goal>)._instanceName}</Select.Option>
+                    // @ts-ignore
+                    return <Select.Option category={g.library ? g.library.category!.id : "maxim"}
+                                          value={g.id}>{(g as SerializedEntity<Goal>)._instanceName}</Select.Option>
                   }) : null}</Select>
                 )}
               </Form.Item>
@@ -204,6 +210,12 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                     message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'goalString']})
                   }]
                 }}
+              />
+              <Field
+                entityName={AssignedGoal.NAME}
+                propertyName="category"
+                form={this.props.form}
+                formItemOpts={{style: {marginBottom: "12px", display: 'none'}}}
               />
               <Field
                 entityName={AssignedGoal.NAME}
@@ -239,13 +251,16 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
   }
 
   onChangeManager = (value: string, option: React.ReactElement<HTMLLIElement>) => {
-    this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: option!.props["position-group-id"]});
+    this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: value});
   };
 
   onChangeGoal = (value: string, option: React.ReactElement<HTMLLIElement>) => {
     this.props.form.setFieldsValue({
       goalString: option.props['children']
-    })
+    });
+    this.props.form.setFieldsValue({
+      category: option!.props["category"]
+    });
   };
 
   componentDidMount() {
@@ -262,14 +277,14 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
     }
     this.assignedPerformancePlan.afterLoad = () => {
       const positionGroupId = this.assignedPerformancePlan.item!.assignedPerson!.currentAssignment!.positionGroup!.id;
-      this.managers = serviceCollection<PersonGroupExt>(restServices.employeeService.findManagerListByPositionGroup.bind(null, {
+      this.positionGroups = serviceCollection<PersonGroupExt>(restServices.employeeService.findManagerListByPositionGroupReturnListPosition.bind(null, {
         positionGroupId: positionGroupId,
         showAll: false,
-        viewName: "personGroup-with-position"
+        viewName: "assigned-goal-cascade-positionGroupExt-view"
       }));
-      this.managers.load();
+      this.positionGroups.load();
 
-      this.managers.afterLoad = () => {
+      this.positionGroups.afterLoad = () => {
         this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: this.dataInstance.item!.assignedByPersonGroup!.currentAssignment!.positionGroup!.id});
         this.goalsDs.load();
       };
