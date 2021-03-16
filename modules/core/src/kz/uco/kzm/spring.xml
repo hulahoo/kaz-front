@@ -4,5 +4,6 @@
 
     <!-- Annotation-based beans -->
     <context:component-scan base-package="kz.uco.kzm"/>
+    <bean id="uactivity_ActivityListener" class="kz.uco.kzm.listener.ExtActivityListenerKzm"/>
 
 </beans>

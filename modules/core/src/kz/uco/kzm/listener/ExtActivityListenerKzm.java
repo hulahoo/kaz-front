@@ -5,6 +5,7 @@ import com.haulmont.cuba.core.global.AppBeans;
 import com.haulmont.cuba.core.global.Events;
 import kz.uco.base.events.NotificationRefreshEvent;
 import kz.uco.mobile.service.FirebasePushNotificationService;
+import kz.uco.mobile.service.FirebasePushNotificationServiceBean;
 import kz.uco.tsadv.listener.ExtActivityListener;
 import kz.uco.uactivity.entity.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
