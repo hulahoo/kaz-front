@@ -1,11 +1,12 @@
 import React, {Component, FormEvent} from 'react';
-import {Card, Col, Form, List, Rate, Row, Spin} from "antd";
+import {Card, Col, Form, List, message, Rate, Row, Spin} from "antd";
 import moment from "moment";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {FormComponentProps} from "antd/es/form";
 import TextArea from "antd/es/input/TextArea";
 import {withLocalizedForm} from "@cuba-platform/react";
+import Notification from "../../util/Notification/Notification";
 
 export type Comment = {
   user?: string;
@@ -35,10 +36,24 @@ class MaterialReviews extends Component<WrappedComponentProps & MaterialReviewsP
   submitCommentForm = (e: FormEvent) => {
     e.preventDefault();
     if (this.props.sendComment) {
-      this.props.sendComment(this.props.form.getFieldValue("rate"), this.props.form.getFieldValue("text"));
-      this.props.form.resetFields();
-      this.props.form.setFieldsValue({
-        rate: null
+      this.props.form.validateFields((err, values) => {
+        if (err) {
+          Object.keys(err).forEach(key => {
+            err[key].errors!.forEach((error: any) => {
+              Notification.error({
+                message: error.message
+              })
+            })
+          });
+
+          return;
+        }
+
+        this.props.sendComment!(this.props.form.getFieldValue("rate"), this.props.form.getFieldValue("text"));
+        this.props.form.resetFields();
+        this.props.form.setFieldsValue({
+          rate: null
+        });
       });
 
     }
@@ -104,10 +119,20 @@ class MaterialReviews extends Component<WrappedComponentProps & MaterialReviewsP
                   spinning={sendingComment}>
               <Card bordered={false} style={{marginTop: '20px'}}>
                 <Form onSubmit={this.submitCommentForm}>
-                  {this.props.form.getFieldDecorator("rate")(
+                  {this.props.form.getFieldDecorator("rate", {
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: 'comment.rate.error.required'})
+                    }]
+                  })(
                     <Rate/>
                   )}
-                  {this.props.form.getFieldDecorator("text")(
+                  {this.props.form.getFieldDecorator("text", {
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: 'comment.error.required'})
+                    }]
+                  })(
                     <TextArea/>
                   )}
                   <Row type="flex" justify="end">

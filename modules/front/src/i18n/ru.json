@@ -304,5 +304,7 @@
   "password.change": "Изменить пароль",
   "password.change.error": "Не удалось изменить пароль",
   "password.change.success": "Пароль успешно изменен",
-  "save": "Сохранить"
+  "save": "Сохранить",
+  "comment.rate.error.required": "Необходимо указать оценку",
+  "comment.error.required": "Необходимо оставить текст отзыва"
 }
