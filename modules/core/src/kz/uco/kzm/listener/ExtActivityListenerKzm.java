@@ -25,7 +25,7 @@ public class ExtActivityListenerKzm extends ExtActivityListener {
 
     @Override
     public void onAfterInsert(Activity entity, Connection connection) {
-        firebasePushNotificationService.sendNotificationToUser("Новые уведомление", "123", entity.getAssignedUser());
+        firebasePushNotificationService.sendNotificationToUser("Новые уведомление", entity.getNotificationHeader(), entity.getAssignedUser());
         publishNotificationRefreshEvent(entity);
     }
 
