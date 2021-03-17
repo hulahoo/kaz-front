@@ -58,6 +58,9 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   visibleModal: boolean = false;
 
   @observable
+  loadingFinishCourse: boolean = false;
+
+  @observable
   isHasHomework: boolean = false;
 
   @observable
@@ -130,6 +133,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           </Section>
           {this.visibleModal ? <CourseSectionModal
             courseId={this.dataInstance.course!.id}
+            loadingFinishCourse={this.loadingFinishCourse}
             onFinishSection={this.finishSection}
             onCloseModal={this.onCloseModal}
             selectedSection={this.selectedSection!}
@@ -222,6 +226,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
   };
 
   finishSection = () => {
+    this.loadingFinishCourse = true;
     getCubaREST()!.searchEntitiesWithCount(CourseSectionAttempt.NAME, {
       conditions: [{
         property: "enrollment",
@@ -232,25 +237,51 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
         operator: "=",
         value: this.selectedSection!.id
       }]
-    }, {view: "course-section-attempt"}).then(response => {
-      if ((response.count == 0)) {
-        getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
-          courseSection: {
-            id: this.selectedSection!.id,
-          },
-          attemptDate: moment().toISOString(),
-          activeAttempt: false,
-          success: true,
-          enrollment: {
-            id: this.props.entityId
-          }
-        } as CourseSectionAttempt).then(respones => {
+    }, {view: "course-section-attempt"})
+      .then(response => {
+        if ((response.count == 0)) {
+          getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
+            courseSection: {
+              id: this.selectedSection!.id,
+            },
+            attemptDate: moment().toISOString(),
+            activeAttempt: false,
+            success: true,
+            enrollment: {
+              id: this.props.entityId
+            }
+          } as CourseSectionAttempt)
+            .then(response => {
+              const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
+              this.finishedCourseSection(this.selectedSection!.id);
+              if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
+                const nextSelectedSectionIndex = selectedSectionIndex + 1;
+                const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
+                if (nextSection) {
+                  this.setVisibleModal(false);
+                  this.setSelectedSection({
+                    type: "course-section",
+                    id: nextSection.id
+                  });
+                  this.playIconClick();
+                } else {
+                  this.visibleModal = false;
+                }
+              } else {
+                this.visibleModal = false;
+              }
+              this.loadingFinishCourse = false;
+            })
+            .catch(() => {
+              this.loadingFinishCourse = false;
+            });
+        } else {
           const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
           if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
             const nextSelectedSectionIndex = selectedSectionIndex + 1;
             const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
             if (nextSection) {
-              this.finishedCourseSection(this.selectedSection!.id);
+              this.setVisibleModal(false);
               this.setSelectedSection({
                 type: "course-section",
                 id: nextSection.id
@@ -262,27 +293,12 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           } else {
             this.visibleModal = false;
           }
-        });
-      } else {
-        const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
-        if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
-          const nextSelectedSectionIndex = selectedSectionIndex + 1;
-          const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
-          if (nextSection) {
-            this.setVisibleModal(false);
-            this.setSelectedSection({
-              type: "course-section",
-              id: nextSection.id
-            });
-            this.playIconClick();
-          } else {
-            this.visibleModal = false;
-          }
-        } else {
-          this.visibleModal = false;
+          this.loadingFinishCourse = false;
         }
-      }
-    })
+      })
+      .catch(() => {
+        this.loadingFinishCourse = false;
+      })
   };
 
   finishedCourseSection = (courseSectionId: string) => {

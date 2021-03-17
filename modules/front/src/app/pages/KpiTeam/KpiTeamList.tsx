@@ -16,6 +16,7 @@ import {AssignedPerformancePlan} from "../../../cuba/entities/base/tsadv$Assigne
 import {SerializedEntity} from "@cuba-platform/rest";
 
 import {
+  FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
@@ -98,14 +99,14 @@ class KpiTeamListComponent extends React.Component<MainStoreInjected & WrappedCo
                 {(record.assignedPerson! as SerializedEntity<PersonGroupExt>)._instanceName}
                 </span>
             }}/>
-            <Column title={<Msg entityName={AssignmentExt.NAME} propertyName={"organizationGroup"}/>}
+            <Column title={<FormattedMessage id="department"/>}
                     dataIndex={"organizationGroup"}
                     key={"organizationGroup"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
               return <span>
                 {(record.assignedPerson!.assignments![0].organizationGroup!.organization! as SerializedEntity<Organization>)._instanceName}
                 </span>
             }}/>
-            <Column title={<Msg entityName={AssignmentExt.NAME} propertyName={"jobGroup"}/>}
+            <Column title={<FormattedMessage id="position"/>}
                     dataIndex={"jobGroup"}
                     key={"jobGroup"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
               return <span>
@@ -116,10 +117,10 @@ class KpiTeamListComponent extends React.Component<MainStoreInjected & WrappedCo
                     dataIndex={"status"}
                     key={"status"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
               return <span>
-                {getEnumCaption(record.stepStageStatus, getPropertyInfoNN("status", AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!)}
+                {getEnumCaption(record.stepStageStatus, getPropertyInfoNN("stepStageStatus", AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!)}
                 </span>
             }}/>
-            <Column title={this.props.intl.formatMessage({id: "assessmentPeriod"})}
+            <Column title={this.props.intl.formatMessage({id: "period"})}
                     dataIndex={"endDate"}
                     key={"endDate"} render={(text, record, index) => {
               return (React.createElement("div", null, moment(text).format("YYYY")));

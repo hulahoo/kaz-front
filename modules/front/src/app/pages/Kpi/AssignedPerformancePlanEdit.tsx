@@ -5,7 +5,7 @@ import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {Link, Redirect} from "react-router-dom";
 import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import GoalForm from './GoalForm';
 
 import {
@@ -333,7 +333,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         className: 'disabled',
-                        label: <Msg entityName={AssignmentExt.NAME} propertyName={"jobGroup"}/>
+                        label: <FormattedMessage id="position"/>
                       }}/>
                   </Col>
                   <Col md={24} lg={6}>
@@ -344,19 +344,19 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                       disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
-                        label: this.props.intl.formatMessage({id: "organizationGroup"})
+                        label: <FormattedMessage id="department"/>
                       }}
                     />
                   </Col>
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={AssignedPerformancePlan.NAME}
-                      propertyName="organization"
+                      propertyName="status"
                       form={this.props.form}
                       disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
-                        label: this.props.intl.formatMessage({id: "organization"})
+                        label: <Msg entityName={AssignedPerformancePlan.NAME} propertyName={"status"}/>
                       }}
                     />
                   </Col>
@@ -394,18 +394,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                         <DatePicker disabled/>
                       )}
                     </Form.Item>
-                  </Col>
-                  <Col md={24} lg={6}>
-                    <ReadonlyField
-                      entityName={AssignedPerformancePlan.NAME}
-                      propertyName="status"
-                      form={this.props.form}
-                      disabled
-                      formItemOpts={{
-                        style: {marginBottom: "12px"},
-                        label: <Msg entityName={AssignedPerformancePlan.NAME} propertyName={"status"}/>
-                      }}
-                    />
                   </Col>
                 </Row>
                 {this.globalErrors.length > 0 && (

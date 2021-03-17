@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Spin} from "antd";
+import {Modal} from "antd";
 import {observer} from "mobx-react";
 import {CourseSection} from "../../../cuba/entities/base/tsadv$CourseSection";
 import RenderModalBodyImpl, {RenderModalBody} from "./RenderModalBody/RenderModalBody";
@@ -13,6 +13,7 @@ import {SerializedEntity} from "@cuba-platform/rest";
 
 type Props = {
   courseId: string,
+  loadingFinishCourse: boolean,
   selectedSection: SelectedSection
   enrollmentId: string,
   onCloseModal?: () => void
@@ -60,15 +61,11 @@ class CourseSectionModal extends Component<Props> {
 
   getSectionBody = () => {
     const params = ((this.sectionData as DataInstanceStore<CourseSection>).item ? {
-      courseId: this.props.courseId,
       courseSection: ((this.sectionData as DataInstanceStore<CourseSection>).item! as CourseSection),
-      changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
     } : {
-      courseId: this.props.courseId,
       templateId: this.props.selectedSection.id,
       okFinishFeedbackHandler: this.props.onFinishSection,
       onCloseModal: this.props.onCloseModal,
-      changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
       feedbacks: (this.sectionData as LearningFeedbackQuestion[]).map(lfq => {
         return {
           id: lfq.id,
@@ -81,6 +78,9 @@ class CourseSectionModal extends Component<Props> {
     const renderModalBody: RenderModalBody = new RenderModalBodyImpl();
     return renderModalBody.renderBody(this.props.selectedSection.type, {
       ...params,
+      loadingFinishCourse: this.props.loadingFinishCourse,
+      courseId: this.props.courseId,
+      changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
       onFinishSection: this.props.onFinishSection,
       enrollmentId: this.props.enrollmentId
     });

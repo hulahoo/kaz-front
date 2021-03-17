@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {inject, observer} from "mobx-react";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {Tabs} from "antd";
 import {RootStoreProp} from "../../../../store";
 import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, format} from "../../../../util/Date/Date";
@@ -58,7 +58,7 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
               </ul>
               <div className={"notifications-button-container"}>
                 <Link to={ActivityManagement.PATH_TASKS} onClick={() => this.props.setVisibleFalse()}>
-                  <Button children={<span>Посмотреть все</span>} buttonType={ButtonType.FOLLOW}/>
+                  <Button children={<span><FormattedMessage id="userPanel.notifications.showAll"/></span>} buttonType={ButtonType.FOLLOW}/>
                 </Link>
               </div>
             </div>
@@ -80,7 +80,7 @@ class NotificationDropdownMenu extends Component<Props & WrappedComponentProps &
               </ul>
               <div className={"notifications-button-container"}>
                 <Link to={ActivityManagement.PATH_NOTIFICATIONS} onClick={() => this.props.setVisibleFalse()}>
-                  <Button children={<span>Посмотреть все</span>} buttonType={ButtonType.FOLLOW}/>
+                  <Button children={<span><FormattedMessage id="userPanel.notifications.showAll"/></span>} buttonType={ButtonType.FOLLOW}/>
                 </Link>
               </div>
             </div>

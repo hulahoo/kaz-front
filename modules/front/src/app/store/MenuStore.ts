@@ -62,81 +62,85 @@ export default class MenuStore {
           }
         ],
       } as MenuSubMenu,
-      {
-        id: "vacation",
-        caption: "Отпуска",
-        items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
-      } as MenuSubMenu,
+      // {
+      //   id: "vacation",
+      //   caption: "Отпуска",
+      //   items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
+      // } as MenuSubMenu,
       {
         id: "my-education", caption: "Обучение",
         menuLink: "/my-education",
         pathPattern: "/my-education",
         component: AbsenceList
       },
-      {id: "my-kpi", caption: "Мой KPI", menuLink: "/kpi", pathPattern: "/kpi", component: null},
       {
-        id: "team-kpi",
-        caption: "KPI команды",
-        menuLink: "/kpi-team",
-        pathPattern: "/kpi-team",
-        component: null,
+        id: "kpi",
+        caption: "Отпуска",
+        items: [{id: "my-kpi", caption: "Мой KPI", menuLink: "/kpi", pathPattern: "/kpi", component: null}, {
+          id: "team-kpi",
+          caption: "KPI команды",
+          menuLink: "/kpi-team",
+          pathPattern: "/kpi-team",
+          component: null,
+        }],
       },
-      {
-        id: "my-rating",
-        caption: "Моя оценка",
-        menuLink: "/my-rating",
-        pathPattern: "/my-rating",
-        component: null,
-      },
-      {
-        id: "dmc-my",
-        caption: "Мои ДМС",
-        menuLink: "/my-dmc",
-        pathPattern: "/my-dmc",
-        component: InsuredPersonManagement,
-      },
-      {
-        id: "schedule-offsets",
-        caption: "График сменности",
-        menuLink: "/schedule-offsets",
-        pathPattern: "/schedule-offsets",
-        component: ScheduleOffsetsRequestManagement,
-      },
-      {
-        id: "team-rating",
-        caption: "Оценка команды",
-        menuLink: "/team-rating",
-        pathPattern: "/team-rating",
-        component: null,
-      },
-      {
-        id: "my-app-vacation",
-        caption: "Мои заявки на вакансию",
-        menuLink: "/my-app-vacation",
-        pathPattern: "/my-app-vacation",
-        component: null,
-      },
-      {
-        id: "assigment-interview",
-        caption: "Назначенные интервью",
-        menuLink: "/assigment-interview",
-        pathPattern: "/assigment-interview",
-        component: null,
-      },
-      {
-        id: "job-offers",
-        caption: "Job Offers",
-        menuLink: "/job-offers",
-        pathPattern: "/job-offers",
-        component: null,
-      },
+      // {
+      //   id: "my-rating",
+      //   caption: "Моя оценка",
+      //   menuLink: "/my-rating",
+      //   pathPattern: "/my-rating",
+      //   component: null,
+      // },
+      // {
+      //   id: "dmc-my",
+      //   caption: "Мои ДМС",
+      //   menuLink: "/my-dmc",
+      //   pathPattern: "/my-dmc",
+      //   component: InsuredPersonManagement,
+      // },
+      // {
+      //   id: "schedule-offsets",
+      //   caption: "График сменности",
+      //   menuLink: "/schedule-offsets",
+      //   pathPattern: "/schedule-offsets",
+      //   component: ScheduleOffsetsRequestManagement,
+      // },
+      // {
+      //   id: "team-rating",
+      //   caption: "Оценка команды",
+      //   menuLink: "/team-rating",
+      //   pathPattern: "/team-rating",
+      //   component: null,
+      // },
+      // {
+      //   id: "my-app-vacation",
+      //   caption: "Мои заявки на вакансию",
+      //   menuLink: "/my-app-vacation",
+      //   pathPattern: "/my-app-vacation",
+      //   component: null,
+      // },
+      // {
+      //   id: "assigment-interview",
+      //   caption: "Назначенные интервью",
+      //   menuLink: "/assigment-interview",
+      //   pathPattern: "/assigment-interview",
+      //   component: null,
+      // },
+      // {
+      //   id: "job-offers",
+      //   caption: "Job Offers",
+      //   menuLink: "/job-offers",
+      //   pathPattern: "/job-offers",
+      //   component: null,
+      // },
       {
         id: "org-structure-request",
         caption: "Заявка по Орг.структуре",
         menuLink: "/org-structure-request",
         pathPattern: "/org-structure-request",
         component: null,
-      }]
+      }
+      ]
     // restServices.userMenuService.userMenuList().then((response: string) => {
     //   const menuIdList: string[] = JSON.parse(response);
     //   console.log(menuIdList);

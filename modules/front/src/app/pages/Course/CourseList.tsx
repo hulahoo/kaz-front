@@ -47,7 +47,7 @@ class CourseList<T> extends React.Component {
                                                                                                 loading={false} {...course}
                                                                                                 name={course.name!}
                                                                                                 header={(<>
-                                                                                                    {!(course as
+                                                                                                    {(course as
                                                                                                       any).isOnline ?
                                                                                                       <img
                                                                                                         src={require("../../../resources/icons/online.png")}

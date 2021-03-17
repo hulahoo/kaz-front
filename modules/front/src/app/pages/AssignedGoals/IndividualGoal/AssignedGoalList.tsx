@@ -17,7 +17,7 @@ import {queryInstance} from "../../../util/QueryDataInstanceStore";
 import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import Notification from "../../../util/Notification/Notification";
 import {RouteComponentProps, withRouter} from "react-router";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {injectIntl, FormattedMessage, WrappedComponentProps} from "react-intl";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -261,7 +261,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                   }
                   return 0
                 }}/>
-        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+        <Column title={<FormattedMessage id="kpi.goals.weight"/>}
                 dataIndex="weight"
                 key="weight"
                 sorter={(a: any, b: any) => {

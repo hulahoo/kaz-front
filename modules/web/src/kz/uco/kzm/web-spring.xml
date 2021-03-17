@@ -7,5 +7,12 @@
     <context:component-scan base-package="kz.uco.kzm"/>
     
     <gui:screens base-packages="kz.uco.kzm.web"/>
+    <bean id="kzm_proxyCreator" class="com.haulmont.cuba.web.sys.remoting.WebRemoteProxyBeanCreator">
+        <property name="serverSelector" ref="cuba_ServerSelector"/>
+        <property name="remoteServices">
+            <map>
+            </map>
+        </property>
+    </bean>
 
 </beans>
