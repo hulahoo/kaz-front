@@ -33,8 +33,11 @@ public class ExtActivityListenerKzm extends ExtActivityListener {
                 put("click_action", "FLUTTER_NOTIFICATION_CLICK");
                 put("entityName", entity.getName());
                 put("entityId", String.valueOf(entity.getId()));
+                put("referenceId", String.valueOf(entity.getReferenceId()));
+                put("windowPropertyName", entity.getType().getWindowProperty().getEntityName());
             }
         };
+
         firebasePushNotificationService.sendNotificationWithDataToUser("Новое уведомление", entity.getNotificationHeader(), data, entity.getAssignedUser());
         publishNotificationRefreshEvent(entity);
     }
