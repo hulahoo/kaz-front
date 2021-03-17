@@ -13,6 +13,8 @@ import org.springframework.transaction.support.TransactionSynchronizationAdapter
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExtActivityListenerKzm extends ExtActivityListener {
     @Autowired
@@ -25,7 +27,15 @@ public class ExtActivityListenerKzm extends ExtActivityListener {
 
     @Override
     public void onAfterInsert(Activity entity, Connection connection) {
-        firebasePushNotificationService.sendNotificationToUser("Новые уведомление", entity.getNotificationHeader(), entity.getAssignedUser());
+        Map<String, String> data = new HashMap<String, String>()
+        {
+            {
+                put("click_action", "FLUTTER_NOTIFICATION_CLICK");
+                put("entityName", entity.getName());
+                put("entityId", String.valueOf(entity.getId()));
+            }
+        };
+        firebasePushNotificationService.sendNotificationWithDataToUser("Новое уведомление", entity.getNotificationHeader(), data, entity.getAssignedUser());
         publishNotificationRefreshEvent(entity);
     }
 
