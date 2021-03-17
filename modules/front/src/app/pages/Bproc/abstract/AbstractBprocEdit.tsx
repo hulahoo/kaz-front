@@ -97,6 +97,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
   };
 
+  isUpdateBeforeOutcome = false;
+
   getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
     const {status} = this.dataInstance;
 
@@ -113,6 +115,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         isStartForm={this.isStartForm}
                         processDefinitionKey={this.processDefinitionKey}
                         form={this.props.form}
+                        isUpdateBeforeOutcome={this.isUpdateBeforeOutcome}
                         task={this.activeTask}/>
         : <Button
           buttonType={ButtonType.PRIMARY}
@@ -138,16 +141,35 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   componentDidMount() {
     this.setReactionDisposer();
+    this.loadData();
     this.loadBpmProcessData();
+  }
+
+  processInstanceBusinessKey = (): string => {
+    return this.props.entityId;
+  }
+
+  initVariablesByBproc = () => {
+
+  }
+
+  loadData = () => {
+    if (this.props.entityId !== "new") {
+      this.dataInstance.load(this.props.entityId);
+    } else {
+      const entityName = this.dataInstance.entityName;
+      restServices.portalHelperService.newEntity({entityName: entityName}).then((response: T) => {
+        this.initItem(response);
+      });
+    }
   }
 
   loadBpmProcessData = () => {
     const processDefinitionKey = this.processDefinitionKey;
     if (this.props.entityId !== "new") {
-      this.dataInstance.load(this.props.entityId);
 
       restServices.bprocService.processInstanceData({
-        processInstanceBusinessKey: this.props.entityId,
+        processInstanceBusinessKey: this.processInstanceBusinessKey(),
         processDefinitionKey: processDefinitionKey
       }).then(value => {
         this.isCalledProcessInstanceData = true;
@@ -166,32 +188,29 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                   .then(formData => {
                     this.formData = formData;
                     this.isStartForm = false;
+                    this.initVariablesByBproc();
                   });
+              else this.initVariablesByBproc();
             })
         } else {
           restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
             .then(formData => {
               this.formData = formData;
               this.isStartForm = true;
+              this.initVariablesByBproc();
             });
         }
       })
     } else {
       const processDefinitionKey = this.processDefinitionKey;
-      const entityName = this.dataInstance.entityName;
 
-      restServices.portalHelperService.newEntity({entityName: entityName}).then((response: T) => {
-
-        restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
-          .then(formData => {
-            this.formData = formData;
-            this.isStartForm = true;
-          });
-
-        this.initItem(response);
-      });
+      restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
+        .then(formData => {
+          this.formData = formData;
+          this.isStartForm = true;
+          this.initVariablesByBproc();
+        });
     }
-    this.setReactionDisposer();
   }
 
   protected initItem(request: T): void {

@@ -1,6 +1,8 @@
 import {getCubaREST} from "@cuba-platform/react";
 import Notification from "./Notification/Notification";
 import {AbstractDictionary} from "../../cuba/entities/base/AbstractDictionary";
+import {AbstractBprocRequest} from "../../cuba/entities/base/AbstractBprocRequest";
+import {AssignedPerformancePlan} from "../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 
 export const getBlobUrl = (fileId: string) => {
   return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob))
@@ -41,5 +43,11 @@ export const dicValue = (dictionary: AbstractDictionary, lang: string) => {
       return dictionary["langValue2"];
   }
   return dictionary["langValue1"];
+};
+
+export const getBusinessKey = (request: AbstractBprocRequest) => {
+  if (request instanceof AssignedPerformancePlan || request["_entityName"] === AssignedPerformancePlan.NAME)
+    return request.id + "/" + request["stepStageStatus"];
+  return request.id;
 };
 

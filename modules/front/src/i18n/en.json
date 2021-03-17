@@ -275,5 +275,8 @@
   "notes": "Notes",
   "ask.question": "Ask a question",
   "your.question.accepted": "Your question has been accepted",
-  "summited.less.than.30.days": "The application was submitted less than 30 calendar days before the planned exit date"
+  "summited.less.than.30.days": "The application was submitted less than 30 calendar days before the planned exit date",
+  "assignedGoal.assessment.validation": "Assessment have to be between 0 and 100",
+  "result": "Result",
+  "assignedPerformancePlan.extraPoint.validation": "Extra point have to be between 1 and 8"
 }

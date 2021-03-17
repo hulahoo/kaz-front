@@ -272,5 +272,8 @@
   "notes":"Заметки",
   "ask.question": "Задать вопрос",
   "your.question.accepted": "Ваш вопрос принят",
-  "summited.less.than.30.days": "Заявка подана менее чем за 30 календарных дней до планируемой даты выхода"
+  "summited.less.than.30.days": "Заявка подана менее чем за 30 календарных дней до планируемой даты выхода",
+  "assignedGoal.assessment.validation": "Оценка должна быть от 0 до 100",
+  "result": "Результат",
+  "assignedPerformancePlan.extraPoint.validation": "Дополнительный балл должна быть от 1 до 8"
 }

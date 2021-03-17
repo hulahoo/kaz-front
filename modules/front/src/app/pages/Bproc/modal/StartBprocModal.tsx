@@ -20,6 +20,7 @@ import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import Candidate from "../component/Candidate";
+import {getBusinessKey} from "../../../util/util";
 
 type StartBproc = {
   processDefinitionKey: string;
@@ -95,7 +96,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
               notPersisitBprocActors: this.items
             }).then(response => {
               restServices.bprocRuntimeService.startProcessInstanceByKey({
-                businessKey: this.props.dataInstance.item!.id,
+                businessKey: getBusinessKey(this.props.dataInstance.item!),
                 processDefinitionKey: this.props.processDefinitionKey,
                 variables: {
                   entity: this.props.dataInstance.item,

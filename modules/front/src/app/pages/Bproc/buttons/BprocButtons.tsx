@@ -4,7 +4,7 @@ import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
 import {ProcessInstanceData} from "../../../../cuba/entities/base/bproc_ProcessInstanceData";
-import {injectMainStore, withLocalizedForm} from "@cuba-platform/react";
+import {injectMainStore} from "@cuba-platform/react";
 import {inject, observer} from "mobx-react";
 import StartBprocModal from "../modal/StartBprocModal";
 import {WrappedFormUtils} from "antd/lib/form/Form";
@@ -24,7 +24,8 @@ type TaskProps = {
   task: ExtTaskData | null;
   processInstanceData: ProcessInstanceData | null;
   processDefinitionKey: string;
-  form: WrappedFormUtils
+  form: WrappedFormUtils,
+  isUpdateBeforeOutcome?: boolean
 };
 
 @inject("rootStore")
@@ -46,6 +47,10 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
         ? this.props.formData.outcomes.map(value => <OutcomeButtonModal outcome={value}
+                                                                        key={value.id}
+                                                                        form={this.props.form}
+                                                                        validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}
+                                                                        update={this.props.isUpdateBeforeOutcome ? this.props.update : undefined}
                                                                         afterSendOnApprove={this.props.afterSendOnApprove}
                                                                         task={this.props.task}/>)
         : "";
