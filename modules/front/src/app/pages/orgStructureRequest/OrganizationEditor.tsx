@@ -25,6 +25,7 @@ export class OrganizationSaveModel {
 
 export interface EditorProps {
   row: OrgRequestRow | null,
+  requestId: string,
   treeData: OrgRequestRow[],
   isNew: boolean,
   closeModal: () => void,
@@ -53,7 +54,7 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["id", "rId", "parentId", "nameRu", "nameEn"];
+  fields = ["id", "rId", "parentId", "organizationGroupId", "nameRu", "nameEn"];
 
   save = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -153,7 +154,7 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
           {getFieldDecorator('organizationGroupId')(<Input type="hidden"/>)}
           {getFieldDecorator('rId')(<Input type="hidden"/>)}
 
-          {!this.props.row!.root ?
+          {this.props.row!.root && !this.props.isNew ? null :
             <Form.Item label="Родительская организация" key="parentId">
               {getFieldDecorator('parentId', {
                 rules: [{
@@ -168,7 +169,7 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
                   }
                 </Select>
               )}
-            </Form.Item> : null}
+            </Form.Item>}
 
           <Form.Item label="Наименование на рус." key="nameRu">
             {getFieldDecorator('nameRu', {
@@ -214,7 +215,7 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
     let model = {}, isNew = this.props.isNew;
 
     if (row !== undefined && row !== null) {
-      model['rId'] = row.rId;
+      model['rId'] = this.props.requestId;
 
       if (isNew) {
         model['parentId'] = row.rdId || row.orgGroupId;

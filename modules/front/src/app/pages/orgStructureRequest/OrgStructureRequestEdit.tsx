@@ -48,6 +48,7 @@ import Notification from "../../util/Notification/Notification";
 import {EnumValueInfo} from "@cuba-platform/rest/dist-browser/model";
 import PositionEditor from "./PositionEditor";
 import {CheckboxChangeEvent} from "antd/lib/checkbox";
+import {KpiTeamManagement} from "../KpiTeam/KpiTeamManagement";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -57,7 +58,6 @@ type EditorProps = {
 
 export type OrgRequestRow = {
   root: boolean,
-  rId: string,
   rdId: string,
   pRdId: string,
   rowKey: string,
@@ -217,7 +217,7 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
       }),
       onOk: () => {
         restServices.orgStructureService.exclude({
-          requestId: row.rId,
+          requestId: this.props.entityId,
           requestDetailId: row.rdId,
           elementGroupId: row.posGroupId || row.orgGroupId || null,
           elementType: row.elementType
@@ -285,7 +285,7 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     );
 
     const buttons = [
-      <Dropdown overlay={createLinks} key="create">
+      <Dropdown overlay={createLinks} key="create" disabled={!this.selectedRow}>
         <Button type="primary" className={"b-btn"}>
           <Icon type="plus"/>
           <FormattedMessage id="management.browser.create"/>
@@ -565,12 +565,10 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                     <Icon type="check"/>
                     <FormattedMessage id="management.editor.submit"/>
                   </Button>
-                  <Link to={OrgStructureRequestManagement.PATH}>
-                    <Button htmlType="button" className={"b-btn"}>
-                      <Icon type="close"/>
-                      <FormattedMessage id="management.editor.cancel"/>
-                    </Button>
-                  </Link>
+                  <Button htmlType="reset" className={"b-btn"}>
+                    <Icon type="close"/>
+                    <FormattedMessage id="management.editor.cancel"/>
+                  </Button>
                 </div>
               </Col>
             </Row>
@@ -596,10 +594,20 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                      };
                    }}/>
           </div>
+
+          <div style={{textAlign:"center",marginBottom:"20px"}}>
+            <Link to={OrgStructureRequestManagement.PATH}>
+              <Button htmlType="button" type="default">
+                <Icon type="close"/>
+                <FormattedMessage id="close" />
+              </Button>
+            </Link>
+          </div>
         </Card>
 
         {this.showOrgCreateModal ?
           <OrganizationEditor row={this.selectedRow}
+                              requestId={this.props.entityId}
                               treeData={this.treeData}
                               isNew={this.isNew}
                               form={this.props.form}
@@ -608,6 +616,7 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
 
         {this.showPosCreateModal ?
           <PositionEditor row={this.selectedRow}
+                          requestId={this.props.entityId}
                           treeData={this.treeData}
                           isNew={this.isNew}
                           form={this.props.form}
