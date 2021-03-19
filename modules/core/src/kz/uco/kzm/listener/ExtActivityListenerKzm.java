@@ -29,7 +29,7 @@ public class ExtActivityListenerKzm extends ExtActivityListener {
             }
         };
 
-        firebasePushNotificationService.sendNotificationWithDataToUser(entity.getNotificationHeader(), null, data, entity.getAssignedUser());
+        firebasePushNotificationService.sendNotificationWithDataToUser(entity.getNotificationHeader(), "", data, entity.getAssignedUser());
         super.onAfterInsert(entity, connection);
     }
 }
