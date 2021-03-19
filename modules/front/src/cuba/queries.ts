@@ -1,7 +1,6 @@
 import {getCubaREST} from "@cuba-platform/react";
 import {AssignedPerformancePlan} from "./entities/base/tsadv$AssignedPerformancePlan";
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
-import {AssignmentExt} from "./entities/base/base$AssignmentExt";
 import moment from "moment";
 import {PersonExt} from "./entities/base/base$PersonExt";
 import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
