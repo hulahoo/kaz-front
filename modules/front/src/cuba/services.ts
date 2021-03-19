@@ -27,6 +27,8 @@ import {AnsweredFeedback} from "../app/pages/MyCourse/RenderModalBody/Feedback/F
 import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQuestion";
 import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
+import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
+import {PersonProfile} from "../app/pages/MyTeam/PersonCard/MyTeamPersonCard";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -413,6 +415,13 @@ export const restServices = {
     },
   },
   employeeService: {
+    personProfile: (personGroupId: string): Promise<PersonProfile> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "personProfile",
+        {personGroupId: personGroupId}
+      ).then(r => JSON.parse(r));
+    },
     findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean, viewName: string }): Promise<PersonGroupExt[]> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_EmployeeService",
@@ -475,6 +484,22 @@ export const restServices = {
         "tsadv_OrgStructureRequestService",
         "getGrades",
         null
+      ).then(r => JSON.parse(r));
+    },
+  },
+  myTeamService: {
+    getChildren: (param: { parentPositionGroupId: string, parent?: MyTeamNew }): Promise<Array<MyTeamNew>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_MyTeamService",
+        "getChildren",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    searchMyTeam: (param: { parentPositionGroupId: string, searchFio: string }): Promise<Array<MyTeamNew>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_MyTeamService",
+        "searchMyTeam",
+        {...param}
       ).then(r => JSON.parse(r));
     },
   }

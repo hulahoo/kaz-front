@@ -42,6 +42,7 @@ import MyEducation from "./pages/MyEducation/MyEducation";
 import MyEducationManagement from "./pages/MyEducation/MyEducationManagement";
 import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryManagement";
 import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
+import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -130,6 +131,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        path={PortalFeedbackQuestionManagement.PATH}
                        component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
+                <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}
