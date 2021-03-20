@@ -1,31 +1,15 @@
 import * as React from "react";
-import {FormEvent} from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  Checkbox,
-  Col,
-  DatePicker,
-  Dropdown,
-  Form,
-  Icon,
-  Input,
-  Menu,
-  Modal,
-  Row,
-  Select,
-  Table
-} from "antd";
+import {Alert, Button, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Select, Table} from "antd";
 
 import {observer} from "mobx-react";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Link, Redirect} from "react-router-dom";
+import {Link, RouteComponentProps, withRouter} from "react-router-dom";
 import {IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
+  collection,
   injectMainStore,
   instance,
   MainStoreInjected,
@@ -48,7 +32,13 @@ import Notification from "../../util/Notification/Notification";
 import {EnumValueInfo} from "@cuba-platform/rest/dist-browser/model";
 import PositionEditor from "./PositionEditor";
 import {CheckboxChangeEvent} from "antd/lib/checkbox";
-import {KpiTeamManagement} from "../KpiTeam/KpiTeamManagement";
+import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
+import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
+import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
+import {RootStoreProp} from "../../store";
+import moment from "moment";
+import DefaultDatePicker from "../../components/Datepicker";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -73,6 +63,17 @@ export type OrgRequestRow = {
   children: OrgRequestRow[]
 };
 
+export type OrgRequestSaveModel = {
+  id: string | null,
+  company: string,
+  department: string,
+  author: string,
+  modifyDate: any | null,
+  requestDate: any,
+  requestStatus: string,
+  comment: string | null
+};
+
 export type OrgRequestGrade = {
   id: string,
   groupId: string,
@@ -81,10 +82,26 @@ export type OrgRequestGrade = {
 
 @injectMainStore
 @observer
-class OrgStructureRequestEditComponent extends React.Component<Props & WrappedComponentProps & MainStoreInjected> {
+class OrgStructureRequestEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & RouteComponentProps<any> & MainStoreInjected> {
   dataInstance = instance<OrgStructureRequest>(OrgStructureRequest.NAME, {
     view: "orgStructureRequest-edit",
     loadImmediately: false
+  });
+
+  companiesDc = collection<DicCompany>(DicCompany.NAME, {
+    view: "_minimal"
+  });
+
+  organizationGroupsDc = collection<OrganizationGroupExt>(OrganizationGroupExt.NAME, {
+    view: "_minimal"
+  });
+
+  requestStatusDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
+    view: "_minimal"
+  });
+
+  authorsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+    view: "_minimal"
   });
 
   @observable
@@ -106,14 +123,13 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
   showPosCreateModal: boolean = false;
 
   @observable
-  comment: string | null;
-
-  @observable
   updated = false;
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["requestNumber", "requestDate", "company", "department", "author"];
+  fields = ["requestNumber", "requestDate", "company", "department", "requestStatus", "author", "modifyDate", "comment"];
+
+  locale = this.props.mainStore!.locale!;
 
   @observable
   globalErrors: string[] = [];
@@ -123,7 +139,7 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     'current': true,
     'changes': true,
     'difference': true,
-  }
+  };
 
   reloadTreeData = () => {
     this.treeLoading = true;
@@ -160,14 +176,6 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
       });
   }
 
-  saveRequestInfo = (e: FormEvent) => {
-    console.log(e);
-  }
-
-  setComment = (comment: string | null) => {
-    this.comment = comment;
-  };
-
   getProperty = (propertyName: string, object: any) => {
     if (!object) return null;
     let parts = propertyName.split("."),
@@ -186,7 +194,33 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     this.columnsOptions[e.target.id || ''] = e.target.checked;
   }
 
-  saveRequest = () => {
+  saveRequest = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        Notification.error({
+          message:
+            this.props.intl.formatMessage({
+              id: "management.editor.validationError"
+            })
+        });
+        return;
+      }
+
+      let formData = this.props.form.getFieldsValue(this.fields);
+      formData.requestDate = moment(formData.requstDate).format('YYYY-MM-DD HH:mm:ss.SSS');
+      formData.modifyDate = moment(formData.modifyDate).format('YYYY-MM-DD HH:mm:ss.SSS');
+
+      //console.log(formData)
+
+      restServices.orgStructureService.saveRequest({
+        orgRequestSaveModel: formData as OrgRequestSaveModel
+      }).then(r => {
+        Notification.success({message: this.props.intl.formatMessage({id: "org.request.saved"})});
+        this.props.history.push(OrgStructureRequestManagement.PATH + "/" + r.id);
+      });
+    });
   }
 
   setRowClassName = (record: any) => {
@@ -207,7 +241,7 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     Modal.confirm({
       title: this.props.intl.formatMessage({id: "management.browser.exclude.areYouSure"}, {
         type: this.props.intl.formatMessage({id: "exclude.type." + row.elementType}),
-        name: row.nameRu[0]
+        name: this.locale === 'ru' ? row.nameRu[0] || row.nameRu[1] : row.nameEn[0] || row.nameEn[1]
       }),
       okText: this.props.intl.formatMessage({
         id: "management.browser.exclude.ok"
@@ -218,11 +252,14 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
       onOk: () => {
         restServices.orgStructureService.exclude({
           requestId: this.props.entityId,
-          requestDetailId: row.rdId,
+          requestDetailId: row.rdId || null,
           elementGroupId: row.posGroupId || row.orgGroupId || null,
           elementType: row.elementType
         }).then(() => {
-          Notification.success({message: row.nameRu[0] + ' успешно упразднена!'});
+          Notification.success({
+            message:
+              this.props.intl.formatMessage({id: "org.request.exclude.success." + row.elementType})
+          });
           this.reloadTreeData();
         });
       }
@@ -253,21 +290,18 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
   onSaveOrganization = (rdId: string) => {
     this.reloadTreeData();
     this.showOrgCreateModal = false;
-    Notification.success({message: 'Организация успешно сохранена!'});
+    Notification.success({message: this.props.intl.formatMessage({id: "org.request.organization.saved"})});
   }
 
   onSavePosition = (rdId: string) => {
     this.reloadTreeData();
     this.showPosCreateModal = false;
-    Notification.success({message: 'Позиция успешно сохранена!'});
+    Notification.success({message: this.props.intl.formatMessage({id: "org.request.position.saved"})});
   }
 
   render() {
-    if (this.updated) {
-      return <Redirect to={OrgStructureRequestManagement.PATH}/>;
-    }
-
     const messages = this.props.mainStore!.messages!;
+    const locale = this.locale;
     const {status} = this.dataInstance;
     const changeTypes: EnumValueInfo[] = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.personal.enums.OrgRequestChangeType")[0].values;
 
@@ -275,11 +309,11 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
       <Menu onClick={this.preCreate}>
         <Menu.Item key="org">
           <Icon type="bank"/>
-          Создать организацию
+          {this.props.intl.formatMessage({id: "org.request.org.create"})}
         </Menu.Item>
         <Menu.Item key="pos">
           <Icon type="container"/>
-          Создать позицию
+          {this.props.intl.formatMessage({id: "org.request.pos.create"})}
         </Menu.Item>
       </Menu>
     );
@@ -328,99 +362,100 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
 
     let columns = [
       {
-        title: 'Текущее положение',
+        title: this.props.intl.formatMessage({id: "org.request.filter.3"}),
         group: 'current',
         children: [
           {
-            title: 'Department/Job',
-            dataIndex: 'nameRu[0]'
+            title: this.props.intl.formatMessage({id: "org.request.detail.department"}),
+            dataIndex: locale === 'ru' ? 'nameRu[0]' : 'nameEn[0]'
           },
           {
-            title: 'Тип изменения',
+            title: this.props.intl.formatMessage({id: "org.request.detail.changeType"}),
             dataIndex: 'changeType',
             width: '12%',
+            render: (x: string) => (x !== undefined && x !== null) ? this.props.intl.formatMessage({id: "org.request.detail.changeType." + x}) : undefined
           },
           {
-            title: 'Grade',
+            title: this.props.intl.formatMessage({id: "org.request.detail.grade"}),
             dataIndex: 'grade[0]',
             width: '30%'
           },
           {
-            title: 'Head Count',
+            title: this.props.intl.formatMessage({id: "org.request.detail.hc"}),
             dataIndex: 'headCount[0]'
           },
           {
-            title: 'Base Salary',
+            title: this.props.intl.formatMessage({id: "org.request.detail.bs"}),
             dataIndex: 'baseSalary[0]'
           },
           {
-            title: 'Monthly total payroll (per 1)',
+            title: this.props.intl.formatMessage({id: "org.request.detail.tp1"}),
             dataIndex: 'mtPayrollPer[0]'
           },
           {
-            title: 'Monthly total payroll',
+            title: this.props.intl.formatMessage({id: "org.request.detail.tp"}),
             dataIndex: 'mtPayroll[0]'
           }
         ]
       },
       {
-        title: 'Предлагаемые изменения',
+        title: this.props.intl.formatMessage({id: "org.request.filter.4"}),
         group: 'changes',
         children: [
           {
-            title: 'Department/Job',
-            dataIndex: 'nameRu[1]'
+            title: this.props.intl.formatMessage({id: "org.request.detail.department"}),
+            dataIndex: locale === 'ru' ? 'nameRu[1]' : 'nameEn[1]'
           },
           {
-            title: 'Grade',
+            title: this.props.intl.formatMessage({id: "org.request.detail.grade"}),
             dataIndex: 'grade[1]',
             width: '30%'
           },
           {
-            title: 'Head Count',
+            title: this.props.intl.formatMessage({id: "org.request.detail.hc"}),
             dataIndex: 'headCount[1]'
           },
           {
-            title: 'Base Salary',
+            title: this.props.intl.formatMessage({id: "org.request.detail.bs"}),
             dataIndex: 'baseSalary[1]'
           },
           {
-            title: 'Monthly total payroll (per 1)',
+            title: this.props.intl.formatMessage({id: "org.request.detail.tp1"}),
             dataIndex: 'mtPayrollPer[1]'
           },
           {
-            title: 'Monthly total payroll',
+            title: this.props.intl.formatMessage({id: "org.request.detail.tp"}),
             dataIndex: 'mtPayroll[1]'
           }
         ]
       },
       {
-        title: 'Разница',
+        title: this.props.intl.formatMessage({id: "org.request.filter.5"}),
         group: 'difference',
         children: [
           {
-            title: 'Department/Job',
-            dataIndex: 'nameRu[2]'
+            title: this.props.intl.formatMessage({id: "org.request.detail.department"}),
+            dataIndex: locale === 'ru' ? 'nameRu[2]' : 'nameEn[2]'
           },
           {
-            title: 'Grade',
+            title: this.props.intl.formatMessage({id: "org.request.detail.grade"}),
             dataIndex: 'grade[2]',
             width: '30%'
           },
           {
-            title: 'Head Count',
+            title: this.props.intl.formatMessage({id: "org.request.detail.hc"}),
             dataIndex: 'headCount[2]'
           },
           {
-            title: 'Base Salary',
+            title: this.props.intl.formatMessage({id: "org.request.detail.bs"}),
             dataIndex: 'baseSalary[2]'
           },
           {
-            title: 'Monthly total payroll (per 1)',
+            title: this.props.intl.formatMessage({id: "org.request.detail.tp1"}),
             dataIndex: 'mtPayrollPer[2]'
           },
           {
-            title: 'Monthly total payroll',
+            title: this.props.intl.formatMessage({id: "org.request.detail.tp"}),
             dataIndex: 'mtPayroll[2]'
           }
         ]
@@ -435,7 +470,7 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
       <Page>
         <Card className="narrow-layout" bordered={false}>
           <div className={"large-section section-container mb-0"}>
-            <h3 style={{fontWeight: "bold"}}>Информация о заявке</h3>
+            <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.info"})}</h3>
             <Form layout="vertical" className="compact-form">
               <FormContainer>
                 <Row className={"form-row"}>
@@ -447,34 +482,44 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                       disabled={true}/>
                   </Col>
                   <Col md={24} lg={6}>
-                    <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='company'/>}>
-                      <Input disabled value={this.getProperty('company._instanceName', this.dataInstance.item)}/>
-                    </Form.Item>
-                  </Col>
-                  <Col md={24} lg={6}>
-                    <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='department'/>}>
-                      <Input disabled value={this.getProperty('department._instanceName', this.dataInstance.item)}/>
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row className={"form-row"}>
-                  <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={this.dataInstance.entityName}
-                      propertyName="requestDate"
+                      propertyName="company"
+                      optionsContainer={this.companiesDc}
                       form={this.props.form}
                       disabled={true}/>
                   </Col>
                   <Col md={24} lg={6}>
-                    <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='requestStatus'/>}
-                               labelCol={{span: 12}} colon={true}>
-                      <Input disabled value={this.getProperty('requestStatus._instanceName', this.dataInstance.item)}/>
+                    <ReadonlyField
+                      entityName={this.dataInstance.entityName}
+                      propertyName="department"
+                      optionsContainer={this.organizationGroupsDc}
+                      form={this.props.form}
+                      disabled={true}/>
+                  </Col>
+                </Row>
+                <Row className={"form-row"}>
+                  <Col md={24} lg={6}>
+                    <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='requestDate'/>}
+                               key='requestDate'>
+                      {this.props.form.getFieldDecorator('requestDate')(<DefaultDatePicker disabled/>)}
                     </Form.Item>
                   </Col>
                   <Col md={24} lg={6}>
-                    <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='author'/>}>
-                      <Input disabled value={this.getProperty('author._instanceName', this.dataInstance.item)}/>
-                    </Form.Item>
+                    <ReadonlyField
+                      entityName={this.dataInstance.entityName}
+                      propertyName="requestStatus"
+                      optionsContainer={this.requestStatusDc}
+                      form={this.props.form}
+                      disabled={true}/>
+                  </Col>
+                  <Col md={24} lg={6}>
+                    <ReadonlyField
+                      entityName={this.dataInstance.entityName}
+                      propertyName="author"
+                      optionsContainer={this.authorsDc}
+                      form={this.props.form}
+                      disabled={true}/>
                   </Col>
                 </Row>
               </FormContainer>
@@ -493,65 +538,64 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
             <Row>
               <Col md={24} lg={6}>
                 <div style={{borderRight: '2px solid #e8e8e8', marginRight: '20px', paddingRight: '20px'}}>
-                  <h3 style={{fontWeight: "bold"}}>Фильтр</h3>
+                  <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.filter"})}</h3>
                   <Form layout="vertical" className="compact-form">
-                    <Form.Item label={"Тип изменения"}>
+                    <Form.Item label={this.props.intl.formatMessage({id: "org.request.filter.1"})}>
                       <Select onChange={this.onChangeFilter}
                               defaultActiveFirstOption={true}
                               defaultValue={"all"}
                               filterOption={(input, option) =>
                                 (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
                               }>
-                        <Select.Option key="all">Все</Select.Option>
+                        <Select.Option
+                          key="all">{this.props.intl.formatMessage({id: "org.request.filter.v1"})}</Select.Option>
                         {
                           changeTypes.map((s, i) =>
                             <Select.Option title={s.caption} key={s.id}>{s.caption}</Select.Option>)
                         }
                       </Select>
                     </Form.Item>
-                    <Form.Item label={"Показать"}>
+                    <Form.Item label={this.props.intl.formatMessage({id: "org.request.filter.2"})}>
                       <Select onChange={this.onChangeFilter} defaultActiveFirstOption={true} defaultValue={"all"}>
-                        <Select.Option key="all">Все</Select.Option>
-                        <Select.Option key="changes">Изменения</Select.Option>
+                        <Select.Option
+                          key="all">{this.props.intl.formatMessage({id: "org.request.filter.v1"})}</Select.Option>
+                        <Select.Option
+                          key="changes">{this.props.intl.formatMessage({id: "org.request.filter.v2"})}</Select.Option>
                       </Select>
                     </Form.Item>
                     <Form.Item>
                       <Checkbox onChange={this.onChangeColumnFilter} id={"current"} defaultChecked={true}>
-                        Текущее положение
+                        {this.props.intl.formatMessage({id: "org.request.filter.3"})}
                       </Checkbox>
                     </Form.Item>
                     <Form.Item>
                       <Checkbox onChange={this.onChangeColumnFilter} id={"changes"} defaultChecked={true}>
-                        Предлагаемые изменения
+                        {this.props.intl.formatMessage({id: "org.request.filter.4"})}
                       </Checkbox>
                     </Form.Item>
                     <Form.Item>
                       <Checkbox onChange={this.onChangeColumnFilter} id={"difference"} defaultChecked={true}>
-                        Разница
+                        {this.props.intl.formatMessage({id: "org.request.filter.5"})}
                       </Checkbox>
                     </Form.Item>
                   </Form>
                 </div>
               </Col>
               <Col md={24} lg={12}>
-                <h3 style={{fontWeight: "bold"}}>Текущее положение и причины возникновения изменений</h3>
+                <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.comment.block"})}</h3>
 
                 <div>
-                  <Form onSubmit={this.saveRequestInfo} layout="horizontal" className="compact-form">
+                  <Form layout="horizontal" className="compact-form">
                     <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='modifyDate'/>}
                                key='modifyDate'
                                style={{marginBottom: '12px'}}>
-                      {this.props.form.getFieldDecorator('modifyDate')(<DatePicker/>)}
+                      {this.props.form.getFieldDecorator('modifyDate')(<DefaultDatePicker/>)}
                     </Form.Item>
 
-                    <Form.Item label={"Обоснование для изменения"}>
-                      <TextArea
-                        onChange={event => {
-                          const {value} = event.currentTarget;
-                          this.setComment(value);
-                        }}
-                        placeholder={"Обоснование для изменения"}
-                        rows={4}/>
+                    <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='comment'/>}
+                               key="comment">
+                      {this.props.form.getFieldDecorator('comment')
+                      (<TextArea rows={4}/>)}
                     </Form.Item>
                   </Form>
                 </div>
@@ -565,44 +609,37 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                     <Icon type="check"/>
                     <FormattedMessage id="management.editor.submit"/>
                   </Button>
-                  <Button htmlType="reset" className={"b-btn"}>
-                    <Icon type="close"/>
-                    <FormattedMessage id="management.editor.cancel"/>
-                  </Button>
+                  <Link to={OrgStructureRequestManagement.PATH}>
+                    <Button htmlType="button" type="default">
+                      <Icon type="close"/>
+                      <FormattedMessage id="management.editor.cancel"/>
+                    </Button>
+                  </Link>
                 </div>
               </Col>
             </Row>
           </div>
-
-          <div className={"large-section section-container"}>
-            <div>
-              {buttons}
-            </div>
-            <Table columns={columns}
-                   loading={this.treeLoading}
-                   dataSource={Array.from(this.treeData || '')}
-                   rowKey={(r: OrgRequestRow) => r.rowKey}
-                   className="kzm-tree-table"
-                   indentSize={10}
-                   pagination={false}
-                   size={'small'} bordered={true}
-                   tableLayout={"auto"}
-                   rowClassName={this.setRowClassName}
-                   onRow={(record) => {
-                     return {
-                       onClick: this.onRowClick.bind(this, record)
-                     };
-                   }}/>
-          </div>
-
-          <div style={{textAlign:"center",marginBottom:"20px"}}>
-            <Link to={OrgStructureRequestManagement.PATH}>
-              <Button htmlType="button" type="default">
-                <Icon type="close"/>
-                <FormattedMessage id="close" />
-              </Button>
-            </Link>
-          </div>
+          {this.props.entityId != OrgStructureRequestManagement.NEW_SUBPATH ?
+            <div className={"large-section section-container"}>
+              <div>
+                {buttons}
+              </div>
+              <Table columns={columns}
+                     loading={this.treeLoading}
+                     dataSource={Array.from(this.treeData || '')}
+                     rowKey={(r: OrgRequestRow) => r.rowKey}
+                     className="kzm-tree-table"
+                     indentSize={10}
+                     pagination={false}
+                     size={'small'} bordered={true}
+                     tableLayout={"auto"}
+                     rowClassName={this.setRowClassName}
+                     onRow={(record) => {
+                       return {
+                         onClick: this.onRowClick.bind(this, record)
+                       };
+                     }}/>
+            </div> : null}
         </Card>
 
         {this.showOrgCreateModal ?
@@ -629,11 +666,15 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
   componentDidMount() {
     if (this.props.entityId !== OrgStructureRequestManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
-    } else {
-      this.dataInstance.setItem(new OrgStructureRequest());
-    }
 
-    this.reloadTreeData();
+      this.reloadTreeData();
+    } else {
+      restServices.orgStructureService.initialCreate()
+        .then(data => {
+          delete data.id;
+          this.dataInstance.setItem(data);
+        });
+    }
 
     this.reactionDisposer = reaction(
       () => {
@@ -664,5 +705,5 @@ export default injectIntl(
         });
       });
     }
-  })(OrgStructureRequestEditComponent)
+  })(withRouter(OrgStructureRequestEditComponent))
 );

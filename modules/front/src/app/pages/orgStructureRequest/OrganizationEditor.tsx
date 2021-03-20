@@ -1,4 +1,4 @@
-import {injectMainStore, instance, MainStoreInjected, MultilineText} from "@cuba-platform/react";
+import {injectMainStore, instance, MainStoreInjected, Msg, MultilineText} from "@cuba-platform/react";
 import {inject, observer} from "mobx-react";
 import React from "react";
 import {IReactionDisposer, observable, toJS} from "mobx";
@@ -12,6 +12,7 @@ import {FormComponentProps} from "antd/lib/form";
 import {OrgRequestRow} from "./OrgStructureRequestEdit";
 import {restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
+import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
 
 export class OrganizationSaveModel {
   rId: string;
@@ -54,6 +55,8 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
 
   reactionDisposer: IReactionDisposer;
 
+  locale = this.props.mainStore!.locale!;
+
   fields = ["id", "rId", "parentId", "organizationGroupId", "nameRu", "nameEn"];
 
   save = (e: React.MouseEvent) => {
@@ -81,15 +84,14 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
       let pId = formData.parentId;
       if (pId !== undefined && pId !== null) {
         let foundOrg = this.organizations.find(o => o.id === pId);
-        console.log('foundOrg: ', foundOrg)
-
+        //console.log('foundOrg: ', foundOrg)
         if (foundOrg !== undefined) {
           orgSaveModel.parentOrganizationGroupId = foundOrg.orgGroupId;
           orgSaveModel.parentRdId = foundOrg.rdId;
         }
       }
 
-      console.log('orgSaveModel: ', orgSaveModel)
+      //console.log('orgSaveModel: ', orgSaveModel)
 
       restServices.orgStructureService.saveOrganization({
         organizationRequestSaveModel: orgSaveModel
@@ -131,7 +133,7 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
           id: v.rdId || v.orgGroupId,
           rdId: v.rdId,
           orgGroupId: v.orgGroupId,
-          name: v.nameRu[0]
+          name: (this.locale === 'ru') ? v.nameRu[0] : v.nameEn[0]
         });
         if (v.children && v.children.length > 0) {
           this.fillOrganizations(v.children);
@@ -142,10 +144,11 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
 
   render() {
     const {getFieldDecorator} = this.props.form;
+    const messages = this.mainStore.messages!;
 
     return (
       <Modal
-        title="Редактирование организации"
+        title={this.props.intl.formatMessage({id: "org.request.org.edit"})}
         visible={true}
         onOk={this.save}
         onCancel={this.close}>
@@ -155,11 +158,12 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
           {getFieldDecorator('rId')(<Input type="hidden"/>)}
 
           {this.props.row!.root && !this.props.isNew ? null :
-            <Form.Item label="Родительская организация" key="parentId">
+            <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='parentOrganizationGroup'/>}
+                       key="parentId">
               {getFieldDecorator('parentId', {
                 rules: [{
                   required: true,
-                  message: "Заполните поле \"Родительская организация\""
+                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'parentOrganizationGroup']})
                 }]
               })(
                 <Select style={{width: '100%'}}>
@@ -171,21 +175,23 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
               )}
             </Form.Item>}
 
-          <Form.Item label="Наименование на рус." key="nameRu">
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='organizationNameRu'/>}
+                     key="nameRu">
             {getFieldDecorator('nameRu', {
               rules: [{
                 required: true,
-                message: "Заполните поле \"Наименование на рус.\""
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'organizationNameRu']})
               }]
             })(
               <Input/>
             )}
           </Form.Item>
-          <Form.Item label="Наименование на англ." key="nameEn">
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='organizationNameEn'/>}
+                     key="nameEn">
             {getFieldDecorator('nameEn', {
               rules: [{
                 required: true,
-                message: "Заполните поле \"Наименование на англ.\""
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'organizationNameEn']})
               }]
             })(
               <Input/>
@@ -205,14 +211,11 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
   }
 
   componentDidMount() {
-    console.log('componentDidMount:', this.props.row);
+    let row = this.props.row, isNew = this.props.isNew, model = {};
 
-    let row = this.props.row;
     this.fillOrganizations(this.props.treeData)
 
-    console.log('organizations: ', this.organizations)
-
-    let model = {}, isNew = this.props.isNew;
+    //console.log('organizations: ', this.organizations)
 
     if (row !== undefined && row !== null) {
       model['rId'] = this.props.requestId;

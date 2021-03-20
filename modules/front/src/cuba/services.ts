@@ -17,7 +17,11 @@ import {AnsweredTest, TestModel} from "../app/components/Test/Test";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
-import {OrgRequestGrade, OrgRequestRow} from "../app/pages/orgStructureRequest/OrgStructureRequestEdit";
+import {
+  OrgRequestGrade,
+  OrgRequestRow,
+  OrgRequestSaveModel
+} from "../app/pages/orgStructureRequest/OrgStructureRequestEdit";
 import {OrganizationSaveModel} from "../app/pages/orgStructureRequest/OrganizationEditor";
 import {PositionSaveModel} from "../app/pages/orgStructureRequest/PositionEditor";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
@@ -455,6 +459,13 @@ export const restServices = {
       return getCubaREST()!.invokeService<string>(
         "tsadv_OrgStructureRequestService",
         "getMergedOrgStructure",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    saveRequest: (param: { orgRequestSaveModel: OrgRequestSaveModel }): Promise<OrgStructureRequest> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "saveRequest",
         {...param}
       ).then(r => JSON.parse(r));
     },
