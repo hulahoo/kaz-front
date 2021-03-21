@@ -46,7 +46,7 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
   render() {
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
-        ? this.props.formData.outcomes.map(value => <OutcomeButtonModal outcome={value}
+        ? this.props.formData.outcomes.reverse().map(value => <OutcomeButtonModal outcome={value}
                                                                         key={value.id}
                                                                         form={this.props.form}
                                                                         validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}

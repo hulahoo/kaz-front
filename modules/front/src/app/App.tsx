@@ -49,9 +49,9 @@ import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagemen
 @observer
 class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
   render() {
-    const {initialized, locale, loginRequired, metadata} = this.props.mainStore!;
+    const {initialized, locale, loginRequired, metadata, messages} = this.props.mainStore!;
 
-    if (!initialized || !locale || !this.props.rootStore!.userInfo.initialized) {
+    if (!initialized || !locale || !this.props.rootStore!.userInfo.initialized || !messages) {
       return <CenteredLoader/>;
     }
 
