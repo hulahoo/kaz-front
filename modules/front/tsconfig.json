@@ -27,7 +27,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "strict": false,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "noFallthroughCasesInSwitch": true
   },
   "exclude": [
     "node_modules",

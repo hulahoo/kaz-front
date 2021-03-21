@@ -310,5 +310,8 @@
   "password.change": "Change password",
   "password.change.error": "Error change password",
   "password.change.success": "Password successfully changed",
-  "save": "Save"
+  "save": "Save",
+  "assignedGoal.assessment.validation": "Assessment have to be between 0 and 100",
+  "result": "Result",
+  "assignedPerformancePlan.extraPoint.validation": "Extra point have to be between 1 and 8"
 }

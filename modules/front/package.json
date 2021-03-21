@@ -12,6 +12,7 @@
     "moment": "^2.23.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-indiana-drag-scroll": "^1.8.1",
     "react-intl": "^3.3.2",
     "react-resizable": "latest",
     "react-router-dom": "^4.3.1",

@@ -1,39 +1,35 @@
 import * as React from "react";
 import {observer} from "mobx-react";
 
-import {action, IReactionDisposer, observable, reaction, runInAction} from "mobx";
+import {action, IReactionDisposer, observable, reaction, runInAction, toJS} from "mobx";
 
-import {Modal, Button, Table, Icon} from "antd";
+import {Button, Form, Icon, InputNumber, message, Modal, Table} from "antd";
 
-import {
-  getCubaREST,
-  injectMainStore,
-  MainStoreInjected,
-  Msg
-} from "@cuba-platform/react";
+import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
 import Column from "antd/es/table/Column";
 import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 import {restQueries} from "../../../../cuba/queries";
 import {Link} from "react-router-dom";
+import {queryInstance} from "../../../util/QueryDataInstanceStore";
+import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
+import Notification from "../../../util/Notification/Notification";
 import {RouteComponentProps, withRouter} from "react-router";
-import {PersonGroupExt} from "../../../../cuba/entities/base/base$PersonGroupExt";
-import {JobGroup} from "../../../../cuba/entities/base/tsadv$JobGroup";
-import {OrganizationGroupExt} from "../../../../cuba/entities/base/base$OrganizationGroupExt";
-import {OrganizationExt} from "../../../../cuba/entities/base/base$OrganizationExt";
-import moment from "moment";
+import {injectIntl, FormattedMessage, WrappedComponentProps} from "react-intl";
 
 type Props = {
   assignedPerformancePlanId: string;
+  approverHrRoleCode?: string;
   setTotalWeight?: (totalWeight: number) => void
+  setTotalResult?: (totalResult: number) => void
   readonly: boolean;
+  parentForm: any;
+  setAssignedPerformanceState?: (state: {
+    update: () => void;
+    validate: () => boolean;
+  }) => void;
 }
 
 @injectMainStore
@@ -42,6 +38,12 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
   @observable
   dataCollection: any[] = [];
+
+  kpiDataInstance = queryInstance<AssignedPerformancePlan>(
+    AssignedPerformancePlan.NAME,
+    "kpiEditPage",
+    {appId: this.props.assignedPerformancePlanId}
+  );
 
   fields = [
     "category",
@@ -58,6 +60,13 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   @observable selectedRowKey: string | undefined;
 
   reactionDisposer: IReactionDisposer;
+
+  form = this.props.parentForm;
+
+  @observable messages = this.props.mainStore!.messages!;
+
+  isManager = (): boolean => this.props.approverHrRoleCode === 'MANAGER';
+  isInitiator = (): boolean => this.props.approverHrRoleCode === 'INITIATOR';
 
   showDeletionDialog = (e: SerializedEntity<AssignedGoal>) => {
     Modal.confirm({
@@ -91,11 +100,125 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
       }));
   };
 
+  recalcTotalResult = () => {
+    if (this.props.setTotalResult) {
+      if (this.dataCollection.length > 0) {
+
+        this.props.setTotalResult(this.dataCollection
+          .map((value: AssignedGoal) => (value.weight || 0) * ((this.isInitiator() ? undefined : value.managerAssessment) || value.assessment || 0) / 100)
+          .reduce((i1, i2) => i1 + i2, 0));
+
+      } else this.props.setTotalResult(0);
+    }
+  }
+
+  assessmentValidator = (rule: any, value: any, callback: any) => {
+    if (value && (value < 0 || value > 100)) {
+      callback(this.props.intl.formatMessage({id: "assignedGoal.assessment.validation"}));
+    }
+    callback();
+  };
+
+  managerAssessmentColumnRender = (text: string, record: any) => {
+    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    return (
+      <div>
+        <Form.Item>
+          {
+            this.form.getFieldDecorator('managerAssessment/' + record.id, {
+              initialValue: record.managerAssessment,
+              rules: [{
+                validator: this.assessmentValidator
+              }]
+            })(
+              <InputNumber disabled={!this.isManager() || !isSecondStep}
+                           onChange={value => {
+                             record.managerAssessment = value;
+                             this.recalcTotalResult();
+                           }}/>
+            )}
+        </Form.Item>
+      </div>
+    )
+  }
+
+  assessmentColumnRender = (text: string, record: any) => {
+    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    return (
+      <div>
+        <Form.Item>
+          {
+            this.form.getFieldDecorator('assessment/' + record.id, {
+              initialValue: record.assessment,
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.messages[AssignedGoal.NAME + '.' + 'assessment']})
+              }, {
+                validator: this.assessmentValidator
+              }]
+            })(
+              <InputNumber disabled={!this.isInitiator() || !isSecondStep}
+                           onChange={value => {
+                             record.assessment = value;
+                             this.recalcTotalResult();
+                           }}/>
+            )}
+        </Form.Item>
+      </div>
+    )
+  }
+
+  validate = (): boolean => {
+    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    let isValidatedSuccess = true;
+    if (isSecondStep)
+      this.form.validateFields((err: any, values: any) => {
+        isValidatedSuccess = !err;
+        if (err) {
+          message.error(
+            this.props.intl.formatMessage({
+              id: "management.editor.validationError"
+            })
+          );
+        }
+      });
+    return isValidatedSuccess;
+  }
+
+  update = () => {
+    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    if (isSecondStep && this.dataCollection)
+      this.dataCollection.forEach(value => {
+        getCubaREST()!.commitEntity(AssignedGoal.NAME, toJS(value))
+          .catch(reason => {
+            Notification.error({
+              message: this.props.intl.formatMessage({id: "management.editor.error"})
+            });
+          });
+      })
+  }
 
   render() {
+    const isFirstStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'DRAFT';
+    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    const assessmentColumn = !isFirstStep
+      ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='assessment'/>}
+                dataIndex="assessment"
+                key="assessment"
+                render={this.assessmentColumnRender}/>
+      : null;
+
+    const managerAssessmentColumn = !isFirstStep && (this.props.approverHrRoleCode && this.props.approverHrRoleCode !== 'INITIATOR' || !isSecondStep)
+      ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='managerAssessment'/>}
+                dataIndex="managerAssessment"
+                key="managerAssessment"
+                render={this.managerAssessmentColumnRender}/>
+      : null;
+
     return (
-      <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
-             size="default" bordered={false} rowKey="id">
+      <Table
+        dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
+        size="default" bordered={false} rowKey="id">
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
                 dataIndex="category.langValue1"
                 key="category"
@@ -147,6 +270,11 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                   }
                   return a.weight - b.weight;
                 }}/>
+
+        {assessmentColumn}
+
+        {managerAssessmentColumn}
+
         <Column
           title=""
           key="action"
@@ -166,25 +294,34 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
   componentDidMount(): void {
     this.load();
+    this.kpiDataInstance.load();
 
     this.reactionDisposer = reaction(
       () => this.dataCollection,
       (item) => {
         if (this.props.setTotalWeight) {
           if (this.dataCollection.length > 0) {
-            this.props.setTotalWeight(this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0));
+            const reduce = this.dataCollection.map((i: AssignedGoal) => i.weight ? i.weight : 0).reduce((i1, i2) => i1 + i2, 0);
+            this.props.setTotalWeight(reduce);
           } else {
             this.props.setTotalWeight(0);
           }
         }
+        this.recalcTotalResult();
       }
     );
+
+    if (this.props.setAssignedPerformanceState)
+      this.props.setAssignedPerformanceState({
+        update: this.update,
+        validate: this.validate
+      })
   }
 
   load = () => {
     restQueries.kpiAssignedGoals(this.props.assignedPerformancePlanId).then(ag => {
       runInAction(() => {
-        this.dataCollection = ag
+        this.dataCollection = ag;
       })
     });
   };

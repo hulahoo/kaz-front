@@ -25,6 +25,7 @@ export class PositionSaveModel {
 
 export interface EditorProps {
   row: OrgRequestRow | null,
+  requestId: string,
   treeData: OrgRequestRow[],
   isNew: boolean,
   closeModal: () => void,
@@ -244,7 +245,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
     let model = {}, isNew = this.props.isNew;
 
     if (row !== undefined && row !== null) {
-      model['rId'] = row.rId;
+      model['rId'] = this.props.requestId;
 
       if (isNew) {
         model['parentId'] = row.rdId || row.orgGroupId;

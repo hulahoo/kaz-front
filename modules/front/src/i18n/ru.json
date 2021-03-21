@@ -306,5 +306,8 @@
   "password.change.success": "Пароль успешно изменен",
   "save": "Сохранить",
   "comment.rate.error.required": "Необходимо указать оценку",
-  "comment.error.required": "Необходимо оставить текст отзыва"
+  "comment.error.required": "Необходимо оставить текст отзыва",
+  "assignedGoal.assessment.validation": "Оценка должна быть от 0 до 100",
+  "result": "Результат",
+  "assignedPerformancePlan.extraPoint.validation": "Дополнительный балл должна быть от 1 до 8"
 }

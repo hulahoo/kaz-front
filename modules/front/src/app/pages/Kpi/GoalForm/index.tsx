@@ -6,7 +6,14 @@ import AssignedGoalList from "../../AssignedGoals/IndividualGoal/AssignedGoalLis
 type Props = {
   assignedPerformancePlanId: string;
   setTotalWeight?: (totalWeight: number) => void
+  setTotalResult?: (totalResult: number) => void
   readonly: boolean;
+  approverHrRoleCode?: string;
+  parentForm: any;
+  setAssignedPerformanceState?: (state: {
+    update: () => void;
+    validate: () => boolean;
+  }) => void;
 }
 
 class GoalForm extends React.Component<Props & WrappedComponentProps> {
@@ -15,9 +22,21 @@ class GoalForm extends React.Component<Props & WrappedComponentProps> {
     const {TabPane} = Tabs;
 
     return (
-      <Tabs defaultActiveKey="1">
+
+      <Tabs defaultActiveKey="1" key={'tabs'}>
         <TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="1">
-          <AssignedGoalList assignedPerformancePlanId={this.props.assignedPerformancePlanId} setTotalWeight={this.props.setTotalWeight} readonly={this.props.readonly}/>
+          <div>
+            <AssignedGoalList
+              key='AssignedGoalList'
+              setAssignedPerformanceState={this.props.setAssignedPerformanceState}
+              assignedPerformancePlanId={this.props.assignedPerformancePlanId}
+              setTotalWeight={this.props.setTotalWeight}
+              setTotalResult={this.props.setTotalResult}
+              parentForm={this.props.parentForm}
+              approverHrRoleCode={this.props.approverHrRoleCode}
+              readonly={this.props.readonly}/>
+          </div>
+
         </TabPane>
         {/*<TabPane tab={this.props.intl.formatMessage({id: "kpi.edit.tabs.ratingForm"})} key="3">*/}
         {/*  <div>*/}
@@ -28,6 +47,7 @@ class GoalForm extends React.Component<Props & WrappedComponentProps> {
         {/*  </div>*/}
         {/*</TabPane>*/}
       </Tabs>
+
     );
   }
 }
