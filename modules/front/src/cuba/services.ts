@@ -93,7 +93,7 @@ export const restServices = {
     }
   },
   learningService: {
-    learningHistory: (params: { personGroupId: string }): Promise<Course[]> => {
+    learningHistory: (params: { personGroupId: string }): Promise<any[]> => {
       return getCubaREST()!.invokeService(
         "tsadv_LearningService",
         "learningHistory",

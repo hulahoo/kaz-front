@@ -181,7 +181,6 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           }]
         })
           .then(homeworkCount => {
-            console.log(homeworkCount.count);
             this.isHomeworkDone = homeworkCount.count >= value.length;
           })
       }
