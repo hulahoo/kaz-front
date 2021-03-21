@@ -13,15 +13,23 @@ import ImageLogo from "../../components/ImageLogo";
 import {restServices} from "../../../cuba/services";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {serviceCollection} from "../../util/ServiceDataCollectionStore";
+import Notification from "../../util/Notification/Notification";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 
 @observer
-class CourseList<T> extends React.Component {
+class CourseList<T> extends React.Component<WrappedComponentProps> {
 
   dataCollection = serviceCollection(restServices.courseService.allCourses);
 
   onSearch = (value: string) => {
     if (value) {
       restServices.courseService.searchCourses({courseName: value}).then((foundCategoryWithCourses: Array<SerializedEntity<DicCategory>>) => {
+        if (foundCategoryWithCourses.length === 0) {
+          Notification.info({
+            message: this.props.intl.formatMessage({id: "courses.search.noFound"})
+          });
+          return;
+        }
         runInAction(() => {
           this.dataCollection.items = foundCategoryWithCourses;
         })
@@ -78,4 +86,4 @@ class CourseList<T> extends React.Component {
   }
 }
 
-export default CourseList;
+export default injectIntl(CourseList);

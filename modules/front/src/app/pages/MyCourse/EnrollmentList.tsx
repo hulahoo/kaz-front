@@ -16,6 +16,7 @@ import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 import Section from "../../hoc/Section";
 import {CourseManagement} from "../Course/CourseManagement";
+import Notification from "../../util/Notification/Notification";
 
 @inject("rootStore")
 @observer
@@ -33,6 +34,12 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
         courseName: value,
         userId: this.props.rootStore!.userInfo.personGroupId!
       }).then(response => {
+        if (response.length === 0) {
+          Notification.info({
+            message: this.props.intl.formatMessage({id: "courses.search.noFound"})
+          });
+          return;
+        }
         runInAction(() => {
           this.dataCollection = response
         })

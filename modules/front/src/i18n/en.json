@@ -318,5 +318,6 @@
   "test.time": "Time",
   "test.modal.finish": "Do you really want to complete the test?",
   "nextQuestion": "Next",
-  "prevQuestion": "Prev"
+  "prevQuestion": "Prev",
+  "courses.search.noFound": "Courses not found"
 }
