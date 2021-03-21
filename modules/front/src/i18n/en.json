@@ -313,5 +313,10 @@
   "save": "Save",
   "assignedGoal.assessment.validation": "Assessment have to be between 0 and 100",
   "result": "Result",
-  "assignedPerformancePlan.extraPoint.validation": "Extra point have to be between 1 and 8"
+  "assignedPerformancePlan.extraPoint.validation": "Extra point have to be between 1 and 8",
+  "test.finished.result": "You answered {score} out of {maxScore} questions correctly",
+  "test.time": "Time",
+  "test.modal.finish": "Do you really want to complete the test?",
+  "nextQuestion": "Next",
+  "prevQuestion": "Prev"
 }

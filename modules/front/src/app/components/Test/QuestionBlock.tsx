@@ -4,6 +4,7 @@ import {Icon} from "antd";
 import {AnsweredQuestion, TestSectionModel} from "./Test";
 import {action, observable} from "mobx";
 import {observer} from "mobx-react";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 
 type Props = {
   testSections: TestSectionModel[]
@@ -11,7 +12,7 @@ type Props = {
 }
 
 @observer
-class QuestionBlock extends Component<Props> {
+class QuestionBlock extends Component<Props & WrappedComponentProps> {
 
   @observable
   questionIndex: number = 0;
@@ -56,12 +57,12 @@ class QuestionBlock extends Component<Props> {
                 ? <span/>
                 : <span className="control" onClick={this.setQuestionIndex.bind(null, (this.questionIndex - 1))}>
                               <Icon type="arrow-left"/>
-                Назад
+                  {this.props.intl.formatMessage({id: "prevQuestion"})}
               </span>}
               {this.questionIndex === (currentTestSection.questionsAndAnswers.length - 1) && this.testSectionIndex === (this.props.testSections.length - 1)
                 ? <span/>
                 : <span className="control" onClick={this.setQuestionIndex.bind(null, (this.questionIndex + 1))}>
-                Далее
+                  {this.props.intl.formatMessage({id: "nextQuestion"})}
                 <Icon type="arrow-right"/>
                 </span>}
             </div>
@@ -72,4 +73,4 @@ class QuestionBlock extends Component<Props> {
   }
 }
 
-export default QuestionBlock;
+export default injectIntl(QuestionBlock);

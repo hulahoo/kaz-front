@@ -309,5 +309,9 @@
   "comment.error.required": "Необходимо оставить текст отзыва",
   "assignedGoal.assessment.validation": "Оценка должна быть от 0 до 100",
   "result": "Результат",
-  "assignedPerformancePlan.extraPoint.validation": "Дополнительный балл должна быть от 1 до 8"
+  "assignedPerformancePlan.extraPoint.validation": "Дополнительный балл должна быть от 1 до 8",
+  "test.finished.result": "Вы ответили правильно на {score} вопросов из {maxScore}",
+  "test.modal.finish": "Вы действительно хотите завершить тест",
+  "nextQuestion": "Далее",
+  "prevQuestion": "Назад"
 }
