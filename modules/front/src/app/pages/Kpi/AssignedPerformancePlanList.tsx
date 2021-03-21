@@ -87,8 +87,8 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
               </Link>
             }}/>
             <Column title={this.props.intl.formatMessage({id: "assessmentPeriod"})}
-                    dataIndex={"endDate"}
-                    key={"endDate"} render={(text, record, index) => {
+                    dataIndex={"startDate"}
+                    key={"startDate"} render={(text, record, index) => {
               return (React.createElement("div", null, moment(text).format("YYYY")));
             }}/>
           </Table>
