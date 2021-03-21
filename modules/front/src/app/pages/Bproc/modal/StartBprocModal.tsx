@@ -63,7 +63,6 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   });
 
   showModalOrMessage = () => {
-    debugger;
     if (this.bprocActorMessage) {
       Notification.error({
         message: this.bprocActorMessage
@@ -191,7 +190,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   deleteRow = (row: SerializedEntity<NotPersisitBprocActors>) => {
-    this.items = this.items.filter(r => r.id !== row.id);
+    this.items = this.items.filter(r => r.users![0].id !== row.users![0].id);
   };
 
   render() {
@@ -264,6 +263,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
               <Column
                 key="action"
                 render={(text, record: SerializedEntity<NotPersisitBprocActors>) => {
+                  console.log(record);
                   return record.isSystemRecord ? null : <Button type="link"
                                                                 style={{padding: 0}}
                                                                 onClick={() => this.showDeletionDialog(record)}>
