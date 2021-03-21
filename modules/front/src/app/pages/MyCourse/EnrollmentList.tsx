@@ -49,7 +49,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
       <Page pageName={this.props.intl.formatMessage({id: "menu.my-courses"})}>
         <Section size="large" visible={false}>
           <Spin spinning={this.status === 'LOADING'}>
-            <SearchInput onSearch={this.onSearch}/>
+            <SearchInput onSearch={this.onSearch} />
             <Tabs>
               {this.status === 'DONE' ? this.dataCollection.map(category => <TabPane tab={category.langValue1}
                                                                                      key={category.id}>

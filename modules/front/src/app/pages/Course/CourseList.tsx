@@ -12,11 +12,12 @@ import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 import {restServices} from "../../../cuba/services";
 import {SerializedEntity} from "@cuba-platform/rest";
+import {serviceCollection} from "../../util/ServiceDataCollectionStore";
 
 @observer
 class CourseList<T> extends React.Component {
 
-  dataCollection = collection<DicCategory>(DicCategory.NAME, {view: "category-courses"});
+  dataCollection = serviceCollection(restServices.courseService.allCourses);
 
   onSearch = (value: string) => {
     if (value) {
@@ -43,7 +44,7 @@ class CourseList<T> extends React.Component {
             {status === 'DONE' ? items.map(category => <TabPane tab={category.langValue1} key={category.id}>
               <div className={"courses-cards-wrapper"}>
                 <div className={"courses-cards"}>
-                  {category.courses!.map(course => <Link to={"/course/" + course.id}><PanelCard key={course.id}
+                  {category.courses!.map((course: any) => <Link to={"/course/" + course.id}><PanelCard key={course.id}
                                                                                                 loading={false} {...course}
                                                                                                 name={course.name!}
                                                                                                 header={(<>
