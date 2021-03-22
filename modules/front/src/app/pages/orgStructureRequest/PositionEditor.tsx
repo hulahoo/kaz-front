@@ -1,4 +1,4 @@
-import {injectMainStore, MainStoreInjected, MultilineText} from "@cuba-platform/react";
+import {injectMainStore, MainStoreInjected, Msg, MultilineText} from "@cuba-platform/react";
 import {inject, observer} from "mobx-react";
 import React from "react";
 import {IReactionDisposer, observable, toJS} from "mobx";
@@ -10,6 +10,7 @@ import {FormComponentProps} from "antd/lib/form";
 import {OrgRequestGrade, OrgRequestRow} from "./OrgStructureRequestEdit";
 import {restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
+import {OrgStructureRequestDetail} from "../../../cuba/entities/base/tsadv_OrgStructureRequestDetail";
 
 export class PositionSaveModel {
   rId: string;
@@ -54,6 +55,8 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
 
   fields = ["id", "rId", "gradeGroupId", "positionGroupId", "parentId", "nameRu", "nameEn", "headCount"];
 
+  locale = this.props.mainStore!.locale!;
+
   save = (e: React.MouseEvent) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -67,7 +70,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       }
 
       let formData = this.props.form.getFieldsValue(this.fields);
-      console.log(formData);
+      //console.log(formData);
 
       let posSaveModel = new PositionSaveModel();
       posSaveModel.rId = formData.rId;
@@ -81,7 +84,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       let pId = formData.parentId;
       if (pId !== undefined && pId !== null) {
         let foundOrg = this.organizations.find(o => o.id === pId);
-        console.log('foundOrg: ', foundOrg)
+        //console.log('foundOrg: ', foundOrg)
 
         if (foundOrg !== undefined) {
           posSaveModel.parentOrganizationGroupId = foundOrg.orgGroupId;
@@ -89,7 +92,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
         }
       }
 
-      console.log('posSaveModel: ', posSaveModel)
+      //console.log('posSaveModel: ', posSaveModel)
 
       restServices.orgStructureService.savePosition({
         positionRequestSaveModel: posSaveModel
@@ -131,7 +134,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
           id: v.rdId || v.orgGroupId,
           rdId: v.rdId,
           orgGroupId: v.orgGroupId,
-          name: v.nameRu[0]
+          name: (this.locale === 'ru') ? v.nameRu[0] : v.nameEn[0]
         });
         if (v.children && v.children.length > 0) {
           this.fillOrganizations(v.children);
@@ -148,9 +151,11 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
 
   render() {
     const {getFieldDecorator} = this.props.form;
+    const messages = this.mainStore.messages!;
+
     return (
       <Modal
-        title="Редактирование позиции"
+        title={this.props.intl.formatMessage({id: "org.request.pos.edit"})}
         visible={true}
         onOk={this.save}
         onCancel={this.close}>
@@ -159,11 +164,12 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
           {getFieldDecorator('rId')(<Input type="hidden"/>)}
           {getFieldDecorator('positionGroupId')(<Input type="hidden"/>)}
 
-          <Form.Item label="Родительская организация" key="parentId">
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='parentOrganizationGroup'/>}
+                     key="parentId">
             {getFieldDecorator('parentId', {
               rules: [{
                 required: true,
-                message: "Заполните поле \"Родительская организация\""
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'parentOrganizationGroup']})
               }]
             })(
               <Select style={{width: '100%'}}>
@@ -174,31 +180,34 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
               </Select>
             )}
           </Form.Item>
-          <Form.Item label="Наименование на рус." key="nameRu">
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='positionNameRu'/>}
+                     key="nameRu">
             {getFieldDecorator('nameRu', {
               rules: [{
                 required: true,
-                message: "Заполните поле \"Наименование на рус.\""
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'positionNameRu']})
               }]
             })(
               <Input/>
             )}
           </Form.Item>
-          <Form.Item label="Наименование на англ." key="nameEn">
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='positionNameEn'/>}
+                     key="nameEn">
             {getFieldDecorator('nameEn', {
               rules: [{
                 required: true,
-                message: "Заполните поле \"Наименование на англ.\""
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'positionNameEn']})
               }]
             })(
               <Input/>
             )}
           </Form.Item>
-          <Form.Item label="Грейд" key="gradeGroupId">
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='gradeGroup'/>}
+                     key="gradeGroupId">
             {getFieldDecorator('gradeGroupId', {
               rules: [{
                 required: true,
-                message: "Заполните поле \"Грейд\""
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'gradeGroup']})
               }]
             })(
               <Select style={{width: '100%'}}>
@@ -209,11 +218,12 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
               </Select>
             )}
           </Form.Item>
-          <Form.Item label="Численность" key="headCount">
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='headCount'/>}
+                     key="headCount">
             {getFieldDecorator('headCount', {
               rules: [{
                 required: true,
-                message: "Заполните поле \"Численность\""
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'headCount']})
               }]
             })(
               <InputNumber/>
@@ -233,22 +243,20 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
   }
 
   componentDidMount() {
-    console.log('componentDidMount:', this.props.row);
+    let row = this.props.row, isNew = this.props.isNew, model = {};
 
-    let row = this.props.row;
     this.fillOrganizations(this.props.treeData)
     this.fillGrades();
 
-    console.log('organizations: ', this.organizations)
-    console.log('grades: ', this.grades)
-
-    let model = {}, isNew = this.props.isNew;
+    //console.log(row);
+    //console.log('organizations: ', this.organizations)
+    //console.log('grades: ', this.grades)
 
     if (row !== undefined && row !== null) {
       model['rId'] = this.props.requestId;
 
       if (isNew) {
-        model['parentId'] = row.rdId || row.orgGroupId;
+        model['parentId'] = row.elementType === 1 ? (row.rdId || row.orgGroupId) : (row.pRdId || row.orgGroupId);
       } else {
         model['id'] = row.rdId;
         model['nameRu'] = row.nameRu[1];

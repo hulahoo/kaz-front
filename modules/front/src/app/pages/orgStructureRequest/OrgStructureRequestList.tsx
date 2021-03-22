@@ -1,17 +1,16 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {Link, RouteComponentProps} from "react-router-dom";
+import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Button, Col, Modal, Row, Spin, Table} from "antd";
+import {Button, Col, Icon, Modal, Row, Spin, Table} from "antd";
 
 import {collection, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {OrgStructureRequest} from "../../../cuba/entities/base/tsadv_OrgStructureRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import {restServices} from "../../../cuba/services";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import Column from "antd/es/table/Column";
@@ -19,19 +18,26 @@ import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
 import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
-import {withRouter} from "react-router";
+import {RootStoreProp} from "../../store";
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class OrgStructureRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RouteComponentProps> {
+class OrgStructureRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   @observable selectedRowKey: string | undefined;
 
   dataCollection = collection<OrgStructureRequest>(
     OrgStructureRequest.NAME, {
       view: "orgStructureRequest-edit",
-      sort: "requestNumber"
+      sort: "requestNumber",
+      filter: {
+        conditions: [{
+          property: "author.id",
+          operator: "=",
+          value: this.props.rootStore!.userInfo.personGroupId!
+        }]
+      }
     }
   );
 
@@ -41,31 +47,23 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
     rowId: null
   }
 
-  preCreate = (e: React.MouseEvent) => {
-    e.preventDefault();
-    restServices.orgStructureService.initialCreate()
-      .then(data => {
-        this.props.history!.push(OrgStructureRequestManagement.PATH + "/" + data.id);
-      });
-  };
-
   setRowClassName = (record: OrgStructureRequest) => {
     return record.id === this.state.rowId ? 'ant-table-row-selected' : '';
   }
 
   render() {
     const buttons = [
-      <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        type="primary"
-        key="create"
-        icon="plus"
-        onClick={this.preCreate}>
-          <span>
-            <FormattedMessage id="management.browser.create"/>
-          </span>
-      </Button>,
+      <Link
+        to={OrgStructureRequestManagement.PATH + "/" + OrgStructureRequestManagement.NEW_SUBPATH}
+        key="create">
+        <Button
+          htmlType="button"
+          style={{margin: "0 12px 12px 0"}}
+          type="primary">
+          <Icon type="plus"/>
+          <FormattedMessage id="management.browser.create"/>
+        </Button>
+      </Link>,
       <Link
         to={OrgStructureRequestManagement.PATH + "/" + this.state.rowId}
         key="edit">
@@ -74,6 +72,7 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
           style={{margin: "0 12px 12px 0"}}
           disabled={!this.state.rowId}
           type="default">
+          <Icon type="edit"/>
           <FormattedMessage id="management.browser.edit"/>
         </Button>
       </Link>,
@@ -84,6 +83,7 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
         onClick={this.deleteSelectedRow}
         key="remove"
         type="default">
+        <Icon type="delete"/>
         <FormattedMessage id="management.browser.remove"/>
       </Button>
     ];
@@ -93,7 +93,7 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
         <Section size={"large"}>
           <Spin spinning={this.dataCollection.status === 'LOADING'}>
             <Row style={{"margin": '10px 0'}}>
-              <Col span={8}>
+              <Col span={24}>
                 {buttons}
               </Col>
             </Row>
@@ -180,6 +180,6 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
   };
 }
 
-const OrgStructureRequestList = injectIntl(withRouter(OrgStructureRequestListComponent));
+const OrgStructureRequestList = injectIntl(OrgStructureRequestListComponent);
 
 export default OrgStructureRequestList;
