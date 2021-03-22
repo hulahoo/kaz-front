@@ -347,5 +347,11 @@
   "org.request.org.create": "Create organization",
   "org.request.org.edit": "Edit organization",
   "org.request.pos.create": "Create position",
-  "org.request.pos.edit": "Edit position"
+  "org.request.pos.edit": "Edit position",
+  "test.finished.result": "You answered {score} out of {maxScore} questions correctly",
+  "test.time": "Time",
+  "test.modal.finish": "Do you really want to complete the test?",
+  "nextQuestion": "Next",
+  "prevQuestion": "Prev",
+  "courses.search.noFound": "Courses not found"
 }

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
@@ -25,7 +24,7 @@ import {RouteComponentProps, withRouter} from "react-router";
 class LearningHistory extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
 
   @observable
-  dataCollection: Course[] = [];
+  dataCollection: any[] = [];
 
   fields = [
     "rowNumber",
@@ -53,7 +52,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.learn-history"})}>
         <Section visible={false} size={"large"}>
-         <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
+          <Table dataSource={this.dataCollection.length > 0 ? this.dataCollection : []} pagination={false}
                  size="default" bordered={false} rowKey="id">
             <Column title={<>№</>}
                     dataIndex="rowNumber"
@@ -62,23 +61,25 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             }}/>
             <Column title={<>{this.props.intl.formatMessage({id: "period"})}</>}
                     dataIndex="period"
-                    key="period" render={(text, record, index) => {
-              return moment((record as Course).sections![0].session![0].startDate).format('DD.MM.yyyy') + ' - ' + moment((record as Course).sections![0].session![0].endDate).format('DD.MM.yyyy')
+                    key="period" render={(text, record: any, index) => {
+              return moment(record.startDate).format('DD.MM.yyyy')
+                + ' - ' +
+                moment(record.endDate).format('DD.MM.yyyy')
             }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='course'/>}
                     dataIndex="course"
-                    key="course" render={(text, record) => {
-              return (record as Course).name!
+                    key="course" render={(text, record: any) => {
+              return record.course
             }}/>
             <Column title={<Msg entityName={CourseTrainer.NAME} propertyName='trainer'/>}
                     dataIndex="trainer"
-                    key="trainer" render={(text, record) => {
-              return (record as Course).courseTrainers!.map(ct => ct.trainer!.trainerFullName).map(t => <div>{t}</div>);
+                    key="trainer" render={(text, record: any) => {
+              return record.trainer;
             }}/>
             <Column title={<>{this.props.intl.formatMessage({id: "learningHistory.testResult"})}</>}
                     dataIndex="test"
-                    key="test" render={(text, record) => {
-              return (record as Course).sections!.map(s => s.session!.filter(ss => ss.trainer != undefined).map(ss => ss.trainer!.trainerFullName).join(', '));
+                    key="test" render={(text, record: any) => {
+              return record.result;
             }}/>
             <Column
               title={<>{this.props.intl.formatMessage({id: "learningHistory.certificate"})}</>}

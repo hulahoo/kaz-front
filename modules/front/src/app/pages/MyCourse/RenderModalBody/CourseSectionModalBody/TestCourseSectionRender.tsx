@@ -9,6 +9,7 @@ import Notification from "../../../../util/Notification/Notification";
 import {observable, runInAction} from "mobx";
 import {observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
+import {AssignedGoal} from "../../../../../cuba/entities/base/tsadv$AssignedGoal";
 
 type TestCourseSectionRenderProps = {
   enrollmentId: string
@@ -54,7 +55,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
 
   confirmModalFinishTest = () => {
     Modal.confirm({
-      title: "Вы действительно хотите завершить тест",
+      title: this.props.intl.formatMessage({id: "test.modal.finish"}),
       onOk: () => {
         this.finishTest();
       }
@@ -64,7 +65,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
   finishTest = () => {
     restServices.lmsService.finishTest({answeredTest: this.answeredTest}).then(response => {
       Notification.info({
-        message: `Вы набрали ${response.score} из ${response.maxScore}`
+        message: this.props.intl.formatMessage({id: "test.finished.result"}, {score: response.score, maxScore: response.maxScore})
       });
       if (this.onFinishSection) {
         this.onFinishSection();

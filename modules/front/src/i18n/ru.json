@@ -338,5 +338,10 @@
   "org.request.org.create": "Создать организацию",
   "org.request.org.edit": "Редактирование организации",
   "org.request.pos.create": "Создать позицию",
-  "org.request.pos.edit": "Редактирование позиции"
+  "org.request.pos.edit": "Редактирование позиции",
+  "test.finished.result": "Вы ответили правильно на {score} вопросов из {maxScore}",
+  "test.modal.finish": "Вы действительно хотите завершить тест",
+  "nextQuestion": "Далее",
+  "prevQuestion": "Назад",
+  "courses.search.noFound": "Курсы не найдены!"
 }

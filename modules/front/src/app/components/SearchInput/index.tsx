@@ -15,6 +15,7 @@ class SearchInput extends React.Component<WrappedComponentProps & Props> {
       <Search className={"search-input"}
               placeholder={placeholder ? placeholder : this.props.intl.formatMessage({id: "search"}) + " ..."}
               autoComplete={'off'}
+              onChange={(e) => onSearch ? onSearch(e.target.value): null}
               onSearch={onSearch}/>
     );
   }
