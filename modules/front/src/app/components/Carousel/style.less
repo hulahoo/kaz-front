@@ -1,3 +1,4 @@
+@carousel-img-height: 200px;
 
 .ant-carousel {
   height: 100%;
@@ -13,7 +14,7 @@
 }
 
 .items-carousel {
-  /*height: 460px;*/
+  height: @carousel-img-height;
   position: relative;
 }
 
@@ -68,7 +69,6 @@
 
 .main-menu-carousel-image-container {
   height: fit-content;
-  max-height: 450px;
 }
 
 .main-menu-carousel-image {
@@ -78,4 +78,24 @@
   max-height: inherit;
   object-fit: fill;
   width: 100%;
+  height: @carousel-img-height;
+}
+
+@media (min-width: 1084px) {
+  @carousel-img-height: 350px;
+
+  .items-carousel {
+    height: @carousel-img-height;
+    position: relative;
+  }
+
+  .main-menu-carousel-image {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: inherit;
+    object-fit: fill;
+    width: 100%;
+    height: @carousel-img-height;
+  }
 }

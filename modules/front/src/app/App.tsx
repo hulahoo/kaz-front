@@ -51,7 +51,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
   render() {
     const {initialized, locale, loginRequired, metadata, messages} = this.props.mainStore!;
 
-    if (!initialized || !locale || !this.props.rootStore!.userInfo.initialized || !messages) {
+    if (!initialized || !locale || !this.props.rootStore!.userInfo.initialized) {
       return <CenteredLoader/>;
     }
 
@@ -65,9 +65,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
       );
     }
 
-    if (!metadata) {
+    if (!metadata || !messages) {
       return <CenteredLoader/>;
     }
+
 
     const menuIdx = 1;
     return (
