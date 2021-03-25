@@ -33,7 +33,6 @@ import StatusSteps, {StatusStepProp} from "../../common/StatusSteps";
 import DropdownButton from "../../components/Dropdown/DropdownButton";
 import {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
 import {queryInstance} from "../../util/QueryDataInstanceStore";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
@@ -497,6 +496,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   initVariablesByBproc = () => {
     if (this.activeTask && this.activeTask.hrRole && this.activeTask.hrRole.code) {
       this.approverHrRoleCode = this.activeTask.hrRole.code;
+    } else if (this.isStartForm) {
+      this.approverHrRoleCode = 'INITIATOR';
     }
   }
 

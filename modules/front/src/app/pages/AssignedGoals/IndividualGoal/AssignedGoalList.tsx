@@ -17,7 +17,7 @@ import {queryInstance} from "../../../util/QueryDataInstanceStore";
 import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import Notification from "../../../util/Notification/Notification";
 import {RouteComponentProps, withRouter} from "react-router";
-import {injectIntl, FormattedMessage, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 type Props = {
   assignedPerformancePlanId: string;
