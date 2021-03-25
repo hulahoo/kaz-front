@@ -158,6 +158,15 @@ export const restServices = {
       ).then((response: string) => {
         return JSON.parse(response);
       });
+    },
+    courseSectionWithEnrollmentAttempts: (params: {courseSectionId: string, enrollmentId: string}): Promise<CourseSection> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "courseSectionWithEnrollmentAttempts",
+        {...params}
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
     }
   },
   kpiService: {

@@ -4,7 +4,7 @@ import {Card, Icon, Modal} from "antd";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import {FormattedMessage} from "react-intl";
 import TextArea from "antd/es/input/TextArea";
-import {observable, toJS} from "mobx";
+import {action, observable, toJS} from "mobx";
 import {CoursePersonNote} from "../../../../cuba/entities/base/tsadv_CoursePersonNote";
 import {getCubaREST} from "@cuba-platform/react";
 import {rootStore} from "../../../store";
@@ -25,7 +25,11 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
 
   @observable noteValue: string = "";
 
+  @observable
+  isDisabledFinishSectionBtn = false;
+
   render() {
+    console.log(this.isDisabledFinishSectionBtn);
     return (<Card className={"modal-body card-actions-container"}
                   actions={this.cardActionButtons()}>
         {this.props.changeModalScreenSize
@@ -47,6 +51,11 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
       </Card>
     );
   }
+
+  @action
+  setIsDisabledFinishSectionBtn = (value: boolean) => {
+    this.isDisabledFinishSectionBtn = value;
+  };
 
   componentDidMount() {
     getCubaREST()!.searchEntities(CoursePersonNote.NAME, {
@@ -99,6 +108,7 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
     return [<Button buttonType={ButtonType.FOLLOW}
                     onClickCapture={() => this.noteVisible = true}><FormattedMessage id="notes"/></Button>,
       <Button buttonType={ButtonType.PRIMARY} loading={this.props.loadingFinishCourse}
+              disabled={this.isDisabledFinishSectionBtn}
               onClick={this.onFinishSection}><FormattedMessage id="course.section.finish"/></Button>];
   }
 }

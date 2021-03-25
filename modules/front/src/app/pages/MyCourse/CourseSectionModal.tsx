@@ -10,6 +10,8 @@ import {DataInstanceStore, instance} from "@cuba-platform/react";
 import {FeedbackCourse} from "./RenderModalBody/Feedback/FeedbackComponent";
 import {LearningFeedbackQuestion} from "../../../cuba/entities/base/tsadv$LearningFeedbackQuestion";
 import {SerializedEntity} from "@cuba-platform/rest";
+import {serviceCollection, ServiceDataCollectionStore} from "../../util/ServiceDataCollectionStore";
+import {ServiceDataInstanceStore, serviceInstance} from "../../util/ServiceDataInstanceStore";
 
 type Props = {
   courseId: string,
@@ -25,7 +27,7 @@ type Props = {
 class CourseSectionModal extends Component<Props> {
 
   @observable
-  sectionData: DataInstanceStore<CourseSection> | LearningFeedbackQuestion[];
+  sectionData: ServiceDataInstanceStore<CourseSection> | LearningFeedbackQuestion[];
 
   @observable
   fullScreenModal: boolean = false;
@@ -39,7 +41,7 @@ class CourseSectionModal extends Component<Props> {
     const loading = (this.sectionData
       ? this.props.selectedSection.type === "feedback"
         ? ((this.sectionData as LearningFeedbackQuestion[]) == undefined)
-        : (this.sectionData as DataInstanceStore<CourseSection>).status != "DONE"
+        : (this.sectionData as ServiceDataInstanceStore<CourseSection>).status != "DONE"
       : true);
 
     return (<Modal visible={true}
@@ -56,12 +58,12 @@ class CourseSectionModal extends Component<Props> {
   }
 
   isTest = (loading: boolean): boolean => {
-    return !loading ? this.props.selectedSection.type === "course-section" && (this.sectionData as DataInstanceStore<CourseSection>).item!.sectionObject ? (this.sectionData as DataInstanceStore<CourseSection>).item!.sectionObject!.test != undefined : false : false;
+    return !loading ? this.props.selectedSection.type === "course-section" && (this.sectionData as ServiceDataInstanceStore<CourseSection>).item!.sectionObject ? (this.sectionData as ServiceDataInstanceStore<CourseSection>).item!.sectionObject!.test != undefined : false : false;
   };
 
   getSectionBody = () => {
-    const params = ((this.sectionData as DataInstanceStore<CourseSection>).item ? {
-      courseSection: ((this.sectionData as DataInstanceStore<CourseSection>).item! as CourseSection),
+    const params = ((this.sectionData as ServiceDataInstanceStore<CourseSection>).item ? {
+      courseSection: ((this.sectionData as ServiceDataInstanceStore<CourseSection>).item! as CourseSection),
     } : {
       templateId: this.props.selectedSection.id,
       okFinishFeedbackHandler: this.props.onFinishSection,
@@ -95,10 +97,11 @@ class CourseSectionModal extends Component<Props> {
         break;
       }
       case "course-section": {
-        this.sectionData = instance<CourseSection>(CourseSection.NAME, {
-          view: "course.section.with.format.session",
-        });
-        this.sectionData.load(this.props.selectedSection.id);
+        this.sectionData = serviceInstance<CourseSection>(restServices.courseService.courseSectionWithEnrollmentAttempts.bind(null, {
+          courseSectionId: this.props.selectedSection.id,
+          enrollmentId: this.props.enrollmentId,
+        }));
+        this.sectionData.load("");
         break;
       }
     }

@@ -7,7 +7,7 @@ type UrlScormCourseSectionRenderProps = {
   onFinishSection: () => void
 }
 
-class UrlScormCourseSectionRender extends AbstractRenderModalBody<UrlScormCourseSectionRenderProps> {
+class UrlCourseSectionRender extends AbstractRenderModalBody<UrlScormCourseSectionRenderProps> {
   getModalBody = () => {
     return <div className="course-section-modal-body">
       <iframe width="100%" height="100%" src={this.props.courseSection.sectionObject!.content!.url!}/>
@@ -19,4 +19,4 @@ class UrlScormCourseSectionRender extends AbstractRenderModalBody<UrlScormCourse
   };
 }
 
-export default UrlScormCourseSectionRender;
+export default UrlCourseSectionRender;
