@@ -41,8 +41,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         window.API_1484_11[property] = value;
       },
       Commit: () => {
-        console.log(window.API_1484_11['cmi.completion_status'].toLowerCase());
-        this.setIsDisabledFinishSectionBtn(window.API_1484_11['cmi.completion_status'].toLowerCase() === 'completed');
+        this.setIsDisabledFinishSectionBtn(window.API_1484_11['cmi.completion_status'].toLowerCase() !== 'completed');
       },
       GetLastError: () => {
 
