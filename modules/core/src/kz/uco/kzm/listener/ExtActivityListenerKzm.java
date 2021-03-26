@@ -19,17 +19,17 @@ public class ExtActivityListenerKzm extends ExtActivityListener {
 
     @Override
     public void onAfterInsert(Activity entity, Connection connection) {
-        Map<String, String> data = new HashMap<String, String>() {
-            {
-                put("click_action", "FLUTTER_NOTIFICATION_CLICK");
-                put("entityName", entity.getName());
-                put("entityId", String.valueOf(entity.getId()));
-                put("referenceId", String.valueOf(entity.getReferenceId()));
-                put("windowPropertyName", Optional.ofNullable(entity.getType()).map(ActivityType::getWindowProperty).map(WindowProperty::getEntityName).orElse(null));
-            }
-        };
-
-        firebasePushNotificationService.sendNotificationWithDataToUser(entity.getNotificationHeader(), "", data, entity.getAssignedUser());
+//        Map<String, String> data = new HashMap<String, String>() {
+//            {
+//                put("click_action", "FLUTTER_NOTIFICATION_CLICK");
+//                put("entityName", entity.getName());
+//                put("entityId", String.valueOf(entity.getId()));
+//                put("referenceId", String.valueOf(entity.getReferenceId()));
+//                put("windowPropertyName", Optional.ofNullable(entity.getType()).map(ActivityType::getWindowProperty).map(WindowProperty::getEntityName).orElse(null));
+//            }
+//        };
+//
+//        firebasePushNotificationService.sendNotificationWithDataToUser(entity.getNotificationHeader(), "", data, entity.getAssignedUser());
         super.onAfterInsert(entity, connection);
     }
 }
