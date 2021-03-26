@@ -9,11 +9,7 @@ import {RootStoreProp} from "../../store";
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
-import Button, {ButtonType} from "../../components/Button/Button";
-import {Link} from "react-router-dom";
-import {ReactComponent as ExcelSvg} from '../../../resources/icons/excel.svg';
 import {CourseTrainer} from "../../../cuba/entities/base/tsadv$CourseTrainer";
-import {Course} from "../../../cuba/entities/base/tsadv$Course";
 import {restServices} from "../../../cuba/services";
 import moment from "moment";
 import {RouteComponentProps, withRouter} from "react-router";
@@ -84,11 +80,14 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             <Column
               title={<>{this.props.intl.formatMessage({id: "learningHistory.certificate"})}</>}
               key="action"
-              render={ag => (
-                <a style={{padding: 0}} onClick={() => this.previewCertificate("c25098eb-a310-a1e6-b775-b44e5ee13fe2")}>
-                  {this.props.intl.formatMessage({id: "learningHistory.overview"})}
-                </a>
-              )}
+              render={(text, record: any) => {
+                if (!record.certificate) return null;
+                return (
+                  <a style={{padding: 0}} onClick={() => this.previewCertificate(record.certificate)}>
+                    {this.props.intl.formatMessage({id: "learningHistory.overview"})}
+                  </a>
+                )
+              }}
             />
           </Table>
         </Section>
@@ -97,9 +96,10 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
   }
 
   componentDidMount(): void {
-    restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!}).then((c) => {
-      this.dataCollection = c
-    })
+    restServices.learningService.learningHistory({personGroupId: this.props.rootStore!.userInfo.personGroupId!})
+      .then((c) => {
+        this.dataCollection = c
+      })
   }
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
