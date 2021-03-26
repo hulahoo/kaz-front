@@ -272,6 +272,7 @@
   "bproc.APPROVE.success": "Application approved",
   "bproc.REVISION.success": "Application sent to revision",
   "bproc.SEND_FOR_APPROVAL.success": "Application sent for approval",
+  "bproc.START.success": "Application sent for approval",
   "candidates": "Candidates",
   "APPROVE": "Approve",
   "REJECT": "Reject",
@@ -313,5 +314,7 @@
   "save": "Save",
   "assignedGoal.assessment.validation": "Assessment have to be between 0 and 100",
   "result": "Result",
-  "assignedPerformancePlan.extraPoint.validation": "Extra point have to be between 1 and 8"
+  "assignedPerformancePlan.extraPoint.validation": "Extra point have to be between 1 and 8",
+  "kpiScore": "KPI score",
+  "extraPoint": "Extra point"
 }

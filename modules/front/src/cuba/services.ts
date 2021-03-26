@@ -477,6 +477,15 @@ export const restServices = {
         null
       ).then(r => JSON.parse(r));
     },
+  },
+  organizationHrUserService: {
+    isManagerOrSupManager: (param: { userId: string, employeePersonGroupId: string }): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrganizationHrUserService",
+        "isManagerOrSupManager",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
   }
 };
 

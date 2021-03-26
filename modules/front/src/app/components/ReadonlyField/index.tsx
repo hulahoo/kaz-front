@@ -34,13 +34,14 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     if (!formItemOpts.label)
       formItemOpts.label = createElement(Msg, {entityName: entityName, propertyName: propertyName});
 
+    const props = {
+      entityName: entityName,
+      propertyName: propertyName,
+      disabled: disabled,
+      optionsContainer: optionsContainer
+    };
     return createElement(Form.Item,
       Object.assign({key: formItemKey ? formItemKey : propertyName}, formItemOpts),
-      getFieldDecorator(fieldDecoratorId ? fieldDecoratorId : propertyName, getFieldDecoratorOpts)(createElement(FormField, {
-        entityName: entityName,
-        propertyName: propertyName,
-        disabled: disabled,
-        optionsContainer: optionsContainer
-      })));
+      getFieldDecorator(fieldDecoratorId ? fieldDecoratorId : propertyName, getFieldDecoratorOpts)(createElement(FormField, props)));
   }
 }

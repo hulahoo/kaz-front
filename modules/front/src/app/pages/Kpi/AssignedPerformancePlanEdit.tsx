@@ -4,7 +4,7 @@ import {Alert, Card, Col, DatePicker, Form, InputNumber, message, Row} from "ant
 import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {Link, Redirect} from "react-router-dom";
-import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {action, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import GoalForm from './GoalForm';
 
@@ -33,7 +33,6 @@ import StatusSteps, {StatusStepProp} from "../../common/StatusSteps";
 import DropdownButton from "../../components/Dropdown/DropdownButton";
 import {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
 import {queryInstance} from "../../util/QueryDataInstanceStore";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
@@ -51,13 +50,14 @@ import TextArea from "antd/es/input/TextArea";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {RootStoreProp} from "../../store";
 import {RouteComponentProps, withRouter} from "react-router";
+import {restServices} from "../../../cuba/services";
 
 type EditorProps = {
   entityId: string;
 };
 
-@inject("rootStore")
 @injectMainStore
+@inject("rootStore")
 @observer
 class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPerformancePlan, EditorProps> {
 
@@ -78,9 +78,13 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     "kpiEditPage",
     {appId: this.props.entityId},
     () => {
-      if (this.dataInstance.item!.finalScore)
-        this.totalResult = this.dataInstance.item!.finalScore;
       this.loadBpmProcessData();
+
+      restServices.organizationHrUserService.isManagerOrSupManager(
+        {
+          userId: this.props.rootStore!.userInfo!.id!,
+          employeePersonGroupId: this.dataInstance.item!.assignedPerson!.id!
+        }).then(value => this.isUserManager = value)
     }
   );
 
@@ -95,6 +99,10 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   totalResultRef: any;
 
+  kpiScoreRef: any;
+
+  extraPointRef: any;
+
   @observable
   updated = false;
 
@@ -103,7 +111,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   @observable approverHrRoleCode?: string;
 
-  reactionDisposer: IReactionDisposer;
+  @observable isUserManager?: boolean = false;
 
   fields = [
     "extraPoint",
@@ -129,7 +137,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       }
       this.dataInstance
         .update({
-          finalScore: this.totalResult,
           ...this.props.form.getFieldsValue(this.fields)
         })
         .then(() => {
@@ -193,19 +200,21 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   @action
   setTotalResult = (value: number) => {
-    this.totalResult = value;
-    this.changeTotalResult();
+    this.totalResult = Math.round(value);
+    if (this.totalResultRef) {
+      this.totalResultRef.innerHTML = this.props.intl.formatMessage({id: "result"}) + ": " + this.totalResult! + "%";
+      this.setKpiScore();
+    }
   };
 
-  calcTotal = (): number => {
-    const val = (this.dataInstance.item ? this.props.form.getFieldValue("extraPoint") || this.dataInstance.item.extraPoint : undefined) || 0;
-    return this.getPoint(this.totalResult) + val;
+  setKpiScore = () => {
+    if (this.kpiScoreRef)
+      this.kpiScoreRef.innerHTML = this.props.intl.formatMessage({id: "kpiScore"}) + ': ' + this.getPoint(this.totalResult);
   }
 
-  changeTotalResult = () => {
-    const total = this.calcTotal();
-    if (this.totalResultRef)
-      this.totalResultRef.innerHTML = this.props.intl.formatMessage({id: "result"}) + ": " + Math.round(total);
+  setExtraPoint = (extraPoint: number) => {
+    if (this.extraPointRef)
+      this.extraPointRef.innerHTML = this.props.intl.formatMessage({id: "extraPoint"}) + ': ' + extraPoint;
   }
 
   validate = (): Promise<boolean> => {
@@ -258,6 +267,64 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     callback();
   };
 
+  getAdditionalForm = () => {
+
+    const {getFieldDecorator} = this.props.form;
+
+    const statusesPerformancePlan: EnumValueInfo[] = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
+
+    const stepIndex = this.dataInstance.item
+      ? statusesPerformancePlan
+        .map((value, index) => {
+          return {
+            index: index,
+            id: value.id
+          }
+        })
+        .filter(s => s.id === this.dataInstance.item!.stepStageStatus)
+        .map(s => s.index)[0]
+      : undefined;
+
+    const isExtraPointEnable = stepIndex === 1 && this.approverHrRoleCode === 'MANAGER';
+
+    const isForm2Visible = stepIndex !== undefined && stepIndex > 0 && this.isUserManager;
+
+    return (<div style={!isForm2Visible ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
+
+      <div className={"ant-row ant-form-item"} style={{marginBottom: "12px", marginTop: '40px'}}>
+        {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "extraPoint"})}
+        <Form.Item>{getFieldDecorator("extraPoint", {
+          rules: [{validator: this.extraPointValidator}],
+        })(
+          <InputNumber
+            onChange={this.setExtraPoint}
+            disabled={!isExtraPointEnable}/>
+        )}
+        </Form.Item>
+      </div>
+
+      <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+        {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "purpose"})}
+        <Form.Item>{getFieldDecorator("purpose")(
+          <TextArea
+            disabled={!isExtraPointEnable}
+            rows={4}/>
+        )}
+        </Form.Item>
+      </div>
+
+      {/*<ReadonlyField
+        formItemKey={"file"}
+        entityName={this.dataInstance.entityName}
+        propertyName="file"
+        form={this.props.form}
+        disabled={!isExtraPointEnable}
+        formItemOpts={{style: {marginBottom: "12px"}}}
+        optionsContainer={this.filesDc}/>*/}
+
+    </div>)
+  }
+
   render() {
     if (this.updated) {
       return <Redirect to={AssignedPerformancePlanManagement.PATH}/>;
@@ -279,8 +346,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         .filter(s => s.id === this.dataInstance.item!.stepStageStatus)
         .map(s => s.index)[0]
       : undefined;
-
-    const isExtraPointEnable = stepIndex === 1 && this.approverHrRoleCode === 'MANAGER';
 
     const statusSteps: StatusStepProp[] = statusesPerformancePlan.map((s, i) => {
       return {
@@ -307,9 +372,11 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
           </Link>,
           ...this.pageActions()]}
               bordered={false}>
-          <div className={"large-section section-container"}>
-            <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "employeeInfo"})}</div>
-            <Form onSubmit={this.handleSubmit} layout="vertical">
+          <Form key={'form1'} onSubmit={this.handleSubmit} layout="vertical">
+            <div className={"large-section section-container"}>
+
+              <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "employeeInfo"})}</div>
+
               <FormContainer>
                 <Row className={"form-row"}>
                   <Col md={24} lg={6}>
@@ -403,79 +470,64 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                     style={{marginBottom: "24px"}}
                   />
                 )}
+
               </FormContainer>
-            </Form>
-          </div>
-          <Section size={"large"}>
-            <StatusSteps steps={statusSteps} currentIndex={stepIndex}/>
-          </Section>
-          {this.readonly
-            ? <></>
-            : <Section size={"large"} visible={false}>
-              <DropdownButton menu={createGoalsMenu}
-                              buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
+              {/*</Form>*/}
+            </div>
+
+            <Section size={"large"}>
+              <StatusSteps steps={statusSteps} currentIndex={stepIndex}/>
             </Section>
-          }
-          <Section size={"large"} sectionName={
-            <div>
-              <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
-              <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
-              {stepIndex && stepIndex > 0 && (this.approverHrRoleCode === 'INITIATOR' || this.approverHrRoleCode === 'MANAGER')
-                ? <div><h1
+
+            {this.readonly
+              ? <></>
+              : <Section size={"large"} visible={false}>
+                <DropdownButton menu={createGoalsMenu}
+                                buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
+              </Section>
+            }
+            <Section size={"large"} sectionName={
+              <div>
+                <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
+                <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
+                <div><h1
                   id={'totalResult'}
                   ref={ref => {
                     this.totalResultRef = ref;
-                    this.changeTotalResult();
-                  }}>{this.props.intl.formatMessage({id: "result"})}: {Math.round(this.totalResult)}</h1>
-                </div> : null}
-            </div>
-          }>
-            <GoalForm assignedPerformancePlanId={this.props.entityId}
-                      approverHrRoleCode={this.approverHrRoleCode}
-                      setAssignedPerformanceState={this.changeState}
-                      setTotalWeight={this.setTotalWeight}
-                      setTotalResult={this.setTotalResult}
-                      parentForm={this.props.form}
-                      readonly={this.readonly}/>
-
-            {stepIndex !== undefined && stepIndex >= 1
-            && (this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR' || stepIndex > 1) ? (<div>
-
-              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "extraPoint"})}
-                <Form.Item>
-                  {getFieldDecorator("extraPoint", {
-                      initialValue: this.dataInstance.item!.extraPoint,
-                      rules: [{validator: this.extraPointValidator}],
-                    }
-                  )(
-                    <InputNumber
-                      disabled={!isExtraPointEnable}/>
-                  )}
-                </Form.Item>
+                  }}>
+                  {this.props.intl.formatMessage({id: "result"})}: {Math.round(this.totalResult) + "%"}
+                </h1></div>
+                {stepIndex && stepIndex > 0 && this.isUserManager
+                  ? (<div>
+                    <h1
+                      id={'kpiScore'}
+                      ref={ref => {
+                        this.kpiScoreRef = ref;
+                        this.setKpiScore();
+                      }}>
+                      {this.props.intl.formatMessage({id: "kpiScore"})}: {Math.round(this.dataInstance.item!.kpiScore)}
+                    </h1>
+                    {this.dataInstance.item!.extraPoint ? <h1 id={'extraPoint'} ref={ref => this.extraPointRef = ref}>
+                      {this.props.intl.formatMessage({id: "extraPoint"})}: {Math.round(this.dataInstance.item!.extraPoint)}
+                    </h1> : null}
+                  </div>) : null}
               </div>
+            }>
 
-              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "purpose"})}
-                <Form.Item>{getFieldDecorator("purpose", {initialValue: this.dataInstance.item!.purpose})(
-                  <TextArea
-                    disabled={!isExtraPointEnable}
-                    rows={4}/>
-                )}
-                </Form.Item>
-              </div>
+              <GoalForm assignedPerformancePlanId={this.props.entityId}
+                        setAssignedPerformanceState={this.changeState}
+                        approverHrRoleCode={this.approverHrRoleCode}
+                        setTotalWeight={this.setTotalWeight}
+                        setTotalResult={this.setTotalResult}
+                        parentForm={this.props.form}
+                        readonly={this.readonly}/>
 
-              <ReadonlyField
-                entityName={this.dataInstance.entityName}
-                propertyName="file"
-                form={this.props.form}
-                disabled={!isExtraPointEnable}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                optionsContainer={this.filesDc}/>
+              {this.getAdditionalForm()}
 
-            </div>) : null}
-          </Section>
-          {this.takCard()}
+            </Section>
+            {this.takCard()}
+
+          </Form>
         </Card>
       </Page>
     );
@@ -504,11 +556,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   componentDidMount() {
     this.setReactionDisposer();
-    this.dataInstance.afterLoad = () => {
-      if (this.dataInstance.item!.finalScore)
-        this.totalResult = this.dataInstance.item!.finalScore;
-      this.loadBpmProcessData();
-    }
 
     this.dataInstance.load();
   }
@@ -533,32 +580,26 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     this.reactionDisposer = reaction(
       () => this.dataInstance.item,
       (item) => {
-        this.changeTotalResult();
         this.setReadOnly();
-        this.props.form.setFieldsValue(
-          {
-            ...{
-              assignedPerson: (item!.assignedPerson! as SerializedEntity<PersonGroupExt>)._instanceName,
-              jobGroup: (item!.assignedPerson!.assignments![0].jobGroup as SerializedEntity<JobGroup>)._instanceName,
-              organizationGroup: (item!.assignedPerson!.assignments![0].organizationGroup as SerializedEntity<OrganizationGroupExt>)._instanceName,
-              organization: (item!.assignedPerson!.assignments![0].organizationGroup!.organization as SerializedEntity<OrganizationExt>)._instanceName,
-              startDate: moment(item!.performancePlan!.startDate),
-              endDate: moment(item!.performancePlan!.endDate),
-              hireDate: moment(item!.assignedPerson!.person!.hireDate),
-              status: (item!.status! as SerializedEntity<AbstractBprocRequest>)._instanceName,
-              purpose: item!.purpose,
-              extraPoint: item!.extraPoint,
-              file: item!.file,
-            }
+        const values = {
+          ...{
+            assignedPerson: (item!.assignedPerson! as SerializedEntity<PersonGroupExt>)._instanceName,
+            jobGroup: (item!.assignedPerson!.assignments![0].jobGroup as SerializedEntity<JobGroup>)._instanceName,
+            organizationGroup: (item!.assignedPerson!.assignments![0].organizationGroup as SerializedEntity<OrganizationGroupExt>)._instanceName,
+            organization: (item!.assignedPerson!.assignments![0].organizationGroup!.organization as SerializedEntity<OrganizationExt>)._instanceName,
+            startDate: moment(item!.performancePlan!.startDate),
+            endDate: moment(item!.performancePlan!.endDate),
+            hireDate: moment(item!.assignedPerson!.person!.hireDate),
+            status: (item!.status! as SerializedEntity<AbstractBprocRequest>)._instanceName,
+            purpose: item!.purpose,
+            extraPoint: item!.extraPoint,
+            file: {...item!.file},
           }
-        );
+        };
+        this.props.form.setFieldsValue(values);
       }
     );
   };
-
-  componentWillUnmount() {
-    this.reactionDisposer();
-  }
 
   loadInstanceData = () => {
     if (this.props.entityId !== AssignedPerformancePlanManagement.NEW_SUBPATH) {
@@ -571,11 +612,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   processInstanceBusinessKey = (): string => {
     return getBusinessKey(this.dataInstance.item!);
   }
-
-  /*afterSendOnApprove = () => {
-    this.formData = null;
-    this.loadBpmProcessData();
-  }*/
 }
 
 const onValuesChange = (props: any, changedValues: any) => {

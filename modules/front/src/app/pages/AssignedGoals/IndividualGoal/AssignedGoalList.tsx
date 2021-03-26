@@ -17,7 +17,9 @@ import {queryInstance} from "../../../util/QueryDataInstanceStore";
 import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import Notification from "../../../util/Notification/Notification";
 import {RouteComponentProps, withRouter} from "react-router";
-import {injectIntl, FormattedMessage, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {restServices} from "../../../../cuba/services";
+import {rootStore} from "../../../store";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -39,10 +41,19 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   @observable
   dataCollection: any[] = [];
 
+  @observable isUserManager: boolean = false;
+
   kpiDataInstance = queryInstance<AssignedPerformancePlan>(
     AssignedPerformancePlan.NAME,
     "kpiEditPage",
-    {appId: this.props.assignedPerformancePlanId}
+    {appId: this.props.assignedPerformancePlanId},
+    () => {
+      restServices.organizationHrUserService.isManagerOrSupManager(
+        {
+          userId: rootStore.userInfo!.id!,
+          employeePersonGroupId: this.kpiDataInstance.item!.assignedPerson!.id!
+        }).then(value => this.isUserManager = value)
+    }
   );
 
   fields = [
@@ -105,8 +116,8 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
       if (this.dataCollection.length > 0) {
 
         this.props.setTotalResult(this.dataCollection
-          .map((value: AssignedGoal) => (value.weight || 0) * ((this.isInitiator() ? undefined : value.managerAssessment) || value.assessment || 0) / 100)
-          .reduce((i1, i2) => i1 + i2, 0));
+          .map((value: AssignedGoal) => (value.weight || 0) * (value.managerAssessment || value.assessment || 0) / 100)
+          .reduce((i1, i2) => i1 + i2, 0) / this.dataCollection.length);
 
       } else this.props.setTotalResult(0);
     }
@@ -134,6 +145,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
               <InputNumber disabled={!this.isManager() || !isSecondStep}
                            onChange={value => {
                              record.managerAssessment = value;
+                             record.result = record.managerAssessment || record.assessment;
                              this.recalcTotalResult();
                            }}/>
             )}
@@ -160,6 +172,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
               <InputNumber disabled={!this.isInitiator() || !isSecondStep}
                            onChange={value => {
                              record.assessment = value;
+                             record.result = record.managerAssessment || record.assessment;
                              this.recalcTotalResult();
                            }}/>
             )}
@@ -208,7 +221,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 render={this.assessmentColumnRender}/>
       : null;
 
-    const managerAssessmentColumn = !isFirstStep && (this.props.approverHrRoleCode && this.props.approverHrRoleCode !== 'INITIATOR' || !isSecondStep)
+    const managerAssessmentColumn = !isFirstStep && (this.isUserManager || !isSecondStep)
       ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='managerAssessment'/>}
                 dataIndex="managerAssessment"
                 key="managerAssessment"

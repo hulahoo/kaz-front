@@ -3,23 +3,14 @@ import {inject, observer} from "mobx-react";
 
 import {action, observable} from "mobx";
 
-import {Col, Modal, Row, Select, Table} from "antd";
+import {Col, Row, Select, Table} from "antd";
 
-import {
-  collection,
-  injectMainStore,
-  MainStoreInjected,
-  DataTable, Msg, getEnumCaption, getPropertyInfoNN, getMainStore
-} from "@cuba-platform/react";
+import {getEnumCaption, getPropertyInfoNN, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 
 import {AssignedPerformancePlan} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {SerializedEntity} from "@cuba-platform/rest";
 
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {RootStoreProp} from "../../store";
@@ -29,7 +20,6 @@ import {Link} from "react-router-dom";
 import {AssignedPerformancePlanManagement} from "../Kpi/AssignedPerformancePlanManagement";
 import {PerformancePlan} from "../../../cuba/entities/base/tsadv$PerformancePlan";
 import moment from "moment";
-import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {Organization} from "../../../cuba/entities/base/base$Organization";
 import {PositionGroup} from "../../../cuba/entities/base/base$PositionGroup";
@@ -125,6 +115,12 @@ class KpiTeamListComponent extends React.Component<MainStoreInjected & WrappedCo
                     key={"endDate"} render={(text, record, index) => {
               return (React.createElement("div", null, moment(text).format("YYYY")));
             }}/>
+            <Column title={this.props.intl.formatMessage({id: "result"})}
+                    dataIndex={"result"}
+                    key={"result"}
+                    render={(text) => {
+                      return (React.createElement("div", null, text + "%"));
+                    }}/>
           </Table>
         </Section>
       </Page>
