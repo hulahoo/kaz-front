@@ -58,9 +58,9 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             <Column title={<>{this.props.intl.formatMessage({id: "period"})}</>}
                     dataIndex="period"
                     key="period" render={(text, record: any, index) => {
-              return moment(record.startDate).format('DD.MM.yyyy')
+              return (record.startDate ? moment(record.startDate).format('DD.MM.yyyy') : "")
                 + ' - ' +
-                moment(record.endDate).format('DD.MM.yyyy')
+                (record.endDate ? moment(record.endDate).format('DD.MM.yyyy') : "")
             }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='course'/>}
                     dataIndex="course"

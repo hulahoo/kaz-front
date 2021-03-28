@@ -100,9 +100,9 @@ export const restServices = {
   },
   learningService: {
     learningHistory: (params: { personGroupId: string }): Promise<any[]> => {
-      return getCubaREST()!.invokeService(
-        "tsadv_LearningService",
-        "learningHistory",
+      return getCubaREST()!.fetch(
+        "GET",
+        "learning-history",
         {...params}
       ).then((response: string) => {
         return JSON.parse(response);

@@ -356,5 +356,7 @@
   "test.modal.finish": "Do you really want to complete the test?",
   "nextQuestion": "Next",
   "prevQuestion": "Prev",
-  "courses.search.noFound": "Courses not found"
+  "courses.search.noFound": "Courses not found",
+  "book.download": "Download",
+  "book.download.error": "Error download file"
 }

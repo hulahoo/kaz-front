@@ -39,7 +39,7 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
   ];
 
   selectBookHandler = (fileId: string, option: React.ReactElement<HTMLLIElement>) => {
-    downloadFile(fileId, option.props["name"], option.props["extension"], this.props.intl.formatMessage({id: "Не удалось скачать книгу"}));
+    downloadFile(fileId, option.props["name"], option.props["extension"], this.props.intl.formatMessage({id: "book.download.error"}));
   };
 
   render() {
@@ -72,7 +72,7 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
                       <Meta title={(book as SerializedEntity<Book>)._instanceName}
                             description={<>
                               {bookFileProperties.find(fp => (book as {}).hasOwnProperty(fp)) != undefined
-                                ? <Select placeholder={"Скачать книгу"} style={{width: '100%'}}
+                                ? <Select placeholder={this.props.intl.formatMessage({id: "book.download"})} style={{width: '100%'}}
                                           onSelect={this.selectBookHandler}>
                                   {bookFileProperties.filter(fp => (book as {}).hasOwnProperty(fp)).map(fp =>
                                     // @ts-ignore

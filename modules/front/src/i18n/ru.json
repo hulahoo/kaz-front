@@ -346,5 +346,7 @@
   "test.modal.finish": "Вы действительно хотите завершить тест",
   "nextQuestion": "Далее",
   "prevQuestion": "Назад",
-  "courses.search.noFound": "Курсы не найдены!"
+  "courses.search.noFound": "Курсы не найдены!",
+  "book.download": "Скачать книгу",
+  "book.download.error": "Не удалось скачать книгу"
 }

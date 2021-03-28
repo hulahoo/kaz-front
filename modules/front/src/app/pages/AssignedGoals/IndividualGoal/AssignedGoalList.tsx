@@ -20,6 +20,7 @@ import {RouteComponentProps, withRouter} from "react-router";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {restServices} from "../../../../cuba/services";
 import {rootStore} from "../../../store";
+import {DicGoalCategory} from "../../../../cuba/entities/base/tsadv$DicGoalCategory";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -233,10 +234,10 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
         dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
         size="default" bordered={false} rowKey="id">
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
-                dataIndex="category.langValue1"
+                dataIndex="category._instanceName"
                 key="category"
                 sorter={(a: AssignedGoal, b: AssignedGoal) =>
-                  a.category!.langValue1!.localeCompare(b.category!.langValue1!)
+                  (a.category as SerializedEntity<DicGoalCategory>)._instanceName!.localeCompare((b.category as SerializedEntity<DicGoalCategory>)._instanceName)
                 }/>
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='goalString'/>}
                 dataIndex="goalString"
