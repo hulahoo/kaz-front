@@ -116,8 +116,9 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
       if (this.dataCollection.length > 0) {
 
         this.props.setTotalResult(this.dataCollection
-          .map((value: AssignedGoal) => (value.weight || 0) * (value.managerAssessment || value.assessment || 0) / 100)
-          .reduce((i1, i2) => i1 + i2, 0) / this.dataCollection.length);
+          .map((value: AssignedGoal) => (value.weight || 0)
+            * ((this.isUserManager ? value.managerAssessment : 0) || value.assessment || 0) / 100)
+          .reduce((i1, i2) => i1 + i2, 0));
 
       } else this.props.setTotalResult(0);
     }

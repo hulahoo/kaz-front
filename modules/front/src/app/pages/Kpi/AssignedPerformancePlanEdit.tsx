@@ -10,7 +10,6 @@ import GoalForm from './GoalForm';
 
 import {
   clearFieldErrors,
-  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
   getCubaREST,
@@ -46,11 +45,9 @@ import {OrganizationExt} from "../../../cuba/entities/base/base$OrganizationExt"
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
 import {getBusinessKey} from "../../util/util";
-import TextArea from "antd/es/input/TextArea";
-import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
-import {RootStoreProp} from "../../store";
-import {RouteComponentProps, withRouter} from "react-router";
+import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
+import TextArea from "antd/es/input/TextArea";
 
 type EditorProps = {
   entityId: string;
@@ -88,9 +85,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     }
   );
 
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
+  /* filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
+     view: "_minimal"
+   });*/
 
   @observable
   totalWeight: number;
@@ -289,7 +286,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const isForm2Visible = stepIndex !== undefined && stepIndex > 0 && this.isUserManager;
 
-    return (<div style={!isForm2Visible ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
+    return (<div style={!isForm2Visible && false ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
 
       <div className={"ant-row ant-form-item"} style={{marginBottom: "12px", marginTop: '40px'}}>
         {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "extraPoint"})}
@@ -313,16 +310,27 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         </Form.Item>
       </div>
 
+      //todo это не работает???????? animation exception
       {/*<ReadonlyField
         formItemKey={"file"}
+        style={this.isUserManager ? {visibility: "hidden"} : {}}
         entityName={this.dataInstance.entityName}
         propertyName="file"
         form={this.props.form}
         disabled={!isExtraPointEnable}
         formItemOpts={{style: {marginBottom: "12px"}}}
-        optionsContainer={this.filesDc}/>*/}
+      />*/}
 
     </div>)
+    return <ReadonlyField
+      formItemKey={"file"}
+      style={!this.isUserManager ? {visibility: "hidden"} : {}}
+      entityName={this.dataInstance.entityName}
+      propertyName="file"
+      form={this.props.form}
+      disabled={!isExtraPointEnable}
+      formItemOpts={{style: {marginBottom: "12px"}}}
+    />
   }
 
   render() {
@@ -524,6 +532,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
               {this.getAdditionalForm()}
 
+
             </Section>
             {this.takCard()}
 
@@ -566,6 +575,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
       },
+      result: this.totalResult || 0,
       stepStageStatus: step !== undefined && step != null ? step : "DRAFT",
       ...this.props.form.getFieldsValue(this.fields)
     }
@@ -625,8 +635,9 @@ const onValuesChange = (props: any, changedValues: any) => {
     }
   );
 };
-const element = withLocalizedForm<EditorProps & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>>(
-  {onValuesChange: onValuesChange}
-)(AssignedPerformancePlanEditComponent);
 
-export default withRouter(injectIntl(element));
+const element = withLocalizedForm<EditorProps & WrappedComponentProps & MainStoreInjected>(
+  {onValuesChange: onValuesChange}
+)(withRouter(AssignedPerformancePlanEditComponent));
+
+export default injectIntl(element);
