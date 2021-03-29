@@ -349,5 +349,6 @@
   "courses.search.noFound": "Курсы не найдены!",
   "book.download": "Скачать книгу",
   "book.download.error": "Не удалось скачать книгу",
-  "learning.period": "Период"
+  "learning.period": "Период",
+  "download": "Скачать"
 }

@@ -359,5 +359,6 @@
   "courses.search.noFound": "Courses not found",
   "book.download": "Download",
   "book.download.error": "Error download file",
-  "learning.period": "Period"
+  "learning.period": "Period",
+  "download": "Download"
 }
