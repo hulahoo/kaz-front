@@ -87,7 +87,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return this.dataInstance.update(this.getUpdateEntityData());
   };
 
-  takCard() {
+  takCard = () => {
     if (!this.tasks) return <div/>;
     const tasks = Array.from(this.tasks);
     return <ExtTaskDataCards tasks={tasks}/>

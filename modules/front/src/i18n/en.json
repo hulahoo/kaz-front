@@ -317,6 +317,7 @@
   "assignedPerformancePlan.extraPoint.validation": "Extra point have to be between 1 and 8",
   "kpiScore": "KPI score",
   "extraPoint": "Extra point",
+  "finalScore": "Final score",
   "management.browser.exclude.areYouSure": "Are you sure you want to close the {type} by name \"{name}\"?",
   "management.browser.exclude.ok": "Close",
   "management.browser.exclude.cancel": "Cancel",

@@ -54,6 +54,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
           userId: rootStore.userInfo!.id!,
           employeePersonGroupId: this.kpiDataInstance.item!.assignedPerson!.id!
         }).then(value => this.isUserManager = value)
+        .then(() => this.recalcTotalResult());
     }
   );
 
