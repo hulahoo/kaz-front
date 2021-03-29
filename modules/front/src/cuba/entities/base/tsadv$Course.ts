@@ -36,6 +36,8 @@ export class Course extends AbstractParentEntity {
   courseSchedule?: CourseSchedule[] | null;
   educationPeriod?: any | null;
   educationDuration?: any | null;
+  commentCount?: number | null;
+  rating?: number | null;
 }
 export type CourseViewName =
   | "_base"
@@ -91,7 +93,7 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
   : V extends "course-learning-history"
   ? Pick<Course, "id" | "name" | "sections">
   : V extends "course-portal-browse"
-  ? Pick<Course, "id" | "name" | "name" | "avgRate" | "logo" | "isOnline">
+  ? Pick<Course, "id" | "name" | "avgRate" | "logo" | "isOnline" | "commentCount" | "rating">
   : V extends "course.browse"
   ? Pick<
       Course,

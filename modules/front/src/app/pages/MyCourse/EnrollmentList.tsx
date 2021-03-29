@@ -81,7 +81,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                                   </>)}>
 
                       <Meta title={course.name}
-                            description={<><Rate disabled defaultValue={course.avgRate} allowHalf/> (90)</>}/>
+                            description={<><Rate disabled defaultValue={course.rating || 0}
+                                                 allowHalf/>({course.commentCount || 0})</>}/>
                     </PanelCard></Link>)}
                   </div>
                 </div>

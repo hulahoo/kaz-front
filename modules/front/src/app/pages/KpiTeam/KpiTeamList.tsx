@@ -112,14 +112,14 @@ class KpiTeamListComponent extends React.Component<MainStoreInjected & WrappedCo
             }}/>
             <Column title={this.props.intl.formatMessage({id: "period"})}
                     dataIndex={"endDate"}
-                    key={"endDate"} render={(text, record, index) => {
+                    key={"endDate"} render={(text) => {
               return (React.createElement("div", null, moment(text).format("YYYY")));
             }}/>
             <Column title={this.props.intl.formatMessage({id: "result"})}
                     dataIndex={"result"}
                     key={"result"}
                     render={(text) => {
-                      return (React.createElement("div", null, text + "%"));
+                      return (React.createElement("div", null, (text || 0) + "%"));
                     }}/>
           </Table>
         </Section>

@@ -4,16 +4,9 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Card, Checkbox, Modal, Table} from "antd";
+import {Modal, Table} from "antd";
 
-import {
-  collection,
-  getEnumCaption,
-  getPropertyInfoNN,
-  injectMainStore, MainStore,
-  MainStoreInjected,
-  Msg
-} from "@cuba-platform/react";
+import {collection, getEnumCaption, injectMainStore, MainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 
 import {AssignedPerformancePlan} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {MetaPropertyInfo, SerializedEntity} from "@cuba-platform/rest";

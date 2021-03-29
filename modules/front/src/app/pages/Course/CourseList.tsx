@@ -1,12 +1,10 @@
 import React from 'react';
-import {collection} from "@cuba-platform/react";
 import PanelCard from "../../components/CourseCard";
 import {Rate, Spin, Tabs} from "antd";
 import {observer} from "mobx-react";
 import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
-import {restQueries} from "../../../cuba/queries";
 import {runInAction} from "mobx";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
@@ -53,24 +51,25 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
               <div className={"courses-cards-wrapper"}>
                 <div className={"courses-cards"}>
                   {category.courses!.map((course: any) => <Link to={"/course/" + course.id}><PanelCard key={course.id}
-                                                                                                loading={false} {...course}
-                                                                                                name={course.name!}
-                                                                                                header={(<>
-                                                                                                    {(course as
-                                                                                                      any).isOnline ?
-                                                                                                      <img
-                                                                                                        src={require("../../../resources/icons/online.png")}
-                                                                                                        alt="online"
-                                                                                                        className={"icon-online"}/> :
-                                                                                                      null}
-                                                                                                    <ImageLogo
-                                                                                                      type="base64"
-                                                                                                      imgSrc={course.logo}
-                                                                                                      name={course.name!}/>
-                                                                                                  </>
-                                                                                                )}>
+                                                                                                       loading={false} {...course}
+                                                                                                       name={course.name!}
+                                                                                                       header={(<>
+                                                                                                           {(course as
+                                                                                                             any).isOnline ?
+                                                                                                             <img
+                                                                                                               src={require("../../../resources/icons/online.png")}
+                                                                                                               alt="online"
+                                                                                                               className={"icon-online"}/> :
+                                                                                                             null}
+                                                                                                           <ImageLogo
+                                                                                                             type="base64"
+                                                                                                             imgSrc={course.logo}
+                                                                                                             name={course.name!}/>
+                                                                                                         </>
+                                                                                                       )}>
                     <Meta title={course.name}
-                          description={<><Rate disabled defaultValue={course.avgRate} allowHalf/>(90)</>}/>
+                          description={<><Rate disabled defaultValue={course.rating || 0}
+                                               allowHalf/>({course.commentCount || 0})</>}/>
                   </PanelCard></Link>)}
                 </div>
               </div>

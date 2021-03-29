@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Col, Form, InputNumber, message, Row} from "antd";
+import {Alert, Card, Form, InputNumber} from "antd";
 import {observer} from "mobx-react";
 import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect} from "react-router-dom";
@@ -12,8 +12,11 @@ import {
   collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
-  Field, getCubaREST, injectMainStore,
-  instance, MainStoreInjected, Msg,
+  Field,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
+  Msg,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -28,6 +31,7 @@ import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$Assi
 import Button, {ButtonType} from "../../../components/Button/Button";
 import Notification from "../../../util/Notification/Notification";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
+import TextArea from "antd/es/input/TextArea";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -63,7 +67,9 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
 
     "startDate",
 
-    "endDate"
+    "endDate",
+
+    "successCritetia"
   ];
 
   @observable
@@ -159,43 +165,44 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
             this.pageActions()
           ]} bordered={false}>
             <Section size={"large"}>
-              <Row className={"form-row"}>
-                <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="category"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    optionsContainer={this.categorysDc}
-                    getFieldDecoratorOpts={{}}
-                  />
-                </Col>
-                <Col md={24} lg={8}>
-                  <Field
-                    entityName={AssignedGoal.NAME}
-                    propertyName="goalString"
-                    form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{}}
-                  />
-                </Col>
-                <Col md={24} lg={8}>
-                  <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
-                             key='weight'
-                             style={{marginBottom: '12px'}}>{
-                    this.props.form.getFieldDecorator('weight', {
-                      rules: [{
-                        required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'weight']})
-                      }, {
-                        validator: this.checkWeightRange
-                      }]
-                    })(
-                      <InputNumber/>
-                    )}
-                  </Form.Item>
-                </Col>
-              </Row>
+              <Field
+                entityName={AssignedGoal.NAME}
+                propertyName="category"
+                form={this.props.form}
+                formItemOpts={{style: {marginBottom: "12px"}}}
+                optionsContainer={this.categorysDc}
+                getFieldDecoratorOpts={{}}
+              />
+              <Field
+                entityName={AssignedGoal.NAME}
+                propertyName="goalString"
+                form={this.props.form}
+                formItemOpts={{style: {marginBottom: "12px"}}}
+                getFieldDecoratorOpts={{}}
+              />
+              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+                         key='weight'
+                         style={{marginBottom: '12px'}}>{
+                this.props.form.getFieldDecorator('weight', {
+                  rules: [{
+                    required: true,
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'weight']})
+                  }, {
+                    validator: this.checkWeightRange
+                  }]
+                })(
+                  <InputNumber/>
+                )}
+              </Form.Item>
+
+              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='successCritetia'/>}
+                         key='successCritetia'
+                         style={{marginBottom: '12px'}}>{
+                this.props.form.getFieldDecorator('successCritetia')(
+                  <TextArea/>
+                )}
+              </Form.Item>
+
               {this.globalErrors.length > 0 && (
                 <Alert
                   message={<MultilineText lines={toJS(this.globalErrors)}/>}
