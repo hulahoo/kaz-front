@@ -6,7 +6,6 @@ import {Card, Table} from "antd";
 import Column from "antd/es/table/Column";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
-import LoadingPage from "../../LoadingPage";
 import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
 import Candidate from "../component/Candidate";
 import {injectIntl, WrappedComponentProps} from "react-intl";

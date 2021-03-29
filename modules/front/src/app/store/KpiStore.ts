@@ -2,7 +2,6 @@ import RootStore from "./RootStore";
 import {action, observable} from "mobx";
 import {kpiService} from "../../cuba/kpi-service/kpiService";
 import moment from "moment";
-import DefaultGoalStore from "./DefaultGoalStore";
 
 type KpiState = {
   personFullName: string,

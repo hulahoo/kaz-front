@@ -3,7 +3,7 @@ import {inject, observer} from "mobx-react";
 import {Button, Dropdown, Icon, Menu, Modal} from "antd";
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {Link, NavLink, withRouter, RouteComponentProps} from "react-router-dom";
+import {Link, NavLink, RouteComponentProps, withRouter} from "react-router-dom";
 import Notification from "./Notification/Notification";
 import {rootStore} from "../../store";
 import {PortalFeedbackQuestionManagement} from "../../pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
