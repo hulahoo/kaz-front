@@ -244,9 +244,9 @@
   "book.subscribe": "Add to My books",
   "course.trainers": "Trainers",
   "course.prerequisition": "Prerequisitions",
-  "course.duration": "Duration",
-  "course.period": "Period",
-  "course.confirm": "Confirm",
+  "course.duration": "Training duration",
+  "course.period": "Periodicity",
+  "course.confirm": "Certificate",
   "reviews": "Reviews",
   "rating": "Rating",
   "course.students": "students",
@@ -359,5 +359,5 @@
   "courses.search.noFound": "Courses not found",
   "book.download": "Download",
   "book.download.error": "Error download file",
-  "learning.period": "Periodicity"
+  "learning.period": "Period"
 }
