@@ -310,7 +310,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         </Form.Item>
       </div>
 
-      //todo это не работает???????? animation exception
+      {/*todo это не работает???????? animation exception*/}
       {/*<ReadonlyField
         formItemKey={"file"}
         style={this.isUserManager ? {visibility: "hidden"} : {}}
