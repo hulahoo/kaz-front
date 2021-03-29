@@ -236,7 +236,7 @@
   "course.description": "Краткое описание",
   "course.trainers": "Тренеры",
   "course.prerequisition": "Пререквизиты",
-  "course.duration": "Продолжительность",
+  "course.duration": "Длительность (часы)",
   "course.period": "Период обучения",
   "course.confirm": "Подтверждение",
   "reviews": "Отзывы",
