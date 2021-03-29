@@ -71,3 +71,7 @@
 .color-blue{
   color: blue;
 }
+
+.display-contents-span > span{
+  display: contents !important;
+}

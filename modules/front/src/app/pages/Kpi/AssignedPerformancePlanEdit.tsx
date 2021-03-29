@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement, FormEvent} from "react";
-import {Alert, Card, Col, DatePicker, Form, InputNumber, message, Row} from "antd";
+import {Alert, Card, Col, DatePicker, Form, InputNumber, message, Row, Tree} from "antd";
 import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {Link, Redirect} from "react-router-dom";
@@ -48,6 +48,10 @@ import {getBusinessKey} from "../../util/util";
 import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
 import TextArea from "antd/es/input/TextArea";
+import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
+import TaskDataTable from "../Bproc/TaskData/TaskDataTable";
+
+const {TreeNode} = Tree;
 
 type EditorProps = {
   entityId: string;
@@ -85,12 +89,11 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     }
   );
 
-  /* filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-     view: "_minimal"
-   });*/
-
   @observable
   totalWeight: number;
+
+  @observable
+  cardStatusEnumValues: EnumValueInfo[];
 
   totalResult: number;
 
@@ -99,6 +102,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   kpiScoreRef: any;
 
   extraPointRef: any;
+
+  finalScoreRef: any;
 
   @observable
   updated = false;
@@ -109,6 +114,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   @observable approverHrRoleCode?: string;
 
   @observable isUserManager?: boolean = false;
+
+  @observable mapTasks = new Map<string, ExtTaskData[]>();
 
   fields = [
     "extraPoint",
@@ -185,7 +192,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     this.totalWeight = value;
   };
 
-  getPoint = (value: number): number => {
+  getPoint = (value?: number): number => {
+    if (value === undefined) return 0;
     if (value < 50) return 6;
     if (value <= 66) return 7;
     if (value <= 74) return 8;
@@ -207,11 +215,19 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   setKpiScore = () => {
     if (this.kpiScoreRef)
       this.kpiScoreRef.innerHTML = this.props.intl.formatMessage({id: "kpiScore"}) + ': ' + this.getPoint(this.totalResult);
+    this.setFinalScore();
   }
 
   setExtraPoint = (extraPoint: number) => {
     if (this.extraPointRef)
-      this.extraPointRef.innerHTML = this.props.intl.formatMessage({id: "extraPoint"}) + ': ' + extraPoint;
+      this.extraPointRef.innerHTML = this.props.intl.formatMessage({id: "extraPoint"}) + ': ' + (extraPoint || 0);
+    this.setFinalScore(extraPoint);
+  }
+
+  setFinalScore = (extraPoint?: number) => {
+    if (!extraPoint) extraPoint = this.props.form.getFieldValue("extraPoint") || 0;
+    if (this.totalResult && this.extraPointRef && this.finalScoreRef)
+      this.finalScoreRef.innerHTML = this.props.intl.formatMessage({id: "finalScore"}) + ': ' + (this.getPoint(this.totalResult) + (extraPoint || 0));
   }
 
   validate = (): Promise<boolean> => {
@@ -268,10 +284,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const {getFieldDecorator} = this.props.form;
 
-    const statusesPerformancePlan: EnumValueInfo[] = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
-
-    const stepIndex = this.dataInstance.item
-      ? statusesPerformancePlan
+    const stepIndex = this.dataInstance.item && this.cardStatusEnumValues
+      ? this.cardStatusEnumValues
         .map((value, index) => {
           return {
             index: index,
@@ -281,6 +295,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         .filter(s => s.id === this.dataInstance.item!.stepStageStatus)
         .map(s => s.index)[0]
       : undefined;
+
+    if (stepIndex === 0) return <></>;
 
     const isExtraPointEnable = stepIndex === 1 && this.approverHrRoleCode === 'MANAGER';
 
@@ -319,7 +335,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         form={this.props.form}
         disabled={!isExtraPointEnable}
         formItemOpts={{style: {marginBottom: "12px"}}}
-      />*/}-course
+      />*/}
 
     </div>)
   }
@@ -506,9 +522,12 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                       }}>
                       {this.props.intl.formatMessage({id: "kpiScore"})}: {Math.round(this.dataInstance.item!.kpiScore)}
                     </h1>
-                    {this.dataInstance.item!.extraPoint ? <h1 id={'extraPoint'} ref={ref => this.extraPointRef = ref}>
-                      {this.props.intl.formatMessage({id: "extraPoint"})}: {Math.round(this.dataInstance.item!.extraPoint)}
-                    </h1> : null}
+                    <h1 id={'extraPoint'} ref={ref => this.extraPointRef = ref}>
+                      {this.props.intl.formatMessage({id: "extraPoint"})}: {Math.round(this.dataInstance.item!.extraPoint || 0)}
+                    </h1>
+                    <h1 id={'finalScore'} ref={ref => this.finalScoreRef = ref}>
+                      {this.props.intl.formatMessage({id: "finalScore"})}: {Math.round(this.dataInstance.item!.finalScore || 0)}
+                    </h1>
                   </div>) : null}
               </div>
             }>
@@ -523,8 +542,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
               {this.getAdditionalForm()}
 
-
             </Section>
+
             {this.takCard()}
 
           </Form>
@@ -537,19 +556,23 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   setReadOnly = (): void => {
     this.readonly = !(this.dataInstance.item
       && this.dataInstance.item.status!.code === 'DRAFT'
+      && this.dataInstance.item.stepStageStatus === 'DRAFT'
       && this.dataInstance.item.assignedPerson!.id! === this.props.rootStore!.userInfo.personGroupId!);
   };
 
   processDefinitionKey: string = AssignedPerformancePlan.PROCESS_DEFINITION_KEY;
 
   pageActions = (): JSX.Element[] => {
+    if (this.isStartForm && this.dataInstance && this.dataInstance.item && this.dataInstance.item.assignedPerson
+      && this.dataInstance.item.assignedPerson.id !== this.props.rootStore!.userInfo!.personGroupId)
+      return [<></>];
     return [this.getOutcomeBtns() || <></>];
   };
 
   initVariablesByBproc = () => {
     if (this.activeTask && this.activeTask.hrRole && this.activeTask.hrRole.code) {
       this.approverHrRoleCode = this.activeTask.hrRole.code;
-    } else if (this.isStartForm) {
+    } else if (this.isStartForm && this.dataInstance.item!.assignedPerson!.id === this.props.rootStore!.userInfo!.personGroupId) {
       this.approverHrRoleCode = 'INITIATOR';
     }
   }
@@ -557,6 +580,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   isUpdateBeforeOutcome = true;
 
   componentDidMount() {
+
+    this.cardStatusEnumValues = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
+
     this.setReactionDisposer();
 
     this.dataInstance.load();
@@ -569,6 +595,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         id: this.props.rootStore!.userInfo.personGroupId
       },
       result: this.totalResult || 0,
+      kpiScore: this.getPoint(this.totalResult),
+      finalScore: this.getPoint(this.totalResult) + (this.props.form.getFieldValue("extraPoint") || 0),
       stepStageStatus: step !== undefined && step != null ? step : "DRAFT",
       ...this.props.form.getFieldsValue(this.fields)
     }
@@ -600,6 +628,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
           }
         };
         this.props.form.setFieldsValue(values);
+        this.setFinalScore(item!.extraPoint);
       }
     );
   };
@@ -610,6 +639,98 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     } else {
       this.dataInstance.setItem(new AssignedPerformancePlan());
     }
+  }
+
+  loadBpmProcessData = () => {
+    const processDefinitionKey = this.processDefinitionKey;
+    if (this.props.entityId !== "new") {
+
+      restServices.bprocService.processInstanceData({
+        processInstanceBusinessKey: this.processInstanceBusinessKey(),
+        processDefinitionKey: processDefinitionKey
+      }).then(value => {
+        this.isCalledProcessInstanceData = true;
+        this.processInstanceData = value;
+        if (value) {
+          restServices.bprocService.tasks({processInstanceData: value})
+            .then(tasks => {
+              this.tasks = tasks;
+              this.activeTask = tasks.find(task => !task.endTime
+                && Array.isArray(task.assigneeOrCandidates)
+                && task.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
+              ) as ExtTaskData;
+
+              if (this.activeTask)
+                restServices.bprocFormService.getTaskFormData({taskId: this.activeTask.id!})
+                  .then(formData => {
+                    this.formData = formData;
+                    this.isStartForm = false;
+                    this.initVariablesByBproc();
+                  });
+              else this.initVariablesByBproc();
+            })
+        } else {
+          restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
+            .then(formData => {
+              this.formData = formData;
+              this.isStartForm = true;
+              this.initVariablesByBproc();
+            });
+        }
+      })
+
+      for (let businessKey of this.cardStatusEnumValues.map(value => this.props.entityId + '/' + value.id)) {
+        restServices.bprocService.processInstanceData({
+          processInstanceBusinessKey: businessKey,
+          processDefinitionKey: processDefinitionKey
+        }).then(value => {
+          if (value) {
+            restServices.bprocService.tasks({processInstanceData: value})
+              .then(tasks => this.mapTasks.set(businessKey, tasks));
+          }
+        });
+        if (businessKey === this.processInstanceBusinessKey()) break;
+      }
+
+    } else {
+      const processDefinitionKey = this.processDefinitionKey;
+
+      restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
+        .then(formData => {
+          this.formData = formData;
+          this.isStartForm = true;
+          this.initVariablesByBproc();
+        });
+    }
+  }
+
+  takCard = () => {
+    if (!this.cardStatusEnumValues || this.mapTasks.size === 0) return <div/>;
+
+    const treeNodes: any[] = [];
+
+    this.cardStatusEnumValues.forEach(enumValues => {
+      const key = this.props.entityId + '/' + enumValues.id!;
+      const tasks = this.mapTasks.get(key);
+      if (tasks) {
+        treeNodes.push(<TreeNode
+          title={this.cardStatusEnumValues.find(value1 => key.endsWith(value1.id! + ''))!.caption}
+          key={key}>
+          {[<TreeNode className={'display-contents-span'} title={<TaskDataTable tasks={tasks} key={key}/>}
+                      key={`${key}-table`}/>]}
+        </TreeNode>)
+      }
+    });
+
+    return (
+      <Card className="narrow-layout large-section section-container">
+        <div
+          className={"section-header-container"}>{this.props.intl.formatMessage({id: "bproc.participants"})}</div>
+        <Tree>
+          {treeNodes})}
+        </Tree>
+      </Card>
+    )
   }
 
   processInstanceBusinessKey = (): string => {

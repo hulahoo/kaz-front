@@ -313,6 +313,7 @@
   "assignedPerformancePlan.extraPoint.validation": "Дополнительный балл должна быть от 1 до 8",
   "kpiScore": "Балл по KPI",
   "extraPoint": "Дополнительный балл",
+  "finalScore": "Итоговый балл",
   "org.request.info": "Информация о заявке",
   "org.request.filter": "Фильтр",
   "org.request.filter.1": "Тип изменения",
