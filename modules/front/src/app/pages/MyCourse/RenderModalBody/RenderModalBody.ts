@@ -6,6 +6,9 @@ import ScormCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectio
 import VideoCourseSectionRender from "./CourseSectionModalBody/VideoCourseSectionRender";
 import FeedbackCourseSectionRender from "./Feedback/FeedbackCourseSectionRender";
 import Notification from "../../../util/Notification/Notification";
+import UrlScormCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
+import TextCourseSectionRender from "./CourseSectionModalBody/TextCourseSectionRender";
+import FileCourseSectionRender from "./CourseSectionModalBody/FileCourseSectionRender";
 import PdfCourseSectionRender from "./CourseSectionModalBody/PdfCourseSectionRender";
 
 export type CourseSectionRenderType = "course-section" | "feedback";
@@ -39,8 +42,12 @@ export default class RenderModalBodyImpl implements RenderModalBody {
       return React.createElement(TestCourseSectionRender, {...params});
     } else if (params.courseSection.sectionObject!.content!.contentType === "HTML") {
       return React.createElement(HtmlCourseSectionRender, {...params});
+    } else if (params.courseSection.sectionObject!.content!.contentType === "TEXT") {
+      return React.createElement(TextCourseSectionRender, {...params});
     } else if (params.courseSection.sectionObject!.content!.contentType === "URL") {
       return React.createElement(UrlCourseSectionRender, {...params});
+    } else if (params.courseSection.sectionObject!.content!.contentType === "FILE") {
+      return React.createElement(FileCourseSectionRender, {...params});
     } else if (params.courseSection.sectionObject!.content!.contentType === "VIDEO") {
       return React.createElement(VideoCourseSectionRender, {...params});
     } else if (params.courseSection.sectionObject!.content!.contentType === "SCORM_ZIP") {
