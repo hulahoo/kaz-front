@@ -105,7 +105,8 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
     const {outcome} = this.props;
     const title = this.props.intl.formatMessage({id: outcome.id!});
 
-    return <Button buttonType={outcome.id!.toLowerCase() === 'approve' ? ButtonType.PRIMARY : ButtonType.FOLLOW}
+    return <Button buttonType={ButtonType.PRIMARY}
+                   className={outcome.id!.toLowerCase()}
                    onClickCapture={() => this.showModal(outcome)}
                    key={outcome.id}>
       {title}

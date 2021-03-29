@@ -233,10 +233,10 @@
   "book.enrolled": "Книга уже добавлена в вашу библиотеку",
   "book.subscribe": "Добавить в мои книги",
   "course.information": "Информация о курсе",
-  "course.description": "Описание",
+  "course.description": "Краткое описание",
   "course.trainers": "Тренеры",
   "course.prerequisition": "Пререквизиты",
-  "course.duration": "Продолжительность",
+  "course.duration": "Длительность (часы)",
   "course.period": "Период обучения",
   "course.confirm": "Подтверждение",
   "reviews": "Отзывы",
@@ -348,5 +348,7 @@
   "prevQuestion": "Назад",
   "courses.search.noFound": "Курсы не найдены!",
   "book.download": "Скачать книгу",
-  "book.download.error": "Не удалось скачать книгу"
+  "book.download.error": "Не удалось скачать книгу",
+  "learning.period": "Период",
+  "download": "Скачать"
 }
