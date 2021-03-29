@@ -86,7 +86,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
     const courseSections = this.dataInstance ? this.dataInstance.course!.sections!.map(s => {
       return {
-        hasAttempt: s.courseSectionAttempts!.length > 0,
+        succeedFinished: s.courseSectionAttempts!.filter(a => a.success).length > 0,
         id: s.id,
         text: s.sectionName,
         type: "course-section"
@@ -121,7 +121,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                   <CourseSectionList dataInstance={this.feedbacks ? this.feedbacks.map(f => {
                     return {
                       id: f.id,
-                      hasAttempt: false,
+                      succeedFinished: false,
                       text: f._instanceName,
                       type: "feedback"
                     }

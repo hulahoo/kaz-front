@@ -6,7 +6,7 @@ import {CourseSectionRenderType} from "../../pages/MyCourse/RenderModalBody/Rend
 
 export type ListItem = {
   id: string,
-  hasAttempt: boolean,
+  succeedFinished: boolean,
   text: string,
   type: CourseSectionRenderType,
   styleClass?: string
@@ -33,7 +33,7 @@ class CourseSectionList extends Component<Props<CourseSection>> {
             <>{
               // @ts-ignore
               <Meta title={<>
-                {item.hasAttempt ?
+                {item.succeedFinished ?
                   <Icon type="check-circle" className={"done"} theme="twoTone" twoToneColor="#12BF66"/> : null}
                 <div>{item.text}</div>
               </>}
