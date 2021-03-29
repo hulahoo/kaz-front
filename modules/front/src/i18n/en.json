@@ -237,7 +237,7 @@
   "reviewCount": "Reviews",
   "course.subscribe": "Subscribe",
   "course.information": "Information",
-  "course.description": "Description",
+  "course.description": "Short description",
   "course.enrolled": "You are enrolled",
   "book.studentFinished": "Employees added to library:",
   "book.enrolled": "Book is already added to library",
@@ -358,5 +358,6 @@
   "prevQuestion": "Prev",
   "courses.search.noFound": "Courses not found",
   "book.download": "Download",
-  "book.download.error": "Error download file"
+  "book.download.error": "Error download file",
+  "learning.period": "Periodicity"
 }
