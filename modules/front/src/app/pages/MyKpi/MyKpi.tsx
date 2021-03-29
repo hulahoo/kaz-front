@@ -1,6 +1,6 @@
 import React from 'react';
 import {ColumnProps} from "antd/es/table";
-import KzmTable, {SelectRowType} from "../../components/Table/KzmTable";
+import KzmTable from "../../components/Table/KzmTable";
 import {inject} from "mobx-react";
 import {RootStoreProp} from "../../store";
 import {formatDefaultDate} from "../../util/Date/Date";

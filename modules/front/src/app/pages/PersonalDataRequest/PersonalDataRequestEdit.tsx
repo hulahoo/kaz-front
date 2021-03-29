@@ -4,7 +4,6 @@ import {Alert, Card, Col, Form, message, Row} from "antd";
 import {inject, observer} from "mobx-react";
 import {PersonalDataRequestManagement} from "./PersonalDataRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Link} from "react-router-dom";
 import {IReactionDisposer, observable, reaction, runInAction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
@@ -12,7 +11,7 @@ import {
   clearFieldErrors,
   constructFieldsWithErrors,
   extractServerValidationErrors,
-  Field, FileUpload,
+  Field,
   injectMainStore,
   instance,
   MainStoreInjected,
@@ -29,7 +28,6 @@ import PersonContactList from "../PersonContact/PersonContactList";
 import PersonDocumentList from "../PersonDocument/PersonDocumentList";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
-import Section from "../../hoc/Section";
 
 type Props = FormComponentProps;
 
@@ -214,7 +212,8 @@ class PersonalDataRequestEditComponent extends React.Component<Props & WrappedCo
           <PersonDocumentList/>
         </Card>
         <Card className="narrow-layout large-section section-container">
-          <div className={"section-header-container"}>{this.props.intl.formatMessage({id: "myProfile.contactInformation"})}</div>
+          <div
+            className={"section-header-container"}>{this.props.intl.formatMessage({id: "myProfile.contactInformation"})}</div>
           <PersonContactList/>
         </Card>
       </div>

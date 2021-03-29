@@ -1,8 +1,7 @@
 import * as React from "react";
-import PageContentHoc from "../../hoc/PageContentHoc";
+import Page from "../../hoc/PageContentHoc";
 import PersonalDataRequestEdit from "./PersonalDataRequestEdit";
 import {observer} from "mobx-react";
-import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
 @observer

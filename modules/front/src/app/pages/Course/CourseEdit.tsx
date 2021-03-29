@@ -149,8 +149,6 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
       return <LoadingPage/>
     }
 
-    const {TextArea} = Input;
-
     return (
       <Page>
         <Card className="narrow-layout card-actions-container" actions={[

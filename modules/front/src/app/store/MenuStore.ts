@@ -1,10 +1,7 @@
 import RootStore from "./RootStore";
 import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
-import {PersonalDataRequestManagement} from "../pages/PersonalDataRequest/PersonalDataRequestManagement";
 import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
-import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
-import {ScheduleOffsetsRequestManagement} from "../pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
 import AbsenceList from "../pages/Absence/AbsenceList";
 
 export interface MenuRouteItem extends RouteItem {
@@ -140,7 +137,7 @@ export default class MenuStore {
         pathPattern: "/org-structure-request",
         component: null,
       }
-      ]
+    ]
     // restServices.userMenuService.userMenuList().then((response: string) => {
     //   const menuIdList: string[] = JSON.parse(response);
     //   console.log(menuIdList);
