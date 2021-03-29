@@ -45,7 +45,6 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
                     value={this.noteValue}
                     onChange={event => {
                       this.noteValue = event.currentTarget.value;
-                      console.log(this.noteValue);
                     }}/>
         </Modal>
       </Card>

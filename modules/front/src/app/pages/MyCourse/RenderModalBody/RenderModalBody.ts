@@ -2,11 +2,11 @@ import * as React from "react";
 import TestCourseSectionRender from "./CourseSectionModalBody/TestCourseSectionRender";
 import HtmlCourseSectionRender from "./CourseSectionModalBody/HtmlCourseSectionRender";
 import UrlCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
+import ScormCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
 import VideoCourseSectionRender from "./CourseSectionModalBody/VideoCourseSectionRender";
 import FeedbackCourseSectionRender from "./Feedback/FeedbackCourseSectionRender";
 import Notification from "../../../util/Notification/Notification";
-import UrlScormCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
-import ScormCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
+import PdfCourseSectionRender from "./CourseSectionModalBody/PdfCourseSectionRender";
 
 export type CourseSectionRenderType = "course-section" | "feedback";
 
@@ -45,6 +45,8 @@ export default class RenderModalBodyImpl implements RenderModalBody {
       return React.createElement(VideoCourseSectionRender, {...params});
     } else if (params.courseSection.sectionObject!.content!.contentType === "SCORM_ZIP") {
       return React.createElement(ScormCourseSectionRender, {...params});
+    } else if (params.courseSection.sectionObject!.content!.contentType === "PDF") {
+      return React.createElement(PdfCourseSectionRender, {...params});
     }
     return null;
   };

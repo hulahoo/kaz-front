@@ -286,7 +286,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const isForm2Visible = stepIndex !== undefined && stepIndex > 0 && this.isUserManager;
 
-    return (<div style={!isForm2Visible && false ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
+    return (<div style={!isForm2Visible ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
 
       <div className={"ant-row ant-form-item"} style={{marginBottom: "12px", marginTop: '40px'}}>
         {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "extraPoint"})}
@@ -319,18 +319,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         form={this.props.form}
         disabled={!isExtraPointEnable}
         formItemOpts={{style: {marginBottom: "12px"}}}
-      />*/}
+      />*/}-course
 
     </div>)
-    return <ReadonlyField
-      formItemKey={"file"}
-      style={!this.isUserManager ? {visibility: "hidden"} : {}}
-      entityName={this.dataInstance.entityName}
-      propertyName="file"
-      form={this.props.form}
-      disabled={!isExtraPointEnable}
-      formItemOpts={{style: {marginBottom: "12px"}}}
-    />
   }
 
   render() {

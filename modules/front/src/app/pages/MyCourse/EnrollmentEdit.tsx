@@ -94,7 +94,6 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     }) : [];
 
     return (
-      // @ts-ignore
       <Page>
         <Spin spinning={this.status === 'LOADING'}>
           <Section size={"large"} sectionName={this.dataInstance ? this.dataInstance!.course!.name! : null}>
