@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Col, Form, InputNumber, message, Row, Select} from "antd";
+import {Alert, Card, Form, InputNumber, message, Select} from "antd";
 import {observer} from "mobx-react";
 import {Link, Redirect} from "react-router-dom";
 import {IReactionDisposer, observable, reaction, toJS} from "mobx";
@@ -192,53 +192,45 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Button>]
           } bordered={false}>
             <Section size={"large"}>
-              <Row className={"form-row"}>
-                <Col md={24} lg={8}>
-                  <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goalLibrary'/>}
-                             key='goalLibrary'
-                             style={{marginBottom: '12px'}}>
-                    {this.props.form.getFieldDecorator('goalLibrary', {
-                      validateTrigger: ["onChange", "onBlur"]
-                    })(
-                      <Select onChange={this.changeGoalLibrary}>
-                        {this.goalLibrarysDc.items.map(gl => {
-                          //@ts-ignore
-                          return <Option value={gl.id}
-                                         category={gl.category!.id}>{gl._instanceName}</Option>
-                        })}
-                      </Select>
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col md={24} lg={8}>
-                  <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goal'/>}
-                             key='goal'
-                             style={{marginBottom: '12px'}}>
-                    {this.props.form.getFieldDecorator('goal', {
-                      validateTrigger: ["onChange", "onBlur"]
-                    })(
-                      <Select onChange={this.selectGoal}>{this.goalsDc ? this.goalsDc.items.map(gl => <Option
-                        value={gl.id}>{gl._instanceName}</Option>) : null}</Select>
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col md={24} lg={8}>
-                  <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
-                             key='weight'
-                             style={{marginBottom: '12px'}} className={"button-actions-group"}>{
-                    this.props.form.getFieldDecorator('weight', {
-                      rules: [{
-                        required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'weight']})
-                      }, {
-                        validator: this.checkWeightRange
-                      }]
-                    })(
-                      <InputNumber/>
-                    )}
-                  </Form.Item>
-                </Col>
-              </Row>
+              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goalLibrary'/>}
+                         key='goalLibrary'
+                         style={{marginBottom: '12px'}}>
+                {this.props.form.getFieldDecorator('goalLibrary', {
+                  validateTrigger: ["onChange", "onBlur"]
+                })(
+                  <Select onChange={this.changeGoalLibrary}>
+                    {this.goalLibrarysDc.items.map(gl => {
+                      //@ts-ignore
+                      return <Option value={gl.id}
+                                     category={gl.category!.id}>{gl._instanceName}</Option>
+                    })}
+                  </Select>
+                )}
+              </Form.Item>
+              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goal'/>}
+                         key='goal'
+                         style={{marginBottom: '12px'}}>
+                {this.props.form.getFieldDecorator('goal', {
+                  validateTrigger: ["onChange", "onBlur"]
+                })(
+                  <Select onChange={this.selectGoal}>{this.goalsDc ? this.goalsDc.items.map(gl => <Option
+                    value={gl.id}>{gl._instanceName}</Option>) : null}</Select>
+                )}
+              </Form.Item>
+              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+                         key='weight'
+                         style={{marginBottom: '12px'}} className={"button-actions-group"}>{
+                this.props.form.getFieldDecorator('weight', {
+                  rules: [{
+                    required: true,
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'weight']})
+                  }, {
+                    validator: this.checkWeightRange
+                  }]
+                })(
+                  <InputNumber/>
+                )}
+              </Form.Item>
               <Field
                 entityName={AssignedGoal.NAME}
                 propertyName="goalString"
