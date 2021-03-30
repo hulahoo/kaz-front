@@ -37,7 +37,7 @@ class AssignedGoalListComponent extends React.Component<
 
     "actualValue",
 
-    "successCritetia",
+    "successCriteria",
 
     "startDate",
 
