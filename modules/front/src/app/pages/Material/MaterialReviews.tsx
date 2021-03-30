@@ -1,5 +1,5 @@
 import React, {Component, FormEvent} from 'react';
-import {Card, Col, Form, List, message, Rate, Row, Spin} from "antd";
+import {Card, Col, Form, List, message, Row, Spin} from "antd";
 import moment from "moment";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Button, {ButtonType} from "../../components/Button/Button";
@@ -7,6 +7,7 @@ import {FormComponentProps} from "antd/es/form";
 import TextArea from "antd/es/input/TextArea";
 import {withLocalizedForm} from "@cuba-platform/react";
 import Notification from "../../util/Notification/Notification";
+import Rate from "../../components/Rate/Rate";
 
 export type Comment = {
   user?: string;

@@ -1,6 +1,5 @@
 import React from 'react';
-import Meta from "antd/es/card/Meta";
-import {Card, Rate} from "antd";
+import {Card} from "antd";
 
 export type PanelCardProps = {
   loading?: boolean

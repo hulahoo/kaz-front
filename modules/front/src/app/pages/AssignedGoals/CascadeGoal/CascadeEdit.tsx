@@ -56,7 +56,7 @@ type SelectLabelValue = {
 @observer
 class CascadeEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
 
-  fields = ["performancePlan", "assignedByPersonGroup", "goalString", "weight", "result", "category", "goal"];
+  fields = ["performancePlan", "assignedByPersonGroup", "goalString", "weight", "category", "goal"];
 
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
@@ -229,13 +229,6 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                   }]
                 }}
               />
-              <Field
-                entityName={AssignedGoal.NAME}
-                propertyName="result"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-              />
-
               {this.globalErrors.length > 0 && (
                 <Alert
                   message={<MultilineText lines={toJS(this.globalErrors)}/>}

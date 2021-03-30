@@ -1,5 +1,5 @@
 import React from 'react';
-import {Rate, Spin, Tabs} from "antd";
+import {Spin, Tabs} from "antd";
 import {inject, observer} from "mobx-react";
 import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
@@ -17,6 +17,7 @@ import ImageLogo from "../../components/ImageLogo";
 import Section from "../../hoc/Section";
 import {CourseManagement} from "../Course/CourseManagement";
 import Notification from "../../util/Notification/Notification";
+import Rate from "../../components/Rate/Rate";
 
 @inject("rootStore")
 @observer

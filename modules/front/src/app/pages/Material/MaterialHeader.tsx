@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {Col, Form, Rate, Row} from "antd";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {Col, Form, Row} from "antd";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 import Button, {ButtonType} from "../../components/Button/Button";
 import ImageLogo, {ImageLogoProps} from "../../components/ImageLogo";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import {EnrollmentManagement} from "../MyCourse/EnrollmentManagement";
+import Rate from "../../components/Rate/Rate";
 
 type MaterialHeaderProps = {
   name: string;
