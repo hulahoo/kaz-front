@@ -21,7 +21,6 @@ class VideoCourseSectionRender extends AbstractRenderModalBody<VideoCourseSectio
     return <div className="course-section-modal-body">
       <video controls={true} src={this.videoUrl}
              style={{width: '100%', height: '100%'}}/>
-      {/*<Video fileId={this.props.courseSection.sectionObject!.content!.file!.id!}/>*/}
     </div>
   };
 

@@ -1,15 +1,14 @@
 import * as React from "react";
 import TestCourseSectionRender from "./CourseSectionModalBody/TestCourseSectionRender";
 import HtmlCourseSectionRender from "./CourseSectionModalBody/HtmlCourseSectionRender";
-import UrlCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
 import ScormCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
 import VideoCourseSectionRender from "./CourseSectionModalBody/VideoCourseSectionRender";
 import FeedbackCourseSectionRender from "./Feedback/FeedbackCourseSectionRender";
 import Notification from "../../../util/Notification/Notification";
-import UrlScormCourseSectionRender from "./CourseSectionModalBody/ScormCourseSectionRender";
 import TextCourseSectionRender from "./CourseSectionModalBody/TextCourseSectionRender";
 import FileCourseSectionRender from "./CourseSectionModalBody/FileCourseSectionRender";
 import PdfCourseSectionRender from "./CourseSectionModalBody/PdfCourseSectionRender";
+import UrlCourseSectionRender from "./CourseSectionModalBody/UrlCourseSectionRender";
 
 export type CourseSectionRenderType = "course-section" | "feedback";
 
