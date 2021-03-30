@@ -1,9 +1,7 @@
 import React from 'react';
 import {CourseSection} from "../../../../../cuba/entities/base/tsadv$CourseSection";
 import AbstractRenderModalBody from "../AbstractRenderModalBody";
-import {getCubaREST} from "@cuba-platform/react";
 import {observable} from "mobx";
-import Pdf from "@mikecousins/react-pdf";
 import {getBlobUrl} from "../../../../util/util";
 import {observer} from "mobx-react";
 
