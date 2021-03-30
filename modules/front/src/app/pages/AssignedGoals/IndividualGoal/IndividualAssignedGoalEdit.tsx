@@ -69,7 +69,7 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
 
     "endDate",
 
-    "successCritetia"
+    "successCriteria"
   ];
 
   @observable
@@ -195,10 +195,10 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
                 )}
               </Form.Item>
 
-              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='successCritetia'/>}
-                         key='successCritetia'
+              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='successCriteria'/>}
+                         key='successCriteria'
                          style={{marginBottom: '12px'}}>{
-                this.props.form.getFieldDecorator('successCritetia')(
+                this.props.form.getFieldDecorator('successCriteria')(
                   <TextArea/>
                 )}
               </Form.Item>

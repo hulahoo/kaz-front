@@ -1,6 +1,6 @@
 import React from 'react';
 import PanelCard from "../../components/CourseCard";
-import {Rate, Spin, Tabs} from "antd";
+import {Spin, Tabs} from "antd";
 import {observer} from "mobx-react";
 import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
@@ -13,6 +13,7 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import {serviceCollection} from "../../util/ServiceDataCollectionStore";
 import Notification from "../../util/Notification/Notification";
 import {injectIntl, WrappedComponentProps} from "react-intl";
+import Rate from "../../components/Rate/Rate";
 
 @observer
 class CourseList<T> extends React.Component<WrappedComponentProps> {

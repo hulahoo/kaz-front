@@ -255,28 +255,29 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                     ? text
                     : <Link to={this.getGoalUrl(record)}>{text}</Link>
                 })}/>
-        <Column title={<Msg entityName={Goal.NAME} propertyName='successCriteria'/>}
-                dataIndex="goal.successCriteria"
+        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='successCriteria'/>}
+                dataIndex="successCriteria"
                 key="successCriteria"
                 sorter={(a: any, b: any) => {
+                  console.log(a);
                   if (a.key) {
                     return a;
                   }
-                  if (a.goal && b.goal) {
-                    if (a.goal.successCriteria && b.goal.successCriteria) {
-                      return a.goal.successCriteria.localeCompare(b.goal.successCriteria)
-                    } else if (a.goal.successCriteria) {
-                      return 1;
-                    } else if (b.goal.successCriteria) {
-                      return -1;
-                    }
-                  } else if (a.goal!) {
-                    return 1;
-                  } else if (b.goal!) {
-                    return -1;
+                  const aSuccessCriteria = a.successCriteria || (a.goal ? a.goal.successCriteria : undefined)
+                  const bSuccessCriteria = b.successCriteria || (b.goal ? b.goal.successCriteria : undefined)
+
+                  if (aSuccessCriteria && bSuccessCriteria) {
+                    return aSuccessCriteria.localeCompare(bSuccessCriteria);
                   }
-                  return 0
-                }}/>
+                  if (aSuccessCriteria) return 1;
+                  if (bSuccessCriteria) return 1;
+                  return 0;
+                }}
+                render={(text, record) => {
+                  const assignedGoal = record as AssignedGoal;
+                  return text || (assignedGoal.goal ? assignedGoal.goal.successCriteria : '');
+                }}
+        />
         <Column title={<FormattedMessage id="kpi.goals.weight"/>}
                 dataIndex="weight"
                 key="weight"

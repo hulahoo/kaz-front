@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import Page from "../../hoc/PageContentHoc";
-import {Card, Col, Form, Rate, Row, Skeleton} from "antd";
+import {Card, Col, Form, Row, Skeleton} from "antd";
 import {Link} from "react-router-dom";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
@@ -20,6 +20,7 @@ import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
 import Notification from "../../util/Notification/Notification";
 import {RootStoreProp} from "../../store";
+import Rate from "../../components/Rate/Rate";
 
 type EditorProps = {
   entityId: string;

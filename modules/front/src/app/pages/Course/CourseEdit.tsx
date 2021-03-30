@@ -6,7 +6,7 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
 import {inject, observer} from "mobx-react";
 import {CourseInfo, CourseTrainerInfo, restServices} from "../../../cuba/services";
-import {Card, Col, Form, Input, List, Modal, Rate, Row, Spin} from "antd";
+import {Card, Col, Form, Row} from "antd";
 import LoadingPage from "../LoadingPage";
 import Notification from "../../util/Notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
@@ -20,6 +20,7 @@ import MaterialHeader from "../Material/MaterialHeader";
 import MaterialDescription from "../Material/MaterialDescription";
 import MaterialTrainerModal from "../Material/MaterialTrainerModal";
 import MaterialReviews, {RateRenderMeta} from "../Material/MaterialReviews";
+import Rate from "../../components/Rate/Rate";
 
 type Props = {
   entityId: string;
