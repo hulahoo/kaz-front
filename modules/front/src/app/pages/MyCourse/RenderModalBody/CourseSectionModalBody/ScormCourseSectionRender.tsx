@@ -1,19 +1,18 @@
 import React from 'react';
 import {CourseSection} from "../../../../../cuba/entities/base/tsadv$CourseSection";
 import AbstractRenderModalBody from "../AbstractRenderModalBody";
-
-declare global {
-  interface Window {
-    API_1484_11: any;
-  }
-}
+import ScormIntegrationApi from "../ScormIntegrationApi/ScormIntegrationApi";
+import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type ScormCourseSectionRenderProps = {
   courseSection: CourseSection
-  onFinishSection: () => void
+  onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
 class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectionRenderProps> {
+
+  scormIntegrationApi = new ScormIntegrationApi();
+
   getModalBody = () => {
     return <div className="course-section-modal-body">
       <iframe width="100%" height="100%" src={this.props.courseSection.sectionObject!.content!.url!}/>
@@ -21,36 +20,21 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   };
 
   onFinishSection = () => {
-    this.props.onFinishSection();
+    this.props.onFinishSection().then(attempt => {
+      console.log(this.scormIntegrationApi.getInputData());
+    });
   };
 
   componentWillUnmount(): void {
-    delete window.API_1484_11;
+    this.scormIntegrationApi.destroy();
   }
 
   componentDidMount() {
     this.setIsDisabledFinishSectionBtn(this.props.courseSection.courseSectionAttempts!.length === 0);
-    window.API_1484_11 = {
-      Initialize: () => {
-      },
-      GetValue: (property: string, value: string) => {
-      },
-      Finish: () => {
-      },
-      SetValue: (property: string, value: string) => {
-        window.API_1484_11[property] = value;
-      },
-      Commit: () => {
-        this.setIsDisabledFinishSectionBtn(window.API_1484_11['cmi.completion_status'].toLowerCase() !== 'completed');
-      },
-      GetLastError: () => {
-
-      },
-      GetErrorString: () => {
-
-      },
-      GetDiagnostic: () => {
-
+    this.scormIntegrationApi.commit = () => {
+      this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
+      if (this.scormIntegrationApi.isSucceedFinishedScorm()) {
+        console.log(this.scormIntegrationApi.getInputData());
       }
     }
   }

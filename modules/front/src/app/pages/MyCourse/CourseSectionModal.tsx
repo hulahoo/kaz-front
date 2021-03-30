@@ -6,12 +6,11 @@ import RenderModalBodyImpl, {RenderModalBody} from "./RenderModalBody/RenderModa
 import {restServices} from "../../../cuba/services";
 import {action, observable} from "mobx";
 import {SelectedSection} from "./EnrollmentEdit";
-import {DataInstanceStore, instance} from "@cuba-platform/react";
 import {FeedbackCourse} from "./RenderModalBody/Feedback/FeedbackComponent";
 import {LearningFeedbackQuestion} from "../../../cuba/entities/base/tsadv$LearningFeedbackQuestion";
 import {SerializedEntity} from "@cuba-platform/rest";
-import {serviceCollection, ServiceDataCollectionStore} from "../../util/ServiceDataCollectionStore";
 import {ServiceDataInstanceStore, serviceInstance} from "../../util/ServiceDataInstanceStore";
+import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type Props = {
   courseId: string,
@@ -20,7 +19,7 @@ type Props = {
   enrollmentId: string,
   onCloseModal?: () => void
   onFinishTest?: () => void
-  onFinishSection?: () => void
+  onFinishSection?: () => Promise<CourseSectionAttempt>
 }
 
 @observer

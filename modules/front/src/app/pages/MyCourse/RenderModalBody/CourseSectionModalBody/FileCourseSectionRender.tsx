@@ -6,10 +6,11 @@ import {observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {getBlobUrl} from "../../../../util/util";
 import {Spin} from "antd";
+import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type HtmlCourseSectionRenderProps = {
   courseSection: CourseSection
-  onFinishSection: () => void
+  onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
 type FileInfo = {

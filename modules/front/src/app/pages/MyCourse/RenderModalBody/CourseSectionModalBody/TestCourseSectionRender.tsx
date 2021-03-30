@@ -10,11 +10,12 @@ import {observable, runInAction} from "mobx";
 import {observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {AssignedGoal} from "../../../../../cuba/entities/base/tsadv$AssignedGoal";
+import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type TestCourseSectionRenderProps = {
   enrollmentId: string
   courseSection: CourseSection
-  onFinishSection: () => void
+  onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
 @observer

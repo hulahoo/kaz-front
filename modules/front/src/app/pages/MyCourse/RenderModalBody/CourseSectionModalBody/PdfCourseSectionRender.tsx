@@ -4,10 +4,11 @@ import AbstractRenderModalBody from "../AbstractRenderModalBody";
 import {observable} from "mobx";
 import {getBlobUrl} from "../../../../util/util";
 import {observer} from "mobx-react";
+import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type PdfCourseSectionRenderProps = {
   courseSection: CourseSection
-  onFinishSection: () => void
+  onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
 @observer

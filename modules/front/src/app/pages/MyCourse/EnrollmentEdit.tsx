@@ -223,80 +223,67 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     });
   };
 
-  finishSection = () => {
+  finishSection = async (): Promise<CourseSectionAttempt> => {
     this.loadingFinishCourse = true;
-    getCubaREST()!.searchEntitiesWithCount(CourseSectionAttempt.NAME, {
-      conditions: [{
-        property: "enrollment",
-        operator: "=",
-        value: this.props.entityId
-      }, {
-        property: "courseSection",
-        operator: "=",
-        value: this.selectedSection!.id
-      }]
-    }, {view: "course-section-attempt"})
-      .then(response => {
-        if ((response.count == 0)) {
-          getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
-            courseSection: {
-              id: this.selectedSection!.id,
-            },
-            attemptDate: moment().toISOString(),
-            activeAttempt: false,
-            success: true,
-            enrollment: {
-              id: this.props.entityId
-            }
-          } as CourseSectionAttempt)
-            .then(response => {
-              const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
-              this.finishedCourseSection(this.selectedSection!.id);
-              if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
-                const nextSelectedSectionIndex = selectedSectionIndex + 1;
-                const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
-                if (nextSection) {
-                  this.setVisibleModal(false);
-                  this.setSelectedSection({
-                    type: "course-section",
-                    id: nextSection.id
-                  });
-                  this.playIconClick();
-                } else {
-                  this.visibleModal = false;
-                }
-              } else {
-                this.visibleModal = false;
-              }
-              this.loadingFinishCourse = false;
-            })
-            .catch(() => {
-              this.loadingFinishCourse = false;
+    try {
+      const attempt = await getCubaREST()!.searchEntitiesWithCount(CourseSectionAttempt.NAME, {
+        conditions: [{
+          property: "enrollment",
+          operator: "=",
+          value: this.props.entityId
+        }, {
+          property: "courseSection",
+          operator: "=",
+          value: this.selectedSection!.id
+        }]
+      }, {view: "course-section-attempt"});
+
+      const selectNextSection = () => {
+        const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
+        if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
+          const nextSelectedSectionIndex = selectedSectionIndex + 1;
+          const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
+          if (nextSection) {
+            this.setVisibleModal(false);
+            this.setSelectedSection({
+              type: "course-section",
+              id: nextSection.id
             });
-        } else {
-          const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
-          if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
-            const nextSelectedSectionIndex = selectedSectionIndex + 1;
-            const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
-            if (nextSection) {
-              this.setVisibleModal(false);
-              this.setSelectedSection({
-                type: "course-section",
-                id: nextSection.id
-              });
-              this.playIconClick();
-            } else {
-              this.visibleModal = false;
-            }
+            this.playIconClick();
           } else {
             this.visibleModal = false;
           }
-          this.loadingFinishCourse = false;
+        } else {
+          this.visibleModal = false;
         }
-      })
-      .catch(() => {
         this.loadingFinishCourse = false;
-      })
+      };
+
+      if ((attempt.count == 0)) {
+        const newAttempt = getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
+          courseSection: {
+            id: this.selectedSection!.id,
+          },
+          attemptDate: moment().toISOString(),
+          activeAttempt: false,
+          success: true,
+          enrollment: {
+            id: this.props.entityId
+          }
+        } as CourseSectionAttempt);
+
+        this.finishedCourseSection(this.selectedSection!.id);
+        selectNextSection();
+
+        return newAttempt;
+      } else {
+        selectNextSection();
+        return (attempt.result[0] as CourseSectionAttempt);
+      }
+    } catch (e) {
+      this.loadingFinishCourse = false;
+      throw new e;
+    }
   };
 
   finishedCourseSection = (courseSectionId: string) => {

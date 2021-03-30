@@ -1,10 +1,11 @@
 import React from 'react';
 import AbstractRenderModalBody from "../AbstractRenderModalBody";
 import {CourseSection} from "../../../../../cuba/entities/base/tsadv$CourseSection";
+import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type HtmlCourseSectionRenderProps = {
   courseSection: CourseSection
-  onFinishSection: () => void
+  onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
 class TextCourseSectionRender extends AbstractRenderModalBody<HtmlCourseSectionRenderProps> {

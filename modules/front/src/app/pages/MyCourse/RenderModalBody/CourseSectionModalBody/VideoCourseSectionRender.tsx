@@ -5,10 +5,11 @@ import AbstractRenderModalBody from "../AbstractRenderModalBody";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {getBlobUrl} from "../../../../util/util";
+import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type VideoCourseSectionRenderProps = {
   courseSection: CourseSection
-  onFinishSection: () => void
+  onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
 @observer

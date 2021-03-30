@@ -1,10 +1,11 @@
 import React from 'react';
 import {CourseSection} from "../../../../../cuba/entities/base/tsadv$CourseSection";
 import AbstractRenderModalBody from "../AbstractRenderModalBody";
+import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type UrlScormCourseSectionRenderProps = {
   courseSection: CourseSection
-  onFinishSection: () => void
+  onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
 class UrlCourseSectionRender extends AbstractRenderModalBody<UrlScormCourseSectionRenderProps> {
