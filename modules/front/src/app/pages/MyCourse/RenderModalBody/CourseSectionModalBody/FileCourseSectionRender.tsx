@@ -25,10 +25,11 @@ class FileCourseSectionRender extends AbstractRenderModalBody<HtmlCourseSectionR
 
   getModalBody = (): React.ReactNode => {
     return <div className="course-section-modal-body">
-      <Spin spinning={!!this.file}>
-        {!!this.file
+      <Spin spinning={this.file == undefined}>
+        {this.file != undefined
           ? <a href={this.file.url} target="_blank" download={this.file.fullName}>{this.file.fullName}</a>
-          : <></>}
+          : <></>
+        }
       </Spin>
     </div>
   };
