@@ -48,6 +48,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         score: score,
         maxScore: maxScore,
         minScore: minScore,
+        success: false
       }).then(response => {
         if (success) {
           this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
@@ -66,12 +67,13 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
       restServices.courseService.createScormAttempt({
         enrollmentId: this.props.enrollmentId,
         courseSectionId: this.props.courseSection.id,
-        inputData: inputData
-      }).then(response => {
+        inputData: inputData,
+        success: false
+      }).then(() => {
         if (success) {
           this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
         }
-      }).catch(reason => {
+      }).catch(() => {
         Notification.error({
           message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
         });

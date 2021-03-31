@@ -177,14 +177,14 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    createScormAttempt: (params: { courseSectionId: string, enrollmentId: string, inputData: ScormInputData[]}): Promise<void> => {
+    createScormAttempt: (params: { courseSectionId: string, enrollmentId: string, inputData: ScormInputData[], success: boolean }): Promise<void> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "createScormAttempt",
         {...params}
       );
     },
-    createTestScormAttempt: (params: { courseSectionId: string, enrollmentId: string, score: number, maxScore: number, minScore: number}): Promise<void> => {
+    createTestScormAttempt: (params: { courseSectionId: string, enrollmentId: string, score: number, maxScore: number, minScore: number, success: boolean }): Promise<void> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "createTestScormAttempt",

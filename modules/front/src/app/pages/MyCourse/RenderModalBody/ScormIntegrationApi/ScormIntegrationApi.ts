@@ -140,7 +140,7 @@ export default class ScormIntegrationApi {
   };
 
   isSucceedFinishedScorm = (): boolean => {
-    return window.API_1484_11[statusField].toLowerCase() !== completedStatus;
+    return window.API_1484_11[statusField] && window.API_1484_11[statusField].toLowerCase() !== completedStatus;
   };
 
   destroy = (): void => {
