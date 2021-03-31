@@ -2,7 +2,7 @@ import React from "react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import QuestionBlock from "../../../../components/Test/QuestionBlock";
 import {AnswerModel, QuestionModel} from "../../../../components/Test/Question";
-import {AnsweredQuestion} from "../../../../components/Test/Test";
+import {AnsweredQuestion} from "../../../../components/Test/TestComponent";
 
 export interface FeedbackComponentProps {
   feedbacks: FeedbackCourse[] | null

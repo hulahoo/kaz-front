@@ -4,6 +4,8 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import {observer} from "mobx-react";
 import QuestionBlock from "./QuestionBlock";
 import {QuestionModel} from "./Question";
+import {observable} from "mobx";
+import Button from "../Button/Button";
 
 export type TestSectionModel = {
   id?: string,
@@ -15,11 +17,6 @@ export type TestModel = {
   attemptId: string,
   timer?: number,
   testSections: TestSectionModel[]
-}
-
-type TestProps = {
-  enrollmentId: string,
-  courseSectionObjectId: string
 }
 
 type Props = {
@@ -47,7 +44,11 @@ export interface AnsweredQuestion {
 }
 
 @observer
-class Test extends React.Component<Props & WrappedComponentProps> {
+class TestComponent extends React.Component<Props & WrappedComponentProps> {
+
+  @observable
+  isStarted = false;
+
   render() {
     if (!this.props.test) {
       return <Spin spinning/>
@@ -66,6 +67,7 @@ class Test extends React.Component<Props & WrappedComponentProps> {
       </div>
     );
   }
+
 }
 
-export default injectIntl(Test);
+export default injectIntl(TestComponent);

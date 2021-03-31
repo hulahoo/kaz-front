@@ -294,6 +294,7 @@
   "course.section.finish": "Finish section",
   "course.feedback.finish": "Send",
   "course.section.test.finish": "Finish test",
+  "course.section.test.start": "Start test",
   "feedback.modal.title": "Thanks for feedback",
   "enrollment.continue": "continue",
   "homework": "Homework",
