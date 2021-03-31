@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Question from "./Question";
 import {Icon} from "antd";
-import {AnsweredQuestion, TestSectionModel} from "./Test";
+import {AnsweredQuestion, TestSectionModel} from "./TestComponent";
 import {action, observable} from "mobx";
 import {observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
