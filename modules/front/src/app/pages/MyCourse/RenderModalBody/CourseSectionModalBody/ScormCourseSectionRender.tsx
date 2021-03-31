@@ -53,6 +53,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         if (success) {
           this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
         }
+        this.props.setLoadingFinishCourseSection(false);
       }).catch(reason => {
         Notification.error({
           message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
@@ -73,6 +74,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         if (success) {
           this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
         }
+        this.props.setLoadingFinishCourseSection(false);
       }).catch(() => {
         Notification.error({
           message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})

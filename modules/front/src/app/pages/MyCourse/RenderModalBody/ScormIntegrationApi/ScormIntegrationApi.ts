@@ -81,6 +81,7 @@ export default class ScormIntegrationApi {
     };
 
     window.SetScore = (score: number, maxScore: number, minScore: number) => {
+      console.log('score setted');
       this.type = "test";
       this.testResult = {
         score: score,
@@ -101,6 +102,7 @@ export default class ScormIntegrationApi {
         window.API_1484_11[property] = value;
       },
       Commit: () => {
+        console.log('Commit');
         switch (this.type) {
           case "test": {
             this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
