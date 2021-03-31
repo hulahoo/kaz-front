@@ -1,5 +1,5 @@
 import React from "react";
-import {AnsweredQuestion} from "./Test";
+import {AnsweredQuestion} from "./TestComponent";
 import Answer from "./Answer";
 
 export type QuestionModel = {

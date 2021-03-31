@@ -3,7 +3,7 @@ import {Card, Checkbox, Input, Radio} from "antd";
 import {RadioChangeEvent} from "antd/es/radio";
 import CheckboxGroup, {CheckboxValueType} from "antd/es/checkbox/Group";
 import {AnswerModel} from "./Question";
-import {AnsweredQuestion} from "./Test";
+import {AnsweredQuestion} from "./TestComponent";
 
 export interface AnswerComponentProps {
   answers?: AnswerModel[],

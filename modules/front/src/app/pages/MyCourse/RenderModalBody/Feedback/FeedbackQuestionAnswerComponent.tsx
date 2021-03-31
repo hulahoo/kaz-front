@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FeedbackCourse} from "./FeedbackComponent";
-import {AnsweredQuestion} from "../../../../components/Test/Test";
+import {AnsweredQuestion} from "../../../../components/Test/TestComponent";
 import Answer from "../../../../components/Test/Answer";
 
 interface FeedbackQuestionAnswerComponentProps {

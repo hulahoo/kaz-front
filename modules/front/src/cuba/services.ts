@@ -1,7 +1,6 @@
 import {FetchOptions, SerializedEntity} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {SortOrder} from "antd/lib/table/interface";
-import {Course} from "./entities/base/tsadv$Course";
 import moment from "moment";
 import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
 import {ProcessInstanceData} from "./entities/base/bproc_ProcessInstanceData";
@@ -13,7 +12,7 @@ import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActo
 import {UserExt} from "./entities/base/tsadv$UserExt";
 import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
-import {AnsweredTest, TestModel} from "../app/components/Test/Test";
+import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
@@ -579,6 +578,7 @@ export type CourseInfo = {
   logo: any
   comments: Comment[]
   isIssuedCertificate: boolean
+  learningProof: string
   rateReviewCount: number
   rating: any[]
   isOnline: boolean

@@ -1,15 +1,13 @@
-import React, {Component} from 'react';
-import Test, {AnsweredQuestion, AnsweredTest, TestModel} from "../../../../components/Test/Test";
+import React from 'react';
+import TestComponent, {AnsweredQuestion, AnsweredTest, TestModel} from "../../../../components/Test/TestComponent";
 import AbstractRenderModalBody from "../AbstractRenderModalBody";
 import {CourseSection} from "../../../../../cuba/entities/base/tsadv$CourseSection";
 import Button, {ButtonType} from "../../../../components/Button/Button";
 import {Modal} from "antd";
 import {restServices} from "../../../../../cuba/services";
-import Notification from "../../../../util/Notification/Notification";
 import {observable, runInAction} from "mobx";
 import {observer} from "mobx-react";
-import {injectIntl, WrappedComponentProps} from "react-intl";
-import {AssignedGoal} from "../../../../../cuba/entities/base/tsadv$AssignedGoal";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type TestCourseSectionRenderProps = {
@@ -18,11 +16,21 @@ type TestCourseSectionRenderProps = {
   onFinishSection: () => Promise<CourseSectionAttempt>
 }
 
+// noinspection JSIgnoredPromiseFromCall
 @observer
 class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionRenderProps & WrappedComponentProps> {
 
   @observable
-  test: TestModel;
+  testModel: TestModel;
+
+  @observable
+  isStarted = false;
+
+  @observable
+  isFinished = false;
+
+  @observable
+  finishMessage: string;
 
   answeredTest: AnsweredTest;
 
@@ -65,40 +73,63 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
 
   finishTest = () => {
     restServices.lmsService.finishTest({answeredTest: this.answeredTest}).then(response => {
-      Notification.info({
-        message: this.props.intl.formatMessage({id: "test.finished.result"}, {score: response.score, maxScore: response.maxScore})
+      this.finishMessage = this.props.intl.formatMessage({id: "test.finished.result"}, {
+        score: response.score,
+        maxScore: response.maxScore
       });
-      if (this.onFinishSection) {
-        this.onFinishSection();
-      }
+      this.isFinished = true;
     });
   };
 
   getModalBody = (): React.ReactNode => {
-    return <Test test={this.test} finishTimeHandler={this.finishTest} addRemoveAnswer={this.addRemoveAnswer}/>
+    if (!this.isStarted) return <div
+      dangerouslySetInnerHTML={{__html: this.props.courseSection.sectionObject!.test!.instruction || ''}}
+      style={{overflowY: 'auto'}}
+      className="course-section-modal-body"/>
+
+    if (this.isFinished) return <div
+      dangerouslySetInnerHTML={{__html: this.finishMessage || ''}}
+      style={{overflowY: 'auto'}}
+      className="course-section-modal-body"/>;
+
+    return <TestComponent test={this.testModel}
+                          finishTimeHandler={this.finishTest}
+                          addRemoveAnswer={this.addRemoveAnswer}/>
   };
 
   cardActionButtons = () => {
+    if (!this.isStarted) return [<Button buttonType={ButtonType.PRIMARY}
+                                         onClick={this.onStartTest}>{this.props.intl.formatMessage({id: "course.section.test.start"})}</Button>]
+
+    if (!this.isFinished) return [<Button buttonType={ButtonType.PRIMARY}
+                                          onClick={this.confirmModalFinishTest}>{this.props.intl.formatMessage({id: "course.section.test.finish"})}</Button>];
+
     return [<Button buttonType={ButtonType.PRIMARY}
-                    onClick={this.confirmModalFinishTest}>{this.props.intl.formatMessage({id: "course.section.test.finish"})}</Button>]
+                    onClick={this.onFinishSection}><FormattedMessage id="course.section.finish"/></Button>]
   };
 
   onFinishSection = () => {
     this.props.onFinishSection();
   };
 
-  componentDidMount(): void {
-    super.componentDidMount();
-    restServices.lmsService.startAndLoadTest({
+  onStartTest = () => {
+    this.startAndLoadTest();
+  }
+
+  startAndLoadTest = (): Promise<TestModel> => {
+    return restServices.lmsService.startAndLoadTest({
       enrollmentId: this.props.enrollmentId,
       courseSectionObjectId: this.props.courseSection.sectionObject!.id
     }).then(response => {
       runInAction(() => {
-        this.test = response;
-        this.answeredTest = {attemptId: this.test.attemptId, testSections: []};
+        this.testModel = response;
+        this.answeredTest = {attemptId: this.testModel.attemptId, testSections: []};
+        this.isStarted = true;
       })
+      return response;
     });
   }
+
 }
 
 export default injectIntl(TestCourseSectionRender);
