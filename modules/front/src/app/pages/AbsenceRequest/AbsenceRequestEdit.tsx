@@ -22,6 +22,9 @@ import {restServices} from "../../../cuba/services";
 import {rootStore, RootStoreProp} from "../../store";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import TextArea from "antd/es/input/TextArea";
+import {queryCollection} from "../../util/QueryDataCollectionStore";
+import {observable, reaction} from "mobx";
+import moment from "moment/moment";
 
 type EditorProps = {
   entityId: string;
@@ -40,16 +43,19 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     view: "_minimal"
   });
 
-  absenceTypesDc = collection<DicRequestStatus>(DicAbsenceType.NAME, {
-    view: "_minimal",
-    filter: {
-      conditions: [{property: "useInSelfService", operator: "=", value: 'TRUE'}]
-    }
-  });
+  absenceTypesDc = queryCollection<DicRequestStatus>(DicAbsenceType.NAME,
+    'absenceTypes',
+    {personGroupId: this.props.rootStore!.userInfo.personGroupId!});
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
   });
+
+  @observable
+  isJustRequired = false;
+
+  @observable
+  isOriginalSheet = false;
 
   fields = [
     "dateFrom",
@@ -67,6 +73,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     "absenceDays",
 
     "comment",
+
+    "originalSheet",
+
+    "reason",
 
     "attachment"
   ];
@@ -154,8 +164,13 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                     rules: [{
                       required: true,
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.type']})
-                    }
-                    ]
+                    }],
+                    getValueFromEvent: typeId => {
+                      const absenceType = this.absenceTypesDc.items.find(value => value.id === typeId) as DicAbsenceType;
+                      this.isJustRequired = !!absenceType.isJustRequired;
+                      this.isOriginalSheet = !!absenceType.isOriginalSheet;
+                      return typeId;
+                    },
                   }}
                 />
 
@@ -205,6 +220,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
+                {this.originalSheetField(isNotDraft)}
+
+                {this.reasonField(isNotDraft)}
+
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
                   <Form.Item>
@@ -235,6 +254,63 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
       </Page>
     );
   }
+
+  originalSheetField = (isNotDraft: boolean) => {
+    return <div style={!this.isOriginalSheet ? {display: 'none'} : {}}>
+      <ReadonlyField
+        entityName={this.dataInstance.entityName}
+        propertyName="originalSheet"
+        form={this.props.form}
+        disabled={isNotDraft}
+        getFieldDecoratorOpts={{valuePropName: 'checked'}}
+        formItemOpts={{style: {marginBottom: "12px"}}}
+      />
+    </div>
+  }
+
+  reasonField = (isNotDraft: boolean) => {
+    if (!this.isJustRequired) return <></>;
+    return <Form.Item style={{marginBottom: "12px"}}>
+      {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "reason"})}
+      {this.props.form.getFieldDecorator("reason",
+        {
+          initialValue: this.dataInstance.item!.reason,
+          rules: [{
+            required: true,
+            message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.reason']})
+          }]
+        })(
+        <TextArea
+          disabled={isNotDraft}
+          rows={4}/>
+      )}
+    </Form.Item>
+  }
+
+  setReactionDisposer = () => {
+    this.reactionDisposer = reaction(
+      () => {
+        return this.dataInstance.item;
+      },
+      (item) => {
+
+        this.isJustRequired = !!(item && item.type && item.type.isJustRequired);
+        this.isOriginalSheet = !!(item && item.type && item.type.isOriginalSheet);
+
+        const obj = {
+          originalSheet: (item && item.originalSheet) === true,
+          ...this.dataInstance.getFieldValues(this.fields)
+        };
+        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
+          const now = moment();
+          now.locale(this.props.rootStore!.userInfo.locale!);
+          obj["requestDate"] = now;
+        }
+        console.log(obj);
+        this.props.form.setFieldsValue(obj);
+      }
+    );
+  };
 }
 
 const onValuesChange = (props: any, changedValues: any) => {

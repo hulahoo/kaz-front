@@ -75,3 +75,7 @@
 .display-contents-span > span{
   display: contents !important;
 }
+
+span .ant-checkbox-disabled .ant-checkbox-inner{
+  background-color: #f5f5f5 !important;
+}
