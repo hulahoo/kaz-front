@@ -21,7 +21,6 @@ import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSect
 import moment from "moment";
 import {LearningFeedbackTemplate} from "../../../cuba/entities/base/tsadv$LearningFeedbackTemplate";
 import {CourseSectionRenderType} from "./RenderModalBody/RenderModalBody";
-import MyEducationManagement from "../MyEducation/MyEducationManagement";
 import {Link, RouteComponentProps} from "react-router-dom";
 import {StudentHomework} from "../../../cuba/entities/base/tsadv_StudentHomework";
 import {RootStoreProp} from "../../store";
@@ -133,7 +132,10 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           {this.visibleModal ? <CourseSectionModal
             courseId={this.dataInstance.course!.id}
             loadingFinishCourse={this.loadingFinishCourse}
+            setLoadingFinishCourseSection={this.setLoadingFinishCourseSection}
+            finishedCourseSection={this.finishedCourseSection}
             onFinishSection={this.finishSection}
+            selectNextSection={this.selectNextSection}
             onCloseModal={this.onCloseModal}
             selectedSection={this.selectedSection!}
             enrollmentId={this.props.entityId}/> : <></>}
@@ -223,8 +225,33 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     });
   };
 
-  finishSection = async (): Promise<CourseSectionAttempt> => {
-    this.loadingFinishCourse = true;
+  selectNextSection = () => {
+    const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
+    if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
+      const nextSelectedSectionIndex = selectedSectionIndex + 1;
+      const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
+      if (nextSection) {
+        this.setVisibleModal(false);
+        this.setSelectedSection({
+          type: "course-section",
+          id: nextSection.id
+        });
+        this.playIconClick();
+      } else {
+        this.visibleModal = false;
+      }
+    } else {
+      this.visibleModal = false;
+    }
+    this.setLoadingFinishCourseSection(false);
+  };
+
+  setLoadingFinishCourseSection = (value: boolean) => {
+    this.loadingFinishCourse = value;
+  };
+
+  finishSection = async () => {
+    this.setLoadingFinishCourseSection(true);
     try {
       const attempt = await getCubaREST()!.searchEntitiesWithCount(CourseSectionAttempt.NAME, {
         conditions: [{
@@ -237,27 +264,6 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           value: this.selectedSection!.id
         }]
       }, {view: "course-section-attempt"});
-
-      const selectNextSection = () => {
-        const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
-        if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
-          const nextSelectedSectionIndex = selectedSectionIndex + 1;
-          const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
-          if (nextSection) {
-            this.setVisibleModal(false);
-            this.setSelectedSection({
-              type: "course-section",
-              id: nextSection.id
-            });
-            this.playIconClick();
-          } else {
-            this.visibleModal = false;
-          }
-        } else {
-          this.visibleModal = false;
-        }
-        this.loadingFinishCourse = false;
-      };
 
       if ((attempt.count == 0)) {
         const newAttempt = getCubaREST()!.commitEntity(CourseSectionAttempt.NAME, {
@@ -273,15 +279,15 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
         } as CourseSectionAttempt);
 
         this.finishedCourseSection(this.selectedSection!.id);
-        selectNextSection();
+        this.selectNextSection();
 
         return newAttempt;
       } else {
-        selectNextSection();
+        this.selectNextSection();
         return (attempt.result[0] as CourseSectionAttempt);
       }
     } catch (e) {
-      this.loadingFinishCourse = false;
+      this.setLoadingFinishCourseSection(false);
       throw new e;
     }
   };

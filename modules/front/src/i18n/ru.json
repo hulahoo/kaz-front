@@ -351,5 +351,6 @@
   "book.download": "Скачать книгу",
   "book.download.error": "Не удалось скачать книгу",
   "learning.period": "Период",
-  "download": "Скачать"
+  "download": "Скачать",
+  "courseSection.createAttempt.error": "Произошла ошибка при завершении раздела"
 }

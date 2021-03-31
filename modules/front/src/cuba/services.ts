@@ -33,6 +33,7 @@ import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/PersonCard/MyTeamPersonCard";
+import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -59,6 +60,14 @@ export type CourseTrainerInfo = {
 export type PairModel<K, V> = {
   key: K,
   value: V
+}
+
+export type ScormInputData = {
+  fieldId: string;
+  answer: string;
+  score: number;
+  maxScore: number;
+  minScore: number;
 }
 
 export const restServices = {
@@ -159,7 +168,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    courseSectionWithEnrollmentAttempts: (params: {courseSectionId: string, enrollmentId: string}): Promise<CourseSection> => {
+    courseSectionWithEnrollmentAttempts: (params: { courseSectionId: string, enrollmentId: string }): Promise<CourseSection> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "courseSectionWithEnrollmentAttempts",
@@ -167,6 +176,20 @@ export const restServices = {
       ).then((response: string) => {
         return JSON.parse(response);
       });
+    },
+    createScormAttempt: (params: { courseSectionId: string, enrollmentId: string, inputData: ScormInputData[]}): Promise<void> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "createScormAttempt",
+        {...params}
+      );
+    },
+    createTestScormAttempt: (params: { courseSectionId: string, enrollmentId: string, score: number, maxScore: number, minScore: number}): Promise<void> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "createTestScormAttempt",
+        {...params}
+      );
     }
   },
   kpiService: {

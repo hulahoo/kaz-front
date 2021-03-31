@@ -10,7 +10,6 @@ import {FeedbackCourse} from "./RenderModalBody/Feedback/FeedbackComponent";
 import {LearningFeedbackQuestion} from "../../../cuba/entities/base/tsadv$LearningFeedbackQuestion";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {ServiceDataInstanceStore, serviceInstance} from "../../util/ServiceDataInstanceStore";
-import {CourseSectionAttempt} from "../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 
 type Props = {
   courseId: string,
@@ -19,7 +18,10 @@ type Props = {
   enrollmentId: string,
   onCloseModal?: () => void
   onFinishTest?: () => void
-  onFinishSection?: () => Promise<CourseSectionAttempt>
+  onFinishSection?: () => void
+  selectNextSection?: () => void
+  finishedCourseSection: (courseSectionId: string) => void
+  setLoadingFinishCourseSection?: (value: boolean) => void
 }
 
 @observer
@@ -79,7 +81,10 @@ class CourseSectionModal extends Component<Props> {
     const renderModalBody: RenderModalBody = new RenderModalBodyImpl();
     return renderModalBody.renderBody(this.props.selectedSection.type, {
       ...params,
+      selectNextSection: this.props.selectNextSection,
       loadingFinishCourse: this.props.loadingFinishCourse,
+      setLoadingFinishCourseSection: this.props.setLoadingFinishCourseSection,
+      finishedCourseSection: this.props.finishedCourseSection,
       courseId: this.props.courseId,
       changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
       onFinishSection: this.props.onFinishSection,

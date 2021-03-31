@@ -362,5 +362,6 @@
   "book.download.error": "Error download file",
   "learning.period": "Period",
   "download": "Download",
-  "course.rate.notification": "Thanks for comment"
+  "course.rate.notification": "Thanks for comment",
+  "courseSection.createAttempt.error": "Error finish section"
 }

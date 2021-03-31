@@ -1,3 +1,5 @@
+import {ScormInputData} from "../../../../../cuba/services";
+
 const statusField = 'cmi.completion_status';
 const completedStatus = 'completed';
 
@@ -10,17 +12,29 @@ declare global {
   }
 }
 
-type InputTextDate = {
-  fieldId: string,
-  text: string,
-  score: number,
-  maxScore: number,
-  minScore: number
+export type ScormInputData = {
+  fieldId: string;
+  answer: string;
+  score: number;
+  maxScore: number;
+  minScore: number;
 }
+
+export type ScormTestData = {
+  score: number;
+  maxScore: number;
+  minScore: number;
+}
+
+type ScormType = "default" | "test";
 
 export default class ScormIntegrationApi {
 
-  inputData: InputTextDate[] = [];
+  inputData: ScormInputData[] = [];
+
+  testResult: ScormTestData;
+
+  type = "default";
 
   constructor() {
     this.init();
@@ -33,7 +47,7 @@ export default class ScormIntegrationApi {
     if (foundedInputDataIndex === -1) {
       foundedInputData = ({
         fieldId: fieldId,
-      } as InputTextDate)
+      } as ScormInputData)
     } else {
       foundedInputData = this.inputData[foundedInputDataIndex];
     }
@@ -43,19 +57,18 @@ export default class ScormIntegrationApi {
     foundedInputData.minScore = minScore;
   };
 
-  _addInputDataText = (fieldId: string, text: string) => {
+  _addInputDataText = (fieldId: string, answer: string) => {
     const foundedInputDataIndex = this.inputData.findIndex(id => id.fieldId === fieldId);
 
     let foundedInputData;
     if (foundedInputDataIndex === -1) {
       foundedInputData = ({
         fieldId: fieldId,
-      } as InputTextDate)
+      } as ScormInputData)
     } else {
       foundedInputData = this.inputData[foundedInputDataIndex];
     }
-
-    foundedInputData.text = text;
+    foundedInputData.answer = answer;
   };
 
   init = (): void => {
@@ -68,7 +81,12 @@ export default class ScormIntegrationApi {
     };
 
     window.SetScore = (score: number, maxScore: number, minScore: number) => {
-
+      this.type = "test";
+      this.testResult = {
+        score: score,
+        maxScore: maxScore,
+        minScore: minScore,
+      }
     };
 
     window.API_1484_11 = {
@@ -83,7 +101,16 @@ export default class ScormIntegrationApi {
         window.API_1484_11[property] = value;
       },
       Commit: () => {
-        this.commit();
+        switch (this.type) {
+          case "test": {
+            this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
+            break;
+          }
+          case "default": {
+            this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
+            break;
+          }
+        }
       },
       GetLastError: () => {
 
@@ -93,23 +120,27 @@ export default class ScormIntegrationApi {
       },
       GetDiagnostic: () => {
 
+      },
+      Terminate: () => {
+
       }
     }
   };
 
-  onTestFinish = (score: number, maxScore: number, minScore: number): void => {
+  onScormTestFinish = (score: number, maxScore: number, minScore: number, success: boolean): void => {
 
   };
 
-  getInputData = () => {
+  onScormDefaultFinish = (inputData: ScormInputData[], success: boolean) => {
+
+  };
+
+  getInputData = (): ScormInputData[] => {
     return this.inputData;
   };
 
   isSucceedFinishedScorm = (): boolean => {
     return window.API_1484_11[statusField].toLowerCase() !== completedStatus;
-  };
-
-  commit = (): void => {
   };
 
   destroy = (): void => {
