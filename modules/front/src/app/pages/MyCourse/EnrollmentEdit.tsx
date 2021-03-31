@@ -279,7 +279,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           }
         } as CourseSectionAttempt);
 
-        this.finishedCourseSection(this.selectedSection!.id);
+        this.finishedCourseSection(this.selectedSection!.id, true);
         this.selectNextSection();
 
         return newAttempt;
@@ -293,12 +293,14 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     }
   };
 
-  finishedCourseSection = (courseSectionId: string) => {
+  finishedCourseSection = (courseSectionId: string, success: boolean) => {
     this.dataInstance.course!.sections!.filter(s => s.id === courseSectionId).forEach(s => {
+      const courseSectionAttempt = new CourseSectionAttempt();
+      courseSectionAttempt.success = success;
       if (s.courseSectionAttempts) {
-        s.courseSectionAttempts.push(new CourseSectionAttempt());
+        s.courseSectionAttempts.push(courseSectionAttempt);
       } else {
-        s.courseSectionAttempts = [new CourseSectionAttempt()];
+        s.courseSectionAttempts = [courseSectionAttempt];
       }
     })
   };

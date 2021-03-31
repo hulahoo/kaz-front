@@ -20,7 +20,7 @@ type Props = {
   onFinishTest?: () => void
   onFinishSection?: () => void
   selectNextSection?: () => void
-  finishedCourseSection: (courseSectionId: string) => void
+  finishedCourseSection: (courseSectionId: string, success: boolean) => void
   setLoadingFinishCourseSection?: (value: boolean) => void
 }
 

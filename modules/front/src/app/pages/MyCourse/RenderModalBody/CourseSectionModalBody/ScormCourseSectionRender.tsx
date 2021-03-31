@@ -13,7 +13,7 @@ type ScormCourseSectionRenderProps = {
   enrollmentId: string
   onFinishSection: () => Promise<CourseSectionAttempt>
   setLoadingFinishCourseSection: (value: boolean) => void
-  finishedCourseSection: (courseSectionId: string) => void
+  finishedCourseSection: (courseSectionId: string, success: boolean) => void
 }
 
 @observer
@@ -28,7 +28,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   };
 
   onFinishSection = () => {
-    this.props.finishedCourseSection(this.props.courseSection.id);
+    this.props.finishedCourseSection(this.props.courseSection.id, true);
     this.props.selectNextSection!();
   };
 
