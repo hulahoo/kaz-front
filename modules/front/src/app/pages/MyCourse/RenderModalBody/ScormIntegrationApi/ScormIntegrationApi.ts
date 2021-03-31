@@ -56,6 +56,8 @@ export default class ScormIntegrationApi {
     foundedInputData.score = score;
     foundedInputData.maxScore = maxScore;
     foundedInputData.minScore = minScore;
+
+    this.inputData.push(foundedInputData);
   };
 
   _addInputDataText = (fieldId: string, answer: string) => {
@@ -71,6 +73,8 @@ export default class ScormIntegrationApi {
       this.inputData = this.inputData.filter((id, index) => index !== foundedInputDataIndex);
     }
     foundedInputData.answer = answer;
+
+    this.inputData.push(foundedInputData);
   };
 
   init = (): void => {
