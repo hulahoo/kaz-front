@@ -49,7 +49,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         maxScore: maxScore,
         minScore: minScore,
         success: false
-      }).then(response => {
+      }).then(() => {
         if (success) {
           this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
         }

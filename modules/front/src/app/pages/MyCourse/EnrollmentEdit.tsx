@@ -236,7 +236,8 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           type: "course-section",
           id: nextSection.id
         });
-        this.playIconClick();
+        //Иначе не ререндерит модалку на другой раздел.
+        setTimeout(this.playIconClick,100);
       } else {
         this.visibleModal = false;
       }

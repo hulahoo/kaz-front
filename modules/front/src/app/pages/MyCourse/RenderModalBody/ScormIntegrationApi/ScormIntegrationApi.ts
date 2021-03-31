@@ -81,7 +81,6 @@ export default class ScormIntegrationApi {
     };
 
     window.SetScore = (score: number, maxScore: number, minScore: number) => {
-      console.log('score setted');
       this.type = "test";
       this.testResult = {
         score: score,
