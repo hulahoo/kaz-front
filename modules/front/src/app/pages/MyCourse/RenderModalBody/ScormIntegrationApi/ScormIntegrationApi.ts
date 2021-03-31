@@ -50,6 +50,7 @@ export default class ScormIntegrationApi {
       } as ScormInputData)
     } else {
       foundedInputData = this.inputData[foundedInputDataIndex];
+      this.inputData = this.inputData.filter((id, index) => index !== foundedInputDataIndex);
     }
 
     foundedInputData.score = score;
@@ -67,6 +68,7 @@ export default class ScormIntegrationApi {
       } as ScormInputData)
     } else {
       foundedInputData = this.inputData[foundedInputDataIndex];
+      this.inputData = this.inputData.filter((id, index) => index !== foundedInputDataIndex);
     }
     foundedInputData.answer = answer;
   };
