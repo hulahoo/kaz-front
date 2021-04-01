@@ -25,7 +25,9 @@ type TaskProps = {
   processInstanceData: ProcessInstanceData | null;
   processDefinitionKey: string;
   form: WrappedFormUtils,
-  isUpdateBeforeOutcome?: boolean
+  isUpdateBeforeOutcome?: boolean,
+  commentRequiredOutcomes?: string[],
+  isStartCommentVisible?: boolean,
 };
 
 @inject("rootStore")
@@ -39,7 +41,9 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
       update={this.props.update}
       dataInstance={this.props.dataInstance}
       form={this.props.form}
+      isStartCommentVisible={this.props.isStartCommentVisible}
       afterSendOnApprove={this.props.afterSendOnApprove}
+      commentRequiredOutcomes={this.props.commentRequiredOutcomes}
       processDefinitionKey={this.props.processDefinitionKey}/>
   };
 
@@ -47,12 +51,13 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
         ? this.props.formData.outcomes.reverse().map(value => <OutcomeButtonModal outcome={value}
-                                                                        key={value.id}
-                                                                        form={this.props.form}
-                                                                        validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}
-                                                                        update={this.props.isUpdateBeforeOutcome ? this.props.update : undefined}
-                                                                        afterSendOnApprove={this.props.afterSendOnApprove}
-                                                                        task={this.props.task}/>)
+                                                                                  key={value.id}
+                                                                                  form={this.props.form}
+                                                                                  validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}
+                                                                                  update={this.props.isUpdateBeforeOutcome ? this.props.update : undefined}
+                                                                                  afterSendOnApprove={this.props.afterSendOnApprove}
+                                                                                  commentRequiredOutcomes={this.props.commentRequiredOutcomes}
+                                                                                  task={this.props.task}/>)
         : "";
   }
 }

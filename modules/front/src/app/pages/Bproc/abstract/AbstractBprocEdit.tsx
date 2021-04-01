@@ -79,7 +79,6 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return new Promise(resolve => resolve(isValidatedSuccess));
   };
 
-
   getUpdateEntityData = (): any => {
   };
 
@@ -96,6 +95,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   isNotDraft = () => {
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
   };
+
+  commentRequiredOutcomes = ['REJECT', 'REVISION'];
+
+  isStartCommentVisible = false;
 
   isUpdateBeforeOutcome = false;
 
@@ -116,6 +119,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         processDefinitionKey={this.processDefinitionKey}
                         form={this.props.form}
                         isUpdateBeforeOutcome={this.isUpdateBeforeOutcome}
+                        commentRequiredOutcomes={this.commentRequiredOutcomes}
+                        isStartCommentVisible={this.isStartCommentVisible}
                         task={this.activeTask}/>
         : <Button
           buttonType={ButtonType.PRIMARY}
