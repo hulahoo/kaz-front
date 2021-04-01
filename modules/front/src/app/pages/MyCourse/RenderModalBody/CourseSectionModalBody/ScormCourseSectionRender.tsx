@@ -48,10 +48,10 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         score: score,
         maxScore: maxScore,
         minScore: minScore,
-        success: false
+        success: success
       }).then(() => {
         if (success) {
-          this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
+          this.setIsDisabledFinishSectionBtn(!success);
         }
         this.props.setLoadingFinishCourseSection(false);
       }).catch(reason => {
@@ -69,10 +69,10 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         enrollmentId: this.props.enrollmentId,
         courseSectionId: this.props.courseSection.id,
         inputData: inputData,
-        success: false
+        success: success
       }).then(() => {
         if (success) {
-          this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
+          this.setIsDisabledFinishSectionBtn(!success);
         }
         this.props.setLoadingFinishCourseSection(false);
       }).catch(() => {
