@@ -228,7 +228,8 @@ export const restServices = {
     },
     finishTest: (params: { answeredTest: AnsweredTest }, fetchOpts?: FetchOptions): Promise<{
       score: number,
-      maxScore: number
+      maxScore: number,
+      success: boolean
     }> => {
       return getCubaREST()!.invokeService(
         "tsadv_LmsService",

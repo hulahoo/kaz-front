@@ -201,14 +201,14 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     const indexSelectedCourseSection = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
     for (let i = indexSelectedCourseSection - 1; i >= 0; i--) {
       const courseSection = this.dataInstance.course!.sections![i];
-      if (courseSection.mandatory && (courseSection.courseSectionAttempts!.length === 0)) {
+      if (courseSection.mandatory && courseSection.courseSectionAttempts!.filter(a => a.success).length === 0) {
         isPrevRequiredCourseSectionPassed = false;
       }
     }
 
     if (!isPrevRequiredCourseSectionPassed) {
       Notification.info({
-        message: "Необходимо пройти предыдущий раздел"
+        message: "Необходимо успешно пройти предыдущий раздел"
       });
       return;
     }
@@ -227,6 +227,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
   selectNextSection = () => {
     const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
+    console.log((this.dataInstance.course!.sections!.length - 1));
     if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
       const nextSelectedSectionIndex = selectedSectionIndex + 1;
       const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);
@@ -237,12 +238,12 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
           id: nextSection.id
         });
         //Иначе не ререндерит модалку на другой раздел.
-        setTimeout(this.playIconClick,100);
+        setTimeout(this.playIconClick, 100);
       } else {
-        this.visibleModal = false;
+        this.setVisibleModal(false);
       }
     } else {
-      this.visibleModal = false;
+      this.setVisibleModal(false);
     }
     this.setLoadingFinishCourseSection(false);
   };

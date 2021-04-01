@@ -14,6 +14,7 @@ type TestCourseSectionRenderProps = {
   enrollmentId: string
   courseSection: CourseSection
   onFinishSection: () => Promise<CourseSectionAttempt>
+  finishedCourseSection: (courseSectionId: string, success: boolean) => void
 }
 
 // noinspection JSIgnoredPromiseFromCall
@@ -31,6 +32,8 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
 
   @observable
   finishMessage: string;
+
+  success: boolean = false;
 
   answeredTest: AnsweredTest;
 
@@ -78,19 +81,24 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
         maxScore: response.maxScore
       });
       this.isFinished = true;
+      this.success = response.success;
     });
   };
 
   getModalBody = (): React.ReactNode => {
-    if (!this.isStarted) return <div
-      dangerouslySetInnerHTML={{__html: this.props.courseSection.sectionObject!.test!.instruction || ''}}
-      style={{overflowY: 'auto'}}
-      className="course-section-modal-body"/>
+    if (!this.isStarted) {
+      return <div
+        dangerouslySetInnerHTML={{__html: this.props.courseSection.sectionObject!.test!.instruction || ''}}
+        style={{overflowY: 'auto'}}
+        className="course-section-modal-body"/>;
+    }
 
-    if (this.isFinished) return <div
-      dangerouslySetInnerHTML={{__html: this.finishMessage || ''}}
-      style={{overflowY: 'auto'}}
-      className="course-section-modal-body"/>;
+    if (this.isFinished) {
+      return <div
+        dangerouslySetInnerHTML={{__html: this.finishMessage || ''}}
+        style={{overflowY: 'auto'}}
+        className="course-section-modal-body"/>;
+    }
 
     return <TestComponent test={this.testModel}
                           finishTimeHandler={this.finishTest}
@@ -99,7 +107,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
 
   cardActionButtons = () => {
     if (!this.isStarted) return [<Button buttonType={ButtonType.PRIMARY}
-                                         onClick={this.onStartTest}>{this.props.intl.formatMessage({id: "course.section.test.start"})}</Button>]
+                                         onClick={this.onStartTest}>{this.props.intl.formatMessage({id: "course.section.test.start"})}</Button>];
 
     if (!this.isFinished) return [<Button buttonType={ButtonType.PRIMARY}
                                           onClick={this.confirmModalFinishTest}>{this.props.intl.formatMessage({id: "course.section.test.finish"})}</Button>];
@@ -109,12 +117,13 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
   };
 
   onFinishSection = () => {
-    this.props.onFinishSection();
+    this.props.finishedCourseSection(this.props.courseSection.id, this.success);
+    this.props.selectNextSection!();
   };
 
   onStartTest = () => {
     this.startAndLoadTest();
-  }
+  };
 
   startAndLoadTest = (): Promise<TestModel> => {
     return restServices.lmsService.startAndLoadTest({
@@ -125,7 +134,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
         this.testModel = response;
         this.answeredTest = {attemptId: this.testModel.attemptId, testSections: []};
         this.isStarted = true;
-      })
+      });
       return response;
     });
   }

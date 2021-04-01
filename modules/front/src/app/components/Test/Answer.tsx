@@ -28,6 +28,7 @@ class Answer extends React.Component<AnswerComponentProps & AnswerComponentHandl
 
   answerCheckboxChangeHandler = (checkedValues: CheckboxValueType[]) => {
     this.props.addRemoveAnswer({
+      testSectionId: this.props.testSectionId,
       questionId: this.props.questionId,
       answer: checkedValues
     } as AnsweredQuestion);

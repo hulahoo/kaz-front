@@ -28,7 +28,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   };
 
   onFinishSection = () => {
-    this.props.finishedCourseSection(this.props.courseSection.id, true);
+    this.props.finishedCourseSection(this.props.courseSection.id, this.scormIntegrationApi.isSucceedFinishedScorm());
     this.props.selectNextSection!();
   };
 
@@ -37,7 +37,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   }
 
   componentDidMount() {
-    this.setIsDisabledFinishSectionBtn(this.props.courseSection.courseSectionAttempts!.length === 0);
+    this.setIsDisabledFinishSectionBtn(this.props.courseSection.courseSectionAttempts!.filter(a=> a.success).length === 0);
 
     this.scormIntegrationApi.onScormTestFinish = (score, maxScore, minScore, success) => {
       this.props.setLoadingFinishCourseSection(true);

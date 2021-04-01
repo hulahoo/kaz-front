@@ -48,8 +48,9 @@ class CourseSectionModal extends Component<Props> {
     return (<Modal visible={true}
                    onCancel={this.props.onCloseModal}
                    footer={null}
-                   closable={!this.isTest(loading)}
-                   maskClosable={!this.isTest(loading)}
+                   closable
+                   keyboard={false}
+                   maskClosable={false}
                    width={900}
                    className={"course-section-modal" + (this.fullScreenModal ? " fullscreen" : "")}
                    destroyOnClose>

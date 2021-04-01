@@ -30,6 +30,8 @@ type ScormType = "default" | "test";
 
 export default class ScormIntegrationApi {
 
+  commited: boolean = false;
+
   inputData: ScormInputData[] = [];
 
   testResult: ScormTestData;
@@ -86,14 +88,13 @@ export default class ScormIntegrationApi {
       this._addInputDataText(fieldId, text);
     };
 
-    window.SetScore = (score: number, maxScore: number, minScore: number) => {
-      this.type = "test";
-      this.testResult = {
-        score: score,
-        maxScore: maxScore,
-        minScore: minScore,
-      }
-    };
+    // window.SetScore = (score: number, maxScore: number, minScore: number) => {
+    //   this.testResult = {
+    //     score: window.API_1484_11['cmi.score.raw'],
+    //     maxScore: maxScore,
+    //     minScore: minScore,
+    //   }
+    // };
 
     window.API_1484_11 = {
       Initialize: () => {
@@ -104,19 +105,51 @@ export default class ScormIntegrationApi {
       },
       //TODO: переписать, чтобы сеттились как вложенные объекты
       SetValue: (property: string, value: string) => {
-        window.API_1484_11[property] = value;
+        switch (property) {
+          case 'cmi.score.raw': {
+            this.testResult = {
+              ...this.testResult,
+              score: Number(value)
+            };
+            this.type = "test";
+            break;
+          }
+          case 'cmi.score.max': {
+            this.testResult = {
+              ...this.testResult,
+              maxScore: Number(value)
+            };
+            this.type = "test";
+            break;
+          }
+          case 'cmi.score.min': {
+            this.testResult = {
+              ...this.testResult,
+              minScore: Number(value)
+            };
+            this.type = "test";
+            break;
+          }
+          default: {
+            window.API_1484_11[property] = value;
+            break;
+          }
+        }
       },
       Commit: () => {
-        console.log('Commit');
-        switch (this.type) {
-          case "test": {
-            this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
-            break;
+        if (!this.commited) {
+          console.log('Commit');
+          switch (this.type) {
+            case "test": {
+              this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
+              break;
+            }
+            case "default": {
+              this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
+              break;
+            }
           }
-          case "default": {
-            this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
-            break;
-          }
+          this.commited = true;
         }
       },
       GetLastError: () => {
@@ -147,7 +180,7 @@ export default class ScormIntegrationApi {
   };
 
   isSucceedFinishedScorm = (): boolean => {
-    return window.API_1484_11[statusField] && window.API_1484_11[statusField].toLowerCase() !== completedStatus;
+    return window.API_1484_11[statusField] && window.API_1484_11[statusField].toLowerCase() === completedStatus;
   };
 
   destroy = (): void => {
