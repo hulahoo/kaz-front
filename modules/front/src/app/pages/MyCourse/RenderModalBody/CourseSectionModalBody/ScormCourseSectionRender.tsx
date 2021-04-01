@@ -51,7 +51,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         success: success
       }).then(() => {
         if (success) {
-          this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
+          this.setIsDisabledFinishSectionBtn(!success);
         }
         this.props.setLoadingFinishCourseSection(false);
       }).catch(reason => {
@@ -72,7 +72,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         success: success
       }).then(() => {
         if (success) {
-          this.setIsDisabledFinishSectionBtn(this.scormIntegrationApi.isSucceedFinishedScorm());
+          this.setIsDisabledFinishSectionBtn(!success);
         }
         this.props.setLoadingFinishCourseSection(false);
       }).catch(() => {
