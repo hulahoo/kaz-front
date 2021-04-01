@@ -47,6 +47,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
   };
 
   handleOk = (outcome: BprocFormOutcome) => {
+    console.log('handleOk');
     this.props.form.validateFields(["bproc-comment"], {force: true}, (err, values) => {
       if (err) {
         Notification.error({
@@ -57,36 +58,41 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
         );
         return;
       }
+
       if (this.props.update)
-        this.props.update().then(value => {
-          restServices.bprocTaskService.completeWithOutcome({
-            taskData: this.props.task!,
-            outcomeId: outcome.id!,
-            processVariables: {
-              "comment": this.props.form.getFieldValue("comment")
-            }
-          })
-            .then(value => {
-              this.modalVisibleMap.set(outcome.id!, false);
-              if (this.props.afterSendOnApprove) {
-                this.props.afterSendOnApprove();
-              }
-              Notification.success({
-                message: this.props.intl.formatMessage({id: "bproc." + outcome.id + ".success"})
-              });
-            })
-            .catch((e: any) => {
-              Notification.error({
-                message: this.props.intl.formatMessage({id: "management.editor.error"})
-              });
-            });
-        }).catch((e: any) => {
+        this.props.update().then(value => this.completeWithOutcome(outcome)).catch((e: any) => {
           Notification.error({
             message: this.props.intl.formatMessage({id: "management.editor.error"})
           });
         });
+      else this.completeWithOutcome(outcome);
+
     });
   };
+
+  completeWithOutcome = (outcome: BprocFormOutcome) => {
+    return restServices.bprocTaskService.completeWithOutcome({
+      taskData: this.props.task!,
+      outcomeId: outcome.id!,
+      processVariables: {
+        "comment": this.props.form.getFieldValue("bproc-comment")
+      }
+    })
+      .then(value => {
+        this.modalVisibleMap.set(outcome.id!, false);
+        if (this.props.afterSendOnApprove) {
+          this.props.afterSendOnApprove();
+        }
+        Notification.success({
+          message: this.props.intl.formatMessage({id: "bproc." + outcome.id + ".success"})
+        });
+      })
+      .catch((e: any) => {
+        Notification.error({
+          message: this.props.intl.formatMessage({id: "management.editor.error"})
+        });
+      });
+  }
 
   handleCancel = (outcome: BprocFormOutcome) => {
     this.modalVisibleMap.set(outcome.id!, false);

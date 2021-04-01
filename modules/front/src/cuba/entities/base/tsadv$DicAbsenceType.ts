@@ -26,6 +26,10 @@ export class DicAbsenceType extends AbstractDictionary {
   availableForRecallAbsence?: boolean | null;
   availableForChangeDate?: boolean | null;
   availableForLeavingVacation?: boolean | null;
+  isJustRequired?: boolean | null;
+  isOriginalSheet?: boolean | null;
+  isCheckWork?: boolean | null;
+  isVacationDate?: boolean | null;
 }
 export type DicAbsenceTypeViewName =
   | "_base"
@@ -83,6 +87,10 @@ export type DicAbsenceTypeView<
       | "active"
       | "isDefault"
       | "order"
+      | "isJustRequired"
+      | "isOriginalSheet"
+      | "isCheckWork"
+      | "isVacationDate"
     >
   : V extends "_local"
   ? Pick<
@@ -183,5 +191,9 @@ export type DicAbsenceTypeView<
       | "order"
       | "absenceCategory"
       | "company"
+      | "isJustRequired"
+      | "isOriginalSheet"
+      | "isCheckWork"
+      | "isVacationDate"
     >
   : never;
