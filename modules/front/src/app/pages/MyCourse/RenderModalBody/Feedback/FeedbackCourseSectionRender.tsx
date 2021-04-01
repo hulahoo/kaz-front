@@ -5,7 +5,7 @@ import {Button, Modal} from "antd";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {action, observable} from "mobx";
 import {AnsweredFeedback} from "./FeedbackQuestionAnswerComponent";
-import {AnsweredQuestion} from "../../../../components/Test/Test";
+import {AnsweredQuestion} from "../../../../components/Test/TestComponent";
 import {restServices} from "../../../../../cuba/services";
 import {observer} from "mobx-react";
 

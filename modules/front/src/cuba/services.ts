@@ -1,7 +1,6 @@
 import {FetchOptions, SerializedEntity} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {SortOrder} from "antd/lib/table/interface";
-import {Course} from "./entities/base/tsadv$Course";
 import moment from "moment";
 import {AssignedGoal} from "./entities/base/tsadv$AssignedGoal";
 import {ProcessInstanceData} from "./entities/base/bproc_ProcessInstanceData";
@@ -13,7 +12,7 @@ import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActo
 import {UserExt} from "./entities/base/tsadv$UserExt";
 import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
-import {AnsweredTest, TestModel} from "../app/components/Test/Test";
+import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
@@ -33,6 +32,7 @@ import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/PersonCard/MyTeamPersonCard";
+import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -59,6 +59,14 @@ export type CourseTrainerInfo = {
 export type PairModel<K, V> = {
   key: K,
   value: V
+}
+
+export type ScormInputData = {
+  fieldId: string;
+  answer: string;
+  score: number;
+  maxScore: number;
+  minScore: number;
 }
 
 export const restServices = {
@@ -159,7 +167,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    courseSectionWithEnrollmentAttempts: (params: {courseSectionId: string, enrollmentId: string}): Promise<CourseSection> => {
+    courseSectionWithEnrollmentAttempts: (params: { courseSectionId: string, enrollmentId: string }): Promise<CourseSection> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "courseSectionWithEnrollmentAttempts",
@@ -167,6 +175,20 @@ export const restServices = {
       ).then((response: string) => {
         return JSON.parse(response);
       });
+    },
+    createScormAttempt: (params: { courseSectionId: string, enrollmentId: string, inputData: ScormInputData[], success: boolean }): Promise<void> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "createScormAttempt",
+        {...params}
+      );
+    },
+    createTestScormAttempt: (params: { courseSectionId: string, enrollmentId: string, score: number, maxScore: number, minScore: number, success: boolean }): Promise<void> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_CourseService",
+        "createTestScormAttempt",
+        {...params}
+      );
     }
   },
   kpiService: {
@@ -556,6 +578,7 @@ export type CourseInfo = {
   logo: any
   comments: Comment[]
   isIssuedCertificate: boolean
+  learningProof: string
   rateReviewCount: number
   rating: any[]
   isOnline: boolean

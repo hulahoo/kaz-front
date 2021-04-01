@@ -1,5 +1,5 @@
 import {action, observable, runInAction} from "mobx";
-import {default as React, FormEvent} from "react";
+import {default as React} from "react";
 import {getCubaREST, injectMainStore, MainStoreInjected, withLocalizedForm} from "@cuba-platform/react";
 import Page from "../../hoc/PageContentHoc";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
@@ -211,7 +211,8 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                   <Col span={4}>
                     <Form.Item label={this.props.intl.formatMessage({id: "course.confirm"})} className={"form-item"}
                                key='certificate'>
-                      <span>{this.props.intl.formatMessage({id: "course.certificate." + this.dataInstance.isIssuedCertificate})}</span>
+                      {/*<span>{this.props.intl.formatMessage({id: "course.certificate." + this.dataInstance.isIssuedCertificate})}</span>*/}
+                      <span>{this.dataInstance.learningProof}</span>
                     </Form.Item>
                   </Col>
                 </Row>

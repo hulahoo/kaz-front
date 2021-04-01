@@ -14,6 +14,7 @@ type AbstractRenderModalBodyProps = {
   changeModalScreenSize: () => void,
   courseId: string
   loadingFinishCourse?: boolean
+  selectNextSection?: () => void
 }
 
 @observer
@@ -29,7 +30,6 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
   isDisabledFinishSectionBtn = false;
 
   render() {
-    console.log(this.isDisabledFinishSectionBtn);
     return (<Card className={"modal-body card-actions-container"}
                   actions={this.cardActionButtons()}>
         {this.props.changeModalScreenSize

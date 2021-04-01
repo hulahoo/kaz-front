@@ -4,6 +4,7 @@ import { TestSection } from "./tsadv$TestSection";
 import { JobTest } from "./tsadv$JobTest";
 import { PositionTest } from "./tsadv$PositionTest";
 import { Course } from "./tsadv$Course";
+import {CourseSectionObject} from "./tsadv$CourseSectionObject";
 export class Test extends AbstractParentEntity {
   static NAME = "tsadv$Test";
   name?: string | null;
@@ -23,6 +24,7 @@ export class Test extends AbstractParentEntity {
   jobTest?: JobTest[] | null;
   positionTest?: PositionTest[] | null;
   course?: Course | null;
+  courseSectionObjects?: CourseSectionObject[] | null;
 }
 export type TestViewName =
   | "_base"

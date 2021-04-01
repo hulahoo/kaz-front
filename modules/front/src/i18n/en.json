@@ -243,9 +243,9 @@
   "book.enrolled": "Book is already added to library",
   "book.subscribe": "Add to My books",
   "course.trainers": "Trainers",
-  "course.prerequisition": "Prerequisitions",
+  "course.prerequisition": "Requirements for enrollment in the course",
   "course.duration": "Training duration",
-  "course.period": "Periodicity",
+  "course.period": "Frequency (per year)",
   "course.confirm": "Certificate",
   "reviews": "Reviews",
   "rating": "Rating",
@@ -294,6 +294,7 @@
   "course.section.finish": "Finish section",
   "course.feedback.finish": "Send",
   "course.section.test.finish": "Finish test",
+  "course.section.test.start": "Start test",
   "feedback.modal.title": "Thanks for feedback",
   "enrollment.continue": "continue",
   "homework": "Homework",
@@ -362,5 +363,6 @@
   "book.download.error": "Error download file",
   "learning.period": "Period",
   "download": "Download",
-  "course.rate.notification": "Thanks for comment"
+  "course.rate.notification": "Thanks for comment",
+  "courseSection.createAttempt.error": "Error finish section"
 }
