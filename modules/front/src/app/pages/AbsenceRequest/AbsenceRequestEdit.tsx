@@ -30,10 +30,10 @@ import {restServices} from "../../../cuba/services";
 import {rootStore, RootStoreProp} from "../../store";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import TextArea from "antd/es/input/TextArea";
-import {queryCollection, QueryDataCollectionStore} from "../../util/QueryDataCollectionStore";
 import {observable, reaction} from "mobx";
 import moment from "moment/moment";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
+import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
 
 type EditorProps = {
   entityId: string;
@@ -53,7 +53,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
   });
 
   @observable
-  absenceTypesDc: QueryDataCollectionStore<DicRequestStatus>;
+  absenceTypesDc: DictionaryDataCollectionStore<DicRequestStatus>;
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
@@ -165,6 +165,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           operator: '=',
           value: 'TRUE',
         }, {
+          property: 'type.useInSelfService',
+          operator: '=',
+          value: 'TRUE',
+        }, /*{
           property: 'dateTo',
           operator: '>=',
           value: dateFrom,
@@ -172,7 +176,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           property: 'dateFrom',
           operator: '<=',
           value: dateTo,
-        }
+        }*/
         ]
       }).then(value => this.isAbsenceIntersected = value['count'] > 0);
 
@@ -501,9 +505,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
         this.personGroupId = item && item.personGroup ? item.personGroup.id : this.props.rootStore!.userInfo.personGroupId!;
 
-        this.absenceTypesDc = queryCollection<DicRequestStatus>(DicAbsenceType.NAME,
-          'absenceTypes',
-          {personGroupId: this.personGroupId});
+        this.absenceTypesDc = dictionaryCollection<DicRequestStatus>(DicAbsenceType.NAME, this.personGroupId);
+        this.absenceTypesDc.load();
 
         this.isJustRequired = !!(item && item.type && item.type.isJustRequired);
         this.isOriginalSheet = !!(item && item.type && item.type.isOriginalSheet);

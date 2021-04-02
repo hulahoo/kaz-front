@@ -82,9 +82,4 @@ export var restQueries = {
       personGroupId: personGroupId
     })
   },
-  absenceTypes: (personGroupId: string): Promise<SerializedEntity<DicAbsenceType>[]> => {
-    return getCubaREST()!.query<DicAbsenceType>(DicAbsenceType.NAME, "absenceTypes", {
-      personGroupId: personGroupId
-    })
-  }
 };

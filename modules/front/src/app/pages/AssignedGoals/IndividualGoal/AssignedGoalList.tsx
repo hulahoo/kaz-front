@@ -10,7 +10,6 @@ import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platfo
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
 import Column from "antd/es/table/Column";
-import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 import {restQueries} from "../../../../cuba/queries";
 import {Link} from "react-router-dom";
 import {queryInstance} from "../../../util/QueryDataInstanceStore";
@@ -142,6 +141,9 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
             this.form.getFieldDecorator('managerAssessment/' + record.id, {
               initialValue: record.managerAssessment,
               rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.messages[AssignedGoal.NAME + '.' + 'managerAssessment']})
+              }, {
                 validator: this.assessmentValidator
               }]
             })(
