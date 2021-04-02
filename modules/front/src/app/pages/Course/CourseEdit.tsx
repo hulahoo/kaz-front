@@ -123,26 +123,42 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
     }
 
     this.subscribingToCourse = true;
-    getCubaREST()!.commitEntity(Enrollment.NAME, ({
-      personGroup: {
-        id: this.props.rootStore!.userInfo.personGroupId!
-      },
-      status: "APPROVED",
-      course: {
-        id: this.props.entityId
-      },
-      date: moment().toISOString()
-    } as Enrollment))
+    restServices.courseService.validateEnroll({courseId: this.props.entityId, locale: this.props.mainStore!.locale!})
       .then(response => {
-        this.subscribingToCourse = false;
+        if (response.key) {
+          getCubaREST()!.commitEntity(Enrollment.NAME, ({
+            personGroup: {
+              id: this.props.rootStore!.userInfo.personGroupId!
+            },
+            status: "APPROVED",
+            course: {
+              id: this.props.entityId
+            },
+            date: moment().toISOString()
+          } as Enrollment))
+            .then(() => {
+              this.subscribingToCourse = false;
 
-        Notification.success({
-          message: this.props.intl.formatMessage({id: "course.notification.enrollment"})
-        });
-        this.load();
-      }).catch(() => {
-      this.subscribingToCourse = false;
-    })
+              Notification.success({
+                message: this.props.intl.formatMessage({id: "course.notification.enrollment"})
+              });
+              this.load();
+            }).catch(() => {
+            this.subscribingToCourse = false;
+          })
+        } else {
+          response.value.forEach(reason => {
+            console.log(reason);
+            Notification.error({
+              message: reason
+            })
+          });
+          this.subscribingToCourse = false;
+        }
+      })
+      .catch(() => {
+        this.subscribingToCourse = false;
+      });
   };
 
   render() {
