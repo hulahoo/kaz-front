@@ -1,6 +1,5 @@
-import {DataCollectionStore, DataInstanceStore, getCubaREST, getMainStore, MainStore} from "@cuba-platform/react";
-import {PredefinedView} from "@cuba-platform/rest";
-import {observable, runInAction, toJS} from "mobx";
+import {DataCollectionStore, getCubaREST} from "@cuba-platform/react";
+import {runInAction} from "mobx";
 
 export class QueryDataCollectionStore<T> extends DataCollectionStore<T> {
   constructor(entityName: string, queryName: string, params: any) {
@@ -36,6 +35,7 @@ export class QueryDataCollectionStore<T> extends DataCollectionStore<T> {
 }
 
 export function queryCollection<T>(entityName: string, queryName: string, params: any): QueryDataCollectionStore<T> {
+  console.log(params);
   const queryDataCollectionStore = new QueryDataCollectionStore<T>(entityName, queryName, params);
   if (typeof params.loadImmediately === 'undefined' || params.loadImmediately) {
     queryDataCollectionStore.load();

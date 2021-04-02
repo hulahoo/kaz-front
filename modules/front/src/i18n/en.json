@@ -368,5 +368,9 @@
   "learning.period": "Period",
   "download": "Download",
   "course.rate.notification": "Thanks for comment",
-  "courseSection.createAttempt.error": "Error finish section"
+  "courseSection.createAttempt.error": "Error finish section",
+  "goal.description": "Goal description",
+  "cascade.goal": "Cascade goal",
+  "my.goal": "My goal",
+  "my.goal.description": "My goal description"
 }

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Form, message, Select} from "antd";
+import {Alert, Card, Form, Select} from "antd";
 import {inject, observer} from "mobx-react";
 import {CascadeGoalManagement} from "./CascadeGoalManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -13,8 +13,10 @@ import {
   constructFieldsWithErrors,
   DataCollectionStore,
   extractServerValidationErrors,
-  Field, injectMainStore,
-  instance, MainStoreInjected,
+  Field,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
   Msg,
   MultilineText,
   withLocalizedForm
@@ -29,7 +31,6 @@ import {restServices} from "../../../../cuba/services";
 import {RootStoreProp} from "../../../store";
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
-import {PositionExt} from "../../../../cuba/entities/base/base$PositionExt";
 import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 import {queryCollection} from "../../../util/QueryDataCollectionStore";
 import {queryInstance} from "../../../util/QueryDataInstanceStore";
@@ -38,6 +39,8 @@ import Section from "../../../hoc/Section";
 import Page from "../../../hoc/PageContentHoc";
 import Notification from "../../../util/Notification/Notification";
 import {PositionGroupExt} from "../../../../cuba/entities/base/base$PositionGroupExt";
+import TextArea from "antd/es/input/TextArea";
+import Input from "../../../components/Input/Input";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -56,7 +59,7 @@ type SelectLabelValue = {
 @observer
 class CascadeEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
 
-  fields = ["performancePlan", "assignedByPersonGroup", "goalString", "weight", "category", "goal"];
+  fields = ["performancePlan", "assignedByPersonGroup", "goalString", "weight", "category", "goal", "goalSuccessCriteria", "successCriteria"];
 
   dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
@@ -183,7 +186,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                         value={pg.id}>{pg._instanceName}</Select.Option>)
                     : null}</Select>)}
               </Form.Item>
-              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goal'/>}
+              <Form.Item label={<FormattedMessage id="cascade.goal"/>}
                          key='goal'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goal', {
@@ -199,18 +202,36 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                   }) : null}</Select>
                 )}
               </Form.Item>
-              <Field
-                entityName={AssignedGoal.NAME}
-                propertyName="goalString"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{
+
+              <Form.Item label={<FormattedMessage id="goal.description"/>}
+                         key='goalSuccessCriteria'
+                         style={{marginBottom: '12px'}}>
+                {this.props.form.getFieldDecorator('goalSuccessCriteria')(
+                  (<Input disabled/>)
+                )}
+              </Form.Item>
+
+              <Form.Item label={<FormattedMessage id="my.goal"/>}
+                         key='goalString'
+                         style={{marginBottom: '12px'}}>
+                {this.props.form.getFieldDecorator('goalString', {
                   rules: [{
                     required: true,
                     message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'goalString']})
                   }]
-                }}
-              />
+                })(
+                  (<Input/>)
+                )}
+              </Form.Item>
+
+              <Form.Item label={<FormattedMessage id="my.goal.description"/>}
+                         key='successCriteria'
+                         style={{marginBottom: '12px'}}>{
+                this.props.form.getFieldDecorator('successCriteria')(
+                  <TextArea/>
+                )}
+              </Form.Item>
+
               <Field
                 entityName={AssignedGoal.NAME}
                 propertyName="category"
@@ -229,6 +250,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                   }]
                 }}
               />
+
               {this.globalErrors.length > 0 && (
                 <Alert
                   message={<MultilineText lines={toJS(this.globalErrors)}/>}
@@ -248,11 +270,17 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
   };
 
   onChangeGoal = (value: string, option: React.ReactElement<HTMLLIElement>) => {
+
+    const goalId = option!.props["value"];
+    const goal = this.goalsDs.items.find(goal => goal.id === goalId);
+
+    const successCriteria = goal ? goal.successCriteria : null;
+
     this.props.form.setFieldsValue({
-      goalString: option.props['children']
-    });
-    this.props.form.setFieldsValue({
-      category: option!.props["category"]
+      goalSuccessCriteria: successCriteria,
+      goalString: option.props['children'],
+      category: option!.props["category"],
+      // successCriteria: successCriteria
     });
   };
 
@@ -275,12 +303,12 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
         showAll: false,
         viewName: "assigned-goal-cascade-positionGroupExt-view"
       }));
+
       this.positionGroups.load();
 
-      this.positionGroups.afterLoad = () => {
-        this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: this.dataInstance.item!.assignedByPersonGroup!.currentAssignment!.positionGroup!.id});
-        this.goalsDs.load();
-      };
+      this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: '90c364bd-7c4d-7bc5-4491-80c5af271c4d'});
+      this.goalsDs.load();
+
     };
 
     this.assignedPerformancePlan.load();

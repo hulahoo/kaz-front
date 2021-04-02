@@ -195,7 +195,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   dateFromValidator = (rule: any, value: any, callback: any) => {
     this.setDaysBeforeAbsenceWaring(this.getSelectedAbsenceType());
-    callback();
+    if (!this.dateValidator('dateFrom') || !value) {
+      callback(this.props.intl.formatMessage({id: "validation.absenceRequest.dateFrom"}));
+    } else callback();
   }
 
   getSelectedAbsenceType = (): DicAbsenceType => {
@@ -296,10 +298,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "validation.absenceRequest.dateFrom"}),
-                      validator: this.dateValidator
-                    }, {
                       validator: this.dateFromValidator
                     }],
                     getValueFromEvent: args => {

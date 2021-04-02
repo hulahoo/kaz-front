@@ -749,6 +749,12 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     )
   }
 
+  afterSendOnApprove = () => {
+    if (this.isStartForm)
+      this.props.history!.push(AssignedPerformancePlanManagement.PATH);
+    else this.props.history!.goBack();
+  };
+
   processInstanceBusinessKey = (): string => {
     return getBusinessKey(this.dataInstance.item!);
   }
