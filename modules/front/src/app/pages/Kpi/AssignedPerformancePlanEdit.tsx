@@ -274,6 +274,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   };
 
   extraPointValidator = (rule: any, value: any, callback: any) => {
+    this.props.form.validateFields(['purpose'], {force: true});
     if (value === 0 || value && (value < 1 || value > 8)) {
       callback(this.props.intl.formatMessage({id: "assignedPerformancePlan.extraPoint.validation"}));
     }
@@ -318,7 +319,18 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
       <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
         {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "purpose"})}
-        <Form.Item>{getFieldDecorator("purpose")(
+        <Form.Item>{getFieldDecorator("purpose", {
+          rules: [
+            {
+              validator: (rule, value, callback) => {
+                if (this.props.form.getFieldValue('extraPoint') && !value) {
+                  callback(this.props.intl.formatMessage({id: "form.validation.required"},
+                    {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.purpose']}));
+                } else callback();
+              }
+            }
+          ]
+        })(
           <TextArea
             disabled={!isExtraPointEnable}
             rows={4}/>
@@ -579,6 +591,10 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   isUpdateBeforeOutcome = true;
 
+  commentRequiredOutcomes = ['REJECT', 'REVISION', 'APPROVE', 'START'];
+
+  isStartCommentVisible = true;
+
   componentDidMount() {
 
     this.cardStatusEnumValues = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
@@ -732,6 +748,12 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       </Card>
     )
   }
+
+  afterSendOnApprove = () => {
+    if (this.isStartForm)
+      this.props.history!.push(AssignedPerformancePlanManagement.PATH);
+    else this.props.history!.goBack();
+  };
 
   processInstanceBusinessKey = (): string => {
     return getBusinessKey(this.dataInstance.item!);

@@ -1,4 +1,4 @@
-import {FetchOptions, SerializedEntity} from "@cuba-platform/rest";
+import {EntityFilter, FetchOptions, SerializedEntity} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {SortOrder} from "antd/lib/table/interface";
 import moment from "moment";
@@ -32,7 +32,7 @@ import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/PersonCard/MyTeamPersonCard";
-import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
+import {AbstractDictionary} from "./entities/base/AbstractDictionary";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -269,7 +269,14 @@ export const restServices = {
         "newEntity",
         {...param}
       ).then((value: string) => JSON.parse(value));
-    }
+    },
+    loadDictionaries: <T extends AbstractDictionary>(param: { dictionaryName: string, personGroupId: string }): Promise<T> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_PortalHelperService",
+        "loadDictionaries",
+        {...param}
+      ).then((value: string) => JSON.parse(value));
+    },
   },
   bprocService: {
     tasks: (param: { processInstanceData: ProcessInstanceData }): Promise<Array<SerializedEntity<ExtTaskData>>> => {

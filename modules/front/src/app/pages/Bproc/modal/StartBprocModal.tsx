@@ -1,9 +1,9 @@
 import {collection, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {inject, observer} from "mobx-react";
-import React from "react";
+import React, {createElement, Fragment} from "react";
 import {NotPersisitBprocActors} from "../../../../cuba/entities/base/tsadv_NotPersisitBprocActors";
 import {observable} from "mobx";
-import {Button, Col, Form, Icon, Modal, Row, Select, Table} from "antd";
+import {Button, Col, Form, Icon, message, Modal, Row, Select, Table} from "antd";
 import Column from "antd/lib/table/Column";
 import LoadingPage from "../../LoadingPage";
 import {restServices} from "../../../../cuba/services";
@@ -21,6 +21,7 @@ import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_Certifica
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import Candidate from "../component/Candidate";
 import {getBusinessKey} from "../../../util/util";
+import TextArea from "antd/es/input/TextArea";
 
 type StartBproc = {
   processDefinitionKey: string;
@@ -30,6 +31,8 @@ type StartBproc = {
   afterSendOnApprove?: () => void;
   dataInstance: DataInstanceStore<CertificateRequest>;
   form: WrappedFormUtils;
+  isStartCommentVisible?: boolean,
+  commentRequiredOutcomes?: string[],
 }
 
 @inject("rootStore")
@@ -77,7 +80,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   handleOk = (e: any) => {
-    Modal.confirm({
+
+    const handleOk = () => Modal.confirm({
       title: this.props.intl.formatMessage(
         {id: "START.INFO"}
       ),
@@ -99,7 +103,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 processDefinitionKey: this.props.processDefinitionKey,
                 variables: {
                   entity: this.props.dataInstance.item,
-                  rolesLinks: this.bprocRolesDefiner!.links
+                  rolesLinks: this.bprocRolesDefiner!.links,
+                  startComment: this.props.form.getFieldValue("bproc-comment"),
                 }
               }).then(response => {
                 this.modalVisible = false;
@@ -129,6 +134,21 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
           });
       }
     });
+
+    if (this.props.isStartCommentVisible)
+      this.props.form.validateFields(['bproc-comment'],
+        {force: true},
+        (err, values) => {
+          if (err) {
+            message.error(
+              this.props.intl.formatMessage({
+                id: "management.editor.validationError"
+              })
+            );
+          } else handleOk();
+        });
+    else handleOk();
+
   };
 
   handleCancel = (e: any) => {
@@ -191,6 +211,14 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
   deleteRow = (row: SerializedEntity<NotPersisitBprocActors>) => {
     this.items = this.items.filter(r => r.users![0].id !== row.users![0].id);
+  };
+
+  commentValidator = (rule: any, value: any, callback: any) => {
+    if (this.modalVisible && !value && this.props.isStartCommentVisible
+      && this.props.commentRequiredOutcomes && this.props.commentRequiredOutcomes.find(outcome => outcome === 'START')) {
+      callback('Необходимо заполнить комментарий');
+    }
+    callback();
   };
 
   render() {
@@ -272,6 +300,20 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 }}
               />
             </Table>
+
+            <div style={this.props.isStartCommentVisible ? {} : {display: 'none'}}>
+              <Form.Item>
+                {createElement(Fragment, null, this.props.intl.formatMessage({id: 'comment'}))}
+                {this.props.form.getFieldDecorator("bproc-comment", {
+                  rules: [{
+                    validator: this.commentValidator
+                  }]
+                })(
+                  <TextArea
+                    rows={4}/>
+                )}
+              </Form.Item>
+            </div>
           </div>
         </Modal>
       </>

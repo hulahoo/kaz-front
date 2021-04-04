@@ -357,5 +357,9 @@
   "book.download.error": "Не удалось скачать книгу",
   "learning.period": "Период",
   "download": "Скачать",
-  "courseSection.createAttempt.error": "Произошла ошибка при завершении раздела"
+  "courseSection.createAttempt.error": "Произошла ошибка при завершении раздела",
+  "goal.description": "Описание цели",
+  "cascade.goal": "Каскадированая цель",
+  "my.goal": "Моя цель",
+  "my.goal.description": "Описание моей цели"
 }

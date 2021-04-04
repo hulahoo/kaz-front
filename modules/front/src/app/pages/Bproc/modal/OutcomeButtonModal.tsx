@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, createElement, Fragment} from 'react';
 import {observer} from "mobx-react";
 import {BprocFormOutcome} from "../../../../cuba/entities/bproc/bproc_FormOutcome";
 import {RouteComponentProps, withRouter} from "react-router";
@@ -18,6 +18,7 @@ type Props = {
   afterSendOnApprove?: () => void;
   validate?(): Promise<boolean>;
   update?(): Promise<any>;
+  commentRequiredOutcomes?: string[],
   form: WrappedFormUtils,
 }
 
@@ -100,7 +101,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
 
   commentValidator = (rule: any, value: any, callback: any) => {
     const {outcome} = this.props;
-    if (!value && (outcome.id === "REJECT" || outcome.id === "REVISION") && this.modalVisibleMap.get(outcome.id!)) {
+    if (!value && this.props.commentRequiredOutcomes && this.props.commentRequiredOutcomes.find(o => o == outcome.id) && this.modalVisibleMap.get(outcome.id!)) {
       callback('Необходимо заполнить комментарий');
     }
     callback();
@@ -122,6 +123,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
         onOk={this.handleOk.bind(null, outcome)}
         onCancel={() => this.handleCancel(outcome)}>
         <Form.Item>
+          {createElement(Fragment, null, this.props.intl.formatMessage({id: 'comment'}))}
           {getFieldDecorator("bproc-comment", {
             rules: [{
               validator: this.commentValidator

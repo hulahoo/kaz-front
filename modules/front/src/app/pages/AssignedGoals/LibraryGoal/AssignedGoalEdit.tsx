@@ -32,6 +32,7 @@ import Notification from "../../../util/Notification/Notification";
 import {FormComponentProps} from "antd/es/form";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
+import Input from "../../../components/Input/Input";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -48,6 +49,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
     loadImmediately: false
   });
 
+  @observable
   goalsDc: DataCollectionStore<Goal>;
 
   goalLibrarysDc = collection<GoalLibrary>(GoalLibrary.NAME, {
@@ -62,7 +64,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["goal", "weight", "goalLibrary", "goalString", "category"];
+  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "goalSuccessCriteria"];
 
   @observable
   globalErrors: string[] = [];
@@ -133,11 +135,12 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
   };
 
   changeGoalLibrary = (value: string, option: React.ReactElement<HTMLLIElement>) => {
-    if (option) {
-      this.props.form.setFieldsValue({category: option!.props["category"]});
-    } else {
-      this.props.form.setFieldsValue({category: undefined});
-    }
+    this.props.form.setFieldsValue({
+      category: option ? option!.props["category"] : undefined,
+      goal: undefined,
+      goalString: undefined,
+      goalSuccessCriteria: undefined,
+    });
     this.goalsDc = collection<Goal>(Goal.NAME, {
       filter: {
         conditions: [{
@@ -145,12 +148,21 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
           operator: "=",
           value: value
         }]
-      }, view: "_minimal"
+      }, view: "_local"
     });
   };
 
   selectGoal = (value: string, option: React.ReactElement<HTMLLIElement>) => {
-    this.props.form.setFieldsValue({goalString: option.props["children"]});
+
+    const goalId = option!.props["value"];
+    const goal = this.goalsDc && this.goalsDc.items ? this.goalsDc.items.find(goal => goal.id === goalId) : undefined;
+
+    const successCriteria = goal ? goal.successCriteria : null;
+
+    this.props.form.setFieldsValue({
+      goalString: option.props["children"],
+      goalSuccessCriteria: successCriteria,
+    });
   };
 
   checkWeightRange = (rule: any, value: any, callback: any) => {
@@ -207,6 +219,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                   </Select>
                 )}
               </Form.Item>
+
               <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='goal'/>}
                          key='goal'
                          style={{marginBottom: '12px'}}>
@@ -217,6 +230,16 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                     value={gl.id}>{gl._instanceName}</Option>) : null}</Select>
                 )}
               </Form.Item>
+
+
+              <Form.Item label={<Msg entityName={Goal.NAME} propertyName='successCriteria'/>}
+                         key='goalSuccessCriteria'
+                         style={{marginBottom: '12px'}}>
+                {this.props.form.getFieldDecorator('goalSuccessCriteria')(
+                  (<Input disabled/>)
+                )}
+              </Form.Item>
+
               <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
                          key='weight'
                          style={{marginBottom: '12px'}} className={"button-actions-group"}>{
@@ -296,7 +319,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                 operator: "=",
                 value: goalLibrary
               }]
-            }, view: "_minimal"
+            }, view: "_local"
           });
         }
         this.props.form.setFieldsValue(
