@@ -147,11 +147,8 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
             this.subscribingToCourse = false;
           })
         } else {
-          response.value.forEach(reason => {
-            console.log(reason);
-            Notification.error({
-              message: reason
-            })
+          Notification.error({
+            message: response.value
           });
           this.subscribingToCourse = false;
         }
