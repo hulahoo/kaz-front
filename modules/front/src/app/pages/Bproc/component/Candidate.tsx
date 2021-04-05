@@ -30,7 +30,7 @@ class Candidate extends React.Component<Candidates & WrappedComponentProps & Rou
   getCandidatesCard(candidates: UserExt[] | null) {
     if (!candidates || candidates.length === 0) return "";
     else if (candidates.length === 1) {
-      return <div> {candidates[0].fullNameWithLogin} </div>
+      return <div className="break-words">{candidates[0].fullNameWithLogin}</div>
     } else {
       const minValue = candidates[0].fullNameWithLogin + " +" + (candidates.length - 1);
       return (

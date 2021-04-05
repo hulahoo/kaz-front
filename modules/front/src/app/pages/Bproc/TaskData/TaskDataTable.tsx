@@ -24,43 +24,50 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
         dataSource={this.props.tasks}
         pagination={false}
         key="key"
-        size="default" bordered={true} rowKey="id">
+        bordered
+        rowKey="id">
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='hrRole'/>}
                 dataIndex="hrRole"
+                ellipsis
                 key="hrRole"
                 render={(text, record) => {
-                  return (record as ExtTaskData).hrRole ? ((record as ExtTaskData).hrRole as DicHrRole).langValue : "";
+                  return <div className="break-words">{(record as ExtTaskData).hrRole ? ((record as ExtTaskData).hrRole as DicHrRole).langValue : ""}</div>;
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='assignee'/>}
                 dataIndex="assigneeOrCandidates"
                 key="assigneeOrCandidates"
+                ellipsis
                 render={(text, record) =>
                   (<Candidate candidates={((record as ExtTaskData).assigneeOrCandidates as UserExt[] | null)}/>)
                 }/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='createTime'/>}
                 dataIndex="createTime"
                 key="createTime"
+                ellipsis
                 render={(text, record, index) => {
-                  return (record as ExtTaskData).createTime;
+                  return <div className="break-words">{(record as ExtTaskData).createTime}</div>;
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='endTime'/>}
                 dataIndex="endTime"
+                ellipsis
                 key="endTime"
                 render={(text, record, index) => {
-                  return (record as ExtTaskData).endTime;
+                  return <div className="break-words">{(record as ExtTaskData).endTime}</div>;
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='outcome'/>}
                 dataIndex="outcome"
                 key="outcome"
+                ellipsis
                 render={(text, record, index) => {
                   const outcome = (record as ExtTaskData).outcome;
-                  return outcome ? this.props.intl.formatMessage({id: outcome!}) : "";
+                  return outcome ? <div className="break-words">{this.props.intl.formatMessage({id: outcome!})}</div> : "";
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='comment'/>}
                 dataIndex="comment"
                 key="comment"
+                ellipsis
                 render={(text, record, index) => {
-                  return (record as ExtTaskData).comment;
+                  return <div className="break-words">{(record as ExtTaskData).comment}</div>;
                 }}/>
       </Table>
     )
