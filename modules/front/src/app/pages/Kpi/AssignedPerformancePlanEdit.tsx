@@ -3,7 +3,7 @@ import {createElement, FormEvent} from "react";
 import {Alert, Card, Col, DatePicker, Form, InputNumber, message, Row, Tree} from "antd";
 import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {action, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import GoalForm from './GoalForm';
@@ -394,9 +394,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       <Page
         pageName={this.props.intl.formatMessage({id: 'page.kpi'}, {"name": status === 'DONE' ? (this.dataInstance.item!.performancePlan as SerializedEntity<PerformancePlan>)._instanceName : ""})}>
         <Card className="narrow-layout card-actions-container" actions={[
-          <Link to={AssignedPerformancePlanManagement.PATH}>
-            <Button buttonType={ButtonType.FOLLOW}>{this.props.intl.formatMessage({id: "close"})}</Button>
-          </Link>,
+          <Button buttonType={ButtonType.FOLLOW}
+                  onClick={() => this.props.history!.goBack()}>{this.props.intl.formatMessage({id: "close"})}</Button>,
           ...this.pageActions()]}
               bordered={false}>
           <Form key={'form1'} onSubmit={this.handleSubmit} layout="vertical">
