@@ -26,7 +26,6 @@ type MaterialHeaderHandlers = {
 class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderProps & MaterialHeaderHandlers & RouteComponentProps> {
   render() {
     const {showEnrollment = true} = this.props;
-
     return (
       <Row>
         <Col span={16}>

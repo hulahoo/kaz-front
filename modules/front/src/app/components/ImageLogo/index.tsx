@@ -16,16 +16,17 @@ export type ImageLogoProps = {
 class ImageLogo extends Component<ImageLogoProps & React.ImgHTMLAttributes<HTMLImageElement>> {
 
   @observable
-  logo = this.props.imgSrc;
+  logo: string;
 
   render() {
     const {type, imgSrc, imgSrcProp, name, ...rest} = this.props;
 
+    const img = (this.logo ? this.logo : imgSrc);
     return (
       <>
-        {this.logo
+        {this.logo || imgSrc
           ? <img {...rest} alt={name}
-                 src={this.props.type === 'base64' ? "data:image/png;base64, " + this.logo : this.logo}/>
+                 src={this.props.type === 'base64' ? "data:image/png;base64, " + img : img}/>
           : <NoImage {...this.props}/>} </>
     );
   }

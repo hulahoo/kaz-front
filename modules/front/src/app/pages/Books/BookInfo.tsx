@@ -10,7 +10,7 @@ import MaterialDescription from "../Material/MaterialDescription";
 import MaterialReviews, {Comment, RateRenderMeta} from "../Material/MaterialReviews";
 import {inject, observer} from "mobx-react";
 import {observable} from "mobx";
-import {collection, getCubaREST, instance} from "@cuba-platform/react";
+import {collection, getCubaREST} from "@cuba-platform/react";
 import {Book} from "../../../cuba/entities/base/tsadv$Book";
 import {getBlobUrl} from "../../util/util";
 import {bookFileProperties} from "./DicBookCategoryCards";
@@ -21,6 +21,7 @@ import moment from "moment";
 import Notification from "../../util/Notification/Notification";
 import {RootStoreProp} from "../../store";
 import Rate from "../../components/Rate/Rate";
+import {instanceStore} from "../../util/InstanceStore";
 
 type EditorProps = {
   entityId: string;
@@ -30,7 +31,7 @@ type EditorProps = {
 @observer
 class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStoreProp> {
 
-  dataInstance = instance<Book>(Book.NAME, {
+  dataInstance = instanceStore<Book>(Book.NAME, {
     view: "portal-book-info"
   });
 
@@ -47,6 +48,9 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
 
   @observable
   sendingComment: boolean = false;
+
+  @observable
+  imgUrl: string;
 
   sendComment = (rate: number, text: string): void => {
     this.sendingComment = true;
@@ -97,8 +101,8 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                     ? this.dataInstance.item.reviews.map(r => (r.rating as number)).reduce((i1, i2) => i1 + i2, 0)
                     : 0}
                   imageProps={{
-                    type: "promise",
-                    imgSrcProp: this.dataInstance.item.image ? getBlobUrl(this.dataInstance.item.image.id) : undefined
+                    type: "src",
+                    imgSrc: this.imgUrl
                   }}
                   reviewsCount={this.dataInstance.item.reviews ? this.dataInstance.item.reviews.length : 0}
                   // subscribe={this.subscribeToCourse}
@@ -137,18 +141,19 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
             </Section>
             <Section sectionName={this.props.intl.formatMessage({id: "reviews"})} size={"large"}>
               {this.reviews.status === "DONE"
-                ? <MaterialReviews avgRate={this.reviews.items.map(r => r.rating).reduce((i1, i2) => i1 + i2, 0) / this.reviews.items.length}
-                                   comments={this.reviews.items.map(r => {
-                                     return ({
-                                       user: (r.author ? (r.author as SerializedEntity<PersonExt>)._instanceName : undefined),
-                                       comment: r.reviewText,
-                                       date: moment(r.postDate),
-                                       rating: r.rating
-                                     } as Comment)
-                                   })}
-                                   rateList={this.mapReviewToRateList(this.reviews.items)}
-                                   sendComment={this.sendComment}
-                                   sendingComment={this.sendingComment}/>
+                ? <MaterialReviews
+                  avgRate={this.reviews.items.map(r => r.rating).reduce((i1, i2) => i1 + i2, 0) / this.reviews.items.length}
+                  comments={this.reviews.items.map(r => {
+                    return ({
+                      user: (r.author ? (r.author as SerializedEntity<PersonExt>)._instanceName : undefined),
+                      comment: r.reviewText,
+                      date: moment(r.postDate),
+                      rating: r.rating
+                    } as Comment)
+                  })}
+                  rateList={this.mapReviewToRateList(this.reviews.items)}
+                  sendComment={this.sendComment}
+                  sendingComment={this.sendingComment}/>
                 : <Skeleton active paragraph={{rows: 3}}/>}
             </Section>
           </div>
@@ -171,6 +176,14 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
   };
 
   componentDidMount(): void {
+    this.dataInstance.afterLoad = () => {
+      if (this.dataInstance.item && this.dataInstance.item.image) {
+        getBlobUrl(this.dataInstance.item.image.id).then(response => {
+          this.imgUrl = response;
+        })
+      }
+    };
+
     this.dataInstance.load(this.props.entityId);
     this.reviews.load();
   }

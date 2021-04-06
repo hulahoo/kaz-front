@@ -4,7 +4,7 @@ import {AbstractDictionary} from "../../cuba/entities/base/AbstractDictionary";
 import {AbstractBprocRequest} from "../../cuba/entities/base/AbstractBprocRequest";
 import {AssignedPerformancePlan} from "../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 
-export const getBlobUrl = (fileId: string) => {
+export const getBlobUrl = (fileId: string):Promise<string> => {
   return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob))
 };
 
