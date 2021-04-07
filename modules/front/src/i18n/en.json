@@ -376,5 +376,6 @@
   "join.health.insurance": "Join Health Insurance",
   "attach.family.members": "Attach family members",
   "annexes": "Annexes",
-  "see.documents": "Request to see the documents"
+  "see.documents": "Request to see the documents",
+  "enrollment.section.start.error.required": "To continue it's required to complete current section"
 }

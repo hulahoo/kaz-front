@@ -208,7 +208,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
     if (!isPrevRequiredCourseSectionPassed) {
       Notification.info({
-        message: "Необходимо успешно пройти предыдущий раздел"
+        message: this.props.intl.formatMessage({id: 'enrollment.section.start.error.required'})
       });
       return;
     }

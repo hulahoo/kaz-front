@@ -29,6 +29,8 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
 
     "courseName",
 
+    "enrollmentStatus",
+
     "trainerFullName",
 
     "testResult",
@@ -67,6 +69,9 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                     key="course" render={(text, record: any) => {
               return record.course
             }}/>
+            <Column title={<Msg entityName={Enrollment.NAME} propertyName='status'/>}
+                    dataIndex="enrollmentStatus"
+                    key="enrollmentStatus"/>
             <Column title={<Msg entityName={CourseTrainer.NAME} propertyName='trainer'/>}
                     dataIndex="trainer"
                     key="trainer" render={(text, record: any) => {
@@ -75,7 +80,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             <Column title={<>{this.props.intl.formatMessage({id: "learningHistory.testResult"})}</>}
                     dataIndex="test"
                     key="test" render={(text, record: any) => {
-              return record.result;
+              return (record.result ? record.result + '%' : '');
             }}/>
             <Column
               title={<>{this.props.intl.formatMessage({id: "learningHistory.certificate"})}</>}
