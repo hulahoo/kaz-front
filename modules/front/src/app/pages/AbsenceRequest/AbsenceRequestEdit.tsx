@@ -137,12 +137,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     const dateFrom = this.props.form.getFieldValue("dateFrom");
     const dateTo = this.props.form.getFieldValue("dateTo");
 
-    if (dateFrom) dateFrom.startOf('day');
-    if (dateTo) dateTo.startOf('day');
-
     this.setIsAbsenceIntersected();
 
-    return (dateFrom && dateTo && dateFrom <= dateTo) === true;
+    return (dateFrom && dateTo && (dateFrom <= dateTo || dateFrom.clone().startOf('day') <= dateTo.clone().startOf('day'))) === true;
   }
 
   setIsAbsenceIntersected = () => {
