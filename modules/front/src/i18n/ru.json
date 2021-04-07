@@ -361,5 +361,6 @@
   "goal.description": "Описание цели",
   "cascade.goal": "Каскадированая цель",
   "my.goal": "Моя цель",
-  "my.goal.description": "Описание моей цели"
+  "my.goal.description": "Описание моей цели",
+  "enrollment.section.start.error.required": "Чтобы продолжить обучение необходимо завершить обязательный раздел"
 }

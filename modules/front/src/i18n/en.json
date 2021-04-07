@@ -372,5 +372,6 @@
   "goal.description": "Goal description",
   "cascade.goal": "Cascade goal",
   "my.goal": "My goal",
-  "my.goal.description": "My goal description"
+  "my.goal.description": "My goal description",
+  "enrollment.section.start.error.required": "To continue it's required to complete current section"
 }
