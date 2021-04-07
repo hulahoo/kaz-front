@@ -3,6 +3,7 @@ import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
 import AbsenceList from "../pages/Absence/AbsenceList";
+import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -47,6 +48,13 @@ export default class MenuStore {
         component: AbsenceList
       },
       {
+        id: "dmc-my",
+        caption: "Мои ДМС",
+        menuLink: "/my-dmc",
+        pathPattern: "/my-dmc",
+        component: InsuredPersonManagement,
+      },
+      {
         id: "help",
         caption: "Справка",
         items: [
@@ -87,13 +95,6 @@ export default class MenuStore {
       //   menuLink: "/my-rating",
       //   pathPattern: "/my-rating",
       //   component: null,
-      // },
-      // {
-      //   id: "dmc-my",
-      //   caption: "Мои ДМС",
-      //   menuLink: "/my-dmc",
-      //   pathPattern: "/my-dmc",
-      //   component: InsuredPersonManagement,
       // },
       // {
       //   id: "schedule-offsets",
