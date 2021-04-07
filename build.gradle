@@ -1,11 +1,6 @@
 buildscript {
     ext.cubaVersion = '7.2.10'
     repositories {
-        mavenLocal()
-        maven {
-            url 'https://dl.bintray.com/cuba-platform/main'
-        }
-        jcenter()
         maven {
             url 'http://apps.uco.kz/nexus/content/groups/uco-group/'
             credentials {
