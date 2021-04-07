@@ -137,12 +137,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     const dateFrom = this.props.form.getFieldValue("dateFrom");
     const dateTo = this.props.form.getFieldValue("dateTo");
 
-    if (dateFrom) dateFrom.startOf('day');
-    if (dateTo) dateTo.startOf('day');
-
     this.setIsAbsenceIntersected();
 
-    return (dateFrom && dateTo && dateFrom <= dateTo) === true;
+    return (dateFrom && dateTo && (dateFrom <= dateTo || dateFrom.clone().startOf('day') <= dateTo.clone().startOf('day'))) === true;
   }
 
   setIsAbsenceIntersected = () => {
@@ -168,7 +165,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           property: 'type.useInSelfService',
           operator: '=',
           value: 'TRUE',
-        }, /*{
+        }, {
           property: 'dateTo',
           operator: '>=',
           value: dateFrom,
@@ -176,7 +173,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           property: 'dateFrom',
           operator: '<=',
           value: dateTo,
-        }*/
+        }
         ]
       }).then(value => this.isAbsenceIntersected = value['count'] > 0);
 
@@ -505,8 +502,15 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
         this.personGroupId = item && item.personGroup ? item.personGroup.id : this.props.rootStore!.userInfo.personGroupId!;
 
-        this.absenceTypesDc = dictionaryCollection<DicRequestStatus>(DicAbsenceType.NAME, this.personGroupId);
-        this.absenceTypesDc.load();
+        this.absenceTypesDc = dictionaryCollection<DicRequestStatus>(DicAbsenceType.NAME, this.personGroupId, {
+          filter: {
+            conditions: [{
+              property: "useInSelfService",
+              operator: '=',
+              value: 'TRUE'
+            }]
+          }
+        });
 
         this.isJustRequired = !!(item && item.type && item.type.isJustRequired);
         this.isOriginalSheet = !!(item && item.type && item.type.isOriginalSheet);

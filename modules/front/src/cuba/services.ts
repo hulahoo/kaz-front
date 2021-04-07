@@ -270,10 +270,10 @@ export const restServices = {
         {...param}
       ).then((value: string) => JSON.parse(value));
     },
-    loadDictionaries: <T extends AbstractDictionary>(param: { dictionaryName: string, personGroupId: string }): Promise<T> => {
+    companiesForLoadDictionary:(param: { personGroupId: string}): Promise<string> => {
       return getCubaREST()!.invokeService(
         "tsadv_PortalHelperService",
-        "loadDictionaries",
+        "getCompaniesForLoadDictionary",
         {...param}
       ).then((value: string) => JSON.parse(value));
     },
