@@ -14,6 +14,8 @@ import {serviceCollection} from "../../util/ServiceDataCollectionStore";
 import Notification from "../../util/Notification/Notification";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Rate from "../../components/Rate/Rate";
+import {Course} from "../../../cuba/entities/base/tsadv$Course";
+import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
 
 @observer
 class CourseList<T> extends React.Component<WrappedComponentProps> {
@@ -55,13 +57,19 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                        loading={false} {...course}
                                                                                                        name={course.name!}
                                                                                                        header={(<>
-                                                                                                           {(course as
-                                                                                                             any).isOnline ?
-                                                                                                             <img
-                                                                                                               src={require("../../../resources/icons/online.png")}
-                                                                                                               alt="online"
-                                                                                                               className={"icon-online"}/> :
-                                                                                                             null}
+                                                                                                           {
+                                                                                                             course.enrollments.length > 0
+                                                                                                               ?
+                                                                                                               <SvgFinishedCourse className="course-icon left-icon"/>
+                                                                                                               : null
+                                                                                                           }
+                                                                                                           {
+                                                                                                             course.isOnline ?
+                                                                                                               <img
+                                                                                                                 src={require("../../../resources/icons/online.png")}
+                                                                                                                 alt="online"
+                                                                                                                 className="course-icon right-icon"/> :
+                                                                                                               null}
                                                                                                            <ImageLogo
                                                                                                              type="base64"
                                                                                                              imgSrc={course.logo}
