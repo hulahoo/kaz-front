@@ -193,7 +193,7 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
               <MaterialDescription descriptionHtml={this.dataInstance.description}>
                 <Row>
                   <Col span={5}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.trainers"})} className={"form-item"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.trainers"})} className={"form-item break-words"}
                                key='trainers'>
                       {this.dataInstance.trainers.map((trainer: any) => <a className={"default-link"}
                                                                            style={{marginRight: '10px'}}
@@ -204,25 +204,25 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                   </Col>
                   <Col span={5}>
                     <Form.Item label={this.props.intl.formatMessage({id: "course.prerequisition"})}
-                               className={"form-item"}
+                               className="form-item break-words"
                                key='preRequisitions'>
                       {this.dataInstance.preRequisitions}
                     </Form.Item>
                   </Col>
                   <Col span={5}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.duration"})} className={"form-item"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.duration"})} className={"form-item break-words"}
                                key='duration'>
                       {this.dataInstance.educationDuration}
                     </Form.Item>
                   </Col>
                   <Col span={5}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.period"})} className={"form-item"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.period"})} className={"form-item break-words"}
                                key='duration'>
                       {this.dataInstance.educationPeriod}
                     </Form.Item>
                   </Col>
                   <Col span={4}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.confirm"})} className={"form-item"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.confirm"})} className={"form-item break-words"}
                                key='certificate'>
                       {/*<span>{this.props.intl.formatMessage({id: "course.certificate." + this.dataInstance.isIssuedCertificate})}</span>*/}
                       <span>{this.dataInstance.learningProof}</span>
