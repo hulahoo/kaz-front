@@ -27,46 +27,46 @@ export default class MenuStore {
   @action
   loadUserMenuList = () => {
     this.menuList = [
-      {id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null},
-      {
-        id: "my-profile",
-        caption: "Мой профиль",
-        menuLink: "/my-profile",
-        pathPattern: "/my-profile",
-        component: null
-      }, {
-        id: "my-team",
-        caption: "Моя команда",
-        menuLink: "/my-team",
-        pathPattern: "/my-team",
-        component: null
-      }, {
-        id: "absence",
-        caption: "Absence",
-        menuLink: "/absence",
-        pathPattern: "/absence",
-        component: AbsenceList
-      },
-      {
-        id: "dmc-my",
-        caption: "Мои ДМС",
-        menuLink: "/my-dmc",
-        pathPattern: "/my-dmc",
-        component: InsuredPersonManagement,
-      },
-      {
-        id: "help",
-        caption: "Справка",
-        items: [
-          {
-            id: "certificateRequest",
-            caption: "Справка с места работы",
-            menuLink: "/certificateRequest",
-            pathPattern: "/certificateRequest/:entityId?",
-            component: CertificateRequestManagement
-          }
-        ],
-      } as MenuSubMenu,
+      // {id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null},
+      // {
+      //   id: "my-profile",
+      //   caption: "Мой профиль",
+      //   menuLink: "/my-profile",
+      //   pathPattern: "/my-profile",
+      //   component: null
+      // }, {
+      //   id: "my-team",
+      //   caption: "Моя команда",
+      //   menuLink: "/my-team",
+      //   pathPattern: "/my-team",
+      //   component: null
+      // }, {
+      //   id: "absence",
+      //   caption: "Absence",
+      //   menuLink: "/absence",
+      //   pathPattern: "/absence",
+      //   component: AbsenceList
+      // },
+      // {
+      //   id: "dmc-my",
+      //   caption: "Мои ДМС",
+      //   menuLink: "/my-dmc",
+      //   pathPattern: "/my-dmc",
+      //   component: InsuredPersonManagement,
+      // },
+      // {
+      //   id: "help",
+      //   caption: "Справка",
+      //   items: [
+      //     {
+      //       id: "certificateRequest",
+      //       caption: "Справка с места работы",
+      //       menuLink: "/certificateRequest",
+      //       pathPattern: "/certificateRequest/:entityId?",
+      //       component: CertificateRequestManagement
+      //     }
+      //   ],
+      // } as MenuSubMenu,
       // {
       //   id: "vacation",
       //   caption: "Отпуска",
@@ -131,13 +131,13 @@ export default class MenuStore {
       //   pathPattern: "/job-offers",
       //   component: null,
       // },
-      {
-        id: "org-structure-request",
-        caption: "Заявка по Орг.структуре",
-        menuLink: "/org-structure-request",
-        pathPattern: "/org-structure-request",
-        component: null,
-      }
+      // {
+      //   id: "org-structure-request",
+      //   caption: "Заявка по Орг.структуре",
+      //   menuLink: "/org-structure-request",
+      //   pathPattern: "/org-structure-request",
+      //   component: null,
+      // }
     ]
     // restServices.userMenuService.userMenuList().then((response: string) => {
     //   const menuIdList: string[] = JSON.parse(response);
