@@ -26,6 +26,7 @@ import {StudentHomework} from "../../../cuba/entities/base/tsadv_StudentHomework
 import {RootStoreProp} from "../../store";
 import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
+import {CourseFeedbackPersonAnswer} from "../../../cuba/entities/base/tsadv$CourseFeedbackPersonAnswer";
 
 type Props = {
   entityId: string;
@@ -67,9 +68,11 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
   render() {
     const homeworkTitle = <>
-      {this.isHomeworkDone ? <Icon type="check-circle" className={"done"} theme="twoTone"
-                                   twoToneColor="#12BF66"
-                                   style={{fontSize: '32px'}}/> : null}
+      {this.isHomeworkDone
+        ? <Icon type="check-circle" className={"done"} theme="twoTone"
+                twoToneColor="#12BF66"
+                style={{fontSize: '32px'}}/>
+        : null}
       <div>{this.props.intl.formatMessage({id: "homework"})}</div>
     </>;
     const linkHomework = this.isHasHomework && this.dataInstance
@@ -117,9 +120,10 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                 <hr/>
                 <div className={"course-feedback-sections"}>
                   <CourseSectionList dataInstance={this.feedbacks ? this.feedbacks.map(f => {
+                    console.log((f as any).sended);
                     return {
                       id: f.id,
-                      succeedFinished: false,
+                      succeedFinished: (f as any).sended,
                       text: f._instanceName,
                       type: "feedback"
                     }
@@ -138,6 +142,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
             selectNextSection={this.selectNextSection}
             onCloseModal={this.onCloseModal}
             selectedSection={this.selectedSection!}
+            setFinishedFeedback={this.setFinishedFeedback}
             enrollmentId={this.props.entityId}/> : <></>}
         </Spin>
       </Page>);
@@ -322,8 +327,32 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
   loadFeedback = () => {
     restQueries.courseFeedbacks(this.dataInstance.course!.id, "COURSE").then(r => {
-      this.feedbacks = r;
+      if (r.length > 0) {
+        const userFeedbacks = getCubaREST()!.searchEntities(CourseFeedbackPersonAnswer.NAME, {
+          conditions: [
+            {
+              property: "feedbackTemplate.id",
+              operator: "in",
+              value: r.map(f => f.id)
+            }, {
+              property: "personGroup.id",
+              operator: "=",
+              value: this.props.rootStore!.userInfo.personGroupId!
+            }
+          ]
+        }, {view: "courseFeedbackPersonAnswer.edit"});
+        userFeedbacks.then(responseFeedbacks => {
+          responseFeedbacks.forEach(rf => {
+            (r!.find(f => f.id === (rf as SerializedEntity<CourseFeedbackPersonAnswer>).feedbackTemplate!.id) as any).sended = true;
+          });
+          this.feedbacks = r;
+        });
+      }
     })
+  }
+
+  setFinishedFeedback = (feedbackId: string) => {
+    (this.feedbacks!.find(f => f.id === feedbackId) as any).sended = true;
   }
 }
 

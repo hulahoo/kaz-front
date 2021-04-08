@@ -22,6 +22,7 @@ type Props = {
   selectNextSection?: () => void
   finishedCourseSection: (courseSectionId: string, success: boolean) => void
   setLoadingFinishCourseSection?: (value: boolean) => void
+  setFinishedFeedback?: (feedbackId: string) => void
 }
 
 @observer
@@ -85,6 +86,7 @@ class CourseSectionModal extends Component<Props> {
       selectNextSection: this.props.selectNextSection,
       loadingFinishCourse: this.props.loadingFinishCourse,
       setLoadingFinishCourseSection: this.props.setLoadingFinishCourseSection,
+      setFinishedFeedback: this.props.setFinishedFeedback,
       finishedCourseSection: this.props.finishedCourseSection,
       courseId: this.props.courseId,
       changeModalScreenSize: this.setFullScreenModal.bind(null, !this.fullScreenModal),
