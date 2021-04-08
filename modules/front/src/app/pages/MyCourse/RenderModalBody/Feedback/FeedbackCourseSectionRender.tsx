@@ -16,6 +16,7 @@ type FeedbackCourseSectionRenderProps = {
   onCloseModal: () => void
   feedbacks: FeedbackCourse[] | null,
   courseId: string
+  setFinishedFeedback: (feedbackId: string) => void
 }
 
 @observer
@@ -60,6 +61,7 @@ class FeedbackCourseSectionRender extends AbstractRenderModalBody<FeedbackCourse
           title: this.props.intl.formatMessage({id: "feedback.modal.title"}),
           okText: this.props.intl.formatMessage({id: "cubaReact.dataTable.ok"}),
           onOk: () => {
+            this.props.setFinishedFeedback(this.props.templateId);
             onCloseModal();
           }
         });

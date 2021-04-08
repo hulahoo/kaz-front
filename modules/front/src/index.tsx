@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./app/App";
 import {CubaAppProvider} from "@cuba-platform/react";
-import {HashRouter, Route} from "react-router-dom";
+import {BrowserRouter, HashRouter, Route} from "react-router-dom";
 import "antd/dist/antd.min.css";
 import "@cuba-platform/react/dist/index.min.css";
 import "./index.css";
@@ -18,9 +18,9 @@ ReactDOM.render(
       messagesMapping={messagesMapping}
       antdLocaleMapping={antdLocaleMapping}
     >
-      <HashRouter>
+      <BrowserRouter>
         <Route component={App}/>
-      </HashRouter>
+      </BrowserRouter>
     </CubaAppProvider>
   </Provider>,
   document.getElementById("root") as HTMLElement

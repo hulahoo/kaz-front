@@ -13,11 +13,12 @@ import {
   WrappedComponentProps
 } from "react-intl";
 import {RootStoreProp} from "../store";
+import {RouteComponentProps, withRouter} from "react-router-dom";
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class Login extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+class Login extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
 
   @observable performingLoginRequest = false;
 
@@ -37,6 +38,10 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps & 
     getCubaREST()!.login(login!, password!, {tokenEndpoint: "auth/token"})
       .then(
         action(() => {
+          const urlToRedirect = this.props.location.pathname;
+          if (urlToRedirect.replace("/", "").trim().length === 0) {
+            this.props.history.push("/my-education")
+          }
           this.props.rootStore!.userInfo.loadUserInfo();
           this.performingLoginRequest = false;
           this.props.mainStore!.userName = login;
@@ -107,4 +112,4 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps & 
   }
 }
 
-export default injectIntl(Login);
+export default injectIntl(withRouter(Login));

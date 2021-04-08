@@ -12,8 +12,8 @@ import LoadingPage from "../LoadingPage";
 import {rootStore} from "../../store";
 import Search from "antd/es/input/Search";
 import {MyTeamNew} from "../../../cuba/entities/base/tsadv$MyTeamNew";
-import MyTeamPersonCard from "./PersonCard/MyTeamPersonCard";
 import ScrollContainer from "react-indiana-drag-scroll";
+import MyTeamCard from "./MyTeamCard";
 
 const {TreeNode} = Tree;
 
@@ -181,8 +181,8 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
             {this.selectedData && this.selectedData.personGroupId ?
               this.props.personCard
                 ? this.props.personCard(this.selectedData.personGroupId!)
-                : <MyTeamPersonCard personGroupId={this.selectedData.personGroupId!}
-                                    key={this.selectedData.personGroupId!}/>
+                : <MyTeamCard personGroupId={this.selectedData.personGroupId!}
+                              key={this.selectedData.personGroupId!}/>
               : <></>}
           </Col>
         </Row>

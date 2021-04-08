@@ -18,6 +18,7 @@ import Section from "../../hoc/Section";
 import {CourseManagement} from "../Course/CourseManagement";
 import Notification from "../../util/Notification/Notification";
 import Rate from "../../components/Rate/Rate";
+import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
 
 @inject("rootStore")
 @observer
@@ -68,12 +69,17 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                                   loading={false} {...course}
                                                                                                   name={course.name!}
                                                                                                   header={(<>
-                                                                                                    {(course as
-                                                                                                      any).isOnline ?
+                                                                                                    {
+                                                                                                      course.enrollments!.find(e => e.status === 'COMPLETED')
+                                                                                                        ?
+                                                                                                        <SvgFinishedCourse className="course-icon left-icon"/>
+                                                                                                        : null
+                                                                                                    }
+                                                                                                    {course.isOnline ?
                                                                                                       <img
                                                                                                         src={require("../../../resources/icons/online.png")}
                                                                                                         alt="online"
-                                                                                                        className={"icon-online"}/> :
+                                                                                                        className="course-icon right-icon"/> :
                                                                                                       null}
                                                                                                     <ImageLogo
                                                                                                       type="base64"
