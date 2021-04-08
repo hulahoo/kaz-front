@@ -244,7 +244,7 @@
   "book.subscribe": "Add to My books",
   "course.trainers": "Trainers",
   "course.prerequisition": "Requirements for enrollment in the course",
-  "course.duration": "Training duration",
+  "course.duration": "Training Duration (hrs)",
   "course.period": "Frequency (per year)",
   "course.confirm": "Certificate",
   "reviews": "Reviews",
