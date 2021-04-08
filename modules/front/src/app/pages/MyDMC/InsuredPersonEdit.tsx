@@ -1,16 +1,16 @@
 import * as React from "react";
-import { FormEvent } from "react";
-import { Alert, Button, Card, Col, Form, Icon, message, Modal, Row, Spin, Tag, Upload } from "antd";
-import { inject, observer } from "mobx-react";
-import { InsuredPersonManagement } from "./InsuredPersonManagement";
-import { FormComponentProps } from "antd/lib/form";
-import { Link, Redirect, withRouter } from "react-router-dom";
-import { action, IReactionDisposer, observable, reaction, toJS } from "mobx";
-import { FormattedMessage, injectIntl, WrappedComponentProps } from "react-intl";
+import {FormEvent} from "react";
+import {Alert, Button, Card, Col, Form, message, Modal, Row, Spin, Tag} from "antd";
+import {inject, observer} from "mobx-react";
+import {InsuredPersonManagement} from "./InsuredPersonManagement";
+import {FormComponentProps} from "antd/lib/form";
+import {Link, Redirect, withRouter} from "react-router-dom";
+import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
 import Notification from "../../util/Notification/Notification";
 
-import { downloadFile } from "../../util/util";
+import {downloadFile} from "../../util/util";
 
 
 import {
@@ -26,23 +26,24 @@ import {
 
 import "../../../app/App.css";
 
-import { InsuredPerson } from "../../../cuba/entities/base/tsadv$InsuredPerson";
-import { DicMICAttachmentStatus } from "../../../cuba/entities/base/tsadv$DicMICAttachmentStatus";
-import { InsuranceContract } from "../../../cuba/entities/base/tsadv$InsuranceContract";
-import { DicCompany } from "../../../cuba/entities/base/base_DicCompany";
-import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt";
-import { DicRelationshipType } from "../../../cuba/entities/base/tsadv$DicRelationshipType";
-import { JobGroup } from "../../../cuba/entities/base/tsadv$JobGroup";
-import { DicSex } from "../../../cuba/entities/base/base$DicSex";
-import { DicDocumentType } from "../../../cuba/entities/base/tsadv$DicDocumentType";
-import { DicRegion } from "../../../cuba/entities/base/base$DicRegion";
-import { Address } from "../../../cuba/entities/base/tsadv$Address";
-import { FileDescriptor } from "../../../cuba/entities/base/sys$FileDescriptor";
-import { ReadonlyField } from "../../components/ReadonlyField";
-import { restServices } from "../../../cuba/services";
-import { RouteComponentProps } from "react-router";
-import { SerializedEntity } from "@cuba-platform/rest";
-import { RootStoreProp } from "../../store";
+import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
+import {DicMICAttachmentStatus} from "../../../cuba/entities/base/tsadv$DicMICAttachmentStatus";
+import {InsuranceContract} from "../../../cuba/entities/base/tsadv$InsuranceContract";
+import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
+import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
+import {DicRelationshipType} from "../../../cuba/entities/base/tsadv$DicRelationshipType";
+import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
+import {DicSex} from "../../../cuba/entities/base/base$DicSex";
+import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType";
+import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
+import {Address} from "../../../cuba/entities/base/tsadv$Address";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
+import {ReadonlyField} from "../../components/ReadonlyField";
+import {restServices} from "../../../cuba/services";
+import {RouteComponentProps} from "react-router";
+import {SerializedEntity} from "@cuba-platform/rest";
+import {RootStoreProp} from "../../store";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -79,14 +80,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   statusRequestsDc = collection<DicMICAttachmentStatus>(
     DicMICAttachmentStatus.NAME,
-    { view: "_minimal" }
+    {view: "_minimal"}
   );
 
-  insuranceContractsDc = collection<InsuranceContract>(InsuranceContract.NAME, {
-    view: "_minimal"
-  });
+  @observable
+  insuranceContractsDc: DataCollectionStore<InsuranceContract>;
 
-  companysDc = collection<DicCompany>(DicCompany.NAME, { view: "_minimal" });
+  companysDc = collection<DicCompany>(DicCompany.NAME, {view: "_minimal"});
 
   employeesDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_minimal"
@@ -96,17 +96,17 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     view: "_minimal"
   });
 
-  jobsDc = collection<JobGroup>(JobGroup.NAME, { view: "_minimal" });
+  jobsDc = collection<JobGroup>(JobGroup.NAME, {view: "_minimal"});
 
-  sexsDc = collection<DicSex>(DicSex.NAME, { view: "_minimal" });
+  sexsDc = collection<DicSex>(DicSex.NAME, {view: "_minimal"});
 
   documentTypesDc = collection<DicDocumentType>(DicDocumentType.NAME, {
     view: "_minimal"
   });
 
-  regionsDc = collection<DicRegion>(DicRegion.NAME, { view: "_minimal" });
+  regionsDc = collection<DicRegion>(DicRegion.NAME, {view: "_minimal"});
 
-  addressTypesDc = collection<Address>(Address.NAME, { view: "_minimal" });
+  addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
@@ -214,7 +214,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
           message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
+            this.props.intl.formatMessage({id: "management.editor.success"})
           );
           this.updated = true;
         })
@@ -249,7 +249,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             });
           } else {
             message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
+              this.props.intl.formatMessage({id: "management.editor.error"})
             );
           }
         });
@@ -260,8 +260,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
     Modal.confirm({
       title: this.props.intl.formatMessage(
-        { id: "management.browser.delete.areYouSure" },
-        { instanceName: e._instanceName }
+        {id: "management.browser.delete.areYouSure"},
+        {instanceName: e._instanceName}
       ),
       okText: this.props.intl.formatMessage({
         id: "management.browser.delete.ok"
@@ -286,27 +286,26 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   }
 
 
-
   render() {
     if (this.updated) {
-      return <Redirect to={InsuredPersonManagement.PATH} />;
+      return <Redirect to={InsuredPersonManagement.PATH}/>;
     }
 
-    const { status } = this.dataInstance;
-    let field_style = { marginBottom: "12px", margin: "10px", };
-    let card_style = { margin: "10px" };
+    const {status} = this.dataInstance;
+    let field_style = {marginBottom: "12px", margin: "10px",};
+    let card_style = {margin: "10px"};
 
     const buttons = [
       <Button
         htmlType="button"
-        style={{ margin: "12px" }}
+        style={{margin: "12px"}}
         type="primary"
         icon={"plus"}
         onClick={this.showModal}
       />,
       <Button
         htmlType="button"
-        style={{ margin: "12px" }}
+        style={{margin: "12px"}}
         type="primary"
         icon={"edit"}
         disabled={this.selectedRowKey === undefined}
@@ -314,7 +313,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       />,
       <Button
         htmlType="button"
-        style={{ margin: "12px" }}
+        style={{margin: "12px"}}
         type="primary"
         icon={"delete"}
         disabled={this.selectedRowKey === undefined}
@@ -332,218 +331,217 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 <Card size="small" title="Общие сведения" style={card_style}>
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="employee"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.employeesDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true, }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="employee"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.employeesDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true,}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="relative"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.relativesDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="relative"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.relativesDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="firstName"
-                    form={this.props.form}
-                    formItemOpts={{ style: { display: "none" } }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="firstName"
+                                 form={this.props.form}
+                                 formItemOpts={{style: {display: "none"}}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="secondName"
-                    form={this.props.form}
-                    formItemOpts={{ style: { display: "none" } }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }],
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="secondName"
+                                 form={this.props.form}
+                                 formItemOpts={{style: {display: "none"}}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}],
 
-                    }}
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="middleName"
-                    form={this.props.form}
-                    formItemOpts={{ style: { display: "none" } }}
-                    getFieldDecoratorOpts={{}}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="middleName"
+                                 form={this.props.form}
+                                 formItemOpts={{style: {display: "none"}}}
+                                 getFieldDecoratorOpts={{}}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="iin"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="iin"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="sex"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.sexsDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="sex"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.sexsDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="birthdate"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="birthdate"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="type"
-                    form={this.props.form}
-                    formItemOpts={{ style: { display: "none" } }}
-                    optionsContainer={this.documentTypesDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="type"
+                                 form={this.props.form}
+                                 formItemOpts={{style: {display: "none"}}}
+                                 optionsContainer={this.documentTypesDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="documentType"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.documentTypesDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="documentType"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.documentTypesDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="documentNumber"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="documentNumber"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="addressType"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.addressTypesDc}
-                    getFieldDecoratorOpts={{}}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="addressType"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.addressTypesDc}
+                                 getFieldDecoratorOpts={{}}
                   />
                   <ReadonlyField disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="address"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{}}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="address"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{}}
                   />
 
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="company"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.companysDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="company"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.companysDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="job"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.jobsDc}
-                    getFieldDecoratorOpts={{}}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="job"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.jobsDc}
+                                 getFieldDecoratorOpts={{}}
                   />
 
                 </Card>
-                <Card style={{ margin: "10px" }}>
+                <Card style={{margin: "10px"}}>
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="totalAmount"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="totalAmount"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
                 </Card>
               </Col>
               <Col span={8}>
-                <Card size="small" title="Cведения по ДМС" style={card_style}>
-                  <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="insuranceContract"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.insuranceContractsDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                <Card size="small" title="Сведения по ДМС" style={card_style}>
+                  <ReadonlyField entityName={InsuredPerson.NAME}
+                                 propertyName="insuranceContract"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.insuranceContractsDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="attachDate"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="attachDate"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="exclusionDate"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{}}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="exclusionDate"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{}}
                   />
 
 
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="statusRequest"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.statusRequestsDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="statusRequest"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.statusRequestsDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
                   <ReadonlyField disabled={true}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="insuranceProgram"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="insuranceProgram"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
 
                   {/*   <ReadonlyField disabled={isMemberAttach}
@@ -557,14 +555,14 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
 
                   <ReadonlyField disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="region"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.regionsDc}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="region"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 optionsContainer={this.regionsDc}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
+                                 }}
                   />
                   {/* <ReadonlyField disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
@@ -579,27 +577,32 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                     entityName={InsuredPerson.NAME}
                     propertyName="statementFile"
                     form={this.props.form}
-                    formItemOpts={{ style: field_style }}
+                    formItemOpts={{style: field_style}}
                     optionsContainer={this.statementFilesDc}
                     getFieldDecoratorOpts={{}}
                   />
 
                   <ReadonlyField disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="comment"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    getFieldDecoratorOpts={{}}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="comment"
+                                 form={this.props.form}
+                                 formItemOpts={{style: field_style}}
+                                 getFieldDecoratorOpts={{}}
                   />
 
                 </Card>
-                <Card size="small" title="Приложения" style={card_style}>
+                <Card size="small" title={<FormattedMessage id="annexes"/>} style={card_style}>
+                  {
+                    this.props.entityId === InsuredPersonManagement.NEW_SUBPATH
+                      ? <span style={{color: "red"}}><FormattedMessage id="see.documents"/></span>
+                      : null
+                  }
                   {this.dataInstance.item && this.dataInstance.status === 'DONE'
-                    && this.dataInstance.item!.insuranceContract!.attachments!
+                  && this.dataInstance.item!.insuranceContract!.attachments!
                     ? this.dataInstance.item!.insuranceContract!.attachments!
                       .map(a =>
                         <Tag
-                          style={{ margin: "10px" }}
+                          style={{margin: "10px"}}
                           color={"blue"}
                           onClick={() => {
                             downloadFile((a.attachment as FileDescriptor).id,
@@ -614,7 +617,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Row>
 
             {isMemberAttach ?
-              <Card title="Сведения по членам семьи" style={{ margin: "10px" }}>
+              <Card title="Сведения по членам семьи" style={{margin: "10px"}}>
                 <DataTable
                   dataCollection={this.familyDataCollection}
                   fields={this.memberFields}
@@ -628,16 +631,16 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
             {this.globalErrors.length > 0 && (
               <Alert
-                message={<MultilineText lines={toJS(this.globalErrors)} />}
+                message={<MultilineText lines={toJS(this.globalErrors)}/>}
                 type="error"
-                style={{ marginBottom: "24px" }}
+                style={{marginBottom: "24px"}}
               />
             )}
 
-            <Form.Item style={{ textAlign: "center" }}>
+            <Form.Item style={{textAlign: "center"}}>
               <Link to={InsuredPersonManagement.PATH}>
                 <Button htmlType="button">
-                  <FormattedMessage id="management.editor.cancel" />
+                  <FormattedMessage id="management.editor.cancel"/>
                 </Button>
               </Link>
               <Button
@@ -645,26 +648,25 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 htmlType="submit"
                 disabled={status !== "DONE" && status !== "ERROR"}
                 loading={status === "LOADING"}
-                style={{ marginLeft: "8px" }}
+                style={{marginLeft: "8px"}}
               >
-                <FormattedMessage id="management.editor.submit" />
+                <FormattedMessage id="management.editor.submit"/>
               </Button>
             </Form.Item>
           </Form>
         </Spin>
-        <InsuredPersonMemberComponent entityId={this.selectedRowKey!} visible={this.visible} onChangeVisible={this.onChangeVisible} refreshDs={this.refreshDs} />
+        <InsuredPersonMemberComponent entityId={this.selectedRowKey!} visible={this.visible}
+                                      onChangeVisible={this.onChangeVisible} refreshDs={this.refreshDs}/>
       </Card>
     );
   }
-
-
 
   refreshDs = () => {
     restServices.documentService.calcTotalAmount({
       insuredPersonId: this.props!.entityId!
     }).then(value => {
       if (this.dataInstance.item!)
-        this.props.form.setFieldsValue({ totalAmount: value });
+        this.props.form.setFieldsValue({totalAmount: value});
     })
     // @ts-ignore
     restServices.documentService.getInsuredPersonMembers({
@@ -739,7 +741,24 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       () => {
         return this.dataInstance.item;
       },
-      () => {
+      (item) => {
+
+        const personGroupId = item!.employee ? item!.employee.id : this.props.rootStore!.userInfo!.personGroupId;
+
+        restServices.portalHelperService.companiesForLoadDictionary({personGroupId: personGroupId as string})
+          .then(value => {
+            this.insuranceContractsDc = collection<InsuranceContract>(InsuranceContract.NAME, {
+              view: "_minimal",
+              filter: {
+                conditions: [{
+                  property: "company.id",
+                  operator: "in",
+                  value: value
+                }]
+              }
+            });
+          })
+
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );

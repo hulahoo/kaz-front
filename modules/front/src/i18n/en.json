@@ -373,5 +373,9 @@
   "cascade.goal": "Cascade goal",
   "my.goal": "My goal",
   "my.goal.description": "My goal description",
+  "join.health.insurance": "Join Health Insurance",
+  "attach.family.members": "Attach family members",
+  "annexes": "Annexes",
+  "see.documents": "Request to see the documents",
   "enrollment.section.start.error.required": "To continue it's required to complete current section"
 }
