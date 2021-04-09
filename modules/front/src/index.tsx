@@ -18,7 +18,7 @@ ReactDOM.render(
       messagesMapping={messagesMapping}
       antdLocaleMapping={antdLocaleMapping}
     >
-      <BrowserRouter>
+      <BrowserRouter basename="/kzm-front">
         <Route component={App}/>
       </BrowserRouter>
     </CubaAppProvider>
