@@ -503,6 +503,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         this.personGroupId = item && item.personGroup ? item.personGroup.id : this.props.rootStore!.userInfo.personGroupId!;
 
         this.absenceTypesDc = dictionaryCollection<DicRequestStatus>(DicAbsenceType.NAME, this.personGroupId, {
+          view: '_local',
           filter: {
             conditions: [{
               property: "useInSelfService",
