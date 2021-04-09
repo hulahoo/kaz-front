@@ -7,7 +7,8 @@ import {action, observable} from "mobx";
 import {AnsweredFeedback} from "./FeedbackQuestionAnswerComponent";
 import {AnsweredQuestion} from "../../../../components/Test/TestComponent";
 import {restServices} from "../../../../../cuba/services";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
+import {RootStoreProp} from "../../../../store";
 
 type FeedbackCourseSectionRenderProps = {
   templateId: string,
@@ -19,8 +20,9 @@ type FeedbackCourseSectionRenderProps = {
   setFinishedFeedback: (feedbackId: string) => void
 }
 
+@inject("rootStore")
 @observer
-class FeedbackCourseSectionRender extends AbstractRenderModalBody<FeedbackCourseSectionRenderProps & WrappedComponentProps> {
+class FeedbackCourseSectionRender extends AbstractRenderModalBody<FeedbackCourseSectionRenderProps & WrappedComponentProps & RootStoreProp> {
 
   @observable
   performingFinishRequest = false;
@@ -55,7 +57,7 @@ class FeedbackCourseSectionRender extends AbstractRenderModalBody<FeedbackCourse
     const {onCloseModal} = this.props;
 
     this.setPerformingFinishRequest(true);
-    restServices.lmsService.finishFeedback({answeredFeedback: this.answeredFeedback})
+    restServices.lmsService.finishFeedback({answeredFeedback: this.answeredFeedback, personGroupId: this.props.rootStore!.userInfo.personGroupId!})
       .then((response: string) => {
         Modal.success({
           title: this.props.intl.formatMessage({id: "feedback.modal.title"}),

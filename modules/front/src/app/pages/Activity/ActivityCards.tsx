@@ -50,17 +50,17 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
       ? this.dataCollection.items.find(value => value.id === this.selectedRowKey) as Activity
       : null;
 
-    const button = <Button disabled={find === null}
-                           type={"primary"}
-                           style={{padding: 0}}
-                           onClick={() => {
-                             if (find) {
-                               if (find.type!.code !== "NOTIFICATION")
-                                 this.props.history!.push(`../${link(find!.type!.windowProperty!.entityName!)}/${find!.referenceId}`);
-                               else
-                                 this.props.history!.push(find.id);
-                             }
-                           }}>{this.props.intl.formatMessage({id: "open"})}</Button>;
+    // const button = <Button disabled={find === null}
+    //                        type={"primary"}
+    //                        style={{padding: 0}}
+    //                        onClick={() => {
+    //                          if (find) {
+    //                            if (find.type!.code !== "NOTIFICATION")
+    //                              this.props.history!.push(`../${link(find!.type!.windowProperty!.entityName!)}/${find!.referenceId}`);
+    //                            else
+    //                              this.props.history!.push(find.id);
+    //                          }
+    //                        }}>{this.props.intl.formatMessage({id: "open"})}</Button>;
 
     const message = this.props.intl.formatMessage({id: type});
 
@@ -68,9 +68,9 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
       <Page pageName={message}>
         <Section size="large" visible={true}>
           <div>
-            <div style={{marginBottom: 16}}>
-              {button}
-            </div>
+            {/*<div style={{marginBottom: 16}}>*/}
+            {/*  {button}*/}
+            {/*</div>*/}
             <DataTable fields={this.fields}
                        rowSelectionMode="single"
                        canSelectRowByClick={true}
