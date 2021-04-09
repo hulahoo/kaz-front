@@ -34,13 +34,15 @@ export default class MenuStore {
       //   menuLink: "/my-profile",
       //   pathPattern: "/my-profile",
       //   component: null
-      // }, {
-      //   id: "my-team",
-      //   caption: "Моя команда",
-      //   menuLink: "/my-team",
-      //   pathPattern: "/my-team",
-      //   component: null
-      // }, {
+      // },
+      {
+        id: "my-team",
+        caption: "Моя команда",
+        menuLink: "/my-team",
+        pathPattern: "/my-team",
+        component: null
+      },
+      // {
       //   id: "absence",
       //   caption: "Absence",
       //   menuLink: "/absence",

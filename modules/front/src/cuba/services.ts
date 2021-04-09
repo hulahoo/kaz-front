@@ -31,7 +31,7 @@ import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQu
 import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
-import {PersonProfile} from "../app/pages/MyTeam/PersonCard/MyTeamPersonCard";
+import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {AbstractDictionary} from "./entities/base/AbstractDictionary";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
