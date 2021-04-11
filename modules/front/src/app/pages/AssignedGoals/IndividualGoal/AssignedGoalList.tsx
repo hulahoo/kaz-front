@@ -218,7 +218,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
   render() {
     const isFirstStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'DRAFT';
-    // const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
     const assessmentColumn = !isFirstStep
       ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='assessment'/>}
                 dataIndex="assessment"
@@ -226,7 +226,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 render={this.assessmentColumnRender}/>
       : null;
 
-    const managerAssessmentColumn = !isFirstStep && this.isUserManager
+    const managerAssessmentColumn = !isFirstStep && (this.isUserManager || !isSecondStep)
       ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='managerAssessment'/>}
                 dataIndex="managerAssessment"
                 key="managerAssessment"
@@ -261,7 +261,6 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 dataIndex="successCriteria"
                 key="successCriteria"
                 sorter={(a: any, b: any) => {
-                  console.log(a);
                   if (a.key) {
                     return a;
                   }

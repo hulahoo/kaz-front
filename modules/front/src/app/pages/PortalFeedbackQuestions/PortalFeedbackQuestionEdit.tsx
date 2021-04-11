@@ -65,7 +65,6 @@ class PortalFeedbackQuestionEdit extends React.Component<EditorProps & Props & W
     this.selectedFeedbackId = value;
   }
 
-
   handleSubmit = (e: FormEvent) => {
     this.props.form.validateFields((err, values) => {
       if (err) {
@@ -215,14 +214,14 @@ class PortalFeedbackQuestionEdit extends React.Component<EditorProps & Props & W
   componentDidMount() {
     this.dataInstance.setItem(new PortalFeedbackQuestions());
 
-    restServices.employeeService.getCompanyByPersonGroupId({personGroupId: this.props.rootStore!.userInfo!.personGroupId!})
-      .then(company => {
+    restServices.portalHelperService.companiesForLoadDictionary({personGroupId: this.props.rootStore!.userInfo!.personGroupId!})
+      .then(companies => {
         getCubaREST()!.searchEntities(PortalFeedback.NAME, {
             conditions: [
               {
                 property: "company.id",
-                operator: "=",
-                value: company.id!
+                operator: "in",
+                value: companies
               }
             ]
           }, {
