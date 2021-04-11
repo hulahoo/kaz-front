@@ -120,7 +120,6 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                 <hr/>
                 <div className={"course-feedback-sections"}>
                   <CourseSectionList dataInstance={this.feedbacks ? this.feedbacks.map(f => {
-                    console.log((f as any).sended);
                     return {
                       id: f.id,
                       succeedFinished: (f as any).sended,
