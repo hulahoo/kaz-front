@@ -11,7 +11,7 @@ export class AbsenceRvdRequest extends AbstractBprocRequest {
   timeOfStarting?: any | null;
   timeOfFinishing?: any | null;
   totalHours?: number | null;
-  compencation?: boolean | null;
+  compensation?: boolean | null;
   vacationDay?: boolean | null;
   acquainted?: boolean | null;
   agree?: boolean | null;
@@ -33,7 +33,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -51,7 +51,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -72,7 +72,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -95,7 +95,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
