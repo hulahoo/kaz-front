@@ -382,5 +382,7 @@
   "timeManagement": "Time management",
   "cityOfResidence": "City of residence",
   "notification.body.section": "Message",
-  "notification": "Notification"
+  "notification": "Notification",
+  "new.annual.days.not.correct": "Days not correct",
+  "create.request.change.vacation.dates": "Create a request to change vacation dates"
 }
