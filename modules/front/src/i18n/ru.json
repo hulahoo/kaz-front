@@ -369,5 +369,7 @@
   "enrollment.section.start.error.required": "Чтобы продолжить обучение необходимо завершить обязательный раздел",
   "personalData": "Персональные данные",
   "timeManagement": "Управление временем",
-  "cityOfResidence": "Город проживание"
+  "cityOfResidence": "Город проживание",
+  "notification.body.section": "Сообщение",
+  "notification": "Уведомление"
 }

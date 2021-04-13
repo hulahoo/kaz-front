@@ -80,28 +80,24 @@ class ActivityEdit extends React.Component<EditorProps & WrappedComponentProps &
               onClick={() => this.props.history!.goBack()}>
         <FormattedMessage id="management.editor.cancel"/>
       </Button>
-    ]
-
+    ];
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "notifications"})}>
-        <Section size="large">
-          <div>
-            <Card className="narrow-layout card-actions-container" actions={buttons}>
-              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "notificationHeader"})}
-                <div className={"ant-input ant-input-disabled"}
-                     dangerouslySetInnerHTML={{__html: (notificationHeader ? notificationHeader : "") as string}}/>
-              </div>
+      <Page pageName={this.props.intl.formatMessage({id: "notification"})}>
+        <div>
+          <Card className="narrow-layout card-actions-container" bordered={false} actions={buttons}>
+            <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+              <Section size="large"
+                       sectionName={<Msg entityName={this.dataInstance.entityName} propertyName="notificationHeader"/>}>
+                <div dangerouslySetInnerHTML={{__html: (notificationHeader ? notificationHeader : "") as string}}/>
+              </Section>
+            </div>
 
-              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "notificationBody"})}
-
-                <div className={"ant-input ant-input-disabled"}
-                     dangerouslySetInnerHTML={{__html: (notificationBody ? notificationBody : "") as string}}/>
-              </div>
-            </Card>
-          </div>
-        </Section>
+            <Section size="large"
+                     sectionName={this.props.intl.formatMessage({id: "notification.body.section"})}>
+              <div dangerouslySetInnerHTML={{__html: (notificationBody ? notificationBody : "") as string}}/>
+            </Section>
+          </Card>
+        </div>
       </Page>
     );
   }

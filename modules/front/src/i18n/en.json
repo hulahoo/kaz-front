@@ -380,5 +380,7 @@
   "enrollment.section.start.error.required": "To continue it's required to complete current section",
   "personalData": "Личные данные",
   "timeManagement": "Time management",
-  "cityOfResidence": "City of residence"
+  "cityOfResidence": "City of residence",
+  "notification.body.section": "Message",
+  "notification": "Notification"
 }
