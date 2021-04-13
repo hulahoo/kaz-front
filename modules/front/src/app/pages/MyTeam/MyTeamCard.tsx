@@ -10,6 +10,11 @@ import {restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
 import MyTeamPersonCard from "./personalData/MyTeamPersonCard/MyTeamPersonCard";
 import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
+import MyTeamPersonRvd from "./rvd/MyTeamPersonRvd/MyTeamPersonRvd";
+import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
+import AbsenceRvdRequestList from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
+import {AbsenceRvdRequestManagement} from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
+
 
 const {TabPane} = Tabs;
 
@@ -54,6 +59,12 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <MyTeamPersonCard person={this.person}/>
       case 'absence':
         return <MyTeamAbsence personGroupId={this.person!.groupId}/>
+      case 'workOnWeekend':
+        return <MyTeamPersonRvd personGroupId={this.person!.groupId}/>
+      case 'workOnWeekendRequest':
+        return <AbsenceRvdRequestList personGroupId={this.person!.groupId}/>
+      case 'currentSchedule':
+        return <CurrentSchedule/>
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -65,7 +76,11 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
       id: 'personalData'
     }, {
       id: 'timeManagement'
-    }]
+    }, {
+      id: 'workOnWeekend'
+    }, {
+      id: 'currentSchedule'
+    },]
   }
 
   getLeftMenu = (): Menu[] => {
@@ -75,6 +90,18 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           id: 'absence'
         }, {
           id: 'absenceRequest'
+        }]
+      case 'workOnWeekend':
+        return[{
+          id: 'workOnWeekend'
+        }, {
+          id: 'workOnWeekendRequest'
+        },]
+      case 'currentSchedule':
+        return[{
+          id: 'currentSchedule'
+        }, {
+          id: 'scheduleOffsetsRequest'
         }]
     }
     return [{
