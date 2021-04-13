@@ -16,7 +16,7 @@ import OutcomeButtonModal from "../modal/OutcomeButtonModal";
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
   formData: BprocFormData;
-  employee?: UserExt | null;
+  employee?: () => UserExt | null;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void

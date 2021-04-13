@@ -43,6 +43,7 @@ import MyEducationManagement from "./pages/MyEducation/MyEducationManagement";
 import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryManagement";
 import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagement";
+import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -133,6 +134,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
+                <Route exact={true}
+                       path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
+                       component={ChangeAbsenceDaysRequestManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

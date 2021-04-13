@@ -1,7 +1,7 @@
 import React from 'react';
 import {FormattedMessage, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../../store";
-import {MainStoreInjected} from "@cuba-platform/react";
+import {getCubaREST, MainStoreInjected} from "@cuba-platform/react";
 import {RouteComponentProps} from "react-router-dom";
 import {FormComponentProps} from "antd/lib/form";
 import {IReactionDisposer, observable, reaction} from "mobx";
@@ -17,6 +17,7 @@ import Button, {ButtonType} from "../../../components/Button/Button";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
 import Notification from "../../../util/Notification/Notification";
 import moment from "moment/moment";
+import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -35,6 +36,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   @observable
   mainStore = this.props.mainStore!;
+
+  @observable
+  employee: UserExt;
 
   processInstanceData: ProcessInstanceData | null;
 
@@ -102,6 +106,20 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   isUpdateBeforeOutcome = false;
 
+  setEmployee = (personGroupId: string): Promise<UserExt> => {
+    return getCubaREST()!.searchEntities<UserExt>(UserExt.NAME, {
+      conditions: [{
+        property: 'personGroup.id',
+        operator: '=',
+        value: personGroupId
+      }, {
+        property: 'active',
+        operator: '=',
+        value: 'TRUE'
+      }]
+    }).then(value => this.employee = value[0]);
+  }
+
   getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
     const {status} = this.dataInstance;
 
@@ -112,6 +130,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         ? <BprocButtons dataInstance={this.dataInstance}
                         formData={this.formData}
                         validate={this.validate}
+                        employee={() => this.employee}
                         update={this.update}
                         processInstanceData={this.processInstanceData}
                         afterSendOnApprove={this.afterSendOnApprove}
