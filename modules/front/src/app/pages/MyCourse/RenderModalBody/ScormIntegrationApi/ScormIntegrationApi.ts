@@ -160,9 +160,6 @@ export default class ScormIntegrationApi {
       },
       GetDiagnostic: () => {
 
-      },
-      Terminate: () => {
-
       }
     }
   };
