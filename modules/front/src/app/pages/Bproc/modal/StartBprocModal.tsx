@@ -73,7 +73,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       .then(value => {
         this.bprocRolesDefiner = value;
         restServices.startBprocService.getNotPersisitBprocActors({
-          employee: this.props.employee ? this.props.employee() : null,
+          employee: this.props.employee ? this.props.employee() || null : null,
           initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
           bpmRolesDefiner: value
         }).then(notPersisitBprocActors => {
