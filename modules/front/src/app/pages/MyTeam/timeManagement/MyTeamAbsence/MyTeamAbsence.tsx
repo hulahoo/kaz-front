@@ -10,6 +10,7 @@ import {Link} from "react-router-dom";
 import {ChangeAbsenceDaysRequestManagement} from "../ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
 import {Button} from "antd";
 import moment from "moment/moment";
+import {AbsenceForRecallManagement} from "../AbsenceForRecall/AbsenceForRecallManagement";
 
 
 @injectMainStore
@@ -36,15 +37,21 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
 
   @observable selectedRowKey: string | undefined;
   @observable disabledChangeVacationDates: boolean = true;
+  @observable disabledAbsenceForRecall: boolean = true;
 
   render() {
     return (
       <DataTable
-        buttons={[<Link to={ChangeAbsenceDaysRequestManagement.PATH + '/new/' + this.selectedRowKey}>
-          <Button disabled={this.disabledChangeVacationDates}>
-            <FormattedMessage id={'create.request.change.vacation.dates'}/>
+        buttons={[<Link to={AbsenceForRecallManagement.PATH + '/new/' + this.selectedRowKey}>
+          <Button disabled={this.disabledAbsenceForRecall}>
+            <FormattedMessage id={'create.request.absence.for.recall'}/>
           </Button>
-        </Link>]}
+        </Link>,
+          <Link to={ChangeAbsenceDaysRequestManagement.PATH + '/new/' + this.selectedRowKey}>
+            <Button disabled={this.disabledChangeVacationDates}>
+              <FormattedMessage id={'create.request.change.vacation.dates'}/>
+            </Button>
+          </Link>]}
         dataCollection={this.dataCollection}
         onRowSelectionChange={this.selectRow}
         fields={this.absenceFields}
@@ -58,7 +65,9 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
     if (this.selectedRowKey) {
       const absence = this.dataCollection.items.find(value => value.id === this.selectedRowKey);
       this.disabledChangeVacationDates = (absence && absence.type && absence.type.code && absence.type.code.startsWith('ANNUAL')
-        && moment(absence.dateFrom) > moment()) !== true
+        && moment(absence.dateFrom) > moment()) !== true;
+      this.disabledAbsenceForRecall = (absence && absence.type && absence.type.useInSelfService
+        && absence.type.availableForChangeDate && absence.type.availableForRecallAbsence) !== true;
     }
   }
 }
