@@ -148,7 +148,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
   };
 
   subscribeFamilyMemberToMIC = () => {
-    let sort = this.items.sort((a, b) => a.exclusionDate.compareTo(b.exclusionDate));
+    let sort = this.items.sort((a, b) => a.exclusionDate ? b.exclusionDate ? a.exclusionDate.compareTo(b.exclusionDate) : 1 : -1);
     if (sort[0] === undefined) {
       return;
     }
