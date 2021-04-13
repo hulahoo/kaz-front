@@ -371,5 +371,7 @@
   "timeManagement": "Управление временем",
   "cityOfResidence": "Город проживание",
   "notification.body.section": "Сообщение",
-  "notification": "Уведомление"
+  "notification": "Уведомление",
+  "new.annual.days.not.correct": "Новый период ежегодного трудового отпуска не правильные",
+  "create.request.change.vacation.dates": "Создать заявку на изменение дат отпуска"
 }
