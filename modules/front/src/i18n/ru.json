@@ -373,5 +373,10 @@
   "notification.body.section": "Сообщение",
   "notification": "Уведомление",
   "new.annual.days.not.correct": "Новый период ежегодного трудового отпуска не правильные",
-  "create.request.change.vacation.dates": "Создать заявку на изменение дат отпуска"
+  "create.request.change.vacation.dates": "Создать заявку на изменение дат отпуска",
+  "create.request.absence.for.recall": "Создать заявку на отзыв из отпуска",
+  "changeAbsenceDaysRequest": "Заявка на изменение дат отпуска",
+  "absenceForRecall": "Заявка на отзыв из отпуска",
+  "absenceForRecall.daysNotCorrect": "Дни неиспользованной части не правильные",
+  "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна"
 }

@@ -384,5 +384,10 @@
   "notification.body.section": "Message",
   "notification": "Notification",
   "new.annual.days.not.correct": "Days not correct",
-  "create.request.change.vacation.dates": "Create a request to change vacation dates"
+  "create.request.change.vacation.dates": "Create a request to change vacation dates",
+  "create.request.absence.for.recall": "Create a feedback request from vacation",
+  "changeAbsenceDaysRequest": "Request to change vacation dates",
+  "absenceForRecall": "Feedback request from vacation",
+  "absenceForRecall.daysNotCorrect": "Days not correct",
+  "absenceForRecall.recallDateNotCorrect": "Recall date is not correct"
 }

@@ -44,6 +44,7 @@ import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryMa
 import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagement";
 import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
+import {AbsenceForRecallManagement} from "./pages/MyTeam/timeManagement/AbsenceForRecall/AbsenceForRecallManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -137,6 +138,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>
+                <Route exact={true}
+                       path={AbsenceForRecallManagement.PATH_WITH_PARAMS}
+                       component={AbsenceForRecallManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}
