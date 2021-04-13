@@ -37,6 +37,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   @observable
   mainStore = this.props.mainStore!;
 
+  @observable
+  employee: UserExt;
+
   processInstanceData: ProcessInstanceData | null;
 
   isCalledProcessInstanceData = false
@@ -103,11 +106,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   isUpdateBeforeOutcome = false;
 
-  @observable
-  employee: UserExt;
-
-  setEmployee = (personGroupId: string) => {
-    getCubaREST()!.searchEntities<UserExt>(UserExt.NAME, {
+  setEmployee = (personGroupId: string): Promise<UserExt> => {
+    return getCubaREST()!.searchEntities<UserExt>(UserExt.NAME, {
       conditions: [{
         property: 'personGroup.id',
         operator: '=',
@@ -117,7 +117,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         operator: '=',
         value: 'TRUE'
       }]
-    }).then(value => this.employee = value[0])
+    }).then(value => this.employee = value[0]);
   }
 
   getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
@@ -130,7 +130,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         ? <BprocButtons dataInstance={this.dataInstance}
                         formData={this.formData}
                         validate={this.validate}
-                        employee={this.employee}
+                        employee={() => this.employee}
                         update={this.update}
                         processInstanceData={this.processInstanceData}
                         afterSendOnApprove={this.afterSendOnApprove}

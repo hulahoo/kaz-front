@@ -3,19 +3,19 @@ import {RouteComponentProps} from "react-router";
 import {observer} from "mobx-react";
 import ChangeAbsenceDaysRequestEdit from "./ChangeAbsenceDaysRequestEdit";
 
-type Props = RouteComponentProps<{ entityId: string, personGroupId: string }>;
+type Props = RouteComponentProps<{ entityId: string, absenceId: string }>;
 
 @observer
 export class ChangeAbsenceDaysRequestManagement extends React.Component<Props> {
-  static PATH_WITH_PARAMS = "/changeAbsenceDaysRequest/:entityId/:personGroupId";
+  static PATH_WITH_PARAMS = "/changeAbsenceDaysRequest/:entityId/:absenceId?";
   static PATH = "/changeAbsenceDaysRequest";
   static NEW_SUBPATH = "new";
 
   render() {
-    const {entityId, personGroupId} = this.props.match.params;
+    const {entityId, absenceId} = this.props.match.params;
     return (
       <>
-        <ChangeAbsenceDaysRequestEdit entityId={entityId} personGroupId={personGroupId}/>
+        <ChangeAbsenceDaysRequestEdit entityId={entityId} absenceId={absenceId}/>
       </>
     );
   }

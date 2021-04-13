@@ -369,5 +369,7 @@
   "enrollment.section.start.error.required": "Чтобы продолжить обучение необходимо завершить обязательный раздел",
   "personalData": "Персональные данные",
   "timeManagement": "Управление временем",
-  "cityOfResidence": "Город проживание"
+  "cityOfResidence": "Город проживание",
+  "new.annual.days.not.correct": "Новый период ежегодного трудового отпуска не правильные",
+  "create.request.change.vacation.dates": "Создать заявку на изменение дат отпуска"
 }
