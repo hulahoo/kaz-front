@@ -104,17 +104,20 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
   }
 
   getUpdateEntityData = (): any => {
-    if (this.isNotDraft())
-      return {
-        ...this.props.form.getFieldsValue(this.fields)
-      }
-
-    return {
-      employee: this.absence!.personGroup!.id,
-      vacation: this.absence,
-      absenceType: this.absence!.type,
+    const file = this.props.form.getFieldValue('file');
+    const json = {
       ...this.props.form.getFieldsValue(this.fields)
-    }
+    };
+    if (file)
+      json['file'] = [file['id']];
+    if (this.isNotDraft())
+      return json
+
+    json['employee'] = this.absence!.personGroup!.id;
+    json['vacation'] = this.absence;
+    json['absenceType'] = this.absence!.type;
+    json['employee'] = this.absence!.personGroup!.id;
+    return json;
   };
 
   render() {
@@ -188,14 +191,15 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   form={this.props.form}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateFrom']})
-                    }, {
                       validator: (rule, value, callback) => {
-                        const startOf = value.clone().startOf('day');
-                        if (this.absence && moment(this.absence.dateFrom) <= value && startOf <= moment(this.absence.dateTo)) {
-                          callback();
-                        } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                        if (!value) {
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateFrom']}));
+                        } else {
+                          const startOf = value.clone().startOf('day');
+                          if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
+                            callback();
+                          } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                        }
                       }
                     }]
                   }}
@@ -209,16 +213,18 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   form={this.props.form}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateTo']})
-                    }, {
                       validator: (rule, value, callback) => {
-                        const startOf = value.clone().startOf('day');
-                        if (this.absence && moment(this.absence.dateFrom) <= value && startOf <= moment(this.absence.dateTo)) {
-                          callback();
-                        } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                        if (!value) {
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateTo']}));
+                        } else {
+                          const startOf = value.clone().startOf('day');
+                          if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
+                            callback();
+                          } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                        }
                       }
-                    }]
+                    }
+                    ]
                   }}
                   disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
@@ -284,10 +290,9 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: !this.isDatesDisabled,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']})
-                    }, {
                       validator: (rule, value, callback) => {
+                        if (!value && !(isNotDraft || this.isDatesDisabled))
+                          return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
                         const dateTo = this.props.form.getFieldValue('dateTo');
                         const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
                         const recallDateTo = this.props.form.getFieldValue('recallDateTo');
@@ -295,7 +300,8 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                           callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
                         } else callback();
                       }
-                    }]
+                    }
+                    ]
                   }}
                 />
 
@@ -307,10 +313,9 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: !this.isDatesDisabled,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateTo']})
-                    }, {
                       validator: (rule, value, callback) => {
+                        if (!value && !(isNotDraft || this.isDatesDisabled))
+                          return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
                         const dateFrom = this.props.form.getFieldValue('dateFrom');
                         const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
                         const recallDateTo = this.props.form.getFieldValue('recallDateTo');

@@ -70,7 +70,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   validate = (): Promise<boolean> => {
     let isValidatedSuccess = true;
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
       isValidatedSuccess = !err;
       if (err) {
         message.error(
