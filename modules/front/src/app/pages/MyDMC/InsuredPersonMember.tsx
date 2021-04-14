@@ -277,8 +277,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
             <Modal
                 visible={this.props.visible}
                 onOk={this.handleSubmit}
-                onCancel={this.props.onChangeVisible.bind(null, false)}
-            >
+                onCancel={this.props.onChangeVisible.bind(null, false)}>
                 <Spin spinning={status == 'LOADING'}>
                     <Form onSubmit={this.handleSubmit} layout="vertical">
                         <ReadonlyField

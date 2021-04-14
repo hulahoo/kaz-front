@@ -245,7 +245,7 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
-    finishFeedback: (params: { answeredFeedback: AnsweredFeedback }, fetchOpts?: FetchOptions) => {
+    finishFeedback: (params: { answeredFeedback: AnsweredFeedback, personGroupId: string}, fetchOpts?: FetchOptions) => {
       return getCubaREST()!.invokeService(
         "tsadv_LmsService",
         "finishFeedback",

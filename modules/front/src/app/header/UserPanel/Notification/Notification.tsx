@@ -15,18 +15,15 @@ class Notification extends React.Component<RootStoreProp> {
   @observable
   newNotifications: number;
 
-  ws = new SockJS(CUBA_APP_NOTIFICATION_WS_URL);
+  @observable
+  visible: boolean = false;
 
-  state = {
-    visible: false,
-  };
+  ws = new SockJS(CUBA_APP_NOTIFICATION_WS_URL);
 
   target: any;
 
   handleBellIconClick = (e: MouseEvent<HTMLDivElement>) => {
-    this.setState({
-      visible: !this.state.visible
-    })
+    this.visible = !this.visible
   };
 
   setVisibleFalse = () => {
@@ -38,7 +35,7 @@ class Notification extends React.Component<RootStoreProp> {
 
     return (
       <Dropdown overlay={dropdownMenu}
-                visible={this.state.visible}
+                visible={this.visible}
                 trigger={['click']}>
         <div className={"notifications-icon-container"}
              onClick={this.handleBellIconClick}>

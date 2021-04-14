@@ -43,6 +43,8 @@ import MyEducationManagement from "./pages/MyEducation/MyEducationManagement";
 import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryManagement";
 import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagement";
+import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
+import {AbsenceForRecallManagement} from "./pages/MyTeam/timeManagement/AbsenceForRecall/AbsenceForRecallManagement";
 import {AbsenceRvdRequestManagement} from "./pages/MyTeam/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 import CurrentScheduleRequestEdit
   from "./pages/MyTeam/shiftSchedules/MyTeamCurrentScheduleRequest/CurrentScheduleRequestEdit";
@@ -148,6 +150,12 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={CurrentScheduleRequestManagement.PATH + "/:entityId"}
                        component={CurrentScheduleRequestManagement}/>
+                <Route exact={true}
+                       path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
+                       component={ChangeAbsenceDaysRequestManagement}/>
+                <Route exact={true}
+                       path={AbsenceForRecallManagement.PATH_WITH_PARAMS}
+                       component={AbsenceForRecallManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

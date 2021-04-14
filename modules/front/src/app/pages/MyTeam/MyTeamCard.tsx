@@ -35,7 +35,10 @@ export type PersonProfile = {
 }
 
 export type MyTeamCardProps = {
-  personGroupId: string
+  personGroupId: string,
+  selectedTab?: string,
+  selectedLeftMenu?: string,
+  setSelectedTabOrLeftMenu?: (selectedTab?: string, selectedLeftMenu?: string) => void,
 };
 
 export type Menu = {
@@ -49,8 +52,13 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
   @observable person?: PersonProfile;
   @observable urlImg?: string;
 
-  @observable selectedTab: string = 'personalData';
-  @observable selectedLeftMenu: string = 'personalData';
+  @observable selectedTab: string = this.props.selectedTab || 'personalData';
+  @observable selectedLeftMenu: string = this.props.selectedLeftMenu || 'personalData';
+
+  callSetSelectedTabOrLeftMenu = () => {
+    if (this.props.setSelectedTabOrLeftMenu)
+      this.props.setSelectedTabOrLeftMenu(this.selectedTab, this.selectedLeftMenu);
+  }
 
   renderContent = (): React.ReactNode => {
     if (!this.person) return <></>;
@@ -138,13 +146,17 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
                 padding: '10px'
               } : {marginTop: '10px', padding: '10px'}}
               key={menu.id}
-              onClick={() => this.selectedLeftMenu = menu.id}><FormattedMessage id={menu.id}/></List.Item>)}
+              onClick={() => {
+                this.selectedLeftMenu = menu.id;
+                this.callSetSelectedTabOrLeftMenu();
+              }}><FormattedMessage id={menu.id}/></List.Item>)}
           </List>
         </div>
         <div style={{whiteSpace: 'nowrap'}}>
-          <Tabs defaultActiveKey="personalData" onChange={activeKey => {
+          <Tabs defaultActiveKey={this.selectedTab} onChange={activeKey => {
             this.selectedTab = activeKey;
             this.selectedLeftMenu = this.getLeftMenu()[0].id;
+            this.callSetSelectedTabOrLeftMenu();
           }}>
             {this.getTabs().map(tabInfo => <TabPane tab={<FormattedMessage id={tabInfo.id}/>}
                                                     key={tabInfo.id}>

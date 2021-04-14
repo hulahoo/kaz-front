@@ -5,7 +5,6 @@ import {NotPersisitBprocActors} from "../../../../cuba/entities/base/tsadv_NotPe
 import {observable} from "mobx";
 import {Button, Col, Form, Icon, message, Modal, Row, Select, Table} from "antd";
 import Column from "antd/lib/table/Column";
-import LoadingPage from "../../LoadingPage";
 import {restServices} from "../../../../cuba/services";
 import {RootStoreProp} from "../../../store";
 import {BpmRolesDefiner} from "../../../../cuba/entities/base/tsadv$BpmRolesDefiner";
@@ -25,7 +24,7 @@ import TextArea from "antd/es/input/TextArea";
 
 type StartBproc = {
   processDefinitionKey: string;
-  employee?: UserExt | null;
+  employee?: () => UserExt | null;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void;
@@ -66,7 +65,59 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   });
 
   showModalOrMessage = () => {
-    if (this.bprocActorMessage) {
+
+    const loadBpmRolesDefiner = () => restServices.startBprocService.getBpmRolesDefiner({
+      processDefinitionKey: this.props.processDefinitionKey,
+      initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
+    })
+      .then(value => {
+        this.bprocRolesDefiner = value;
+        restServices.startBprocService.getNotPersisitBprocActors({
+          employee: this.props.employee ? this.props.employee() || null : null,
+          initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
+          bpmRolesDefiner: value
+        }).then(notPersisitBprocActors => {
+          this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
+        }).catch(async (response: any) => {
+          const reader = response.response.body.getReader();
+
+          let receivedLength = 0;
+          let chunks = [];
+          while (true) {
+            const {done, value} = await reader.read();
+
+            if (done) {
+              break;
+            }
+
+            chunks.push(value);
+            receivedLength += value.length;
+          }
+
+          let chunksAll = new Uint8Array(receivedLength);
+          let position = 0;
+          for (let chunk of chunks) {
+            chunksAll.set(chunk, position);
+            position += chunk.length;
+          }
+
+          let result = new TextDecoder("utf-8").decode(chunksAll);
+          const parse = JSON.parse(result);
+          return parse.message;
+        }).catch(reason => Notification.error({
+          message: reason
+        }));
+      });
+
+    this.props.validate().then((isValid) => {
+      if (isValid) {
+        this.modalVisible = true;
+        loadBpmRolesDefiner();
+      }
+    })
+
+
+    /*if (this.bprocActorMessage) {
       Notification.error({
         message: this.bprocActorMessage
       });
@@ -76,7 +127,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       if (isValid) {
         this.modalVisible = true;
       }
-    });
+    });*/
   };
 
   handleOk = (e: any) => {
@@ -222,8 +273,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   render() {
-    if (!this.bprocRolesDefiner) return <LoadingPage/>;
-    if (!this.items) return <div/>;
+    // if (!this.bprocRolesDefiner) return <LoadingPage/>;
+    // if (!this.items) return <div/>;
 
     return (
       <>
@@ -280,7 +331,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 </Col>
               </Row>
             </div>
-            <Table dataSource={Array.from(this.items)}
+            <Table dataSource={Array.from(this.items || [])}
                    pagination={false} showHeader={true}
                    rowKey={record => record.id}>
               <Column key='role' title={"Роли"}
@@ -291,7 +342,6 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
               <Column
                 key="action"
                 render={(text, record: SerializedEntity<NotPersisitBprocActors>) => {
-                  console.log(record);
                   return record.isSystemRecord ? null : <Button type="link"
                                                                 style={{padding: 0}}
                                                                 onClick={() => this.showDeletionDialog(record)}>
@@ -319,49 +369,6 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       </>
 
     )
-  }
-
-  componentDidMount() {
-    restServices.startBprocService.getBpmRolesDefiner({
-      processDefinitionKey: this.props.processDefinitionKey,
-      initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
-    })
-      .then(value => {
-        this.bprocRolesDefiner = value;
-        restServices.startBprocService.getNotPersisitBprocActors({
-          employee: this.props.employee ? this.props.employee : null,
-          initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
-          bpmRolesDefiner: value
-        }).then(notPersisitBprocActors => {
-          this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
-        }).catch(async (response: any) => {
-          const reader = response.response.body.getReader();
-
-          let receivedLength = 0;
-          let chunks = [];
-          while (true) {
-            const {done, value} = await reader.read();
-
-            if (done) {
-              break;
-            }
-
-            chunks.push(value);
-            receivedLength += value.length;
-          }
-
-          let chunksAll = new Uint8Array(receivedLength);
-          let position = 0;
-          for (let chunk of chunks) {
-            chunksAll.set(chunk, position);
-            position += chunk.length;
-          }
-
-          let result = new TextDecoder("utf-8").decode(chunksAll);
-          const parse = JSON.parse(result);
-          this.bprocActorMessage = parse.message;
-        });
-      })
   }
 }
 

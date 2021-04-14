@@ -18,9 +18,9 @@ ReactDOM.render(
       messagesMapping={messagesMapping}
       antdLocaleMapping={antdLocaleMapping}
     >
-      <BrowserRouter basename="/kzm-front">
+      <HashRouter>
         <Route component={App}/>
-      </BrowserRouter>
+      </HashRouter>
     </CubaAppProvider>
   </Provider>,
   document.getElementById("root") as HTMLElement

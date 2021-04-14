@@ -24,27 +24,27 @@ export type AbsenceRvdRequestViewName =
   | "absenceRvdRequest.edit";
 export type AbsenceRvdRequestView<
   V extends AbsenceRvdRequestViewName
-> = V extends "_base"
+  > = V extends "_base"
   ? Pick<
-      AbsenceRvdRequest,
-      | "id"
-      | "requestDate"
-      | "purposeText"
-      | "timeOfStarting"
-      | "timeOfFinishing"
-      | "totalHours"
-      | "compencation"
-      | "vacationDay"
-      | "acquainted"
-      | "agree"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestNumber"
-      | "comment"
+    AbsenceRvdRequest,
+    | "id"
+    | "requestDate"
+    | "purposeText"
+    | "timeOfStarting"
+    | "timeOfFinishing"
+    | "totalHours"
+    | "compencation"
+    | "vacationDay"
+    | "acquainted"
+    | "agree"
+    | "legacyId"
+    | "organizationBin"
+    | "integrationUserLogin"
+    | "requestNumber"
+    | "comment"
     >
   : V extends "_local"
-  ? Pick<
+    ? Pick<
       AbsenceRvdRequest,
       | "id"
       | "purposeText"
@@ -61,53 +61,53 @@ export type AbsenceRvdRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
-    >
-  : V extends "_minimal"
-  ? Pick<AbsenceRvdRequest, "id" | "requestDate">
-  : V extends "absenceRvdRequest-for-ss-structure-person"
-  ? Pick<
-      AbsenceRvdRequest,
-      | "id"
-      | "purposeText"
-      | "timeOfStarting"
-      | "timeOfFinishing"
-      | "totalHours"
-      | "compencation"
-      | "vacationDay"
-      | "acquainted"
-      | "agree"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
-      | "comment"
-      | "personGroup"
-      | "type"
-      | "purpose"
-      | "status"
-    >
-  : V extends "absenceRvdRequest.edit"
-  ? Pick<
-      AbsenceRvdRequest,
-      | "id"
-      | "purposeText"
-      | "timeOfStarting"
-      | "timeOfFinishing"
-      | "totalHours"
-      | "compencation"
-      | "vacationDay"
-      | "acquainted"
-      | "agree"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
-      | "comment"
-      | "type"
-      | "personGroup"
-      | "purpose"
-      | "status"
-    >
-  : never;
+      >
+    : V extends "_minimal"
+      ? Pick<AbsenceRvdRequest, "id" | "requestDate">
+      : V extends "absenceRvdRequest-for-ss-structure-person"
+        ? Pick<
+          AbsenceRvdRequest,
+          | "id"
+          | "purposeText"
+          | "timeOfStarting"
+          | "timeOfFinishing"
+          | "totalHours"
+          | "compencation"
+          | "vacationDay"
+          | "acquainted"
+          | "agree"
+          | "legacyId"
+          | "organizationBin"
+          | "integrationUserLogin"
+          | "requestNumber"
+          | "requestDate"
+          | "comment"
+          | "personGroup"
+          | "type"
+          | "purpose"
+          | "status"
+          >
+        : V extends "absenceRvdRequest.edit"
+          ? Pick<
+            AbsenceRvdRequest,
+            | "id"
+            | "purposeText"
+            | "timeOfStarting"
+            | "timeOfFinishing"
+            | "totalHours"
+            | "compencation"
+            | "vacationDay"
+            | "acquainted"
+            | "agree"
+            | "legacyId"
+            | "organizationBin"
+            | "integrationUserLogin"
+            | "requestNumber"
+            | "requestDate"
+            | "comment"
+            | "type"
+            | "personGroup"
+            | "purpose"
+            | "status"
+            >
+          : never;

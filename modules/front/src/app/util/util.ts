@@ -3,8 +3,9 @@ import Notification from "./Notification/Notification";
 import {AbstractDictionary} from "../../cuba/entities/base/AbstractDictionary";
 import {AbstractBprocRequest} from "../../cuba/entities/base/AbstractBprocRequest";
 import {AssignedPerformancePlan} from "../../cuba/entities/base/tsadv$AssignedPerformancePlan";
+import {PersonExt} from "../../cuba/entities/base/base$PersonExt";
 
-export const getBlobUrl = (fileId: string):Promise<string> => {
+export const getBlobUrl = (fileId: string): Promise<string> => {
   return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob))
 };
 
@@ -49,5 +50,11 @@ export const getBusinessKey = (request: AbstractBprocRequest) => {
   if (request instanceof AssignedPerformancePlan || request["_entityName"] === AssignedPerformancePlan.NAME)
     return request.id + "/" + request["stepStageStatus"];
   return request.id;
+};
+
+export const getFullName = (person: PersonExt, lang: string): string => {
+  lang = lang.toLocaleLowerCase();
+  if (lang === 'en') return person.lastNameLatin + ' ' + person.middleNameLatin + ' ' + person.firstNameLatin;
+  return person.lastName + ' ' + person.middleName + ' ' + person.firstName;
 };
 

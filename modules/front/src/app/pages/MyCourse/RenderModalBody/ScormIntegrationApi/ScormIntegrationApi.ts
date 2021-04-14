@@ -137,19 +137,19 @@ export default class ScormIntegrationApi {
         }
       },
       Commit: () => {
-        if (!this.commited) {
-          console.log('Commit');
-          switch (this.type) {
-            case "test": {
-              this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
-              break;
-            }
-            case "default": {
-              this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
-              break;
-            }
+        // if (!this.commited) {
+        console.log('Commit');
+        switch (this.type) {
+          case "test": {
+            this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
+            break;
           }
-          this.commited = true;
+          case "default": {
+            this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
+            break;
+          }
+            // }
+            this.commited = true;
         }
       },
       GetLastError: () => {
@@ -159,9 +159,6 @@ export default class ScormIntegrationApi {
 
       },
       GetDiagnostic: () => {
-
-      },
-      Terminate: () => {
 
       }
     }

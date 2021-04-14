@@ -37,6 +37,8 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   }
 
   componentDidMount() {
+    super.componentDidMount();
+
     this.setIsDisabledFinishSectionBtn(this.props.courseSection.courseSectionAttempts!.filter(a=> a.success).length === 0);
 
     this.scormIntegrationApi.onScormTestFinish = (score, maxScore, minScore, success) => {
