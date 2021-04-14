@@ -43,6 +43,10 @@ import MyEducationManagement from "./pages/MyEducation/MyEducationManagement";
 import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryManagement";
 import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagement";
+import {AbsenceRvdRequestManagement} from "./pages/MyTeam/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
+import CurrentScheduleRequestEdit
+  from "./pages/MyTeam/shiftSchedules/MyTeamCurrentScheduleRequest/CurrentScheduleRequestEdit";
+import {CurrentScheduleRequestManagement} from "./pages/MyTeam/shiftSchedules/MyTeamCurrentScheduleRequest/CurrentScheduleRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -133,6 +137,17 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
+
+                <Route exact={true}
+                       path={AbsenceRvdRequestManagement.PATH + "/:entityId"}
+                       component={AbsenceRvdRequestManagement}/>
+                <Route exact={true}
+                       path={AbsenceRequestManagement.PATH + "/:entityId"}
+                       component={AbsenceRequestManagement}/>
+
+                <Route exact={true}
+                       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}
+                       component={CurrentScheduleRequestManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}
