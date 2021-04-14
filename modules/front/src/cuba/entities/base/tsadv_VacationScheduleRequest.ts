@@ -1,6 +1,6 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-import {FileDescriptor} from "./sys$FileDescriptor";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class VacationScheduleRequest extends AbstractBprocRequest {
   static NAME = "tsadv_VacationScheduleRequest";
   personGroup?: PersonGroupExt | null;
@@ -28,6 +28,7 @@ export type VacationScheduleRequestView<
       | "startDate"
       | "endDate"
       | "balance"
+      | "sentToOracle"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -43,6 +44,7 @@ export type VacationScheduleRequestView<
       | "endDate"
       | "absenceDays"
       | "balance"
+      | "sentToOracle"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -60,6 +62,7 @@ export type VacationScheduleRequestView<
       | "endDate"
       | "absenceDays"
       | "balance"
+      | "sentToOracle"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -77,6 +80,7 @@ export type VacationScheduleRequestView<
       | "endDate"
       | "absenceDays"
       | "balance"
+      | "sentToOracle"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

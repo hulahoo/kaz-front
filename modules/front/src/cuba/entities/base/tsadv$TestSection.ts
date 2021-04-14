@@ -91,5 +91,6 @@ export type TestSectionView<V extends TestSectionViewName> = V extends "_base"
       | "organizationBin"
       | "integrationUserLogin"
       | "questions"
+      | "questionBank"
     >
   : never;

@@ -17,7 +17,12 @@ export type HierarchyElementGroupView<
 > = V extends "_base"
   ? Pick<
       HierarchyElementGroup,
-      "id" | "name" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "name"
+      | "list"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : V extends "_local"
   ? Pick<
@@ -25,7 +30,7 @@ export type HierarchyElementGroupView<
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<HierarchyElementGroup, "id" | "name">
+  ? Pick<HierarchyElementGroup, "id" | "name" | "list">
   : V extends "hierarchyElementGroup-for-integration-rest"
   ? Pick<
       HierarchyElementGroup,

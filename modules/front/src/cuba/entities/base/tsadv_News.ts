@@ -54,5 +54,6 @@ export type NewsView<V extends NewsViewName> = V extends "_base"
       | "createTs"
       | "banner"
       | "likes"
+      | "comments"
     >
   : never;

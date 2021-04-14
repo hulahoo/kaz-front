@@ -19,8 +19,8 @@ export type CalendarView<V extends CalendarViewName> = V extends "_base"
   ? Pick<
       Calendar,
       | "id"
-      | "calendar"
       | "description"
+      | "calendar"
       | "startDate"
       | "endDate"
       | "legacyId"
@@ -40,7 +40,7 @@ export type CalendarView<V extends CalendarViewName> = V extends "_base"
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<Calendar, "id">
+  ? Pick<Calendar, "id" | "description">
   : V extends "calendar.view"
   ? Pick<
       Calendar,

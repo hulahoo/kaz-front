@@ -11,6 +11,7 @@ export type PortalFeedbackViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "portalFeedback-portal"
   | "portalFeedback.edit";
 export type PortalFeedbackView<
   V extends PortalFeedbackViewName
@@ -24,12 +25,9 @@ export type PortalFeedbackView<
       PortalFeedback,
       "id" | "email" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "portalFeedback.edit"
-  ?  Pick<
-      PortalFeedback,
-      "id" | "category"
-    >
   : V extends "portalFeedback-portal"
+  ? Pick<PortalFeedback, "id" | "category">
+  : V extends "portalFeedback.edit"
   ? Pick<
       PortalFeedback,
       | "id"
