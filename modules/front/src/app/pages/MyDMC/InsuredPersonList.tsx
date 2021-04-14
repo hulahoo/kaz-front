@@ -1,6 +1,6 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {withRouter} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 
 import {observable} from "mobx";
 
@@ -87,7 +87,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
               title={<Msg entityName={InsuranceContract.NAME} propertyName='contract'/>}
               dataIndex="insuranceContract.contract"
               render={(text, record: InsuredPerson) => (
-                (React.createElement("div", null, record.insuranceContract!.contract!))
+                <Link to={InsuredPersonManagement.PATH + "/" + record.id}>{record.insuranceContract!.contract!}</Link>
               )}
             />
 
@@ -148,7 +148,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
   };
 
   subscribeFamilyMemberToMIC = () => {
-    let sort = this.items.sort((a, b) => a.exclusionDate.compareTo(b.exclusionDate));
+    let sort = this.items.sort((a, b) => a.exclusionDate ? b.exclusionDate ? a.exclusionDate.compareTo(b.exclusionDate) : 1 : -1);
     if (sort[0] === undefined) {
       return;
     }
