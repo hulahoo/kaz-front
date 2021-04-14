@@ -28,6 +28,8 @@ export type ScormTestData = {
 
 type ScormType = "default" | "test";
 
+export const SUSPEND_DATA = 'cmi.suspend_data';
+
 export default class ScormIntegrationApi {
 
   commited: boolean = false;
@@ -135,6 +137,7 @@ export default class ScormIntegrationApi {
             break;
           }
         }
+        this.onPropertySetValue(property, value);
       },
       Commit: () => {
         // if (!this.commited) {
@@ -172,6 +175,10 @@ export default class ScormIntegrationApi {
 
   };
 
+  onPropertySetValue = (property: string, value: string) => {
+
+  };
+
   getInputData = (): ScormInputData[] => {
     return this.inputData;
   };
@@ -182,5 +189,9 @@ export default class ScormIntegrationApi {
 
   destroy = (): void => {
     delete window.API_1484_11;
+  };
+
+  initApiData = (initObject: any): void => {
+    Object.entries(initObject).forEach(([key, value]) => window[key] = value);
   }
 }
