@@ -40,6 +40,16 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   @observable isSearch = false;
   @observable expandedKeys: string[] = [];
   @observable selectedData?: MyTeamData;
+  selectedTapAndLeftMenu: {
+    selectedTab?: string,
+    selectedLeftMenu?: string,
+    setSelectedTabOrLeftMenu: (selectedTab?: string, selectedLeftMenu?: string) => void
+  } = {
+    setSelectedTabOrLeftMenu: (selectedTab, selectedLeftMenu) => {
+      this.selectedTapAndLeftMenu.selectedTab = selectedTab;
+      this.selectedTapAndLeftMenu.selectedLeftMenu = selectedLeftMenu;
+    }
+  };
 
   onSearch = (searchText: string): Promise<MyTeamData[]> => {
     this.selectedData = undefined;
@@ -182,6 +192,9 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
               this.props.personCard
                 ? this.props.personCard(this.selectedData.personGroupId!)
                 : <MyTeamCard personGroupId={this.selectedData.personGroupId!}
+                              selectedTab={this.selectedTapAndLeftMenu.selectedTab}
+                              selectedLeftMenu={this.selectedTapAndLeftMenu.selectedLeftMenu}
+                              setSelectedTabOrLeftMenu={this.selectedTapAndLeftMenu.setSelectedTabOrLeftMenu}
                               key={this.selectedData.personGroupId!}/>
               : <></>}
           </Col>
