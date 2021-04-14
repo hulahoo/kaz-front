@@ -43,6 +43,7 @@ export type JobGroupView<V extends JobGroupViewName> = V extends "_base"
       JobGroup,
       | "id"
       | "jobNameDefault"
+      | "list"
       | "jobNameLang1"
       | "jobNameLang2"
       | "jobNameLang3"
@@ -66,9 +67,12 @@ export type JobGroupView<V extends JobGroupViewName> = V extends "_base"
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<JobGroup, "id" | "jobNameDefault">
+  ? Pick<JobGroup, "id" | "jobNameDefault" | "list">
   : V extends "jobGroup-for-integration-rest"
-  ? Pick<JobGroup, "id" | "jobNameDefault" | "list" | "company" | "legacyId">
+  ? Pick<
+      JobGroup,
+      "id" | "jobNameDefault" | "list" | "list" | "company" | "legacyId"
+    >
   : V extends "jobGroup-name-Ru-En"
   ? Pick<
       JobGroup,

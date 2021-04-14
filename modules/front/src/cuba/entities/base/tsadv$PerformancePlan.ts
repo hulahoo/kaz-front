@@ -18,6 +18,7 @@ export class PerformancePlan extends AbstractParentEntity {
   accessibilityEndDate?: any | null;
   performancePlanNameKz?: string | null;
   performancePlanNameEn?: string | null;
+  localizePerformancePlanName?: string | null;
 }
 export type PerformancePlanViewName =
   | "_base"
@@ -31,6 +32,7 @@ export type PerformancePlanView<
   ? Pick<
       PerformancePlan,
       | "id"
+      | "localizePerformancePlanName"
       | "performancePlanName"
       | "description"
       | "startDate"
@@ -60,7 +62,7 @@ export type PerformancePlanView<
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<PerformancePlan, "id" | "performancePlanName">
+  ? Pick<PerformancePlan, "id" | "localizePerformancePlanName">
   : V extends "performancePlan.browse"
   ? Pick<
       PerformancePlan,

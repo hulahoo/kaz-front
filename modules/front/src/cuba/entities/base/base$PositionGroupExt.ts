@@ -1,5 +1,9 @@
 import { PositionGroup } from "./base$PositionGroup";
 import { PositionExt } from "./base$PositionExt";
+import { OrganizationGroupExt } from "./base$OrganizationGroupExt";
+import { JobGroup } from "./tsadv$JobGroup";
+import { GradeGroup } from "./tsadv$GradeGroup";
+import { DicCompany } from "./base_DicCompany";
 import { VacationConditions } from "./tsadv$VacationConditions";
 import { OrgAnalytics } from "./tsadv$OrgAnalytics";
 import { AssignmentExt } from "./base$AssignmentExt";
@@ -14,6 +18,10 @@ import { DicHrRole } from "./tsadv$DicHrRole";
 export class PositionGroupExt extends PositionGroup {
   static NAME = "base$PositionGroupExt";
   list?: PositionExt[] | null;
+  organizationGroup?: OrganizationGroupExt | null;
+  jobGroup?: JobGroup | null;
+  gradeGroup?: GradeGroup | null;
+  company?: DicCompany | null;
   vacationConditionsList?: VacationConditions[] | null;
   analytics?: OrgAnalytics | null;
   position?: PositionExt | null;
@@ -33,6 +41,7 @@ export type PositionGroupExtViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "assigned-goal-cascade-positionGroupExt-view"
   | "position.analytic.update"
   | "positionExt-receptionAssignment"
   | "positionGroup.browse"
@@ -66,6 +75,15 @@ export type PositionGroupExtView<
     >
   : V extends "_minimal"
   ? Pick<PositionGroupExt, "id" | "position">
+  : V extends "assigned-goal-cascade-positionGroupExt-view"
+  ? Pick<
+      PositionGroupExt,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "fullName"
+    >
   : V extends "position.analytic.update"
   ? Pick<PositionGroupExt, "id" | "position" | "analytics">
   : V extends "positionExt-receptionAssignment"

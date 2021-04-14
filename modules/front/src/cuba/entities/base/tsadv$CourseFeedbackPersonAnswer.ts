@@ -58,10 +58,10 @@ export type CourseFeedbackPersonAnswerView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "feedbackTemplate"
+      | "details"
       | "course"
       | "courseSectionSession"
       | "personGroup"
-      | "details"
-      | "feedbackTemplate"
     >
   : never;

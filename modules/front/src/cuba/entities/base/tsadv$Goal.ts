@@ -12,11 +12,16 @@ export class Goal extends AbstractParentEntity {
   startDate?: any | null;
   endDate?: any | null;
   parentGoal?: Goal | null;
+  goalNameLang2?: string | null;
+  goalNameLang3?: string | null;
+  successCriteriaLang2?: string | null;
+  successCriteriaLang3?: string | null;
 }
 export type GoalViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "assigned-goal-cascade-position-group"
   | "goal.browse"
   | "goal.edit";
 export type GoalView<V extends GoalViewName> = V extends "_base"
@@ -27,6 +32,10 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "successCriteria"
       | "startDate"
       | "endDate"
+      | "goalNameLang2"
+      | "goalNameLang3"
+      | "successCriteriaLang2"
+      | "successCriteriaLang3"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -39,12 +48,18 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "successCriteria"
       | "startDate"
       | "endDate"
+      | "goalNameLang2"
+      | "goalNameLang3"
+      | "successCriteriaLang2"
+      | "successCriteriaLang3"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
   : V extends "_minimal"
   ? Pick<Goal, "id" | "goalName">
+  : V extends "assigned-goal-cascade-position-group"
+  ? Pick<Goal, "id" | "goalName" | "library" | "successCriteria">
   : V extends "goal.browse"
   ? Pick<
       Goal,
@@ -70,5 +85,9 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "startDate"
       | "endDate"
       | "parentGoal"
+      | "goalNameLang2"
+      | "goalNameLang3"
+      | "successCriteriaLang2"
+      | "successCriteriaLang3"
     >
   : never;

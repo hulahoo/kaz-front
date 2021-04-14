@@ -1,9 +1,9 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
-import { UserExt } from "./tsadv$UserExt";
+import { TsadvUser } from "./tsadv$UserExt";
 import { PortalFeedback } from "./tsadv_PortalFeedback";
 export class PortalFeedbackQuestions extends AbstractParentEntity {
   static NAME = "tsadv_PortalFeedbackQuestions";
-  user?: UserExt | null;
+  user?: TsadvUser | null;
   portalFeedback?: PortalFeedback | null;
   topic?: string | null;
   text?: string | null;

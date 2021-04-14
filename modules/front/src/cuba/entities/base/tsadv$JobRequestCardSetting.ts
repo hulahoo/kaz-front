@@ -1,9 +1,9 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { UserExt } from "./tsadv$UserExt";
+import { TsadvUser } from "./tsadv$UserExt";
 export class JobRequestCardSetting extends StandardEntity {
   static NAME = "tsadv$JobRequestCardSetting";
   property?: string | null;
-  user?: UserExt | null;
+  user?: TsadvUser | null;
   propertyValue?: boolean | null;
 }
 export type JobRequestCardSettingViewName = "_base" | "_local" | "_minimal";

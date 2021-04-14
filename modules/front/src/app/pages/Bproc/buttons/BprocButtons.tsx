@@ -9,14 +9,14 @@ import {inject, observer} from "mobx-react";
 import StartBprocModal from "../modal/StartBprocModal";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import {FormComponentProps} from "antd/es/form";
 import OutcomeButtonModal from "../modal/OutcomeButtonModal";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
   formData: BprocFormData;
-  employee?: () => UserExt | null;
+  employee?: () => TsadvUser | null;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void

@@ -1,5 +1,5 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { UserExt } from "./tsadv$UserExt";
+import { TsadvUser } from "./tsadv$UserExt";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { BaseUuidEntity } from "./sys$BaseUuidEntity";
 export class ProcInstanceV extends StandardEntity {
@@ -11,7 +11,7 @@ export class ProcInstanceV extends StandardEntity {
   entityId?: any | null;
   requestNumber?: string | null;
   active?: boolean | null;
-  startedBy?: UserExt | null;
+  startedBy?: TsadvUser | null;
   startedByPersonGroup?: PersonGroupExt | null;
   startDate?: any | null;
   endDate?: any | null;
@@ -19,7 +19,7 @@ export class ProcInstanceV extends StandardEntity {
   cancelled?: boolean | null;
   entity?: BaseUuidEntity | null;
   personGroup?: PersonGroupExt | null;
-  currentApprover?: UserExt | null;
+  currentApprover?: TsadvUser | null;
   detailRu?: string | null;
   detailEn?: string | null;
   detail?: string | null;
