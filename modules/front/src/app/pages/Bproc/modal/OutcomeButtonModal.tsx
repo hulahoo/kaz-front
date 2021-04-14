@@ -48,7 +48,6 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
   };
 
   handleOk = (outcome: BprocFormOutcome) => {
-    console.log('handleOk');
     this.props.form.validateFields(["bproc-comment"], {force: true}, (err, values) => {
       if (err) {
         Notification.error({
