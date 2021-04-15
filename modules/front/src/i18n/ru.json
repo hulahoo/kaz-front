@@ -299,7 +299,7 @@
   "previous": "Предыдущий",
   "next": "Следующий",
   "saveAndClose": "Сохранить и закрыть",
-  "notes":"Заметки",
+  "notes": "Заметки",
   "ask.question": "Задать вопрос",
   "your.question.accepted": "Ваш вопрос принят",
   "summited.less.than.30.days": "Заявка подана менее чем за 30 календарных дней до планируемой даты выхода",
@@ -376,7 +376,7 @@
   "changeAbsenceDaysRequest": "Заявка на изменение дат отпуска",
   "absenceForRecall": "Заявка на отзыв из отпуска",
   "absenceForRecall.daysNotCorrect": "Дни неиспользованной части не правильные",
-  "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна"
+  "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна",
   "notification.body.section": "Сообщение",
   "notification": "Уведомление"
 }
