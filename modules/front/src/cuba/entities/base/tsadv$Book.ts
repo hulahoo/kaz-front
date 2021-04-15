@@ -7,7 +7,7 @@ export class Book extends StandardEntity {
   bookNameLang1?: string | null;
   bookDescriptionLang1?: string | null;
   authorLang1?: string | null;
-  publishDate?: any | null;
+  publishDate?: number | null;
   isbn?: string | null;
   active?: boolean | null;
   averageScore?: any | null;
@@ -137,6 +137,7 @@ export type BookView<V extends BookViewName> = V extends "_base"
       | "active"
       | "averageScore"
       | "language"
+      | "image"
       | "djvu"
       | "epub"
       | "fb2"

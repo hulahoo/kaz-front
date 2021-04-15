@@ -6,5 +6,15 @@ export class LmsSlider extends StandardEntity {
   position?: DicLmsSliderPosition | null;
   images?: LmsSliderImage[] | null;
 }
-export type LmsSliderViewName = "_base" | "_local" | "_minimal";
-export type LmsSliderView<V extends LmsSliderViewName> = never;
+export type LmsSliderViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "lmsSlider.with.images";
+export type LmsSliderView<V extends LmsSliderViewName> = V extends "_base"
+  ? Pick<LmsSlider, "id" | "position">
+  : V extends "_minimal"
+  ? Pick<LmsSlider, "id" | "position">
+  : V extends "lmsSlider.with.images"
+  ? Pick<LmsSlider, "id" | "position" | "images">
+  : never;

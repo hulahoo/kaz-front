@@ -30,6 +30,9 @@ export class DicAbsenceType extends AbstractDictionary {
   isOriginalSheet?: boolean | null;
   isCheckWork?: boolean | null;
   isVacationDate?: boolean | null;
+  workOnWeekend?: boolean | null;
+  temporaryTransfer?: boolean | null;
+  overtimeWork?: boolean | null;
 }
 export type DicAbsenceTypeViewName =
   | "_base"
@@ -67,6 +70,13 @@ export type DicAbsenceTypeView<
       | "availableForRecallAbsence"
       | "availableForChangeDate"
       | "availableForLeavingVacation"
+      | "isJustRequired"
+      | "isOriginalSheet"
+      | "isCheckWork"
+      | "isVacationDate"
+      | "workOnWeekend"
+      | "temporaryTransfer"
+      | "overtimeWork"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -87,10 +97,6 @@ export type DicAbsenceTypeView<
       | "active"
       | "isDefault"
       | "order"
-      | "isJustRequired"
-      | "isOriginalSheet"
-      | "isCheckWork"
-      | "isVacationDate"
     >
   : V extends "_local"
   ? Pick<
@@ -119,6 +125,13 @@ export type DicAbsenceTypeView<
       | "availableForRecallAbsence"
       | "availableForChangeDate"
       | "availableForLeavingVacation"
+      | "isJustRequired"
+      | "isOriginalSheet"
+      | "isCheckWork"
+      | "isVacationDate"
+      | "workOnWeekend"
+      | "temporaryTransfer"
+      | "overtimeWork"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -169,6 +182,13 @@ export type DicAbsenceTypeView<
       | "availableForRecallAbsence"
       | "availableForChangeDate"
       | "availableForLeavingVacation"
+      | "isJustRequired"
+      | "isOriginalSheet"
+      | "isCheckWork"
+      | "isVacationDate"
+      | "workOnWeekend"
+      | "temporaryTransfer"
+      | "overtimeWork"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -191,9 +211,5 @@ export type DicAbsenceTypeView<
       | "order"
       | "absenceCategory"
       | "company"
-      | "isJustRequired"
-      | "isOriginalSheet"
-      | "isCheckWork"
-      | "isVacationDate"
     >
   : never;

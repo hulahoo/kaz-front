@@ -8,7 +8,7 @@ import Column from "antd/lib/table/Column";
 import {restServices} from "../../../../cuba/services";
 import {RootStoreProp} from "../../../store";
 import {BpmRolesDefiner} from "../../../../cuba/entities/base/tsadv$BpmRolesDefiner";
-import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import CustomButton, {ButtonType} from "../../../components/Button/Button";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {SerializedEntity} from "@cuba-platform/rest";
@@ -24,7 +24,7 @@ import TextArea from "antd/es/input/TextArea";
 
 type StartBproc = {
   processDefinitionKey: string;
-  employee?: () => UserExt | null;
+  employee?: () => TsadvUser | null;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void;
@@ -58,9 +58,9 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   selectedHrRole: DicHrRole | null;
 
   @observable
-  selectedUser: UserExt | null;
+  selectedUser: TsadvUser | null;
 
-  users = collection<UserExt>(UserExt.NAME, {
+  users = collection<TsadvUser>(TsadvUser.NAME, {
     view: 'portal-bproc-users'
   });
 
@@ -229,7 +229,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   addBprocUser = () => {
-    if (this.items.find(i => (i.users as UserExt[]).find(u => u.id === this.selectedUser!.id) != undefined)) {
+    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) != undefined)) {
       Notification.error({
         message: this.props.intl.formatMessage({id: "bproc.startBproc.modal.error"})
       });
@@ -314,8 +314,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                             }
                             onChange={this.onChangeUser}>
                       {this.users.items.length > 0 ? this.users.items.map(l =>
-                          <Select.Option title={(l as SerializedEntity<UserExt>).fullNameWithLogin!}
-                                         key={l.id}>{(l as SerializedEntity<UserExt>).fullNameWithLogin!}</Select.Option>) :
+                          <Select.Option title={(l as SerializedEntity<TsadvUser>).fullNameWithLogin!}
+                                         key={l.id}>{(l as SerializedEntity<TsadvUser>).fullNameWithLogin!}</Select.Option>) :
                         <Select.Option key="empty"/>
                       }
                     </Select>
@@ -337,7 +337,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
               <Column key='role' title={"Роли"}
                       render={(text, record) => (record as NotPersisitBprocActors).hrRole!.langValue1}/>
               <Column key='candidates' title={"Пользователи"} render={(text, record) => {
-                return <Candidate candidates={((record as NotPersisitBprocActors).users as UserExt[] | null)}/>
+                return <Candidate candidates={((record as NotPersisitBprocActors).users as TsadvUser[] | null)}/>
               }}/>
               <Column
                 key="action"

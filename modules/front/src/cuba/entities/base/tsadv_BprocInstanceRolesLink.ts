@@ -1,11 +1,11 @@
 import { StandardEntity } from "./sys$StandardEntity";
 import { DicHrRole } from "./tsadv$DicHrRole";
-import { UserExt } from "./tsadv$UserExt";
+import { TsadvUser } from "./tsadv$UserExt";
 export class BprocInstanceRolesLink extends StandardEntity {
   static NAME = "tsadv_BprocInstanceRolesLink";
   processInstanceId?: string | null;
   hrRole?: DicHrRole | null;
-  user?: UserExt | null;
+  user?: TsadvUser | null;
   required?: boolean | null;
 }
 export type BprocInstanceRolesLinkViewName =

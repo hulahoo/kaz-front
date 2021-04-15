@@ -23,10 +23,12 @@ export type CourseSectionViewName =
   | "course.section.for.start.online.section"
   | "course.section.format"
   | "course.section.with.format.session"
+  | "courseSection.course.sections"
   | "courseSection.edit"
   | "courseSection.for.status"
   | "courseSection.minimal"
-  | "courseSection.object";
+  | "courseSection.object"
+  | "enrollment-course-section";
 export type CourseSectionView<
   V extends CourseSectionViewName
 > = V extends "_base"
@@ -84,8 +86,11 @@ export type CourseSectionView<
       | "format"
       | "session"
       | "sectionObject"
+      | "courseSectionAttempts"
       | "course"
     >
+  : V extends "courseSection.course.sections"
+  ? Pick<CourseSection, "id" | "sectionName" | "course">
   : V extends "courseSection.edit"
   ? Pick<
       CourseSection,
@@ -105,4 +110,18 @@ export type CourseSectionView<
   ? Pick<CourseSection, "id" | "course" | "format">
   : V extends "courseSection.object"
   ? Pick<CourseSection, "id" | "sectionObject">
+  : V extends "enrollment-course-section"
+  ? Pick<
+      CourseSection,
+      | "id"
+      | "mandatory"
+      | "sectionName"
+      | "order"
+      | "description"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "courseSectionAttempts"
+      | "format"
+    >
   : never;

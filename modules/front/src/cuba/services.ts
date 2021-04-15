@@ -9,7 +9,7 @@ import {BprocFormData} from "./entities/bproc/bproc_FormData";
 import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData";
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
-import {UserExt} from "./entities/base/tsadv$UserExt";
+import {TsadvUser} from "./entities/base/tsadv$UserExt";
 import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
@@ -345,7 +345,7 @@ export const restServices = {
       ).then((value: string) => JSON.parse(value));
     },
     getNotPersisitBprocActors: (param: {
-      employee: UserExt | null,
+      employee: TsadvUser | null,
       initiatorPersonGroupId: string,
       bpmRolesDefiner: BpmRolesDefiner
     }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {

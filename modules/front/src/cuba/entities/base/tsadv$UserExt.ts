@@ -1,6 +1,6 @@
 import { BaseUserExt } from "./base$UserExt";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-export class UserExt extends BaseUserExt {
+export class TsadvUser extends BaseUserExt {
   static NAME = "tsadv$UserExt";
   personGroup?: PersonGroupExt | null;
   fullNameWithLogin?: string | null;
@@ -9,6 +9,7 @@ export type TsadvUserViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "portal-bproc-users"
   | "tsadvUserExt-view"
   | "user-fioWithLogin"
   | "user.browse"
@@ -18,7 +19,7 @@ export type TsadvUserViewName =
   | "userExt.edit";
 export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
   ? Pick<
-    UserExt,
+      TsadvUser,
       | "id"
       | "shortName"
       | "login"
@@ -51,7 +52,7 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
     >
   : V extends "_local"
   ? Pick<
-      UserExt,
+      TsadvUser,
       | "id"
       | "fullNameWithLogin"
       | "login"
@@ -83,10 +84,12 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
       | "fullName"
     >
   : V extends "_minimal"
-  ? Pick<UserExt, "id" | "shortName" | "login">
+  ? Pick<TsadvUser, "id" | "shortName" | "login">
+  : V extends "portal-bproc-users"
+  ? Pick<TsadvUser, "id" | "shortName" | "login" | "fullNameWithLogin">
   : V extends "tsadvUserExt-view"
   ? Pick<
-          UserExt,
+      TsadvUser,
       | "id"
       | "login"
       | "loginLowerCase"
@@ -124,7 +127,7 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
     >
   : V extends "user-fioWithLogin"
   ? Pick<
-      UserExt,
+      TsadvUser,
       | "id"
       | "fullNameWithLogin"
       | "login"
@@ -158,7 +161,7 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
     >
   : V extends "user.browse"
   ? Pick<
-      UserExt,
+      TsadvUser,
       | "id"
       | "version"
       | "createTs"
@@ -191,7 +194,7 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
     >
   : V extends "user.edit"
   ? Pick<
-      UserExt,
+      TsadvUser,
       | "id"
       | "login"
       | "loginLowerCase"
@@ -227,10 +230,10 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
       | "personGroup"
     >
   : V extends "user.roles"
-  ? Pick<UserExt, "id" | "shortName" | "login" | "userRoles">
+  ? Pick<TsadvUser, "id" | "shortName" | "login" | "userRoles">
   : V extends "userExt.bproc"
   ? Pick<
-      UserExt,
+      TsadvUser,
       | "id"
       | "fullNameWithLogin"
       | "login"
@@ -264,19 +267,19 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
     >
   : V extends "userExt.edit"
   ? Pick<
-      UserExt,
+      TsadvUser,
       | "id"
       | "shortName"
       | "login"
-      | "image"
-      | "fullName"
+      | "personGroup"
       | "firstName"
       | "lastName"
       | "middleName"
-      | "mobilePhone"
-      | "telegramChatId"
       | "email"
       | "language"
-      | "personGroup"
+      | "image"
+      | "mobilePhone"
+      | "telegramChatId"
+      | "fullName"
     >
   : never;

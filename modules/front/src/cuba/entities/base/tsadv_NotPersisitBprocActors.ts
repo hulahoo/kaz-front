@@ -1,10 +1,10 @@
 import { BaseUuidEntity } from "./sys$BaseUuidEntity";
 import { DicHrRole } from "./tsadv$DicHrRole";
-import { UserExt } from "./tsadv$UserExt";
+import { TsadvUser } from "./tsadv$UserExt";
 export class NotPersisitBprocActors extends BaseUuidEntity {
   static NAME = "tsadv_NotPersisitBprocActors";
   hrRole?: DicHrRole | null;
-  users?: UserExt[] | null;
+  users?: TsadvUser[] | null;
   bprocUserTaskCode?: string | null;
   isSystemRecord?: boolean | null;
   isEditable?: boolean | null;
