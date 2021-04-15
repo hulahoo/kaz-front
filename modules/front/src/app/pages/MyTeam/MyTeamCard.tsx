@@ -77,8 +77,6 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
     }, {
       id: 'timeManagement'
     }, {
-      id: 'workOnWeekend'
-    }, {
       id: 'currentSchedule'
     },]
   }
@@ -90,13 +88,11 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           id: 'absence'
         }, {
           id: 'absenceRequest'
-        }]
-      case 'workOnWeekend':
-        return[{
+        },{
           id: 'workOnWeekend'
-        }, {
+        },{
           id: 'workOnWeekendRequest'
-        },]
+        }]
       case 'currentSchedule':
         return[{
           id: 'currentSchedule'

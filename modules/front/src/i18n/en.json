@@ -382,5 +382,8 @@
   "enrollment.section.start.error.required": "To continue it's required to complete current section",
   "personalData": "Личные данные",
   "timeManagement": "Time management",
-  "cityOfResidence": "City of residence"
+  "cityOfResidence": "City of residence",
+  "workOnWeekend": "WFD Approved, Overtime, Temporary Transfer",
+  "workOnWeekendRequest": "Applications for RRVD, Overtime, Temporary transfer",
+  "absenceRvdRequest": "Applications for RRVD, Overtime, Temporary transfer request"
 }

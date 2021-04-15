@@ -414,6 +414,15 @@ export const restServices = {
       );
     }
   },
+  absenceRvdService: {
+    countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+    return getCubaREST()!.invokeService<string>(
+      "tsadv_AbsenceRvdService",
+      "countTotalHours",
+      {...param}
+      );
+    }
+  },
   documentService: {
     getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
       return getCubaREST()!.invokeService(
