@@ -387,5 +387,7 @@
   "changeAbsenceDaysRequest": "Request to change vacation dates",
   "absenceForRecall": "Feedback request from vacation",
   "absenceForRecall.daysNotCorrect": "Days not correct",
-  "absenceForRecall.recallDateNotCorrect": "Recall date is not correct"
+  "absenceForRecall.recallDateNotCorrect": "Recall date is not correct",
+  "notification.body.section": "Message",
+  "notification": "Notification"
 }

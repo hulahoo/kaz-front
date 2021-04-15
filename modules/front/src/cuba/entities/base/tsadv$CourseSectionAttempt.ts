@@ -7,8 +7,8 @@ export class CourseSectionAttempt extends AbstractParentEntity {
   static NAME = "tsadv$CourseSectionAttempt";
   attemptDate?: any | null;
   test?: Test | null;
-  testResult?: number | null;
-  testResultPercent?: number | null;
+  testResult?: any | null;
+  testResultPercent?: any | null;
   timeSpent?: any | null;
   activeAttempt?: boolean | null;
   success?: boolean | null;
@@ -41,7 +41,6 @@ export type CourseSectionAttemptView<
       | "timeSpent"
       | "activeAttempt"
       | "success"
-      | "courseSectionFormat"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -56,7 +55,6 @@ export type CourseSectionAttemptView<
       | "timeSpent"
       | "activeAttempt"
       | "success"
-      | "courseSectionFormat"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -73,7 +71,6 @@ export type CourseSectionAttemptView<
       | "timeSpent"
       | "activeAttempt"
       | "success"
-      | "courseSectionFormat"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -104,15 +101,15 @@ export type CourseSectionAttemptView<
       CourseSectionAttempt,
       | "id"
       | "attemptDate"
+      | "test"
+      | "testResult"
+      | "timeSpent"
+      | "activeAttempt"
       | "success"
       | "enrollment"
       | "courseSection"
       | "courseSectionFormat"
-      | "activeAttempt"
       | "createTs"
-      | "test"
-      | "testResult"
-      | "timeSpent"
     >
   : V extends "courseSectionAttempt.for.check.on.remove"
   ? Pick<CourseSectionAttempt, "id" | "courseSection" | "enrollment">
@@ -136,7 +133,6 @@ export type CourseSectionAttemptView<
       | "timeSpent"
       | "activeAttempt"
       | "success"
-      | "courseSectionFormat"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

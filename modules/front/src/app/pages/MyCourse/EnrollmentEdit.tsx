@@ -104,10 +104,11 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                 <div className="course-logo">
                   {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
                     <>
-                      <Icon type="caret-right" className={"play-icon"} onClick={this.playIconClick}/>
-                      <Img isBase src={this.dataInstance.course!.logo}
-                           alt={this.dataInstance.course!.name!}
-                           style={{borderRadius: '4px', width: '100%', height: '100%'}}/></>}
+                      <Icon type="caret-right" className="play-icon" onClick={this.playIconClick}/>
+                      <h1
+                        className="play-text">{this.selectedSection ? this.dataInstance.course!.sections!.find(s => s.id === this.selectedSection!.id)!.sectionName : null}
+                      </h1>
+                    </>}
                 </div>
               </Col>
               <Col span={8} style={{paddingLeft: "30px"}}>

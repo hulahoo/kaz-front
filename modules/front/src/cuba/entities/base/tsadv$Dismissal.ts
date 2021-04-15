@@ -84,9 +84,10 @@ export type DismissalView<V extends DismissalViewName> = V extends "_base"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "status"
       | "personGroup"
       | "lcArticle"
+      | "dismissalReason"
+      | "status"
     >
   : V extends "dismissal.forNotification"
   ? Pick<

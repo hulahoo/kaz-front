@@ -1,5 +1,5 @@
 import React from "react";
-import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import {Modal, Table} from "antd";
 import Column from "antd/es/table/Column";
 import {observer} from "mobx-react";
@@ -7,13 +7,13 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 
 type Candidates = {
-  candidates: UserExt[] | null;
+  candidates: TsadvUser[] | null;
 }
 
 @observer
 class Candidate extends React.Component<Candidates & WrappedComponentProps & RouteComponentProps> {
 
-  showModal = (candidates: UserExt[]) => {
+  showModal = (candidates: TsadvUser[]) => {
     Modal.info({
       title: this.props.intl.formatMessage({id: "candidates"}),
       content: (
@@ -21,13 +21,13 @@ class Candidate extends React.Component<Candidates & WrappedComponentProps & Rou
                showHeader={false}
                rowKey={record => record.id}
                pagination={false}>
-          <Column key='id' render={(text, record) => (record as UserExt).fullNameWithLogin}/>
+          <Column key='id' render={(text, record) => (record as TsadvUser).fullNameWithLogin}/>
         </Table>
       )
     });
   };
 
-  getCandidatesCard(candidates: UserExt[] | null) {
+  getCandidatesCard(candidates: TsadvUser[] | null) {
     if (!candidates || candidates.length === 0) return "";
     else if (candidates.length === 1) {
       return <div className="break-words">{candidates[0].fullNameWithLogin}</div>

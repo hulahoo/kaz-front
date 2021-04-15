@@ -1,4 +1,5 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
+import { CourseCertificate } from "./tsadv_CourseCertificate";
 import { Enrollment } from "./tsadv$Enrollment";
 import { CourseTrainer } from "./tsadv$CourseTrainer";
 import { CourseFeedbackTemplate } from "./tsadv$CourseFeedbackTemplate";
@@ -10,9 +11,11 @@ import { CoursePreRequisition } from "./tsadv$CoursePreRequisition";
 import { DicLearningType } from "./tsadv$DicLearningType";
 import { CourseReview } from "./tsadv$CourseReview";
 import { CourseSchedule } from "./tsadv_CourseSchedule";
+import { DicLearningProof } from "./tsadv_DicLearningProof";
 export class Course extends AbstractParentEntity {
   static NAME = "tsadv$Course";
   name?: string | null;
+  certificate?: CourseCertificate[] | null;
   isIssuedCertificate?: boolean | null;
   enrollments?: Enrollment[] | null;
   courseTrainers?: CourseTrainer[] | null;
@@ -36,13 +39,15 @@ export class Course extends AbstractParentEntity {
   courseSchedule?: CourseSchedule[] | null;
   educationPeriod?: any | null;
   educationDuration?: any | null;
+  learningProof?: DicLearningProof | null;
   commentCount?: number | null;
-  rating?: number | null;
+  rating?: any | null;
 }
 export type CourseViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "course-enrollment"
   | "course-learning-history"
   | "course-portal-browse"
   | "course.browse"
@@ -65,6 +70,8 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "isOnline"
       | "educationPeriod"
       | "educationDuration"
+      | "commentCount"
+      | "rating"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -84,16 +91,52 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "isOnline"
       | "educationPeriod"
       | "educationDuration"
+      | "commentCount"
+      | "rating"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
   : V extends "_minimal"
   ? Pick<Course, "id" | "name">
+  : V extends "course-enrollment"
+  ? Pick<
+      Course,
+      | "id"
+      | "name"
+      | "isIssuedCertificate"
+      | "description"
+      | "logo"
+      | "targetAudience"
+      | "activeFlag"
+      | "shortDescription"
+      | "selfEnrollment"
+      | "isOnline"
+      | "educationPeriod"
+      | "educationDuration"
+      | "commentCount"
+      | "rating"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "sections"
+      | "logo"
+    >
   : V extends "course-learning-history"
   ? Pick<Course, "id" | "name" | "sections">
   : V extends "course-portal-browse"
-  ? Pick<Course, "id" | "name" | "avgRate" | "logo" | "isOnline" | "commentCount" | "rating">
+  ? Pick<
+      Course,
+      | "id"
+      | "name"
+      | "name"
+      | "avgRate"
+      | "logo"
+      | "isOnline"
+      | "activeFlag"
+      | "rating"
+      | "commentCount"
+    >
   : V extends "course.browse"
   ? Pick<
       Course,
@@ -131,26 +174,35 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       Course,
       | "id"
       | "name"
+      | "isIssuedCertificate"
+      | "description"
+      | "logo"
+      | "targetAudience"
+      | "activeFlag"
+      | "shortDescription"
+      | "selfEnrollment"
+      | "isOnline"
+      | "educationPeriod"
+      | "educationDuration"
+      | "commentCount"
+      | "rating"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "certificate"
       | "enrollments"
       | "courseTrainers"
       | "feedbackTemplates"
       | "party"
-      | "description"
-      | "logo"
       | "category"
-      | "targetAudience"
-      | "activeFlag"
       | "sections"
-      | "shortDescription"
       | "competences"
       | "preRequisition"
       | "avgRate"
-      | "selfEnrollment"
       | "learningType"
-      | "isOnline"
+      | "reviews"
       | "courseSchedule"
-      | "educationPeriod"
-      | "educationDuration"
+      | "learningProof"
     >
   : V extends "course.tree"
   ? Pick<
@@ -185,5 +237,6 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "reviews"
       | "enrollments"
       | "selfEnrollment"
+      | "learningProof"
     >
   : never;

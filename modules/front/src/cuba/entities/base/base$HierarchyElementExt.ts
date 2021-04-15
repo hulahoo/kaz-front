@@ -36,13 +36,19 @@ export type HierarchyElementExtView<
   ? Pick<
       HierarchyElementExt,
       | "id"
+      | "organizationGroup"
+      | "endDate"
+      | "startDate"
+      | "positionGroup"
+      | "elementType"
+      | "createdBy"
+      | "createTs"
+      | "updateTs"
+      | "updatedBy"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
       | "writeHistory"
-      | "elementType"
     >
   : V extends "_local"
   ? Pick<
@@ -57,7 +63,19 @@ export type HierarchyElementExtView<
       | "elementType"
     >
   : V extends "_minimal"
-  ? Pick<HierarchyElementExt, "id">
+  ? Pick<
+      HierarchyElementExt,
+      | "id"
+      | "organizationGroup"
+      | "endDate"
+      | "startDate"
+      | "positionGroup"
+      | "elementType"
+      | "createdBy"
+      | "createTs"
+      | "updateTs"
+      | "updatedBy"
+    >
   : V extends "hierarchyElement-with-assignments"
   ? Pick<
       HierarchyElementExt,
@@ -159,6 +177,15 @@ export type HierarchyElementExtView<
   ? Pick<
       HierarchyElementExt,
       | "id"
+      | "organizationGroup"
+      | "endDate"
+      | "startDate"
+      | "positionGroup"
+      | "elementType"
+      | "createdBy"
+      | "createTs"
+      | "updateTs"
+      | "updatedBy"
       | "parent"
       | "legacyId"
       | "positionGroup"

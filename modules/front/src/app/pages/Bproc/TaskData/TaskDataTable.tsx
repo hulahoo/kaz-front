@@ -5,7 +5,7 @@ import {Table} from "antd";
 import Column from "antd/es/table/Column";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
-import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import Candidate from "../component/Candidate";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
@@ -38,7 +38,7 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 key="assigneeOrCandidates"
                 ellipsis
                 render={(text, record) =>
-                  (<Candidate candidates={((record as ExtTaskData).assigneeOrCandidates as UserExt[] | null)}/>)
+                  (<Candidate candidates={((record as ExtTaskData).assigneeOrCandidates as TsadvUser[] | null)}/>)
                 }/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='createTime'/>}
                 dataIndex="createTime"

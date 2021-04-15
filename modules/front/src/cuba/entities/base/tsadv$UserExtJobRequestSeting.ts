@@ -1,10 +1,10 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { UserExt } from "./tsadv$UserExt";
+import { TsadvUser } from "./tsadv$UserExt";
 import { JobRequest } from "./tsadv$JobRequest";
 export class UserExtJobRequestSeting extends StandardEntity {
   static NAME = "tsadv$UserExtJobRequestSeting";
   viewLater?: boolean | null;
-  userExt?: UserExt | null;
+  userExt?: TsadvUser | null;
   jobRequest?: JobRequest | null;
 }
 export type UserExtJobRequestSetingViewName = "_base" | "_local" | "_minimal";

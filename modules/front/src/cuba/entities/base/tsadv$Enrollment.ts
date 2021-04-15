@@ -4,6 +4,7 @@ import { PersonGroupExt } from "./base$PersonGroupExt";
 import { CertificationEnrollment } from "./tsadv$CertificationEnrollment";
 import { DicReasonForLearning } from "./tsadv$DicReasonForLearning";
 import { CourseSchedule } from "./tsadv_CourseSchedule";
+import { EnrollmentCertificateFile } from "./tsadv$EnrollmentCertificateFile";
 export class Enrollment extends AbstractParentEntity {
   static NAME = "tsadv$Enrollment";
   course?: Course | null;
@@ -15,6 +16,7 @@ export class Enrollment extends AbstractParentEntity {
   moneyInBudget?: boolean | null;
   reasonForLearning?: DicReasonForLearning | null;
   courseSchedule?: CourseSchedule | null;
+  certificateFiles?: EnrollmentCertificateFile[] | null;
 }
 export type EnrollmentViewName =
   | "_base"
@@ -35,8 +37,10 @@ export type EnrollmentViewName =
   | "enrollment.schedule"
   | "enrollment.single.for.course"
   | "enrollment.ss.edit"
+  | "enrollment.validation.status"
   | "enrollment.with.section.course.object"
-  | "enrollmentPersonCard";
+  | "enrollmentPersonCard"
+  | "learning-history";
 export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
   ? Pick<
       Enrollment,
@@ -67,7 +71,18 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
   : V extends "enrollment-course"
   ? Pick<Enrollment, "id" | "course" | "course">
   : V extends "enrollment-course"
-  ? Pick<Enrollment, "id" | "course" | "course">
+  ? Pick<
+      Enrollment,
+      | "id"
+      | "status"
+      | "date"
+      | "reason"
+      | "moneyInBudget"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "course"
+    >
   : V extends "enrollment-view"
   ? Pick<
       Enrollment,
@@ -85,7 +100,13 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
   : V extends "enrollment.browse"
   ? Pick<
       Enrollment,
-      "id" | "course" | "personGroup" | "status" | "date" | "reason"
+      | "id"
+      | "course"
+      | "personGroup"
+      | "status"
+      | "date"
+      | "reason"
+      | "certificationEnrollment"
     >
   : V extends "enrollment.course.schedule"
   ? Pick<Enrollment, "id" | "course" | "personGroup" | "status">
@@ -166,6 +187,8 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
       Enrollment,
       "id" | "reason" | "status" | "course" | "date" | "certificationEnrollment"
     >
+  : V extends "enrollment.validation.status"
+  ? Pick<Enrollment, "id" | "course" | "course" | "personGroup" | "status">
   : V extends "enrollment.with.section.course.object"
   ? Pick<Enrollment, "id" | "course" | "course">
   : V extends "enrollmentPersonCard"
@@ -180,5 +203,20 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
       | "organizationBin"
       | "integrationUserLogin"
       | "course"
+    >
+  : V extends "learning-history"
+  ? Pick<
+      Enrollment,
+      | "id"
+      | "status"
+      | "date"
+      | "reason"
+      | "moneyInBudget"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "courseSchedule"
+      | "course"
+      | "certificateFiles"
     >
   : never;

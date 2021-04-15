@@ -10,12 +10,16 @@ export class AbsenceBalance extends AbstractParentEntity {
   balanceDays?: number | null;
   additionalBalanceDays?: number | null;
   daysSpent?: number | null;
-  daysLeft?: number | null;
+  daysLeft?: any | null;
   extraDaysSpent?: number | null;
-  extraDaysLeft?: number | null;
+  extraDaysLeft?: any | null;
   longAbsenceDays?: number | null;
   absenceToAbsenceBalances?: AbsenceToAbsenceBalance[] | null;
   addBalanceDaysAims?: number | null;
+  ecologicalDueDays?: number | null;
+  disabilityDueDays?: number | null;
+  ecologicalDaysLeft?: any | null;
+  disabilityDaysLeft?: any | null;
 }
 export type AbsenceBalanceViewName =
   | "_base"
@@ -41,6 +45,10 @@ export type AbsenceBalanceView<
       | "extraDaysLeft"
       | "longAbsenceDays"
       | "addBalanceDaysAims"
+      | "ecologicalDueDays"
+      | "disabilityDueDays"
+      | "ecologicalDaysLeft"
+      | "disabilityDaysLeft"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -60,6 +68,10 @@ export type AbsenceBalanceView<
       | "extraDaysLeft"
       | "longAbsenceDays"
       | "addBalanceDaysAims"
+      | "ecologicalDueDays"
+      | "disabilityDueDays"
+      | "ecologicalDaysLeft"
+      | "disabilityDaysLeft"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -84,6 +96,10 @@ export type AbsenceBalanceView<
       | "extraDaysLeft"
       | "longAbsenceDays"
       | "addBalanceDaysAims"
+      | "ecologicalDueDays"
+      | "disabilityDueDays"
+      | "ecologicalDaysLeft"
+      | "disabilityDaysLeft"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -104,6 +120,10 @@ export type AbsenceBalanceView<
       | "extraDaysLeft"
       | "longAbsenceDays"
       | "addBalanceDaysAims"
+      | "ecologicalDueDays"
+      | "disabilityDueDays"
+      | "ecologicalDaysLeft"
+      | "disabilityDaysLeft"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -124,6 +144,10 @@ export type AbsenceBalanceView<
       | "extraDaysLeft"
       | "longAbsenceDays"
       | "addBalanceDaysAims"
+      | "ecologicalDueDays"
+      | "disabilityDueDays"
+      | "ecologicalDaysLeft"
+      | "disabilityDaysLeft"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

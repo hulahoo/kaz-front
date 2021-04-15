@@ -236,6 +236,7 @@ export type AbsenceView<V extends AbsenceViewName> = V extends "_base"
       | "transferPeriodStart"
       | "transferPeriodEnd"
       | "order"
+      | "type"
       | "absenceStatus"
       | "personGroup"
     >
