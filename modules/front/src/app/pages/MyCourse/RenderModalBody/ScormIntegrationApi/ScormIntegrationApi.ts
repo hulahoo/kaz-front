@@ -192,6 +192,6 @@ export default class ScormIntegrationApi {
   };
 
   initApiData = (initObject: any): void => {
-    Object.entries(initObject).forEach(([key, value]) => window[key] = value);
+    Object.entries(initObject).forEach(([key, value]) => window.API_1484_11[key] = value);
   }
 }
