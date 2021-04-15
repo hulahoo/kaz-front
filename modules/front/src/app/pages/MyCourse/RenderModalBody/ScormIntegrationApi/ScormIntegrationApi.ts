@@ -101,7 +101,8 @@ export default class ScormIntegrationApi {
     window.API_1484_11 = {
       Initialize: () => {
       },
-      GetValue: (property: string, value: string) => {
+      GetValue: (property: string) => {
+        return window.API_1484_11[property];
       },
       Finish: () => {
       },
