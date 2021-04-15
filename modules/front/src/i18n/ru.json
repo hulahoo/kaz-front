@@ -377,4 +377,6 @@
   "absenceForRecall": "Заявка на отзыв из отпуска",
   "absenceForRecall.daysNotCorrect": "Дни неиспользованной части не правильные",
   "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна"
+  "notification.body.section": "Сообщение",
+  "notification": "Уведомление"
 }
