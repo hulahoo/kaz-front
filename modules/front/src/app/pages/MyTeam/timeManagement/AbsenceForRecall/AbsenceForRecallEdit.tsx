@@ -31,10 +31,10 @@ import moment from "moment/moment";
 import {observable, reaction} from "mobx";
 import {getFullName} from "../../../../util/util";
 import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
-import {dictionaryCollection, DictionaryDataCollectionStore} from "../../../../util/DictionaryDataCollectionStore";
-import {DicPurposeAbsence} from "../../../../../cuba/entities/base/tsadv_DicPurposeAbsence";
 import {FileDescriptor} from "../../../../../cuba/entities/base/sys$FileDescriptor";
 import {restServices} from "../../../../../cuba/services";
+import {AbsenceForRecall} from "../../../../../cuba/entities/base/tsadv_AbsenceForRecall";
+import TextArea from "antd/es/input/TextArea";
 
 type EditorProps = {
   entityId: string;
@@ -44,20 +44,18 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRequest, EditorProps> {
-  dataInstance = instance<ChangeAbsenceDaysRequest>(ChangeAbsenceDaysRequest.NAME, {
-    view: "changeAbsenceDaysRequest.edit",
+class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorProps> {
+
+  processDefinitionKey = "absenceForRecallRequest";
+
+  dataInstance = instance<AbsenceForRecall>(AbsenceForRecall.NAME, {
+    view: "absenceForRecall.edit",
     loadImmediately: false
   });
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
-
-  dicPurposeAbsence: DictionaryDataCollectionStore<DicPurposeAbsence> = dictionaryCollection(DicPurposeAbsence.NAME,
-    this.props.rootStore!.userInfo!.personGroupId!, {
-      view: '_local'
-    });
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
@@ -70,23 +68,19 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
     "status",
 
-    "scheduleStartDate",
+    "recallDateFrom",
 
-    "scheduleEndDate",
+    "recallDateTo",
 
-    "purpose",
+    "leaveOtherTime",
 
-    "newStartDate",
+    "compensationPayment",
 
-    "newEndDate",
+    "dateFrom",
 
-    "periodStartDate",
+    "dateTo",
 
-    "periodEndDate",
-
-    "agree",
-
-    "familiarization",
+    "purposeText",
 
     "file"
   ];
@@ -98,6 +92,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   absence: Absence;
 
   @observable
+  isDatesDisabled: boolean = false;
+
+  @observable
   approverHrRoleCode: string;
 
   initVariablesByBproc = () => {
@@ -107,19 +104,21 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   }
 
   getUpdateEntityData = (): any => {
-    if (this.isNotDraft())
-      return {
-        ...this.props.form.getFieldsValue(this.fields)
-      }
-
-    return {
-      employee: this.absence!.personGroup!.id,
-      vacation: this.absence,
+    const file = this.props.form.getFieldValue('file');
+    const json = {
       ...this.props.form.getFieldsValue(this.fields)
-    }
-  };
+    };
+    if (file)
+      json['file'] = [file['id']];
+    if (this.isNotDraft())
+      return json
 
-  processDefinitionKey = "changeAbsenceDaysRequest";
+    json['employee'] = this.absence!.personGroup!.id;
+    json['vacation'] = this.absence;
+    json['absenceType'] = this.absence!.type;
+    json['employee'] = this.absence!.personGroup!.id;
+    return json;
+  };
 
   render() {
 
@@ -131,7 +130,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     const isNotDraft = this.isNotDraft();
 
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "changeAbsenceDaysRequest"})}>
+      <Page pageName={this.props.intl.formatMessage({id: "absenceForRecall"})}>
         <Section size="large">
           <div>
             <Card className="narrow-layout card-actions-container" actions={[
@@ -188,132 +187,154 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
-                  propertyName="scheduleStartDate"
+                  propertyName="recallDateFrom"
                   form={this.props.form}
-                  disabled={true}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="scheduleEndDate"
-                  form={this.props.form}
-                  disabled={true}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="purpose"
-                  form={this.props.form}
-                  optionsContainer={this.dicPurposeAbsence}
-                  disabled={isNotDraft}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.purpose']}),
+                      validator: (rule, value, callback) => {
+                        if (!value) {
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateFrom']}));
+                        } else {
+                          const startOf = value.clone().startOf('day');
+                          if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
+                            callback();
+                          } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                        }
+                      }
                     }]
+                  }}
+                  disabled={isNotDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="recallDateTo"
+                  form={this.props.form}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      validator: (rule, value, callback) => {
+                        if (!value) {
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateTo']}));
+                        } else {
+                          const startOf = value.clone().startOf('day');
+                          if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
+                            callback();
+                          } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                        }
+                      }
+                    }
+                    ]
+                  }}
+                  disabled={isNotDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="leaveOtherTime"
+                  form={this.props.form}
+                  disabled={isNotDraft}
+                  getFieldDecoratorOpts={{
+                    valuePropName: 'checked',
+                    getValueFromEvent: args => {
+                      const leaveOtherTime = args.target.checked === true;
+                      const compensationPayment = this.props.form.getFieldValue('compensationPayment') === true;
+                      if (compensationPayment === leaveOtherTime) {
+                        this.props.form.setFieldsValue({compensationPayment: !leaveOtherTime});
+                      }
+
+                      this.isDatesDisabled = !leaveOtherTime;
+                      if (this.isDatesDisabled) {
+                        this.props.form.setFieldsValue({dateFrom: null, dateTo: null});
+                      }
+                      this.props.form.validateFields(['dateFrom', 'dateTo'], {force: true});
+
+                      return leaveOtherTime;
+                    }
                   }}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
-                  propertyName="newStartDate"
+                  propertyName="compensationPayment"
                   form={this.props.form}
                   disabled={isNotDraft}
+                  getFieldDecoratorOpts={{
+                    valuePropName: 'checked',
+                    getValueFromEvent: args => {
+                      const compensationPayment = args.target.checked === true;
+                      const leaveOtherTime = this.props.form.getFieldValue('leaveOtherTime') === true;
+                      if (compensationPayment === leaveOtherTime) {
+                        this.props.form.setFieldsValue({leaveOtherTime: !leaveOtherTime});
+                      }
+
+                      this.isDatesDisabled = compensationPayment;
+                      if (this.isDatesDisabled) {
+                        this.props.form.setFieldsValue({dateFrom: null, dateTo: null});
+                      }
+                      this.props.form.validateFields(['dateFrom', 'dateTo'], {force: true});
+
+                      return compensationPayment;
+                    }
+                  }}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="dateFrom"
+                  form={this.props.form}
+                  disabled={isNotDraft || this.isDatesDisabled}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newStartDate']}),
-                    }, {
                       validator: (rule, value, callback) => {
-                        const endDate = this.props.form.getFieldValue('newEndDate');
-                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
-                        const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
-                        if (value && endDate) {
-                          if (endDate.clone().startOf('day') - value.clone().startOf('day') > scheduleEndDate.clone().startOf('day') - scheduleStartDate.clone().startOf('day')) {
-                            callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
-                          }
-                        }
-                        callback();
+                        if (!value && !(isNotDraft || this.isDatesDisabled))
+                          return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
+                        const dateTo = this.props.form.getFieldValue('dateTo');
+                        const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
+                        const recallDateTo = this.props.form.getFieldValue('recallDateTo');
+                        if (value && dateTo && dateTo.clone().startOf('day') - value.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
+                          callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
+                        } else callback();
+                      }
+                    }
+                    ]
+                  }}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="dateTo"
+                  form={this.props.form}
+                  disabled={isNotDraft || this.isDatesDisabled}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      validator: (rule, value, callback) => {
+                        if (!value && !(isNotDraft || this.isDatesDisabled))
+                          return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
+                        const dateFrom = this.props.form.getFieldValue('dateFrom');
+                        const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
+                        const recallDateTo = this.props.form.getFieldValue('recallDateTo');
+                        if (value && dateFrom && value.clone().startOf('day') - dateFrom.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
+                          callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
+                        } else callback();
                       }
                     }]
                   }}
                 />
 
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="newEndDate"
-                  form={this.props.form}
-                  disabled={isNotDraft}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newEndDate']}),
-                    }, {
-                      validator: (rule, value, callback) => {
-                        const startDate = this.props.form.getFieldValue('newStartDate');
-                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
-                        const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
-                        if (value && startDate) {
-                          if (value.clone().startOf('day') - startDate.clone().startOf('day') > scheduleEndDate.clone().startOf('day') - scheduleStartDate.clone().startOf('day')) {
-                            callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
-                          }
-                        }
-                        callback();
-                      }
-                    }]
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="periodStartDate"
-                  form={this.props.form}
-                  disabled={isNotDraft}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.periodStartDate']}),
-                    }]
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="periodEndDate"
-                  form={this.props.form}
-                  disabled={isNotDraft}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.periodEndDate']}),
-                    }]
-                  }}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="agree"
-                  form={this.props.form}
-                  disabled={ this.approverHrRoleCode !== 'EMPLOYEE'}
-                  getFieldDecoratorOpts={{valuePropName: 'checked'}}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="familiarization"
-                  form={this.props.form}
-                  disabled={ this.approverHrRoleCode !== 'EMPLOYEE'}
-                  getFieldDecoratorOpts={{valuePropName: 'checked'}}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
+                <Form.Item style={{marginBottom: "12px"}}>
+                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "purposeText"})}
+                  {this.props.form.getFieldDecorator("purposeText")(
+                    <TextArea
+                      disabled={isNotDraft}
+                      rows={4}/>
+                  )}
+                </Form.Item>
 
                 {/*<ReadonlyField
                   entityName={'tsadv_AbsenceForRecall'}
@@ -331,7 +352,8 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
           </div>
         </Section>
       </Page>
-    );
+    )
+      ;
   }
 
   loadData = () => {
@@ -345,10 +367,6 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
       this.loadVacation(this.props.absenceId!)
         .then(absence => this.absence = absence)
         .then(absence => {
-          this.props.form.setFieldsValue({
-            scheduleStartDate: moment(absence.dateFrom),
-            scheduleEndDate: moment(absence.dateTo)
-          });
           this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
           this.setEmployee(absence.personGroup!.id!);
         });
@@ -362,16 +380,15 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
       },
       (item) => {
 
-        this.loadVacation(item!.vacation!.id)
-          .then(absence => this.absence = absence)
-          .then(absence => {
-            this.props.form.setFieldsValue({
-              scheduleStartDate: moment(absence.dateFrom),
-              scheduleEndDate: moment(absence.dateTo)
+        // this.isDatesDisabled = item!.compensationPayment === true;
+
+        if (item!.vacation)
+          this.loadVacation(item!.vacation!.id)
+            .then(absence => this.absence = absence)
+            .then(absence => {
+              this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
+              this.setEmployee(absence.personGroup!.id!);
             });
-            this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
-            this.setEmployee(absence.personGroup!.id!);
-          });
 
         const obj = {
           ...this.dataInstance.getFieldValues(this.fields)
@@ -421,11 +438,13 @@ const onValuesChange = (props: any, changedValues: any) => {
       }
     });
 
-    if (fieldName === 'newStartDate') props.form.validateFields(['newEndDate'], {force: true});
-    if (fieldName === 'newEndDate') props.form.validateFields(['newStartDate'], {force: true});
+    if (fieldName === 'recallDateFrom' || fieldName === 'recallDateTo') props.form.validateFields(['dateFrom', 'dateTo'], {force: true});
+    if (fieldName === 'dateFrom') props.form.validateFields(['dateTo'], {force: true});
+    if (fieldName === 'dateTo') props.form.validateFields(['dateFrom'], {force: true});
+
   });
 };
 
 const component = injectIntl(withLocalizedForm<EditorProps & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>>(
-  {onValuesChange})(ChangeAbsenceDaysRequestEdit));
+  {onValuesChange})(AbsenceForRecallEdit));
 export default withRouter(component);
