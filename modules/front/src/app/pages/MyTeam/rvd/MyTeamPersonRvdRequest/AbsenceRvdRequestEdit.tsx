@@ -299,7 +299,15 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
-                valuePropName: "checked"
+                valuePropName: "checked",
+                getValueFromEvent: args => {
+                  const compencation = args.target.checked === true;
+                  const vacationDay = this.props.form.getFieldValue('vacationDay') === true;
+                  if(vacationDay === compencation){
+                    this.props.form.setFieldsValue({vacationDay: !vacationDay})
+                  }
+                  return compencation;
+                }
               }}
             />
 
@@ -309,7 +317,15 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
-                valuePropName: "checked"
+                valuePropName: "checked",
+                getValueFromEvent: args => {
+                  const vacationDay = args.target.checked === true;
+                  const compencation = this.props.form.getFieldValue('compencation') === true;
+                  if(vacationDay === compencation){
+                    this.props.form.setFieldsValue({compencation: !compencation})
+                  }
+                  return vacationDay;
+                }
               }}
             />
 
