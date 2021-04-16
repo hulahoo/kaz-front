@@ -392,5 +392,6 @@
   "absenceForRecall": "Feedback request from vacation",
   "absenceForRecall.daysNotCorrect": "Days not correct",
   "absenceForRecall.recallDateNotCorrect": "Recall date is not correct",
+  "format.incorrect": "{name} - format incorrect",
   "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\""
 }
