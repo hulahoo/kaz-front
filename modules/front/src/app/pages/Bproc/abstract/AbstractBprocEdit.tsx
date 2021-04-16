@@ -120,6 +120,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     }).then(value => this.employee = value[0]);
   }
 
+  beforeCompletePredicate = (outcome: string): Promise<boolean> => new Promise(resolve => resolve(true));
+
   getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
     const {status} = this.dataInstance;
 
@@ -130,6 +132,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         ? <BprocButtons dataInstance={this.dataInstance}
                         formData={this.formData}
                         validate={this.validate}
+                        beforeCompletePredicate={this.beforeCompletePredicate}
                         employee={() => this.employee}
                         update={this.update}
                         processInstanceData={this.processInstanceData}

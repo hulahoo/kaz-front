@@ -258,7 +258,7 @@
   "certificateRequest": "Справка с места работы",
   "bproc.startBproc.modal.error": "Пользователь уже добавлен",
   "START.INFO": "Вы уверены, что хотите отправить на утверждение?",
-  "START.success": "Документ успешно отправлен на утверждение",
+  "START.success": "Форма успешно отправлен на утверждение",
   "bproc.REJECT.success": "Форма отклонена",
   "bproc.APPROVE.success": "Форма отправлена",
   "bproc.REVISION.success": "Форма отправлено на доработку",
@@ -378,5 +378,6 @@
   "changeAbsenceDaysRequest": "Заявка на изменение дат отпуска",
   "absenceForRecall": "Заявка на отзыв из отпуска",
   "absenceForRecall.daysNotCorrect": "Дни неиспользованной части не правильные",
-  "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна"
+  "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна",
+  "for.approving.must.to.check.field": "Для утверждения необходимо поставить галочку «{fieldName}»"
 }

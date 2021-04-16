@@ -32,6 +32,7 @@ type StartBproc = {
   form: WrappedFormUtils;
   isStartCommentVisible?: boolean,
   commentRequiredOutcomes?: string[],
+  beforeCompletePredicate?: (outcome: string) => Promise<boolean>;
 }
 
 @inject("rootStore")
@@ -111,8 +112,17 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
     this.props.validate().then((isValid) => {
       if (isValid) {
-        this.modalVisible = true;
-        loadBpmRolesDefiner();
+        if (this.props.beforeCompletePredicate) {
+          this.props.beforeCompletePredicate('START').then(value => {
+            if (value) {
+              this.modalVisible = true;
+              loadBpmRolesDefiner();
+            }
+          })
+        } else {
+          this.modalVisible = true;
+          loadBpmRolesDefiner();
+        }
       }
     })
 
