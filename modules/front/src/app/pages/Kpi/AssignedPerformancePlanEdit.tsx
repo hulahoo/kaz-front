@@ -14,6 +14,7 @@ import {
   extractServerValidationErrors,
   getCubaREST,
   injectMainStore,
+  instance,
   MainStoreInjected,
   Msg,
   MultilineText,
@@ -32,24 +33,20 @@ import StatusSteps, {StatusStepProp} from "../../common/StatusSteps";
 import DropdownButton from "../../components/Dropdown/DropdownButton";
 import {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {queryInstance} from "../../util/QueryDataInstanceStore";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
 import {EnumValueInfo, SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
 import Notification from "../../util/Notification/Notification";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
-import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
-import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
-import {OrganizationExt} from "../../../cuba/entities/base/base$OrganizationExt";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
 import {getBusinessKey} from "../../util/util";
 import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
 import TextArea from "antd/es/input/TextArea";
 import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
 import TaskDataTable from "../Bproc/TaskData/TaskDataTable";
+import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
 
 const {TreeNode} = Tree;
 
@@ -74,20 +71,10 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     this.assignedGoalListValidate = state.validate;
   }
 
-  dataInstance = queryInstance<AssignedPerformancePlan>(
-    AssignedPerformancePlan.NAME,
-    "kpiEditPage",
-    {appId: this.props.entityId},
-    () => {
-      this.loadBpmProcessData();
-
-      restServices.organizationHrUserService.isManagerOrSupManager(
-        {
-          userId: this.props.rootStore!.userInfo!.id!,
-          employeePersonGroupId: this.dataInstance.item!.assignedPerson!.id!
-        }).then(value => this.isUserManager = value)
-    }
-  );
+  dataInstance = instance<AssignedPerformancePlan>(AssignedPerformancePlan.NAME, {
+    view: "assignedPerformancePlan-myKpi-edit",
+    loadImmediately: false
+  });
 
   @observable
   totalWeight: number;
@@ -596,11 +583,10 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   componentDidMount() {
 
-    this.cardStatusEnumValues = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
-
     this.setReactionDisposer();
+    this.loadData();
 
-    this.dataInstance.load();
+    this.cardStatusEnumValues = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
   }
 
   getUpdateEntityData = (): any => {
@@ -626,13 +612,27 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     this.reactionDisposer = reaction(
       () => this.dataInstance.item,
       (item) => {
+
+        this.loadBpmProcessData();
+
         this.setReadOnly();
+
+        restServices.employeeService.personProfile(item!.assignedPerson!.id).then(value => {
+          this.props.form.setFieldsValue({
+            jobGroup: value.positionName,
+            organizationGroup: value.organizationName,
+          })
+        });
+
+        restServices.organizationHrUserService.isManagerOrSupManager(
+          {
+            userId: this.props.rootStore!.userInfo!.id!,
+            employeePersonGroupId: item!.assignedPerson!.id!
+          }).then(value => this.isUserManager = value)
+
         const values = {
           ...{
             assignedPerson: (item!.assignedPerson! as SerializedEntity<PersonGroupExt>)._instanceName,
-            jobGroup: (item!.assignedPerson!.assignments![0].jobGroup as SerializedEntity<JobGroup>)._instanceName,
-            organizationGroup: (item!.assignedPerson!.assignments![0].organizationGroup as SerializedEntity<OrganizationGroupExt>)._instanceName,
-            organization: (item!.assignedPerson!.assignments![0].organizationGroup!.organization as SerializedEntity<OrganizationExt>)._instanceName,
             startDate: moment(item!.performancePlan!.startDate),
             endDate: moment(item!.performancePlan!.endDate),
             hireDate: moment(item!.assignedPerson!.person!.hireDate),
@@ -647,14 +647,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       }
     );
   };
-
-  loadInstanceData = () => {
-    if (this.props.entityId !== AssignedPerformancePlanManagement.NEW_SUBPATH) {
-      this.dataInstance.load();
-    } else {
-      this.dataInstance.setItem(new AssignedPerformancePlan());
-    }
-  }
 
   loadBpmProcessData = () => {
     const processDefinitionKey = this.processDefinitionKey;
