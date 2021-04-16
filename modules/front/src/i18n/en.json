@@ -389,5 +389,6 @@
   "absenceForRecall.daysNotCorrect": "Days not correct",
   "absenceForRecall.recallDateNotCorrect": "Recall date is not correct",
   "notification.body.section": "Message",
-  "notification": "Notification"
+  "notification": "Notification",
+  "format.incorrect": "{name} - format incorrect"
 }
