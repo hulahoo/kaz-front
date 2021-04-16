@@ -19,6 +19,7 @@ type Props = {
   validate?(): Promise<boolean>;
   update?(): Promise<any>;
   commentRequiredOutcomes?: string[],
+  beforeCompletePredicate?: (outcome: string) => Promise<boolean>;
   form: WrappedFormUtils,
 }
 
@@ -29,12 +30,15 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
   modalVisibleMap = new Map<string, boolean>();
 
   showModal = (outcome: BprocFormOutcome) => {
+    const setModalVisible = () => {
+      if (this.props.beforeCompletePredicate) this.props.beforeCompletePredicate(outcome.id!).then(value => this.modalVisibleMap.set(outcome.id!, value));
+      else this.modalVisibleMap.set(outcome.id!, true);
+    }
+
     if (this.modalVisibleMap.get(outcome.id!) !== true) {
       if (this.props.validate)
         this.props.validate().then((isValid) => {
-          if (isValid) {
-            this.modalVisibleMap.set(outcome.id!, true);
-          }
+          if (isValid) setModalVisible();
         }).catch(reason => {
           Notification.error({
               message: this.props.intl.formatMessage({
@@ -43,7 +47,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
             }
           );
         });
-      else this.modalVisibleMap.set(outcome.id!, true);
+      else setModalVisible();
     }
   };
 
@@ -60,13 +64,13 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
       }
 
       if (this.props.update)
-        this.props.update().then(value => this.completeWithOutcome(outcome)).catch((e: any) => {
-          Notification.error({
-            message: this.props.intl.formatMessage({id: "management.editor.error"})
+        this.props.update().then(value => this.completeWithOutcome(outcome))
+          .catch((e: any) => {
+            Notification.error({
+              message: this.props.intl.formatMessage({id: "management.editor.error"})
+            });
           });
-        });
       else this.completeWithOutcome(outcome);
-
     });
   };
 

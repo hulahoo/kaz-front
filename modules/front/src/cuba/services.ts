@@ -1,4 +1,4 @@
-import {EntityFilter, FetchOptions, SerializedEntity} from "@cuba-platform/rest";
+import {FetchOptions, SerializedEntity} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {SortOrder} from "antd/lib/table/interface";
 import moment from "moment";
@@ -32,7 +32,6 @@ import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
-import {AbstractDictionary} from "./entities/base/AbstractDictionary";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -245,7 +244,7 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
-    finishFeedback: (params: { answeredFeedback: AnsweredFeedback, personGroupId: string}, fetchOpts?: FetchOptions) => {
+    finishFeedback: (params: { answeredFeedback: AnsweredFeedback, personGroupId: string }, fetchOpts?: FetchOptions) => {
       return getCubaREST()!.invokeService(
         "tsadv_LmsService",
         "finishFeedback",
@@ -270,7 +269,7 @@ export const restServices = {
         {...param}
       ).then((value: string) => JSON.parse(value));
     },
-    companiesForLoadDictionary:(param: { personGroupId: string}): Promise<string> => {
+    companiesForLoadDictionary: (param: { personGroupId: string }): Promise<string> => {
       return getCubaREST()!.invokeService(
         "tsadv_PortalHelperService",
         "getCompaniesForLoadDictionary",
@@ -412,7 +411,14 @@ export const restServices = {
         "countDays",
         {...param}
       );
-    }
+    },
+    countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "countDaysWithoutHolidays",
+        {...param}
+      );
+    },
   },
   documentService: {
     getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
