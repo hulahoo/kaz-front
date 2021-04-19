@@ -11,7 +11,7 @@ import {PerformancePlan} from "./entities/base/tsadv$PerformancePlan";
 import {LearningFeedbackTemplate} from "./entities/base/tsadv$LearningFeedbackTemplate";
 import {Homework} from "./entities/base/tsadv_Homework";
 import {StudentHomework} from "./entities/base/tsadv_StudentHomework";
-import {DicAbsenceType} from "./entities/base/tsadv$DicAbsenceType";
+import {StandardSchedule} from "./entities/base/tsadv$StandardSchedule";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -79,6 +79,11 @@ export var restQueries = {
   studentHomework: (homeworkId: string, personGroupId: string): Promise<SerializedEntity<StudentHomework>[]> => {
     return getCubaREST()!.query<StudentHomework>(StudentHomework.NAME, "studentHomework", {
       homeworkId: homeworkId,
+      personGroupId: personGroupId
+    })
+  },
+  currentStandardSchedule: (personGroupId: string): Promise<SerializedEntity<StandardSchedule>[]> => {
+    return getCubaREST()!.query<StandardSchedule>(StandardSchedule.NAME, "currentStandardSchedule", {
       personGroupId: personGroupId
     })
   },

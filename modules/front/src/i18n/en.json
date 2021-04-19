@@ -14,9 +14,10 @@
   "router.AbsenceRvdRequestManagement": "AbsenceRvdRequestManagement",
   "router.AbsenceManagement": "AbsenceManagement",
   "management.browser.refresh": "Refresh",
+  "router.ScheduleOffsetsRequestManagement": "ScheduleOffsetsRequestManagement",
+  "management.browser.refresh": "Refresh",
   "router.OrgStructureRequestManagement": "OrgStructureRequestManagement",
   "router.CascadeGoalManagement": "CascadeGoalManagement",
-  "router.ScheduleOffsetsRequestManagement": "ScheduleOffsetsRequestManagement",
   "router.ActivityCards": "ActivityCards",
   "router.ExtTaskDataCards": "ExtTaskDataCards",
   "router.DicBookCategoryCards": "DicBookCategoryCards",
@@ -405,4 +406,7 @@
   "bproc.startBproc.modal.roles": "Roles",
   "bproc.startBproc.modal.users": "Names",
   "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\""
+  "scheduleOffsetsRequest": "Schedule change request",
+  "scheduleStandard": "Schedule offset",
+  "scheduleOffsetRequest": "Schedule offset request"
 }

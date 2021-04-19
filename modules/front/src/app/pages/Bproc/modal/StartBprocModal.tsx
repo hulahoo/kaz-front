@@ -105,9 +105,12 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
           let result = new TextDecoder("utf-8").decode(chunksAll);
           const parse = JSON.parse(result);
           return parse.message;
-        }).catch(reason => Notification.error({
-          message: reason
-        }));
+        }).catch(reason => {
+          console.log(reason);
+          Notification.error({
+            message: reason
+          })
+        });
       });
 
     this.props.validate().then((isValid) => {
@@ -177,18 +180,21 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 });
               })
                 .catch((e: any) => {
+                  console.log(e);
                   Notification.error({
                     message: this.props.intl.formatMessage({id: "management.editor.error"})
                   });
                 })
             })
               .catch((e: any) => {
+                console.log(e);
                 Notification.error({
                   message: this.props.intl.formatMessage({id: "management.editor.error"})
                 });
               });
           })
           .catch((e: any) => {
+            console.log(e);
             Notification.error({
               message: this.props.intl.formatMessage({id: "management.editor.error"})
             });

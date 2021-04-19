@@ -1,9 +1,9 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import {Card, List, Tabs} from "antd";
+import {Button, Card, List, Tabs} from "antd";
 import Meta from "antd/lib/card/Meta";
 import {observable} from "mobx";
 import {restServices} from "../../../cuba/services";
@@ -15,6 +15,11 @@ import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSched
 import AbsenceRvdRequestList from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
 import {AbsenceRvdRequestManagement} from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 
+import {Link} from "react-router-dom";
+import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
+import {rootStore, RootStoreProp} from "../../store";
+import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
+import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 
 const {TabPane} = Tabs;
 
@@ -46,8 +51,9 @@ export type Menu = {
 };
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps> {
+class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   @observable person?: PersonProfile;
   @observable urlImg?: string;
@@ -73,6 +79,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <AbsenceRvdRequestList personGroupId={this.person!.groupId}/>
       case 'currentSchedule':
         return <CurrentSchedule/>
+      case 'scheduleStandard':
+        return <AssignmentScheduleStandard personGroupId={this.person!.groupId}/>
+      case 'scheduleOffsetRequest':
+        return <MyTeamScheduleOffsetRequestList personGroupId={this.person!.groupId}/>
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -98,6 +108,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           id: 'absence'
         }, {
           id: 'absenceRequest'
+        }, {
+          id: 'scheduleStandard'
+        }, {
+          id: 'scheduleOffsetRequest'
         }]
       case 'workOnWeekend':
         return[{
