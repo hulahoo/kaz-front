@@ -220,7 +220,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
     const isFirstStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'DRAFT';
     const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
     const assessmentColumn = !isFirstStep
-      ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='assessment'/>}
+      ? <Column title={<FormattedMessage id="goalForm.column.assessment"/>}
                 dataIndex="assessment"
                 key="assessment"
                 render={this.assessmentColumnRender}/>
@@ -243,7 +243,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 sorter={(a: AssignedGoal, b: AssignedGoal) =>
                   (a.category as SerializedEntity<DicGoalCategory>)._instanceName!.localeCompare((b.category as SerializedEntity<DicGoalCategory>)._instanceName)
                 }/>
-        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='goalString'/>}
+        <Column title={<FormattedMessage id="goalForm.column.kpiName"/>}
                 dataIndex="goalString"
                 key="goalString"
                 sorter={(a: any, b: any) => {
@@ -257,15 +257,15 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                     ? text
                     : <Link to={this.getGoalUrl(record)}>{text}</Link>
                 })}/>
-        <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='successCriteria'/>}
+        <Column title={<FormattedMessage id="goalForm.column.kpiDetails"/>}
                 dataIndex="successCriteria"
                 key="successCriteria"
                 sorter={(a: any, b: any) => {
                   if (a.key) {
                     return a;
                   }
-                  const aSuccessCriteria = a.successCriteria || (a.goal ? a.goal.successCriteria : undefined)
-                  const bSuccessCriteria = b.successCriteria || (b.goal ? b.goal.successCriteria : undefined)
+                  const aSuccessCriteria = a.successCriteria || (a.goal ? a.goal.successCriteria : undefined);
+                  const bSuccessCriteria = b.successCriteria || (b.goal ? b.goal.successCriteria : undefined);
 
                   if (aSuccessCriteria && bSuccessCriteria) {
                     return aSuccessCriteria.localeCompare(bSuccessCriteria);

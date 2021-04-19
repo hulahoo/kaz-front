@@ -13,7 +13,7 @@ import CustomButton, {ButtonType} from "../../../components/Button/Button";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Notification from "../../../util/Notification/Notification";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
@@ -295,7 +295,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
             <div>
               <Row type={"flex"} justify={"center"} align={"bottom"}>
                 <Col span={8}>
-                  <Form.Item style={{margin: 0}} label={"Роль"}>
+                  <Form.Item style={{margin: 0}} label={<FormattedMessage id="bproc.startBproc.modal.role"/>}>
                     <Select style={{width: '100%'}} onChange={this.onChangeBprocRole}>
                       {this.bprocRolesDefiner && this.bprocRolesDefiner.links ? this.bprocRolesDefiner.links.filter(l => l.isAddableApprover && l.hrRole).map(l =>
                           <Select.Option
@@ -307,7 +307,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 </Col>
                 <Col span={1}/>
                 <Col span={8}>
-                  <Form.Item style={{margin: 0}} label={"Пользователь"}>
+                  <Form.Item style={{margin: 0}} label={<FormattedMessage id="bproc.startBproc.modal.user"/>}>
                     <Select style={{width: '100%'}} showSearch allowClear
                             filterOption={(input, option) =>
                               (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -326,7 +326,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                   <Form.Item style={{margin: 0}}>
                     <Button type={"primary"}
                             disabled={!(this.selectedHrRole && this.selectedUser)}
-                            onClick={this.addBprocUser}>Добавить</Button>
+                            onClick={this.addBprocUser}><FormattedMessage id="bproc.startBproc.modal.add"/></Button>
                   </Form.Item>
                 </Col>
               </Row>
@@ -334,9 +334,9 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
             <Table dataSource={Array.from(this.items || [])}
                    pagination={false} showHeader={true}
                    rowKey={record => record.id}>
-              <Column key='role' title={"Роли"}
+              <Column key='role' title={<FormattedMessage id="bproc.startBproc.modal.roles"/>}
                       render={(text, record) => (record as NotPersisitBprocActors).hrRole!.langValue1}/>
-              <Column key='candidates' title={"Пользователи"} render={(text, record) => {
+              <Column key='candidates' title={<FormattedMessage id="bproc.startBproc.modal.users"/>} render={(text, record) => {
                 return <Candidate candidates={((record as NotPersisitBprocActors).users as TsadvUser[] | null)}/>
               }}/>
               <Column

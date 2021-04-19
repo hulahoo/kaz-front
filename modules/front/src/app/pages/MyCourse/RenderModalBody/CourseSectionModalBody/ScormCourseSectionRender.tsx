@@ -1,7 +1,7 @@
 import React from 'react';
 import {CourseSection} from "../../../../../cuba/entities/base/tsadv$CourseSection";
 import AbstractRenderModalBody from "../AbstractRenderModalBody";
-import ScormIntegrationApi, {SUSPEND_DATA} from "../ScormIntegrationApi/ScormIntegrationApi";
+import ScormIntegrationApi from "../ScormIntegrationApi/ScormIntegrationApi";
 import {CourseSectionAttempt} from "../../../../../cuba/entities/base/tsadv$CourseSectionAttempt";
 import {restServices} from "../../../../../cuba/services";
 import Notification from "../../../../util/Notification/Notification";
@@ -33,7 +33,6 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
     if (!this.loaded) {
       scormUrl = undefined;
     }
-    console.log(this.loaded);
     return <Spin spinning={!this.loaded}>
       <div className="course-section-modal-body">
         <iframe width="100%" height="100%" src={scormUrl}/>
@@ -42,8 +41,56 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   };
 
   onFinishSection = () => {
-    this.props.finishedCourseSection(this.props.courseSection.id, this.scormIntegrationApi.isSucceedFinishedScorm());
-    this.props.selectNextSection!();
+    const isSuccess = this.scormIntegrationApi.isSucceedFinishedScorm();
+    switch (this.scormIntegrationApi.getScormType()) {
+      case "test": {
+        this.props.setLoadingFinishCourseSection(true);
+
+        restServices.courseService.createTestScormAttempt({
+          ...this.scormIntegrationApi.getTestResult(),
+          enrollmentId: this.props.enrollmentId,
+          courseSectionId: this.props.courseSection.id,
+          success: isSuccess
+        }).then(() => {
+          if (isSuccess) {
+            this.setDisableFinishSectionBtn(!isSuccess);
+          }
+          this.props.setLoadingFinishCourseSection(false);
+        }).catch(reason => {
+          Notification.error({
+            message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
+          });
+          this.props.setLoadingFinishCourseSection(false);
+        });
+        break;
+      }
+      case "default" : {
+        this.props.setLoadingFinishCourseSection(true);
+
+        restServices.courseService.createScormAttempt({
+          enrollmentId: this.props.enrollmentId,
+          courseSectionId: this.props.courseSection.id,
+          inputData: this.scormIntegrationApi.inputData,
+          success: isSuccess
+        }).then(() => {
+          if (isSuccess) {
+            this.setDisableFinishSectionBtn(!isSuccess);
+          }
+          this.props.setLoadingFinishCourseSection(false);
+        }).catch(() => {
+          Notification.error({
+            message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
+          });
+          this.props.setLoadingFinishCourseSection(false);
+        });
+        break;
+      }
+      default: {
+        this.props.finishedCourseSection(this.props.courseSection.id, this.scormIntegrationApi.isSucceedFinishedScorm());
+        this.props.selectNextSection!();
+        break;
+      }
+    }
   };
 
   componentWillUnmount(): void {
@@ -52,57 +99,12 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
 
   componentDidMount() {
     super.componentDidMount();
-
-    this.setIsDisabledFinishSectionBtn(this.props.courseSection.courseSectionAttempts!.filter(a => a.success).length === 0);
-
     this.initScormSuspendData();
-
-    this.scormIntegrationApi.onScormTestFinish = (score, maxScore, minScore, success) => {
-      this.props.setLoadingFinishCourseSection(true);
-
-      restServices.courseService.createTestScormAttempt({
-        enrollmentId: this.props.enrollmentId,
-        courseSectionId: this.props.courseSection.id,
-        score: score,
-        maxScore: maxScore,
-        minScore: minScore,
-        success: success
-      }).then(() => {
-        if (success) {
-          this.setIsDisabledFinishSectionBtn(!success);
-        }
-        this.props.setLoadingFinishCourseSection(false);
-      }).catch(reason => {
-        Notification.error({
-          message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
-        });
-        this.props.setLoadingFinishCourseSection(false);
-      });
-    };
-
-    this.scormIntegrationApi.onScormDefaultFinish = (inputData, success) => {
-      this.props.setLoadingFinishCourseSection(true);
-
-      restServices.courseService.createScormAttempt({
-        enrollmentId: this.props.enrollmentId,
-        courseSectionId: this.props.courseSection.id,
-        inputData: inputData,
-        success: success
-      }).then(() => {
-        if (success) {
-          this.setIsDisabledFinishSectionBtn(!success);
-        }
-        this.props.setLoadingFinishCourseSection(false);
-      }).catch(() => {
-        Notification.error({
-          message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
-        });
-        this.props.setLoadingFinishCourseSection(false);
-      });
-    };
   }
 
   initScormSuspendData = async (): Promise<void> => {
+    const hasSuccessAttempts = this.props.courseSection.courseSectionAttempts!.filter(a => a.success).length !== 0;
+    this.setDisableFinishSectionBtn(!hasSuccessAttempts);
     let scormSuspendDataId: string;
     const searchedScormSuspendData = await getCubaREST()!.searchEntities<ScormSuspendData>(ScormSuspendData.NAME, {
       conditions: [{
@@ -134,12 +136,19 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
       });
     }
     this.loaded = true;
-    this.scormIntegrationApi.onPropertySetValue = (property, value) => {
-      if (property === SUSPEND_DATA) {
-        getCubaREST()!.commitEntity<ScormSuspendData>(ScormSuspendData.NAME, {
-          id: scormSuspendDataId,
-          suspendData: value
-        })
+    this.scormIntegrationApi.afterPropertySetValue = (property, value) => {
+      switch (property) {
+        case "cmi.suspend_data": {
+          getCubaREST()!.commitEntity<ScormSuspendData>(ScormSuspendData.NAME, {
+            id: scormSuspendDataId,
+            suspendData: value
+          });
+          break;
+        }
+        case "cmi.completion_status":
+        case "cmi.success_status": {
+          this.setDisableFinishSectionBtn(!hasSuccessAttempts || this.scormIntegrationApi.isSucceedFinishedScorm());
+        }
       }
     }
   }

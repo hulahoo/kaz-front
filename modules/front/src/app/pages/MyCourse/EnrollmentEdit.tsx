@@ -7,7 +7,6 @@ import "../../../app/App.css";
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 import Section from "../../hoc/Section";
 import {Col, Icon, Row, Spin} from "antd";
-import Img from "../../components/Img";
 import NoImage from "../../components/NoImage";
 import Page from "../../hoc/PageContentHoc";
 import {Meta} from "antd/es/list/Item";
@@ -106,7 +105,11 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                     <>
                       <Icon type="caret-right" className="play-icon" onClick={this.playIconClick}/>
                       <h1
-                        className="play-text">{this.selectedSection ? this.dataInstance.course!.sections!.find(s => s.id === this.selectedSection!.id)!.sectionName : null}
+                        className="play-text">{this.selectedSection
+                        ? this.selectedSection.type === "course-section"
+                          ? this.dataInstance.course!.sections!.find(s => s.id === this.selectedSection!.id)!.sectionName
+                          : this.feedbacks!.find(s => s.id === this.selectedSection!.id)!.name
+                        : null}
                       </h1>
                     </>}
                 </div>

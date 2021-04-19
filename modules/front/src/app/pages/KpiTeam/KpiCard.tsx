@@ -85,7 +85,7 @@ class KpiCard extends React.Component<KpiCardProps & MainStoreInjected & Wrapped
                 {(record.assignedPerson! as SerializedEntity<PersonGroupExt>)._instanceName}
                 </span>
             }}/>*/}
-        <Column title={<FormattedMessage id="department"/>}
+        <Column title={<FormattedMessage id="unit"/>}
                 dataIndex={"organizationGroup"}
                 key={"organizationGroup"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
           return <span>
@@ -106,7 +106,7 @@ class KpiCard extends React.Component<KpiCardProps & MainStoreInjected & Wrapped
                 {getEnumCaption(record.stepStageStatus, getPropertyInfoNN("stepStageStatus", AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!)}
                 </span>
         }}/>
-        <Column title={this.props.intl.formatMessage({id: "period"})}
+        <Column title={this.props.intl.formatMessage({id: "performanceAppraisalPeriod"})}
                 dataIndex={"endDate"}
                 key={"endDate"} render={(text) => {
           return (React.createElement("div", null, moment(text).format("YYYY")));

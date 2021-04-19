@@ -194,7 +194,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   setTotalResult = (value: number) => {
     this.totalResult = Math.round(value);
     if (this.totalResultRef) {
-      this.totalResultRef.innerHTML = this.props.intl.formatMessage({id: "result"}) + ": " + this.totalResult! + "%";
+      this.totalResultRef.innerHTML = this.props.intl.formatMessage({id: "result"}) + ": " + this.totalResult!;
       this.setKpiScore();
     }
   };
@@ -401,7 +401,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                       formItemOpts={{
                         style: {marginBottom: "12px"},
                         className: 'disabled',
-                        label: <Msg entityName={AssignedPerformancePlan.NAME} propertyName={"assignedPerson"}/>
+                        label: <FormattedMessage id="employee"/>
                       }}/>
                   </Col>
                   <Col md={24} lg={6}>
@@ -424,7 +424,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                       disabled
                       formItemOpts={{
                         style: {marginBottom: "12px"},
-                        label: <FormattedMessage id="department"/>
+                        label: <FormattedMessage id="unit"/>
                       }}
                     />
                   </Col>
@@ -467,7 +467,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                     />
                   </Col>
                   <Col md={24} lg={6}>
-                    <Form.Item label={<Msg entityName={PersonExt.NAME} propertyName='hireDate'/>}
+                    <Form.Item label={<FormattedMessage id="appe.hireDate"/>}
                                key='hireDate'
                                style={{marginBottom: '12px'}}>{
                       getFieldDecorator('hireDate')(
@@ -496,19 +496,19 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
               ? <></>
               : <Section size={"large"} visible={false}>
                 <DropdownButton menu={createGoalsMenu}
-                                buttonText={this.props.intl.formatMessage({id: "addGoal"})}/>
+                                buttonText={this.props.intl.formatMessage({id: "addKpi"})}/>
               </Section>
             }
             <Section size={"large"} sectionName={
               <div>
-                <div><h1>{this.props.intl.formatMessage({id: "goals"})}</h1></div>
+                <div><h1>{this.props.intl.formatMessage({id: "menu.kpi"})}</h1></div>
                 <div><h1>{this.props.intl.formatMessage({id: "weight"})}: {this.totalWeight}%</h1></div>
                 <div><h1
                   id={'totalResult'}
                   ref={ref => {
                     this.totalResultRef = ref;
                   }}>
-                  {this.props.intl.formatMessage({id: "result"})}: {Math.round(this.totalResult) + "%"}
+                  {this.props.intl.formatMessage({id: "result"})}: {Math.round(this.totalResult)}
                 </h1></div>
                 {stepIndex && stepIndex > 0 && this.isUserManager
                   ? (<div>
