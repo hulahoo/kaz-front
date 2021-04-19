@@ -88,6 +88,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   @observable
   isAbsenceIntersected = false;
 
+  @observable
+  approverHrRoleCode: string;
+
   fields = [
     "requestNumber",
 
@@ -201,7 +204,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     return (
       <Page pageName={this.props.intl.formatMessage({id: "absenceRvdRequest"})}>
         <Section size="large">
-          <Card actions={[
+          <Card
+            bordered={false}
+            actions={[
             <Button buttonType={ButtonType.FOLLOW} onClick={this.props.history!.goBack}>
               {this.props.intl.formatMessage({ id: "close" })}
             </Button>,
@@ -256,7 +261,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               form={this.props.form}
               optionsContainer={this.absenceTypeDc}
               formItemOpts={{style: {marginBottom: "12px"}}}
-              getFieldDecoratorOpts={{}}
+              getFieldDecoratorOpts={{
+                rules: [{required: true,}],
+              }}
             />
 
             <Field
@@ -265,7 +272,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               form={this.props.form}
               optionsContainer={this.purposeDc}
               formItemOpts={{style: {marginBottom: "12px"}}}
-              getFieldDecoratorOpts={{}}
+              getFieldDecoratorOpts={{
+                rules: [{required: true,}],
+              }}
             />
 
             <Field
@@ -273,7 +282,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               propertyName="timeOfStarting"
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
-              getFieldDecoratorOpts={{}}
+              getFieldDecoratorOpts={{
+                rules: [{required: true,}],
+              }}
             />
 
             <Field
@@ -281,7 +292,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               propertyName="timeOfFinishing"
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
-              getFieldDecoratorOpts={{}}
+              getFieldDecoratorOpts={{
+                rules: [{required: true,}],
+              }}
             />
 
             <ReadonlyField
@@ -329,21 +342,23 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               }}
             />
 
-            <Field
+            <ReadonlyField
               entityName={AbsenceRvdRequest.NAME}
               propertyName="acquainted"
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
+              disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
               getFieldDecoratorOpts={{
                 valuePropName: "checked"
               }}
             />
 
-            <Field
+            <ReadonlyField
               entityName={AbsenceRvdRequest.NAME}
               propertyName="agree"
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
+              disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
               getFieldDecoratorOpts={{
                 valuePropName: "checked"
               }}
