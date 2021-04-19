@@ -4,7 +4,7 @@ import {ReactComponent as NotificationIcon} from "../../../../resources/img/bell
 import {Dropdown} from "antd";
 import {RootStoreProp} from "../../../store";
 import NotificationDropdownMenu from "./NotificationDropdown/NotificationDropdown";
-import {observable, runInAction} from "mobx";
+import {action, observable, runInAction} from "mobx";
 import SockJS from "sockjs-client";
 import {CUBA_APP_NOTIFICATION_WS_URL} from "../../../../config";
 
@@ -22,12 +22,13 @@ class Notification extends React.Component<RootStoreProp> {
 
   target: any;
 
-  handleBellIconClick = (e: MouseEvent<HTMLDivElement>) => {
+  handleBellIconClick = () => {
     this.visible = !this.visible
   };
 
+  @action
   setVisibleFalse = () => {
-    this.setState({visible: false})
+    this.visible = false;
   };
 
   render() {
@@ -36,9 +37,9 @@ class Notification extends React.Component<RootStoreProp> {
     return (
       <Dropdown overlay={dropdownMenu}
                 visible={this.visible}
+                onVisibleChange={this.handleBellIconClick}
                 trigger={['click']}>
-        <div className={"notifications-icon-container"}
-             onClick={this.handleBellIconClick}>
+        <div className={"notifications-icon-container"}>
           <NotificationIcon className={"panel-element notifications"}/>
           {this.newNotifications
             ? <div className="notification-icon-count">{this.newNotifications}</div>
