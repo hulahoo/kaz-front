@@ -574,6 +574,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                   />
                    */}
                   <ReadonlyField
+                    disabled={isMemberAttach}
                     entityName={InsuredPerson.NAME}
                     propertyName="statementFile"
                     form={this.props.form}
