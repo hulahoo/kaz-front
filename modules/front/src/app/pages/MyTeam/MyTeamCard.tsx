@@ -1,15 +1,20 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import {Card, List, Tabs} from "antd";
+import {Button, Card, List, Tabs} from "antd";
 import Meta from "antd/lib/card/Meta";
 import {observable} from "mobx";
 import {restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
 import MyTeamPersonCard from "./personalData/MyTeamPersonCard/MyTeamPersonCard";
 import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
+import {Link} from "react-router-dom";
+import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
+import {rootStore, RootStoreProp} from "../../store";
+import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
+import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 
 const {TabPane} = Tabs;
 
@@ -38,8 +43,9 @@ export type Menu = {
 };
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps> {
+class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   @observable person?: PersonProfile;
   @observable urlImg?: string;
@@ -54,6 +60,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <MyTeamPersonCard person={this.person}/>
       case 'absence':
         return <MyTeamAbsence personGroupId={this.person!.groupId}/>
+      case 'scheduleStandard':
+        return <AssignmentScheduleStandard personGroupId={this.person!.groupId}/>
+      case 'scheduleOffsetRequest':
+        return <MyTeamScheduleOffsetRequestList personGroupId={this.person!.groupId}/>
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -75,6 +85,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           id: 'absence'
         }, {
           id: 'absenceRequest'
+        }, {
+          id: 'scheduleStandard'
+        }, {
+          id: 'scheduleOffsetRequest'
         }]
     }
     return [{
@@ -102,6 +116,25 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
                 <a href={'mailto:' + this.person.email}>{this.person.email}</a> : <></>)}
         </span>}/>
             <Meta title={<span style={{fontSize: 13}}>{"тел: " + (this.person.phone || '')}</span>}/>
+            <Link
+              to={
+                ScheduleOffsetsRequestManagement.PATH +
+                "/" +
+                ScheduleOffsetsRequestManagement.NEW_SUBPATH + "/" + this.person!.groupId
+              }
+              key="create"
+            >
+              <Button
+                htmlType="button"
+                style={{margin: "0 12px 12px 0"}}
+                type="primary"
+                icon="plus"
+              >
+          <span>
+            <FormattedMessage id="management.browser.create"/>
+          </span>
+              </Button>
+            </Link>
           </Card>
           <List>
             {this.getLeftMenu().map((menu: Menu) => <List.Item

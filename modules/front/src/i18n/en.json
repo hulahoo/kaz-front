@@ -12,9 +12,10 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.ScheduleOffsetsRequestManagement": "ScheduleOffsetsRequestManagement",
+  "management.browser.refresh": "Refresh",
   "router.OrgStructureRequestManagement": "OrgStructureRequestManagement",
   "router.CascadeGoalManagement": "CascadeGoalManagement",
-  "router.ScheduleOffsetsRequestManagement": "ScheduleOffsetsRequestManagement",
   "router.ActivityCards": "ActivityCards",
   "router.ExtTaskDataCards": "ExtTaskDataCards",
   "router.DicBookCategoryCards": "DicBookCategoryCards",
@@ -382,5 +383,8 @@
   "timeManagement": "Time management",
   "cityOfResidence": "City of residence",
   "new.annual.days.not.correct": "Days not correct",
-  "create.request.change.vacation.dates": "Create a request to change vacation dates"
+  "create.request.change.vacation.dates": "Create a request to change vacation dates",
+  "scheduleOffsetsRequest": "Schedule change request",
+  "scheduleStandard": "Schedule offset",
+  "scheduleOffsetRequest": "Schedule offset request"
 }

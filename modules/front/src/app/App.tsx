@@ -30,7 +30,6 @@ import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDat
 import {BooksManagement} from "./pages/Books/BooksManagement";
 import {OrgStructureRequestManagement} from "./pages/orgStructureRequest/OrgStructureRequestManagement";
 import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
-import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
 import {CertificateRequestManagement} from "./pages/CertificateRequest/CertificateRequestManagement";
 import {ActivityManagement} from "./pages/Activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
@@ -44,6 +43,7 @@ import LearningHistoryManagement from "./pages/LearningHistory/LearningHistoryMa
 import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagement";
 import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
+import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -113,7 +113,8 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-dmc/:entityId?" component={InsuredPersonManagement}/>
-                <Route exact={true} path="/schedule-offsets/:entityId?" component={ScheduleOffsetsRequestManagement}/>
+                <Route exact={true} path={ScheduleOffsetsRequestManagement.PATH_WITH_PARAMS}
+                       component={ScheduleOffsetsRequestManagement}/>
                 <Route exact={true} path={"/" + BooksManagement.PATH + "/:entityId?"} component={BooksManagement}/>
                 <Route exact={true} path={"/" + MyEducationManagement.PATH} component={MyEducation}/>
                 <Route exact={true} path={"/" + EnrollmentManagement.PATH + "/:entityId?" + "/:homework?"}
