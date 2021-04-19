@@ -67,15 +67,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
     sort: "-updateTs",
-    filter: {
-      conditions: [
-        {
-          property: "1",
-          value: "1",
-          operator: "<>"
-        }
-      ]
-    }
+    loadImmediately: false,
   });
 
   statusRequestsDc = collection<DicMICAttachmentStatus>(
@@ -107,14 +99,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   regionsDc = collection<DicRegion>(DicRegion.NAME, {view: "_minimal"});
 
   addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
-
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
-  statementFilesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
 
   @observable
   updated = false;
@@ -199,8 +183,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   @observable
   globalErrors: string[] = [];
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  update = (): Promise<boolean> => {
+    let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     this.props.form.validateFields((err, values) => {
       if (err) {
         message.error(
@@ -210,13 +194,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         );
         return;
       }
-      this.dataInstance
+      promise = this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
           message.success(
             this.props.intl.formatMessage({id: "management.editor.success"})
           );
-          this.updated = true;
+          return true;
         })
         .catch((e: any) => {
           if (e.response && typeof e.response.json === "function") {
@@ -254,6 +238,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           }
         });
     });
+    return promise;
+  }
+
+  handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    this.update().then(value => this.updated = value);
   };
 
 
@@ -282,7 +273,10 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   @action
   onChangeVisible = (value: boolean): void => {
-    this.visible = value;
+    if (value)
+      this.update().then(value1 => this.visible = value1 && value);
+    else
+      this.visible = value;
   }
 
 
@@ -578,7 +572,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                     propertyName="statementFile"
                     form={this.props.form}
                     formItemOpts={{style: field_style}}
-                    optionsContainer={this.statementFilesDc}
                     getFieldDecoratorOpts={{}}
                   />
 
@@ -655,7 +648,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Form.Item>
           </Form>
         </Spin>
-        <InsuredPersonMemberComponent entityId={this.selectedRowKey!} visible={this.visible}
+        <InsuredPersonMemberComponent entityId={this.selectedRowKey!}
+                                      visible={this.visible}
+                                      insuranceContract={() => this.props.form.getFieldValue('insuranceContract')}
                                       onChangeVisible={this.onChangeVisible} refreshDs={this.refreshDs}/>
       </Card>
     );

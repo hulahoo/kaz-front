@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Col, Form, message, Modal, Spin} from "antd";
+import {Alert, Col, Form, message, Modal, Row, Spin} from "antd";
 import {inject, observer} from "mobx-react";
 import {InsuredPersonManagement} from "./InsuredPersonManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -24,17 +24,11 @@ import {
 import "../../../app/App.css";
 
 import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
-import {DicMICAttachmentStatus} from "../../../cuba/entities/base/tsadv$DicMICAttachmentStatus";
-import {InsuranceContract} from "../../../cuba/entities/base/tsadv$InsuranceContract";
-import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
-import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {DicRelationshipType} from "../../../cuba/entities/base/tsadv$DicRelationshipType";
-import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
 import {DicSex} from "../../../cuba/entities/base/base$DicSex";
 import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType";
 import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
 import {Address} from "../../../cuba/entities/base/tsadv$Address";
-import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import {restServices} from "../../../cuba/services";
 import {RouteComponentProps} from "react-router";
@@ -50,6 +44,7 @@ type EditorProps = {
 
 type EditorHandlers = {
   onChangeVisible: (value: boolean) => void;
+  insuranceContract: () => string;
   refreshDs: () => void;
 };
 
@@ -67,22 +62,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     sort: "-updateTs"
   });
 
-
-  statusRequestsDc = collection<DicMICAttachmentStatus>(
-    DicMICAttachmentStatus.NAME,
-    {view: "_minimal"}
-  );
-
-  insuranceContractsDc = collection<InsuranceContract>(InsuranceContract.NAME, {
-    view: "_minimal"
-  });
-
-  companysDc = collection<DicCompany>(DicCompany.NAME, {view: "_minimal"});
-
-  employeesDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal"
-  });
-
   relativesDc = collection<DicRelationshipType>(DicRelationshipType.NAME, {
     view: "_minimal",
     filter: {
@@ -97,8 +76,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     }
   });
 
-  jobsDc = collection<JobGroup>(JobGroup.NAME, {view: "_minimal"});
-
   sexsDc = collection<DicSex>(DicSex.NAME, {view: "_minimal"});
 
   documentTypesDc = collection<DicDocumentType>(DicDocumentType.NAME, {
@@ -109,20 +86,11 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
   addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
 
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
-  statementFilesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
   @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
 
   @observable selectedRowKey: string | undefined;
-
 
   fields = [
     "attachDate",
@@ -157,8 +125,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     "statusRequest",
 
-    "insuranceContract",
-
     "company",
 
     "employee",
@@ -177,7 +143,9 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     "file",
 
-    "statementFile"
+    "statementFile",
+
+    "insuredPersonId"
   ];
 
   @observable
@@ -195,7 +163,10 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
         return;
       }
       this.dataInstance
-        .update(this.props.form.getFieldsValue(this.fields))
+        .update({
+          insuranceContract: {id: this.props.insuranceContract()},
+          ...this.props.form.getFieldsValue(this.fields)
+        })
         .then(() => {
           message.success(
             this.props.intl.formatMessage({id: "management.editor.success"})
@@ -286,7 +257,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
               propertyName="employee"
               form={this.props.form}
               formItemOpts={{style: {display: "none"}}}
-              optionsContainer={this.employeesDc}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}]
               }}
@@ -332,7 +302,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
               propertyName="company"
               form={this.props.form}
               formItemOpts={{style: {display: "none"}}}
-              optionsContainer={this.companysDc}
               getFieldDecoratorOpts={{
                 rules: [{
                   required: true,
@@ -346,7 +315,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
               propertyName="statusRequest"
               form={this.props.form}
               formItemOpts={{style: {display: "none"}}}
-              optionsContainer={this.statusRequestsDc}
               getFieldDecoratorOpts={{
                 rules: [{
                   required: true,
@@ -354,6 +322,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                 }]
               }}
             />
+
             <ReadonlyField
               entityName={InsuredPerson.NAME}
               propertyName="totalAmount"
@@ -367,210 +336,195 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
               }}
             />
 
-            <Col md={24} lg={12}>
+            <Row>
 
-              <ReadonlyField
-                entityName={InsuredPerson.NAME}
-                propertyName="firstName"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.employeesDc}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.firstName']}),
-                  }]
-                }}
-              />
+              <Col md={24} lg={12}>
 
-              <ReadonlyField
-                entityName={InsuredPerson.NAME}
-                propertyName="secondName"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.employeesDc}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.secondName']}),
-                  }]
-                }}
-              />
-              <ReadonlyField
-                entityName={InsuredPerson.NAME}
-                propertyName="middleName"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.employeesDc}
-              />
+                <ReadonlyField
+                  entityName={InsuredPerson.NAME}
+                  propertyName="firstName"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.firstName']}),
+                    }]
+                  }}
+                />
+
+                <ReadonlyField
+                  entityName={InsuredPerson.NAME}
+                  propertyName="secondName"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.secondName']}),
+                    }]
+                  }}
+                />
+                <ReadonlyField
+                  entityName={InsuredPerson.NAME}
+                  propertyName="middleName"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                />
 
 
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="sex"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.sexsDc}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.sex']}),
-                  }]
-                }}
-              />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="sex"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.sexsDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.sex']}),
+                    }]
+                  }}
+                />
 
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="iin"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.iin']}),
-                  }, {
-                    validator: (rule, value, callback) => {
-                      if (value && !((value as string).match('^\\d{12}$'))) {
-                        callback(this.props.intl.formatMessage({id: "format.incorrect"}, {name: this.props.mainStore!.messages![this.dataInstance.entityName + '.iin']}))
-                      } else callback();
-                    }
-                  }]
-                }}
-              />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="iin"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.iin']}),
+                    }, {
+                      validator: (rule, value, callback) => {
+                        if (value && !((value as string).match('^\\d{12}$'))) {
+                          callback(this.props.intl.formatMessage({id: "format.incorrect"}, {name: this.props.mainStore!.messages![this.dataInstance.entityName + '.iin']}))
+                        } else callback();
+                      }
+                    }]
+                  }}
+                />
 
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="birthdate"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.birthdate']}),
-                  }]
-                }}
-              />
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="relative"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.relativesDc}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.relative']}),
-                  }]
-                }}
-              />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="birthdate"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.birthdate']}),
+                    }]
+                  }}
+                />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="relative"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.relativesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.relative']}),
+                    }]
+                  }}
+                />
 
-            </Col>
-            <Col md={24} lg={12}>
+              </Col>
+              <Col md={24} lg={12}>
 
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="documentType"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.documentTypesDc}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.documentType']}),
-                  }]
-                }}
-              />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="documentType"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.documentTypesDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.documentType']}),
+                    }]
+                  }}
+                />
 
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="documentNumber"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.documentNumber']}),
-                  }]
-                }}
-              />
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="region"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.regionsDc}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.region']}),
-                  }]
-                }}
-              />
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="addressType"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                optionsContainer={this.addressTypesDc}
-                getFieldDecoratorOpts={{}}
-              />
-              <Field
-                entityName={InsuredPerson.NAME}
-                propertyName="address"
-                form={this.props.form}
-                formItemOpts={{style: field_style}}
-                getFieldDecoratorOpts={{}}
-              />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="documentNumber"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.documentNumber']}),
+                    }]
+                  }}
+                />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="region"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.regionsDc}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.region']}),
+                    }]
+                  }}
+                />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="addressType"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  optionsContainer={this.addressTypesDc}
+                  getFieldDecoratorOpts={{}}
+                />
+                <Field
+                  entityName={InsuredPerson.NAME}
+                  propertyName="address"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{}}
+                />
 
-              <ReadonlyField disabled={true}
-                             entityName={InsuredPerson.NAME}
-                             propertyName="amount"
-                             form={this.props.form}
-                             formItemOpts={{style: field_style}}
-                             getFieldDecoratorOpts={{
-                               rules: [{
-                                 required: true,
-                                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.amount']}),
-                               }]
-                             }}
-              />
-              <ReadonlyField disabled={true}
-                             entityName={InsuredPerson.NAME}
-                             propertyName="attachDate"
-                             form={this.props.form}
-                             formItemOpts={{style: field_style}}
-                             optionsContainer={this.companysDc}
-                             getFieldDecoratorOpts={{
-                               rules: [{
-                                 required: true,
-                                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.attachDate']}),
-                               }]
-                             }}
-              />
+                <ReadonlyField disabled={true}
+                               entityName={InsuredPerson.NAME}
+                               propertyName="amount"
+                               form={this.props.form}
+                               formItemOpts={{style: field_style}}
+                               getFieldDecoratorOpts={{
+                                 rules: [{
+                                   required: true,
+                                   message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.amount']}),
+                                 }]
+                               }}
+                />
+                <ReadonlyField disabled={true}
+                               entityName={InsuredPerson.NAME}
+                               propertyName="attachDate"
+                               form={this.props.form}
+                               formItemOpts={{style: field_style}}
+                               getFieldDecoratorOpts={{
+                                 rules: [{
+                                   required: true,
+                                   message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.attachDate']}),
+                                 }]
+                               }}
+                />
 
-            </Col>
+              </Col>
+
+            </Row>
 
             <ReadonlyField
               entityName={InsuredPerson.NAME}
               propertyName="job"
               form={this.props.form}
               formItemOpts={{style: {display: "none"}}}
-              optionsContainer={this.jobsDc}
               getFieldDecoratorOpts={{}}
-            />
-
-            <ReadonlyField
-              entityName={InsuredPerson.NAME}
-              propertyName="insuranceContract"
-              form={this.props.form}
-              formItemOpts={{style: {display: "none"}}}
-              optionsContainer={this.insuranceContractsDc}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.insuranceContract']}),
-                }]
-              }}
             />
 
             <ReadonlyField
@@ -606,18 +560,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     );
   }
 
-  calculateAmount = () => {
-    if (this.dataInstance.item && this.dataInstance.status === 'DONE') {
-      let bith = this.props.form.getFieldValue("birthdate");
-
-      if (this.dataInstance.item!.insuranceContract
-        && bith
-        && this.dataInstance.item!.relative) {
-
-      }
-    }
-  }
-
   componentDidMount() {
     if (this.props.entityId !== undefined) {
       this.dataInstance.load(this.props.entityId);
@@ -634,9 +576,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
         return this.dataInstance.item;
       },
       () => {
-        this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
-        );
+        this.props.form.setFieldsValue(this.dataInstance.getFieldValues(this.fields));
       }
     );
   }
@@ -650,6 +590,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 export default injectIntl(
   withLocalizedForm<EditorProps & EditorHandlers>({
     onValuesChange: (props: any, changedValues: any) => {
+
       // Reset server-side errors when field is edited
       Object.keys(changedValues).forEach((fieldName: string) => {
         props.form.setFields({
@@ -657,15 +598,19 @@ export default injectIntl(
             value: changedValues[fieldName]
           }
         });
-      });
 
-      restServices.documentService.calcAmount({
-        personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
-        insuranceContractId: props.form.getFieldsValue(["insuranceContract"])["insuranceContract"],
-        bith: props.form.getFieldsValue(["birthdate"])["birthdate"],
-        relativeTypeId: props.form.getFieldsValue(["relative"])["relative"],
-      }).then(val => {
-        props.form.setFieldsValue({amount: val});
+        const bithDate = props.form.getFieldsValue(["birthdate"]);
+        const relative = props.form.getFieldsValue(["relative"]);
+        if (bithDate && relative && (fieldName == 'birthdate' || fieldName == 'relative'))
+          restServices.documentService.calcAmount({
+            personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
+            insuranceContractId: props.insuranceContract(),
+            bith: bithDate["birthdate"],
+            relativeTypeId: relative["relative"],
+          }).then(val => {
+            props.form.setFieldsValue({amount: val});
+          });
+
       });
     }
   })(InsuredPersonMemberComponent)
