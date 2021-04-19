@@ -52,7 +52,7 @@ class AbstractRenderModalBody<T> extends Component<T & AbstractRenderModalBodyPr
   }
 
   @action
-  setIsDisabledFinishSectionBtn = (value: boolean) => {
+  setDisableFinishSectionBtn = (value: boolean) => {
     this.isDisabledFinishSectionBtn = value;
   };
 
