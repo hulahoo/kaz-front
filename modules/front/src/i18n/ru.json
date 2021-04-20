@@ -379,4 +379,8 @@
   "absenceForRecall": "Заявка на отзыв из отпуска",
   "absenceForRecall.daysNotCorrect": "Дни неиспользованной части не правильные",
   "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна"
+  "cityOfResidence": "Город проживание",
+  "workOnWeekend": "Утвержденные РВД,Сверхуроч.,Врем.перевод",
+  "workOnWeekendRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод",
+  "absenceRvdRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод"
 }

@@ -38,11 +38,17 @@ class AbsenceRvdRequestListComponent extends React.Component<
 
   fields = [
 
+    "requestNumber",
+
+    "requestDate",
+
     "status",
+
+    "personGroup",
 
     "type",
 
-    "personGroup",
+    "purpose",
 
     "timeOfStarting",
 
@@ -56,21 +62,6 @@ class AbsenceRvdRequestListComponent extends React.Component<
 
     "agree",
 
-    "legacyId",
-
-    "organizationBin",
-
-    "integrationUserLogin",
-
-    "requestNumber",
-
-    "requestDate",
-
-    "comment",
-
-    "personGroup",
-
-    "purpose",
   ];
 
   @observable selectedRowKey: string | undefined;
