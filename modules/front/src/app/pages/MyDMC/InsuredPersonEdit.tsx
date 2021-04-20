@@ -8,10 +8,8 @@ import {Link, Redirect, withRouter} from "react-router-dom";
 import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
-import Notification from "../../util/Notification/Notification";
 
 import {downloadFile} from "../../util/util";
-
 
 import {
   clearFieldErrors,
@@ -19,7 +17,6 @@ import {
   constructFieldsWithErrors,
   DataTable,
   extractServerValidationErrors,
-  instance,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -44,6 +41,7 @@ import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {instanceStore} from "../../util/InstanceStore";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 
 type Props = FormComponentProps & EditorProps;
@@ -60,23 +58,16 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   @observable
   visible: boolean = false;
 
-  dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
-    view: "insuredPerson-editView",
-    loadImmediately: false
-  });
+  dataInstance = instanceStore<InsuredPerson>(InsuredPerson.NAME, {
+      view: "insuredPerson-editView",
+      loadImmediately: false
+    },
+    restServices.documentService.commitFromPortal);
   /*  */
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
     sort: "-updateTs",
-    filter: {
-      conditions: [
-        {
-          property: "1",
-          value: "1",
-          operator: "<>"
-        }
-      ]
-    }
+    loadImmediately: false,
   });
 
   statusRequestsDc = collection<DicMICAttachmentStatus>(
@@ -108,14 +99,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   regionsDc = collection<DicRegion>(DicRegion.NAME, {view: "_minimal"});
 
   addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
-
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
-  statementFilesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
 
   @observable
   updated = false;
@@ -200,8 +183,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   @observable
   globalErrors: string[] = [];
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  update = (): Promise<boolean> => {
+    let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     this.props.form.validateFields((err, values) => {
       if (err) {
         message.error(
@@ -211,13 +194,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         );
         return;
       }
-      this.dataInstance
+      promise = this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
           message.success(
             this.props.intl.formatMessage({id: "management.editor.success"})
           );
-          this.updated = true;
+          return true;
         })
         .catch((e: any) => {
           if (e.response && typeof e.response.json === "function") {
@@ -255,6 +238,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           }
         });
     });
+    return promise;
+  }
+
+  handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    this.update().then(value => this.updated = value);
   };
 
 
@@ -283,9 +273,11 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   @action
   onChangeVisible = (value: boolean): void => {
-    this.visible = value;
+    if (value)
+      this.update().then(value1 => this.visible = value1 && value);
+    else
+      this.visible = value;
   }
-
 
   render() {
     if (this.updated) {
@@ -329,7 +321,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           <Form onSubmit={this.handleSubmit} layout="vertical">
             <Row gutter={16}>
               <Col span={8}>
-                <Card size="small" title="Общие сведения" style={card_style}>
+                <Card size="small" title={this.props.intl.formatMessage({id: 'general.information'})}
+                      style={card_style}>
 
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
@@ -497,7 +490,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 </Card>
               </Col>
               <Col span={8}>
-                <Card size="small" title="Сведения по ДМС" style={card_style}>
+                <Card size="small" title={this.props.intl.formatMessage({id: 'insurance.information'})}
+                      style={card_style}>
                   <ReadonlyField entityName={InsuredPerson.NAME}
                                  propertyName="insuranceContract"
                                  form={this.props.form}
@@ -583,7 +577,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                     propertyName="statementFile"
                     form={this.props.form}
                     formItemOpts={{style: field_style}}
-                    optionsContainer={this.statementFilesDc}
                     getFieldDecoratorOpts={{}}
                   />
 
@@ -660,7 +653,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Form.Item>
           </Form>
         </Spin>
-        <InsuredPersonMemberComponent entityId={this.selectedRowKey!} visible={this.visible}
+        <InsuredPersonMemberComponent entityId={this.selectedRowKey!}
+                                      visible={this.visible}
+                                      insuranceContract={() => this.props.form.getFieldValue('insuranceContract')}
                                       onChangeVisible={this.onChangeVisible} refreshDs={this.refreshDs}/>
       </Card>
     );
@@ -729,17 +724,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       }).then(value => {
         value.id = undefined;
         this.dataInstance.setItem(value);
-        restServices.documentService.checkPersonInsure({
-          contractId: value.insuranceContract!.id!,
-          personGroupId: this.props.rootStore!.userInfo.personGroupId,
-        }).then(value => {
-          if (value) {
-            this.props.history.goBack();
-            Notification.info({
-              message: `Данный сотрудник уже привязан к договору`
-            });
-          }
-        })
       });
     }
     this.reactionDisposer = reaction(

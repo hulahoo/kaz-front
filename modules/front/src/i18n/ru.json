@@ -116,7 +116,7 @@
   "menu.certificateRequest": "Справка с места работы",
   "menu.absenceRequest": "Отсутствие",
   "menu.org-structure-request": "Заявка на изменение орг.структуры",
-  "menu.dmc-my": "Мои ДМC",
+  "menu.dmc-my": "Добровольное медицинское страхование",
   "menu.absence": "Отсутствие",
   "menu.schedule-offsets": "Графики сменности",
   "menu.welcome": "Добро пожаловать",
@@ -390,5 +390,7 @@
   "bproc.startBproc.modal.role": "Роль",
   "bproc.startBproc.modal.user": "Пользователь",
   "bproc.startBproc.modal.roles": "Роли",
-  "bproc.startBproc.modal.users": "Пользователи"
+  "bproc.startBproc.modal.users": "Пользователи",
+  "insurance.information": "Сведения по страхованию",
+  "general.information": "Общие сведения"
 }
