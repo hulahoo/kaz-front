@@ -140,16 +140,16 @@ export default class ScormIntegrationApi {
         this.afterPropertySetValue(property, value);
       },
       Commit: () => {
-        switch (this.type) {
-          case "test": {
-            this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
-            break;
-          }
-          case "default": {
-            this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
-            break;
-          }
-        }
+        // switch (this.type) {
+          // case "test": {
+          //   this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
+          //   break;
+          // }
+          // case "default": {
+          //   this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
+          //   break;
+          // }
+        // }
       },
       GetLastError: () => {
 
@@ -179,15 +179,18 @@ export default class ScormIntegrationApi {
     return this.inputData;
   };
 
-  isSucceedFinishedScorm = (): boolean => {
-    const completionStatusProperty = "cmi.completion_status" as ScormProperty;
-    const completedStatus = "completed" as CompleteStatus;
-
+  isSucceedScorm = (): boolean => {
     const successStatusProperty = "cmi.success_status" as ScormProperty;
     const successStatus = "passed" as SuccessStatus;
 
-    return (window.API_1484_11[completionStatusProperty] && window.API_1484_11[completionStatusProperty].toLowerCase() === completedStatus)
-      && (window.API_1484_11[successStatusProperty] && window.API_1484_11[successStatusProperty].toLowerCase() === successStatus);
+    return window.API_1484_11[successStatusProperty] && window.API_1484_11[successStatusProperty].toLowerCase() === successStatus;
+  };
+
+  isFinishedScorm = (): boolean => {
+    const completionStatusProperty = "cmi.completion_status" as ScormProperty;
+    const completedStatus = "completed" as CompleteStatus;
+
+    return (window.API_1484_11[completionStatusProperty] && window.API_1484_11[completionStatusProperty].toLowerCase() === completedStatus);
   };
 
   destroy = (): void => {
