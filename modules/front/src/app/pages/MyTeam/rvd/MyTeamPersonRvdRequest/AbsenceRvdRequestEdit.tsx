@@ -70,7 +70,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     view: "_base"
   });
 
-  personGroupId: string;
 
   @observable
   updated = false;
@@ -98,8 +97,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
     "status",
 
-    "personGroup",
-
     "type",
 
     "purpose",
@@ -124,10 +121,12 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   absenceTypesDc: DictionaryDataCollectionStore<DicRequestStatus>;
 
   getUpdateEntityData = (): any => {
+  console.log(this.props.rootStore!.userInfo.personGroupId);
+
     if (this.isNotDraft()) return {...this.props.form.getFieldsValue(this.fields)};
     return {
       personGroup: {
-        id: this.personGroupId
+        id: this.props.rootStore!.userInfo.personGroupId
       },
       ...this.props.form.getFieldsValue(this.fields)
     }
@@ -245,16 +244,16 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                 rules: [{required: true,}],
               }}
             />
-
-     {/*       <ReadonlyField
+{/*
+            <ReadonlyField
               entityName={AbsenceRvdRequest.NAME}
               propertyName="personGroup"
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
               disabled={true}
               getFieldDecoratorOpts={{}}
-            />
-*/}
+            />*/}
+
             <Field
               entityName={AbsenceRvdRequest.NAME}
               propertyName="type"
@@ -341,6 +340,17 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                 }
               }}
             />
+{/*
+            <ReadonlyField
+              entityName={AbsenceRvdRequest.NAME}
+              propertyName="personGroup"
+              form={this.props.form}
+              formItemOpts={{style: {marginBottom: "12px"}}}
+              disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
+              getFieldDecoratorOpts={{
+                valuePropName: "checked"
+              }}
+            />*/}
 
             <ReadonlyField
               entityName={AbsenceRvdRequest.NAME}
