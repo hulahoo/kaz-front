@@ -44,6 +44,7 @@ import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -408,8 +409,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  form={this.props.form}
                                  formItemOpts={{style: field_style}}
                                  getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
+                                   rules: [{required: true}],
                                  }}
+                                 format={DEFAULT_DATE_PATTERN}
                   />
 
                   <ReadonlyField disabled={true}
@@ -514,6 +516,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  getFieldDecoratorOpts={{
                                    rules: [{required: true}]
                                  }}
+                                 format={DEFAULT_DATE_PATTERN}
                   />
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
@@ -521,6 +524,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  form={this.props.form}
                                  formItemOpts={{style: field_style}}
                                  getFieldDecoratorOpts={{}}
+                                 format={DEFAULT_DATE_PATTERN}
                   />
 
 

@@ -40,6 +40,7 @@ import {restServices} from "../../../cuba/services";
 import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -93,7 +94,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
           operator: "<>",
         }
       ]
-
     }
   });
 
@@ -110,10 +110,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
   addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
-  statementFilesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
   });
 
@@ -439,10 +435,12 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                   }}
                 />
 
-                <Field
+                <ReadonlyField
+                  disabled={false}
                   entityName={InsuredPerson.NAME}
                   propertyName="birthdate"
                   form={this.props.form}
+                  format={DEFAULT_DATE_PATTERN}
                   formItemOpts={{style: field_style}}
                   getFieldDecoratorOpts={{
                     rules: [{
@@ -451,6 +449,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                     }]
                   }}
                 />
+
                 <Field
                   entityName={InsuredPerson.NAME}
                   propertyName="relative"
@@ -541,6 +540,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                                form={this.props.form}
                                formItemOpts={{style: field_style}}
                                optionsContainer={this.companysDc}
+                               format={DEFAULT_DATE_PATTERN}
                                getFieldDecoratorOpts={{
                                  rules: [{
                                    required: true,
@@ -580,7 +580,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
               propertyName="exclusionDate"
               form={this.props.form}
               formItemOpts={{style: {display: "none"}}}
-              getFieldDecoratorOpts={{}}
+              format={DEFAULT_DATE_PATTERN}
             />
 
             <ReadonlyField
