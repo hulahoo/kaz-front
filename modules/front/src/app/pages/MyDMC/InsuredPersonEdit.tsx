@@ -8,10 +8,8 @@ import {Link, Redirect, withRouter} from "react-router-dom";
 import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
-import Notification from "../../util/Notification/Notification";
 
 import {downloadFile} from "../../util/util";
-
 
 import {
   clearFieldErrors,
@@ -19,7 +17,6 @@ import {
   constructFieldsWithErrors,
   DataTable,
   extractServerValidationErrors,
-  instance,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -44,6 +41,7 @@ import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {instanceStore} from "../../util/InstanceStore";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -59,10 +57,11 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   @observable
   visible: boolean = false;
 
-  dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
-    view: "insuredPerson-editView",
-    loadImmediately: false
-  });
+  dataInstance = instanceStore<InsuredPerson>(InsuredPerson.NAME, {
+      view: "insuredPerson-editView",
+      loadImmediately: false
+    },
+    restServices.documentService.commitFromPortal);
   /*  */
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
@@ -279,7 +278,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       this.visible = value;
   }
 
-
   render() {
     if (this.updated) {
       return <Redirect to={InsuredPersonManagement.PATH}/>;
@@ -322,7 +320,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           <Form onSubmit={this.handleSubmit} layout="vertical">
             <Row gutter={16}>
               <Col span={8}>
-                <Card size="small" title="Общие сведения" style={card_style}>
+                <Card size="small" title={this.props.intl.formatMessage({id: 'general.information'})}
+                      style={card_style}>
 
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
@@ -489,7 +488,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 </Card>
               </Col>
               <Col span={8}>
-                <Card size="small" title="Сведения по ДМС" style={card_style}>
+                <Card size="small" title={this.props.intl.formatMessage({id: 'insurance.information'})}
+                      style={card_style}>
                   <ReadonlyField entityName={InsuredPerson.NAME}
                                  propertyName="insuranceContract"
                                  form={this.props.form}
@@ -720,17 +720,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       }).then(value => {
         value.id = undefined;
         this.dataInstance.setItem(value);
-        restServices.documentService.checkPersonInsure({
-          contractId: value.insuranceContract!.id!,
-          personGroupId: this.props.rootStore!.userInfo.personGroupId,
-        }).then(value => {
-          if (value) {
-            this.props.history.goBack();
-            Notification.info({
-              message: `Данный сотрудник уже привязан к договору`
-            });
-          }
-        })
       });
     }
     this.reactionDisposer = reaction(

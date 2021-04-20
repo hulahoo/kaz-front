@@ -390,5 +390,7 @@
   "bproc.startBproc.modal.role": "Роль",
   "bproc.startBproc.modal.user": "Пользователь",
   "bproc.startBproc.modal.roles": "Роли",
-  "bproc.startBproc.modal.users": "Пользователи"
+  "bproc.startBproc.modal.users": "Пользователи",
+  "insurance.information": "Сведения по страхованию",
+  "general.information": "Общие сведения"
 }

@@ -401,5 +401,7 @@
   "bproc.startBproc.modal.role": "Role",
   "bproc.startBproc.modal.user": "Name",
   "bproc.startBproc.modal.roles": "Roles",
-  "bproc.startBproc.modal.users": "Names"
+  "bproc.startBproc.modal.users": "Names",
+  "insurance.information": "Insurance information",
+  "general.information": "General information"
 }
