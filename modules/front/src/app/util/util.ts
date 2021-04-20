@@ -58,3 +58,33 @@ export const getFullName = (person: PersonExt, lang: string): string => {
   return person.lastName + ' ' + person.middleName + ' ' + person.firstName;
 };
 
+
+export const catchException = (promise: Promise<any>): Promise<any> => {
+  return promise.catch(async (response: any) => {
+    const reader = response.response.body.getReader();
+
+    let receivedLength = 0;
+    let chunks = [];
+    while (true) {
+      const {done, value} = await reader.read();
+
+      if (done) {
+        break;
+      }
+
+      chunks.push(value);
+      receivedLength += value.length;
+    }
+
+    let chunksAll = new Uint8Array(receivedLength);
+    let position = 0;
+    for (let chunk of chunks) {
+      chunksAll.set(chunk, position);
+      position += chunk.length;
+    }
+
+    let result = new TextDecoder("utf-8").decode(chunksAll);
+    const parse = JSON.parse(result);
+    throw new Error(parse.message);
+  })
+};

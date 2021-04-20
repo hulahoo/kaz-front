@@ -478,6 +478,13 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
+    commitFromPortal: (insuredPerson: InsuredPerson): Promise<InsuredPerson> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_DocumentService",
+        "commitFromPortal",
+        {insuredPerson: insuredPerson}
+      ).then((response: string) => JSON.parse(response));
+    }
   },
   employeeService: {
     personProfile: (personGroupId: string): Promise<PersonProfile> => {

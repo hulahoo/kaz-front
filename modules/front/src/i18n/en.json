@@ -408,5 +408,7 @@
   "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\"",
   "scheduleOffsetsRequest": "Schedule change request",
   "scheduleStandard": "Schedule offset",
-  "scheduleOffsetRequest": "Schedule offset request"
+  "scheduleOffsetRequest": "Schedule offset request",
+  "insurance.information": "Insurance information",
+  "general.information": "General information"
 }

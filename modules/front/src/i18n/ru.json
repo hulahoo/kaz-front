@@ -394,5 +394,7 @@
   "for.approving.must.to.check.field": "Для утверждения необходимо поставить галочку «{fieldName}»",
   "scheduleOffsetsRequest": "Заявка на смену графика",
   "scheduleStandard": "Графики смен",
-  "scheduleOffsetRequest": "Заявки на изменеия графика смен"
+  "scheduleOffsetRequest": "Заявки на изменеия графика смен",
+  "insurance.information": "Сведения по страхованию",
+  "general.information": "Общие сведения"
 }

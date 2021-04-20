@@ -19,7 +19,7 @@ import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import Candidate from "../component/Candidate";
-import {getBusinessKey} from "../../../util/util";
+import {catchException, getBusinessKey} from "../../../util/util";
 import TextArea from "antd/es/input/TextArea";
 
 type StartBproc = {
@@ -67,51 +67,24 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
   showModalOrMessage = () => {
 
-    const loadBpmRolesDefiner = () => restServices.startBprocService.getBpmRolesDefiner({
-      processDefinitionKey: this.props.processDefinitionKey,
-      initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
-    })
-      .then(value => {
-        this.bprocRolesDefiner = value;
-        restServices.startBprocService.getNotPersisitBprocActors({
-          employee: this.props.employee ? this.props.employee() || null : null,
-          initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
-          bpmRolesDefiner: value
-        }).then(notPersisitBprocActors => {
-          this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
-        }).catch(async (response: any) => {
-          const reader = response.response.body.getReader();
-
-          let receivedLength = 0;
-          let chunks = [];
-          while (true) {
-            const {done, value} = await reader.read();
-
-            if (done) {
-              break;
-            }
-
-            chunks.push(value);
-            receivedLength += value.length;
-          }
-
-          let chunksAll = new Uint8Array(receivedLength);
-          let position = 0;
-          for (let chunk of chunks) {
-            chunksAll.set(chunk, position);
-            position += chunk.length;
-          }
-
-          let result = new TextDecoder("utf-8").decode(chunksAll);
-          const parse = JSON.parse(result);
-          return parse.message;
-        }).catch(reason => {
-          console.log(reason);
-          Notification.error({
-            message: reason
+    const loadBpmRolesDefiner = () => catchException(restServices.startBprocService.getBpmRolesDefiner({
+        processDefinitionKey: this.props.processDefinitionKey,
+        initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
+      })
+        .then(value => {
+          this.bprocRolesDefiner = value;
+          restServices.startBprocService.getNotPersisitBprocActors({
+            employee: this.props.employee ? this.props.employee() || null : null,
+            initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
+            bpmRolesDefiner: value
+          }).then(notPersisitBprocActors => {
+            this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
           })
-        });
-      });
+        })
+    )
+      .catch(reason => Notification.error({
+        message: reason
+      }));
 
     this.props.validate().then((isValid) => {
       if (isValid) {
@@ -352,9 +325,11 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                    rowKey={record => record.id}>
               <Column key='role' title={<FormattedMessage id="bproc.startBproc.modal.roles"/>}
                       render={(text, record) => (record as NotPersisitBprocActors).hrRole!.langValue1}/>
-              <Column key='candidates' title={<FormattedMessage id="bproc.startBproc.modal.users"/>} render={(text, record) => {
-                return <Candidate candidates={((record as NotPersisitBprocActors).users as TsadvUser[] | null)}/>
-              }}/>
+              <Column key='candidates' title={<FormattedMessage id="bproc.startBproc.modal.users"/>}
+                      render={(text, record) => {
+                        return <Candidate
+                          candidates={((record as NotPersisitBprocActors).users as TsadvUser[] | null)}/>
+                      }}/>
               <Column
                 key="action"
                 render={(text, record: SerializedEntity<NotPersisitBprocActors>) => {
