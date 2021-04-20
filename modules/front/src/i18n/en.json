@@ -405,7 +405,7 @@
   "bproc.startBproc.modal.user": "Name",
   "bproc.startBproc.modal.roles": "Roles",
   "bproc.startBproc.modal.users": "Names",
-  "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\""
+  "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\"",
   "scheduleOffsetsRequest": "Schedule change request",
   "scheduleStandard": "Schedule offset",
   "scheduleOffsetRequest": "Schedule offset request"
