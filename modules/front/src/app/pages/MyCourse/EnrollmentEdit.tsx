@@ -341,6 +341,10 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
               property: "personGroup.id",
               operator: "=",
               value: this.props.rootStore!.userInfo.personGroupId!
+            }, {
+              property: "course.id",
+              operator: "=",
+              value: this.dataInstance.course!.id
             }
           ]
         }, {view: "courseFeedbackPersonAnswer.edit"});
