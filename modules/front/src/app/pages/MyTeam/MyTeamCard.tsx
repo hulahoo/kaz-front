@@ -11,7 +11,7 @@ import Notification from "../../util/Notification/Notification";
 import MyTeamPersonCard from "./personalData/MyTeamPersonCard/MyTeamPersonCard";
 import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
 import MyTeamPersonRvd from "./rvd/MyTeamPersonRvd/MyTeamPersonRvd";
-import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
+// import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
 import AbsenceRvdRequestList from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
 import {AbsenceRvdRequestManagement} from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 
@@ -79,8 +79,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <MyTeamPersonRvd personGroupId={this.person!.groupId}/>
       case 'workOnWeekendRequest':
         return <AbsenceRvdRequestList personGroupId={this.person!.groupId}/>
-      case 'currentSchedule':
-        return <CurrentSchedule/>
+      // case 'currentSchedule':
+      //   return <CurrentSchedule/>
       case 'scheduleStandard':
         return <AssignmentScheduleStandard personGroupId={this.person!.groupId}/>
       case 'scheduleOffsetRequest':

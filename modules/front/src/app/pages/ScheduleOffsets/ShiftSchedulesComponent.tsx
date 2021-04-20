@@ -14,7 +14,6 @@ import {
 
 import { ScheduleOffsetsRequest } from "../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
 import {
-    FormattedMessage,
     injectIntl,
     WrappedComponentProps
 } from "react-intl";
@@ -22,13 +21,9 @@ import Page from "../../hoc/PageContentHoc";
 import { AssignmentSchedule } from "../../../cuba/entities/base/tsadv$AssignmentSchedule";
 import { formatDefaultDateFromString } from "../../util/Date/Date";
 
-
-
 type ObvserverProps = {
     personGroupId: string;
 };
-
-
 
 @injectMainStore
 @observer
@@ -166,7 +161,6 @@ class ShiftSchedulesComponent extends React.Component<MainStoreInjected & Wrappe
             </Tabs>
         );
     }
-
 
 }
 
