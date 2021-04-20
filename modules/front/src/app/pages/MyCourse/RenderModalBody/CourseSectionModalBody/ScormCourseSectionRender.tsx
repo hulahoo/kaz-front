@@ -41,7 +41,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   };
 
   onFinishSection = () => {
-    const isSuccess = this.scormIntegrationApi.isSucceedFinishedScorm();
+    const isSuccess = this.scormIntegrationApi.isSucceedScorm();
     switch (this.scormIntegrationApi.getScormType()) {
       case "test": {
         this.props.setLoadingFinishCourseSection(true);
@@ -52,10 +52,9 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
           courseSectionId: this.props.courseSection.id,
           success: isSuccess
         }).then(() => {
-          if (isSuccess) {
-            this.setDisableFinishSectionBtn(!isSuccess);
-          }
           this.props.setLoadingFinishCourseSection(false);
+          this.props.finishedCourseSection(this.props.courseSection.id, isSuccess);
+          this.props.selectNextSection!();
         }).catch(reason => {
           Notification.error({
             message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
@@ -73,10 +72,9 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
           inputData: this.scormIntegrationApi.inputData,
           success: isSuccess
         }).then(() => {
-          if (isSuccess) {
-            this.setDisableFinishSectionBtn(!isSuccess);
-          }
           this.props.setLoadingFinishCourseSection(false);
+          this.props.finishedCourseSection(this.props.courseSection.id, isSuccess);
+          this.props.selectNextSection!();
         }).catch(() => {
           Notification.error({
             message: this.props.intl.formatMessage({id: "courseSection.createAttempt.error"})
@@ -86,7 +84,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         break;
       }
       default: {
-        this.props.finishedCourseSection(this.props.courseSection.id, this.scormIntegrationApi.isSucceedFinishedScorm());
+        this.props.finishedCourseSection(this.props.courseSection.id, isSuccess);
         this.props.selectNextSection!();
         break;
       }
@@ -147,7 +145,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         }
         case "cmi.completion_status":
         case "cmi.success_status": {
-          this.setDisableFinishSectionBtn(!hasSuccessAttempts && !this.scormIntegrationApi.isSucceedFinishedScorm());
+          this.setDisableFinishSectionBtn(!hasSuccessAttempts && !this.scormIntegrationApi.isFinishedScorm());
         }
       }
     }

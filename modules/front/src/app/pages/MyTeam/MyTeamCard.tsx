@@ -26,6 +26,8 @@ const {TabPane} = Tabs;
 export type PersonProfile = {
   id: string,
   groupId: string,
+  positionGroupId: string,
+  positionId: string,
   fullName: string,
   hireDate?: any,
   birthDate?: any,
