@@ -53,6 +53,7 @@ export type StudentHomeworkView<
       | "integrationUserLogin"
       | "homework"
       | "personGroup"
+      | "answerFile"
       | "trainer"
     >
   : never;

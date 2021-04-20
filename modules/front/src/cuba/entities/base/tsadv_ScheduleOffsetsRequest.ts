@@ -4,6 +4,8 @@ import { DicSchedulePurpose } from "./tsadv_DicSchedulePurpose";
 import { StandardSchedule } from "./tsadv$StandardSchedule";
 export class ScheduleOffsetsRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ScheduleOffsetsRequest";
+  static PROCESS_DEFINITION_KEY = "scheduleOffsetsRequest";
+
   personGroup?: PersonGroupExt | null;
   purpose?: DicSchedulePurpose | null;
   purposeText?: string | null;

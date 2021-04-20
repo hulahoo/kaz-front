@@ -9,12 +9,12 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  flex-direction: column;
 
   .play-icon {
-    color: #fff;
+    color: @primary-4;
+    height: 130px;
     font-size: 100px;
-
-    position: absolute;
     cursor: pointer;
   }
 
@@ -23,7 +23,13 @@
   }
 
   .play-icon:active {
-    color: @primary-4;
+    color: @primary-1;
+  }
+
+  .play-text {
+    display: block;
+    height: 2em;
+    font-size: 2em;
   }
 }
 
@@ -50,6 +56,7 @@
     //justify-content: center;
 
     @done-font-size: 24px;
+
     .done {
       position: absolute;
       font-size: 24px !important;

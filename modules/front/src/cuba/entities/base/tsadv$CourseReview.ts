@@ -21,5 +21,5 @@ export type CourseReviewView<V extends CourseReviewViewName> = V extends "_base"
   : V extends "courseReview.browse"
   ? Pick<CourseReview, "id" | "course" | "personGroup" | "rate" | "text">
   : V extends "courseReview.rate"
-  ? Pick<CourseReview, "id" | "course" | "rate">
+  ? Pick<CourseReview, "id" | "course" | "rate" | "text">
   : never;

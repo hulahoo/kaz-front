@@ -17,6 +17,7 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
   getFieldDecoratorOpts?: GetFieldDecoratorOptions;
   disabled?: boolean;
   style?: React.CSSProperties;
+  format?: string | string[];
 }> {
   render() {
     const {getFieldDecorator} = this.props.form;
@@ -25,6 +26,7 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
       propertyName,
       optionsContainer,
       fieldDecoratorId,
+      format,
       getFieldDecoratorOpts,
       formItemKey,
       disabled,
@@ -40,7 +42,8 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
       propertyName: propertyName,
       disabled: disabled,
       optionsContainer: optionsContainer,
-      style: style
+      style: style,
+      format:format,
     };
     return createElement(Form.Item,
       Object.assign({key: formItemKey ? formItemKey : propertyName}, formItemOpts),

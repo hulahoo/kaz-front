@@ -7,7 +7,6 @@ import "../../../app/App.css";
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 import Section from "../../hoc/Section";
 import {Col, Icon, Row, Spin} from "antd";
-import Img from "../../components/Img";
 import NoImage from "../../components/NoImage";
 import Page from "../../hoc/PageContentHoc";
 import {Meta} from "antd/es/list/Item";
@@ -104,10 +103,15 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                 <div className="course-logo">
                   {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
                     <>
-                      <Icon type="caret-right" className={"play-icon"} onClick={this.playIconClick}/>
-                      <Img isBase src={this.dataInstance.course!.logo}
-                           alt={this.dataInstance.course!.name!}
-                           style={{borderRadius: '4px', width: '100%', height: '100%'}}/></>}
+                      <Icon type="caret-right" className="play-icon" onClick={this.playIconClick}/>
+                      <h1
+                        className="play-text">{this.selectedSection
+                        ? this.selectedSection.type === "course-section"
+                          ? this.dataInstance.course!.sections!.find(s => s.id === this.selectedSection!.id)!.sectionName
+                          : this.feedbacks!.find(s => s.id === this.selectedSection!.id)!.name
+                        : null}
+                      </h1>
+                    </>}
                 </div>
               </Col>
               <Col span={8} style={{paddingLeft: "30px"}}>
@@ -337,6 +341,10 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
               property: "personGroup.id",
               operator: "=",
               value: this.props.rootStore!.userInfo.personGroupId!
+            }, {
+              property: "course.id",
+              operator: "=",
+              value: this.dataInstance.course!.id
             }
           ]
         }, {view: "courseFeedbackPersonAnswer.edit"});

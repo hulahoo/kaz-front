@@ -1,9 +1,9 @@
 import { BaseUuidEntity } from "./sys$BaseUuidEntity";
-import { UserExt } from "./tsadv$UserExt";
+import { TsadvUser } from "./tsadv$UserExt";
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
 export class StartBprocParams extends BaseUuidEntity {
   static NAME = "tsadv_StartBprocParams";
-  employee?: UserExt | null;
+  employee?: TsadvUser | null;
   request?: AbstractBprocRequest | null;
   initiatorPersonGroupId?: any | null;
 }

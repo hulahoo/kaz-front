@@ -130,9 +130,6 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                   <Col span={8}>
                     <Form.Item label={this.props.intl.formatMessage({id: "book.pageCount"})} className={"form-item"}
                                key='duration'>
-                      {
-                        //TODO: затычка
-                      }
                       {this.dataInstance.item ? 20 : ""}
                     </Form.Item>
                   </Col>
@@ -142,7 +139,9 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
             <Section sectionName={this.props.intl.formatMessage({id: "reviews"})} size={"large"}>
               {this.reviews.status === "DONE"
                 ? <MaterialReviews
-                  avgRate={this.reviews.items.map(r => r.rating).reduce((i1, i2) => i1 + i2, 0) / this.reviews.items.length}
+                  avgRate={this.reviews.items.length !== 0
+                    ? this.reviews.items.map(r => r.rating).reduce((i1, i2) => i1 + i2, 0) / this.reviews.items.length
+                    : 0}
                   comments={this.reviews.items.map(r => {
                     return ({
                       user: (r.author ? (r.author as SerializedEntity<PersonExt>)._instanceName : undefined),

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement} from "react";
-import {Card, Form, Input} from "antd";
+import {Card, Form, Input, message} from "antd";
 import {inject, observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
@@ -35,6 +35,7 @@ import {dictionaryCollection, DictionaryDataCollectionStore} from "../../../../u
 import {DicPurposeAbsence} from "../../../../../cuba/entities/base/tsadv_DicPurposeAbsence";
 import {FileDescriptor} from "../../../../../cuba/entities/base/sys$FileDescriptor";
 import {restServices} from "../../../../../cuba/services";
+import Notification from "../../../../util/Notification/Notification";
 
 type EditorProps = {
   entityId: string;
@@ -54,10 +55,8 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     view: "_minimal"
   });
 
-  dicPurposeAbsence: DictionaryDataCollectionStore<DicPurposeAbsence> = dictionaryCollection(DicPurposeAbsence.NAME,
-    this.props.rootStore!.userInfo!.personGroupId!, {
-      view: '_local'
-    });
+  @observable
+  dicPurposeAbsence: DictionaryDataCollectionStore<DicPurposeAbsence>;
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
@@ -100,11 +99,57 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   @observable
   approverHrRoleCode: string;
 
+  @observable
+  validatedDatesSuccess: boolean = true;
+
+  validatedDates = (values: any) => {
+    const startDate = values['newStartDate'] || this.props.form.getFieldValue('newStartDate');
+    const endDate = values['newEndDate'] || this.props.form.getFieldValue('newEndDate');
+    const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
+    const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
+    if (startDate && endDate && scheduleStartDate && scheduleEndDate && this.absence && this.absence.personGroup) {
+      const personGroupId = this.absence.personGroup!.id!;
+      restServices.absenceService.countDaysWithoutHolidays({
+        dateFrom: startDate,
+        dateTo: endDate,
+        personGroupId: personGroupId
+      })
+        .then(countDay => {
+          restServices.absenceService.countDaysWithoutHolidays({
+            dateFrom: scheduleStartDate,
+            dateTo: scheduleEndDate,
+            personGroupId: personGroupId
+          })
+            .then(countScheduleDay => {
+              this.validatedDatesSuccess = Math.max(countDay, countScheduleDay) == countScheduleDay; //(countDay) <= (countScheduleDay);
+              this.props.form.validateFields(['newStartDate', 'newEndDate'], {force: true});
+            });
+        })
+    }
+  }
+
   initVariablesByBproc = () => {
     if (this.activeTask && this.activeTask.hrRole && this.activeTask.hrRole.code) {
       this.approverHrRoleCode = this.activeTask.hrRole.code;
     }
   }
+
+  validate = (): Promise<boolean> => {
+    let isValidatedSuccess = true;
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
+      isValidatedSuccess = !err;
+      if (err) {
+        message.error(
+          this.props.intl.formatMessage({
+            id: "management.editor.validationError"
+          })
+        );
+      }
+    });
+    return new Promise(resolve => resolve(isValidatedSuccess && this.validatedDatesSuccess));
+  };
+
+  isUpdateBeforeOutcome = true;
 
   getUpdateEntityData = (): any => {
     if (this.isNotDraft())
@@ -120,6 +165,33 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   };
 
   processDefinitionKey = "changeAbsenceDaysRequest";
+
+  beforeCompletePredicate = (outcome: string): Promise<boolean> => {
+    if (outcome == 'APPROVE' && this.approverHrRoleCode === 'EMPLOYEE') {
+      const agree = this.props.form.getFieldValue('agree');
+      const familiarization = this.props.form.getFieldValue('familiarization');
+
+      if (!agree) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.agree']})
+          }
+        )
+      }
+
+      if (!familiarization) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.familiarization']})
+          }
+        )
+      }
+
+      if (!agree || !familiarization)
+        return new Promise(resolve => resolve(false));
+    }
+    return new Promise(resolve => resolve(true));
+  };
 
   render() {
 
@@ -229,17 +301,16 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newStartDate']}),
                     }, {
                       validator: (rule, value, callback) => {
-                        const endDate = this.props.form.getFieldValue('newEndDate');
-                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
-                        const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
-                        if (value && endDate) {
-                          if (endDate.clone().startOf('day') - value.clone().startOf('day') > scheduleEndDate.clone().startOf('day') - scheduleStartDate.clone().startOf('day')) {
-                            callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
-                          }
-                        }
-                        callback();
+                        if (!this.validatedDatesSuccess)
+                          callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
+                        else
+                          callback();
                       }
-                    }]
+                    }],
+                    getValueFromEvent: args => {
+                      this.validatedDates({'newStartDate': args});
+                      return args;
+                    }
                   }}
                 />
 
@@ -255,17 +326,16 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newEndDate']}),
                     }, {
                       validator: (rule, value, callback) => {
-                        const startDate = this.props.form.getFieldValue('newStartDate');
-                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
-                        const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
-                        if (value && startDate) {
-                          if (value.clone().startOf('day') - startDate.clone().startOf('day') > scheduleEndDate.clone().startOf('day') - scheduleStartDate.clone().startOf('day')) {
-                            callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
-                          }
-                        }
-                        callback();
+                        if (!this.validatedDatesSuccess)
+                          callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
+                        else
+                          callback();
                       }
-                    }]
+                    }],
+                    getValueFromEvent: args => {
+                      this.validatedDates({'newEndDate': args});
+                      return args;
+                    }
                   }}
                 />
 
@@ -301,7 +371,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   entityName={this.dataInstance.entityName}
                   propertyName="agree"
                   form={this.props.form}
-                  disabled={ this.approverHrRoleCode !== 'EMPLOYEE'}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                   getFieldDecoratorOpts={{valuePropName: 'checked'}}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
@@ -310,7 +380,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   entityName={this.dataInstance.entityName}
                   propertyName="familiarization"
                   form={this.props.form}
-                  disabled={ this.approverHrRoleCode !== 'EMPLOYEE'}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                   getFieldDecoratorOpts={{valuePropName: 'checked'}}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
@@ -349,10 +419,18 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
             scheduleStartDate: moment(absence.dateFrom),
             scheduleEndDate: moment(absence.dateTo)
           });
+          this.initDictionaries(absence.personGroup!.id!);
           this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
           this.setEmployee(absence.personGroup!.id!);
         });
     }
+  }
+
+  initDictionaries = (personGroupId: string) => {
+    this.dicPurposeAbsence = dictionaryCollection(DicPurposeAbsence.NAME,
+      personGroupId, {
+        view: '_local'
+      });
   }
 
   setReactionDisposer = () => {
@@ -362,16 +440,18 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
       },
       (item) => {
 
-        this.loadVacation(item!.vacation!.id)
-          .then(absence => this.absence = absence)
-          .then(absence => {
-            this.props.form.setFieldsValue({
-              scheduleStartDate: moment(absence.dateFrom),
-              scheduleEndDate: moment(absence.dateTo)
+        if (item!.vacation)
+          this.loadVacation(item!.vacation.id)
+            .then(absence => this.absence = absence)
+            .then(absence => {
+              this.props.form.setFieldsValue({
+                scheduleStartDate: moment(absence.dateFrom),
+                scheduleEndDate: moment(absence.dateTo)
+              });
+              this.initDictionaries(absence.personGroup!.id!);
+              this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
+              this.setEmployee(absence.personGroup!.id!);
             });
-            this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
-            this.setEmployee(absence.personGroup!.id!);
-          });
 
         const obj = {
           ...this.dataInstance.getFieldValues(this.fields)

@@ -1,8 +1,5 @@
 import {ScormInputData} from "../../../../../cuba/services";
 
-const statusField = 'cmi.completion_status';
-const completedStatus = 'completed';
-
 declare global {
   interface Window {
     API_1484_11: any;
@@ -26,7 +23,19 @@ export type ScormTestData = {
   minScore: number;
 }
 
-type ScormType = "default" | "test";
+export type ScormType = "default" | "test";
+
+export type CompleteStatus = 'completed' | "incomplete" | "unknown";
+
+export type SuccessStatus = 'passed' | "failed" | "unknown";
+
+export type ScormProperty =
+  "cmi.suspend_data"
+  | "cmi.score.raw"
+  | "cmi.score.max"
+  | "cmi.score.min"
+  | "cmi.success_status"
+  | "cmi.completion_status";
 
 export default class ScormIntegrationApi {
 
@@ -36,7 +45,7 @@ export default class ScormIntegrationApi {
 
   testResult: ScormTestData;
 
-  type = "default";
+  type: ScormType = "default";
 
   constructor() {
     this.init();
@@ -88,23 +97,16 @@ export default class ScormIntegrationApi {
       this._addInputDataText(fieldId, text);
     };
 
-    // window.SetScore = (score: number, maxScore: number, minScore: number) => {
-    //   this.testResult = {
-    //     score: window.API_1484_11['cmi.score.raw'],
-    //     maxScore: maxScore,
-    //     minScore: minScore,
-    //   }
-    // };
-
     window.API_1484_11 = {
       Initialize: () => {
       },
-      GetValue: (property: string, value: string) => {
+      GetValue: (property: string) => {
+        return window.API_1484_11[property];
       },
       Finish: () => {
       },
       //TODO: переписать, чтобы сеттились как вложенные объекты
-      SetValue: (property: string, value: string) => {
+      SetValue: (property: ScormProperty, value: string) => {
         switch (property) {
           case 'cmi.score.raw': {
             this.testResult = {
@@ -135,22 +137,19 @@ export default class ScormIntegrationApi {
             break;
           }
         }
+        this.afterPropertySetValue(property, value);
       },
       Commit: () => {
-        // if (!this.commited) {
-        console.log('Commit');
-        switch (this.type) {
-          case "test": {
-            this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
-            break;
-          }
-          case "default": {
-            this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
-            break;
-          }
-            // }
-            this.commited = true;
-        }
+        // switch (this.type) {
+          // case "test": {
+          //   this.onScormTestFinish(this.testResult.score, this.testResult.maxScore, this.testResult.minScore, this.isSucceedFinishedScorm());
+          //   break;
+          // }
+          // case "default": {
+          //   this.onScormDefaultFinish(this.inputData, this.isSucceedFinishedScorm());
+          //   break;
+          // }
+        // }
       },
       GetLastError: () => {
 
@@ -172,15 +171,41 @@ export default class ScormIntegrationApi {
 
   };
 
+  afterPropertySetValue = (property: ScormProperty, value: string) => {
+
+  };
+
   getInputData = (): ScormInputData[] => {
     return this.inputData;
   };
 
-  isSucceedFinishedScorm = (): boolean => {
-    return window.API_1484_11[statusField] && window.API_1484_11[statusField].toLowerCase() === completedStatus;
+  isSucceedScorm = (): boolean => {
+    const successStatusProperty = "cmi.success_status" as ScormProperty;
+    const successStatus = "passed" as SuccessStatus;
+
+    return window.API_1484_11[successStatusProperty] && window.API_1484_11[successStatusProperty].toLowerCase() === successStatus;
+  };
+
+  isFinishedScorm = (): boolean => {
+    const completionStatusProperty = "cmi.completion_status" as ScormProperty;
+    const completedStatus = "completed" as CompleteStatus;
+
+    return (window.API_1484_11[completionStatusProperty] && window.API_1484_11[completionStatusProperty].toLowerCase() === completedStatus);
   };
 
   destroy = (): void => {
     delete window.API_1484_11;
+  };
+
+  initApiData = (initObject: any): void => {
+    Object.entries(initObject).forEach(([key, value]) => window.API_1484_11[key] = value);
+  };
+
+  getScormType = (): ScormType => {
+    return this.type;
+  };
+
+  getTestResult = (): ScormTestData => {
+    return this.testResult;
   }
 }

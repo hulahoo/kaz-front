@@ -79,7 +79,7 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
                 {(record.performancePlan! as SerializedEntity<PerformancePlan>)._instanceName}
               </Link>
             }}/>
-            <Column title={this.props.intl.formatMessage({id: "assessmentPeriod"})}
+            <Column title={this.props.intl.formatMessage({id: "performanceAppraisalPeriod"})}
                     dataIndex={"startDate"}
                     key={"startDate"} render={(text, record, index) => {
               return (React.createElement("div", null, moment(text).format("YYYY")));

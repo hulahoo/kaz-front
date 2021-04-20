@@ -14,5 +14,5 @@ export type EnrollmentCertificateFileViewName =
 export type EnrollmentCertificateFileView<
   V extends EnrollmentCertificateFileViewName
 > = V extends "enrollmentCertificateFile.with.certificateFile"
-  ? Pick<EnrollmentCertificateFile, "id" | "certificateFile">
+  ? Pick<EnrollmentCertificateFile, "id" | "enrollment" | "certificateFile">
   : never;

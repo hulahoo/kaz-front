@@ -17,7 +17,7 @@ import Button, {ButtonType} from "../../../components/Button/Button";
 import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
 import Notification from "../../../util/Notification/Notification";
 import moment from "moment/moment";
-import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -38,7 +38,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   mainStore = this.props.mainStore!;
 
   @observable
-  employee: UserExt;
+  employee: TsadvUser;
 
   processInstanceData: ProcessInstanceData | null;
 
@@ -106,8 +106,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   isUpdateBeforeOutcome = false;
 
-  setEmployee = (personGroupId: string): Promise<UserExt> => {
-    return getCubaREST()!.searchEntities<UserExt>(UserExt.NAME, {
+  setEmployee = (personGroupId: string): Promise<TsadvUser> => {
+    return getCubaREST()!.searchEntities<TsadvUser>(TsadvUser.NAME, {
       conditions: [{
         property: 'personGroup.id',
         operator: '=',
@@ -120,6 +120,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     }).then(value => this.employee = value[0]);
   }
 
+  beforeCompletePredicate = (outcome: string): Promise<boolean> => new Promise(resolve => resolve(true));
+
   getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
     const {status} = this.dataInstance;
 
@@ -130,6 +132,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         ? <BprocButtons dataInstance={this.dataInstance}
                         formData={this.formData}
                         validate={this.validate}
+                        beforeCompletePredicate={this.beforeCompletePredicate}
                         employee={() => this.employee}
                         update={this.update}
                         processInstanceData={this.processInstanceData}

@@ -7,6 +7,10 @@ export class CorrectionCoefficient extends StandardEntity {
   companyResult?: any | null;
   performancePlan?: PerformancePlan | null;
   company?: DicCompany | null;
+  fullName?: string | null;
+  jobText?: string | null;
+  fullNameEn?: string | null;
+  jobTextEn?: string | null;
 }
 export type CorrectionCoefficientViewName =
   | "_base"
@@ -18,12 +22,24 @@ export type CorrectionCoefficientView<
 > = V extends "_base"
   ? Pick<
       CorrectionCoefficient,
-      "id" | "groupEfficiencyPercent" | "companyResult"
+      | "id"
+      | "groupEfficiencyPercent"
+      | "companyResult"
+      | "fullName"
+      | "jobText"
+      | "fullNameEn"
+      | "jobTextEn"
     >
   : V extends "_local"
   ? Pick<
       CorrectionCoefficient,
-      "id" | "groupEfficiencyPercent" | "companyResult"
+      | "id"
+      | "groupEfficiencyPercent"
+      | "companyResult"
+      | "fullName"
+      | "jobText"
+      | "fullNameEn"
+      | "jobTextEn"
     >
   : V extends "correctionCoefficient.edit"
   ? Pick<
@@ -31,6 +47,10 @@ export type CorrectionCoefficientView<
       | "id"
       | "groupEfficiencyPercent"
       | "companyResult"
+      | "fullName"
+      | "jobText"
+      | "fullNameEn"
+      | "jobTextEn"
       | "performancePlan"
       | "company"
     >

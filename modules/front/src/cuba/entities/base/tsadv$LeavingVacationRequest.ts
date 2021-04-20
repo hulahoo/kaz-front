@@ -1,6 +1,6 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { Absence } from "./tsadv$Absence";
-import {FileDescriptor} from "./sys$FileDescriptor";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class LeavingVacationRequest extends AbstractBprocRequest {
   static NAME = "tsadv$LeavingVacationRequest";
   vacation?: Absence | null;

@@ -8,23 +8,23 @@ import Column from "antd/lib/table/Column";
 import {restServices} from "../../../../cuba/services";
 import {RootStoreProp} from "../../../store";
 import {BpmRolesDefiner} from "../../../../cuba/entities/base/tsadv$BpmRolesDefiner";
-import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import CustomButton, {ButtonType} from "../../../components/Button/Button";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Notification from "../../../util/Notification/Notification";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import {CertificateRequest} from "../../../../cuba/entities/base/tsadv_CertificateRequest";
 import {RouteComponentProps, withRouter} from "react-router-dom";
 import Candidate from "../component/Candidate";
-import {getBusinessKey} from "../../../util/util";
+import {catchException, getBusinessKey} from "../../../util/util";
 import TextArea from "antd/es/input/TextArea";
 
 type StartBproc = {
   processDefinitionKey: string;
-  employee?: () => UserExt | null;
+  employee?: () => TsadvUser | null;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void;
@@ -32,6 +32,7 @@ type StartBproc = {
   form: WrappedFormUtils;
   isStartCommentVisible?: boolean,
   commentRequiredOutcomes?: string[],
+  beforeCompletePredicate?: (outcome: string) => Promise<boolean>;
 }
 
 @inject("rootStore")
@@ -58,61 +59,46 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   selectedHrRole: DicHrRole | null;
 
   @observable
-  selectedUser: UserExt | null;
+  selectedUser: TsadvUser | null;
 
-  users = collection<UserExt>(UserExt.NAME, {
+  users = collection<TsadvUser>(TsadvUser.NAME, {
     view: 'portal-bproc-users'
   });
 
   showModalOrMessage = () => {
 
-    const loadBpmRolesDefiner = () => restServices.startBprocService.getBpmRolesDefiner({
-      processDefinitionKey: this.props.processDefinitionKey,
-      initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
-    })
-      .then(value => {
-        this.bprocRolesDefiner = value;
-        restServices.startBprocService.getNotPersisitBprocActors({
-          employee: this.props.employee ? this.props.employee() || null : null,
-          initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
-          bpmRolesDefiner: value
-        }).then(notPersisitBprocActors => {
-          this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
-        }).catch(async (response: any) => {
-          const reader = response.response.body.getReader();
-
-          let receivedLength = 0;
-          let chunks = [];
-          while (true) {
-            const {done, value} = await reader.read();
-
-            if (done) {
-              break;
-            }
-
-            chunks.push(value);
-            receivedLength += value.length;
-          }
-
-          let chunksAll = new Uint8Array(receivedLength);
-          let position = 0;
-          for (let chunk of chunks) {
-            chunksAll.set(chunk, position);
-            position += chunk.length;
-          }
-
-          let result = new TextDecoder("utf-8").decode(chunksAll);
-          const parse = JSON.parse(result);
-          return parse.message;
-        }).catch(reason => Notification.error({
-          message: reason
-        }));
-      });
+    const loadBpmRolesDefiner = () => catchException(restServices.startBprocService.getBpmRolesDefiner({
+        processDefinitionKey: this.props.processDefinitionKey,
+        initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
+      })
+        .then(value => {
+          this.bprocRolesDefiner = value;
+          restServices.startBprocService.getNotPersisitBprocActors({
+            employee: this.props.employee ? this.props.employee() || null : null,
+            initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
+            bpmRolesDefiner: value
+          }).then(notPersisitBprocActors => {
+            this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
+          })
+        })
+    )
+      .catch(reason => Notification.error({
+        message: reason
+      }));
 
     this.props.validate().then((isValid) => {
       if (isValid) {
-        this.modalVisible = true;
-        loadBpmRolesDefiner();
+        if (this.props.beforeCompletePredicate) {
+          this.props.beforeCompletePredicate('START').then(value => {
+            if (value) {
+              this.modalVisible = true;
+              loadBpmRolesDefiner();
+            }
+          })
+        } else {
+          this.modalVisible = true;
+          loadBpmRolesDefiner();
+        }
       }
     })
 
@@ -167,18 +153,21 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 });
               })
                 .catch((e: any) => {
+                  console.log(e);
                   Notification.error({
                     message: this.props.intl.formatMessage({id: "management.editor.error"})
                   });
                 })
             })
               .catch((e: any) => {
+                console.log(e);
                 Notification.error({
                   message: this.props.intl.formatMessage({id: "management.editor.error"})
                 });
               });
           })
           .catch((e: any) => {
+            console.log(e);
             Notification.error({
               message: this.props.intl.formatMessage({id: "management.editor.error"})
             });
@@ -229,7 +218,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   addBprocUser = () => {
-    if (this.items.find(i => (i.users as UserExt[]).find(u => u.id === this.selectedUser!.id) != undefined)) {
+    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) != undefined)) {
       Notification.error({
         message: this.props.intl.formatMessage({id: "bproc.startBproc.modal.error"})
       });
@@ -295,7 +284,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
             <div>
               <Row type={"flex"} justify={"center"} align={"bottom"}>
                 <Col span={8}>
-                  <Form.Item style={{margin: 0}} label={"Роль"}>
+                  <Form.Item style={{margin: 0}} label={<FormattedMessage id="bproc.startBproc.modal.role"/>}>
                     <Select style={{width: '100%'}} onChange={this.onChangeBprocRole}>
                       {this.bprocRolesDefiner && this.bprocRolesDefiner.links ? this.bprocRolesDefiner.links.filter(l => l.isAddableApprover && l.hrRole).map(l =>
                           <Select.Option
@@ -307,15 +296,15 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 </Col>
                 <Col span={1}/>
                 <Col span={8}>
-                  <Form.Item style={{margin: 0}} label={"Пользователь"}>
+                  <Form.Item style={{margin: 0}} label={<FormattedMessage id="bproc.startBproc.modal.user"/>}>
                     <Select style={{width: '100%'}} showSearch allowClear
                             filterOption={(input, option) =>
                               (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
                             }
                             onChange={this.onChangeUser}>
                       {this.users.items.length > 0 ? this.users.items.map(l =>
-                          <Select.Option title={(l as SerializedEntity<UserExt>).fullNameWithLogin!}
-                                         key={l.id}>{(l as SerializedEntity<UserExt>).fullNameWithLogin!}</Select.Option>) :
+                          <Select.Option title={(l as SerializedEntity<TsadvUser>).fullNameWithLogin!}
+                                         key={l.id}>{(l as SerializedEntity<TsadvUser>).fullNameWithLogin!}</Select.Option>) :
                         <Select.Option key="empty"/>
                       }
                     </Select>
@@ -326,7 +315,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                   <Form.Item style={{margin: 0}}>
                     <Button type={"primary"}
                             disabled={!(this.selectedHrRole && this.selectedUser)}
-                            onClick={this.addBprocUser}>Добавить</Button>
+                            onClick={this.addBprocUser}><FormattedMessage id="bproc.startBproc.modal.add"/></Button>
                   </Form.Item>
                 </Col>
               </Row>
@@ -334,11 +323,13 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
             <Table dataSource={Array.from(this.items || [])}
                    pagination={false} showHeader={true}
                    rowKey={record => record.id}>
-              <Column key='role' title={"Роли"}
+              <Column key='role' title={<FormattedMessage id="bproc.startBproc.modal.roles"/>}
                       render={(text, record) => (record as NotPersisitBprocActors).hrRole!.langValue1}/>
-              <Column key='candidates' title={"Пользователи"} render={(text, record) => {
-                return <Candidate candidates={((record as NotPersisitBprocActors).users as UserExt[] | null)}/>
-              }}/>
+              <Column key='candidates' title={<FormattedMessage id="bproc.startBproc.modal.users"/>}
+                      render={(text, record) => {
+                        return <Candidate
+                          candidates={((record as NotPersisitBprocActors).users as TsadvUser[] | null)}/>
+                      }}/>
               <Column
                 key="action"
                 render={(text, record: SerializedEntity<NotPersisitBprocActors>) => {

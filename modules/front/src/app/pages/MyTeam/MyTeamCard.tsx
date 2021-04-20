@@ -1,9 +1,9 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import {Card, List, Tabs} from "antd";
+import {Button, Card, List, Tabs} from "antd";
 import Meta from "antd/lib/card/Meta";
 import {observable} from "mobx";
 import {restServices} from "../../../cuba/services";
@@ -11,14 +11,23 @@ import Notification from "../../util/Notification/Notification";
 import MyTeamPersonCard from "./personalData/MyTeamPersonCard/MyTeamPersonCard";
 import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
 import MyTeamPersonRvd from "./rvd/MyTeamPersonRvd/MyTeamPersonRvd";
+import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
 import AbsenceRvdRequestList from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
+import {AbsenceRvdRequestManagement} from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 
+import {Link} from "react-router-dom";
+import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
+import {rootStore, RootStoreProp} from "../../store";
+import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
+import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 
 const {TabPane} = Tabs;
 
 export type PersonProfile = {
   id: string,
   groupId: string,
+  positionGroupId: string,
+  positionId: string,
   fullName: string,
   hireDate?: any,
   birthDate?: any,
@@ -44,8 +53,9 @@ export type Menu = {
 };
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps> {
+class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   @observable person?: PersonProfile;
   @observable urlImg?: string;
@@ -69,7 +79,12 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <MyTeamPersonRvd personGroupId={this.person!.groupId}/>
       case 'workOnWeekendRequest':
         return <AbsenceRvdRequestList personGroupId={this.person!.groupId}/>
-
+      case 'currentSchedule':
+        return <CurrentSchedule/>
+      case 'scheduleStandard':
+        return <AssignmentScheduleStandard personGroupId={this.person!.groupId}/>
+      case 'scheduleOffsetRequest':
+        return <MyTeamScheduleOffsetRequestList personGroupId={this.person!.groupId}/>
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -81,6 +96,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
       id: 'personalData'
     }, {
       id: 'timeManagement'
+    }, {
+      id: 'workOnWeekend'
+    }, {
+      id: 'currentSchedule'
     },]
   }
 
@@ -91,10 +110,22 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           id: 'absence'
         }, {
           id: 'absenceRequest'
-        },{
+        }, {
+          id: 'scheduleStandard'
+        }, {
+          id: 'scheduleOffsetRequest'
+        }]
+      case 'workOnWeekend':
+        return[{
           id: 'workOnWeekend'
-        },{
+        }, {
           id: 'workOnWeekendRequest'
+        },]
+      case 'currentSchedule':
+        return[{
+          id: 'currentSchedule'
+        }, {
+          id: 'scheduleOffsetsRequest'
         }]
     }
     return [{
@@ -111,17 +142,26 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         <div style={{float: 'left', marginTop: '40px'}}>
           <Card
             hoverable
-            style={{width: 300}}
+            style={{width: 200}}
             cover={<img alt="example"
                         src={this.urlImg ? this.urlImg : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"}/>}>
-            <Meta title={<span style={{fontSize: 13}}>{this.person.fullName}</span>}/>
-            <Meta title={<span style={{fontSize: 13}}>{this.person.organizationName || ''}</span>}/>
-            <Meta title={<span style={{fontSize: 13}}>{this.person.positionName || ''}</span>}/>
-            <Meta title={<span style={{fontSize: 13}}><span>e-mail: </span>
+            <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
+                  title={this.person.fullName}>
+            <Meta title={<div style={{fontSize: 10, marginTop: '10px'}}>{this.person.fullName}</div>}/>
+            </span>
+            <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
+                  title={this.person.organizationName || ''}>
+            <Meta title={<span style={{fontSize: 10}}>{this.person.organizationName || ''}</span>}/>
+            </span>
+            <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
+                  title={this.person.positionName || ''}>
+            <Meta title={<span style={{fontSize: 10}}>{this.person.positionName || ''}</span>}/>
+            </span>
+            <Meta title={<span style={{fontSize: 10}}><span>e-mail: </span>
               {(this.person.email ?
                 <a href={'mailto:' + this.person.email}>{this.person.email}</a> : <></>)}
         </span>}/>
-            <Meta title={<span style={{fontSize: 13}}>{"тел: " + (this.person.phone || '')}</span>}/>
+            <Meta title={<span style={{fontSize: 9}}>{"тел: " + (this.person.phone || '')}</span>}/>
           </Card>
           <List>
             {this.getLeftMenu().map((menu: Menu) => <List.Item

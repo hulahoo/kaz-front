@@ -1,4 +1,4 @@
-import {EntityFilter, FetchOptions, SerializedEntity} from "@cuba-platform/rest";
+import {FetchOptions, SerializedEntity} from "@cuba-platform/rest";
 import {getCubaREST} from "@cuba-platform/react";
 import {SortOrder} from "antd/lib/table/interface";
 import moment from "moment";
@@ -9,7 +9,7 @@ import {BprocFormData} from "./entities/bproc/bproc_FormData";
 import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData";
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
-import {UserExt} from "./entities/base/tsadv$UserExt";
+import {TsadvUser} from "./entities/base/tsadv$UserExt";
 import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
@@ -32,7 +32,6 @@ import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
-import {AbstractDictionary} from "./entities/base/AbstractDictionary";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -245,7 +244,7 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
-    finishFeedback: (params: { answeredFeedback: AnsweredFeedback, personGroupId: string}, fetchOpts?: FetchOptions) => {
+    finishFeedback: (params: { answeredFeedback: AnsweredFeedback, personGroupId: string }, fetchOpts?: FetchOptions) => {
       return getCubaREST()!.invokeService(
         "tsadv_LmsService",
         "finishFeedback",
@@ -270,7 +269,7 @@ export const restServices = {
         {...param}
       ).then((value: string) => JSON.parse(value));
     },
-    companiesForLoadDictionary:(param: { personGroupId: string}): Promise<string> => {
+    companiesForLoadDictionary: (param: { personGroupId: string }): Promise<string> => {
       return getCubaREST()!.invokeService(
         "tsadv_PortalHelperService",
         "getCompaniesForLoadDictionary",
@@ -345,7 +344,7 @@ export const restServices = {
       ).then((value: string) => JSON.parse(value));
     },
     getNotPersisitBprocActors: (param: {
-      employee: UserExt | null,
+      employee: TsadvUser | null,
       initiatorPersonGroupId: string,
       bpmRolesDefiner: BpmRolesDefiner
     }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
@@ -412,7 +411,14 @@ export const restServices = {
         "countDays",
         {...param}
       );
-    }
+    },
+    countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "countDaysWithoutHolidays",
+        {...param}
+      );
+    },
   },
   absenceRvdService: {
     countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
@@ -481,6 +487,13 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
+    commitFromPortal: (insuredPerson: InsuredPerson): Promise<InsuredPerson> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_DocumentService",
+        "commitFromPortal",
+        {insuredPerson: insuredPerson}
+      ).then((response: string) => JSON.parse(response));
+    }
   },
   employeeService: {
     personProfile: (personGroupId: string): Promise<PersonProfile> => {
@@ -488,6 +501,13 @@ export const restServices = {
         "tsadv_EmployeeService",
         "personProfile",
         {personGroupId: personGroupId}
+      ).then(r => JSON.parse(r));
+    },
+    personGroupInfo: (userId: string): Promise<PersonProfile> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "personGroupInfo",
+        {userId: userId}
       ).then(r => JSON.parse(r));
     },
     findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean, viewName: string }): Promise<PersonGroupExt[]> => {

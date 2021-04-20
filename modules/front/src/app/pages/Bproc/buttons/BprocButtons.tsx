@@ -9,14 +9,15 @@ import {inject, observer} from "mobx-react";
 import StartBprocModal from "../modal/StartBprocModal";
 import {WrappedFormUtils} from "antd/lib/form/Form";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {UserExt} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import {FormComponentProps} from "antd/es/form";
 import OutcomeButtonModal from "../modal/OutcomeButtonModal";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
   formData: BprocFormData;
-  employee?: () => UserExt | null;
+  employee?: () => TsadvUser | null;
+  beforeCompletePredicate?: (outcome: string) => Promise<boolean>;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void
@@ -38,6 +39,7 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
     return <StartBprocModal
       employee={this.props.employee}
       validate={this.props.validate}
+      beforeCompletePredicate={this.props.beforeCompletePredicate}
       update={this.props.update}
       dataInstance={this.props.dataInstance}
       form={this.props.form}
@@ -53,6 +55,7 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
         ? this.props.formData.outcomes.reverse().map(value => <OutcomeButtonModal outcome={value}
                                                                                   key={value.id}
                                                                                   form={this.props.form}
+                                                                                  beforeCompletePredicate={this.props.beforeCompletePredicate}
                                                                                   validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}
                                                                                   update={this.props.isUpdateBeforeOutcome ? this.props.update : undefined}
                                                                                   afterSendOnApprove={this.props.afterSendOnApprove}

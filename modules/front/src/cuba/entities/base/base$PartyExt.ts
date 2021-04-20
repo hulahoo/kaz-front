@@ -100,6 +100,7 @@ export type PartyExtView<V extends PartyExtViewName> = V extends "_base"
       | "resident"
       | "upperName"
       | "course"
+      | "addresses"
       | "contactInfo"
     >
   : never;
