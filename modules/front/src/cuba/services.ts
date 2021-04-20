@@ -487,6 +487,13 @@ export const restServices = {
         {personGroupId: personGroupId}
       ).then(r => JSON.parse(r));
     },
+    personGroupInfo: (userId: string): Promise<PersonProfile> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "personGroupInfo",
+        {userId: userId}
+      ).then(r => JSON.parse(r));
+    },
     findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean, viewName: string }): Promise<PersonGroupExt[]> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_EmployeeService",

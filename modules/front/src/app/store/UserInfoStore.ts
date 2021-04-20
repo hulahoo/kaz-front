@@ -1,7 +1,7 @@
 import {UserInfo} from "@cuba-platform/rest/dist-node/model";
 import RootStore from "./RootStore";
-import {restQueries} from "../../cuba/queries";
 import {action, observable} from "mobx";
+import {restServices} from "../../cuba/services";
 
 export default class {
   rootStore: RootStore;
@@ -28,11 +28,11 @@ export default class {
   }
 
   loadAdditionalPersonInfo = async () => {
-    return await restQueries.personGroupInfo(this.id!).then(personGroup => {
-      if (personGroup) {
-        this.personGroupId = personGroup.id;
-        this.positionId = personGroup.assignments![0].positionGroup!.position!.id;
-        this.positionGroupId = personGroup.assignments![0].positionGroup!.id;
+    return await restServices.employeeService.personGroupInfo(this.id!).then(personProfile => {
+      if (personProfile) {
+        this.personGroupId = personProfile.groupId;
+        this.positionId = personProfile.positionId;
+        this.positionGroupId = personProfile.positionGroupId;
       }
       this.initialized = true;
     }).catch(() => {

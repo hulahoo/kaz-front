@@ -26,13 +26,6 @@ export var restQueries = {
       return response[0]
     })
   },
-  personGroupInfo: (userId: string) => {
-    return getCubaREST()!.query<PersonGroupExt>(PersonGroupExt.NAME, "personGroupInfo", {
-      userId: userId
-    }).then(response => {
-      return response[0]
-    })
-  },
   kpiAssignedGoals: (appId: string): Promise<SerializedEntity<AssignedGoal>[]> => {
     return getCubaREST()!.query<AssignedGoal>(AssignedGoal.NAME, "kpiAssignedGoals", {
       appId: appId,
