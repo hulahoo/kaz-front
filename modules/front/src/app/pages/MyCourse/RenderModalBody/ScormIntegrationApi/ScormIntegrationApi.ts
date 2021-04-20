@@ -27,7 +27,7 @@ export type ScormType = "default" | "test";
 
 export type CompleteStatus = 'completed' | "incomplete" | "unknown";
 
-export type SuccessStatus = 'success' | "incomplete" | "unknown";
+export type SuccessStatus = 'passed' | "failed" | "unknown";
 
 export type ScormProperty =
   "cmi.suspend_data"
@@ -184,7 +184,7 @@ export default class ScormIntegrationApi {
     const completedStatus = "completed" as CompleteStatus;
 
     const successStatusProperty = "cmi.success_status" as ScormProperty;
-    const successStatus = "success" as SuccessStatus;
+    const successStatus = "passed" as SuccessStatus;
 
     return (window.API_1484_11[completionStatusProperty] && window.API_1484_11[completionStatusProperty].toLowerCase() === completedStatus)
       && (window.API_1484_11[successStatusProperty] && window.API_1484_11[successStatusProperty].toLowerCase() === successStatus);
