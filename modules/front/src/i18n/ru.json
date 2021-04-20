@@ -396,5 +396,6 @@
   "scheduleStandard": "Графики смен",
   "scheduleOffsetRequest": "Заявки на изменеия графика смен",
   "insurance.information": "Сведения по страхованию",
-  "general.information": "Общие сведения"
+  "general.information": "Общие сведения",
+  "family.member.information": "Сведения по членам семьи"
 }

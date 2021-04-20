@@ -410,5 +410,6 @@
   "scheduleStandard": "Schedule offset",
   "scheduleOffsetRequest": "Schedule offset request",
   "insurance.information": "Insurance information",
-  "general.information": "General information"
+  "general.information": "General information",
+  "family.member.information": "Family member information"
 }
