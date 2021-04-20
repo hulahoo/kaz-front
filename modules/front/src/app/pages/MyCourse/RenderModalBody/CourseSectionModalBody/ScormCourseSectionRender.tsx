@@ -147,7 +147,7 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         }
         case "cmi.completion_status":
         case "cmi.success_status": {
-          this.setDisableFinishSectionBtn(!hasSuccessAttempts || !this.scormIntegrationApi.isSucceedFinishedScorm());
+          this.setDisableFinishSectionBtn(!hasSuccessAttempts && !this.scormIntegrationApi.isSucceedFinishedScorm());
         }
       }
     }
