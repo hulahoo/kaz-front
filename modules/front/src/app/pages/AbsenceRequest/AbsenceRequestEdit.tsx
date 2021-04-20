@@ -299,6 +299,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
+                      required: true,
                       validator: this.dateFromValidator
                     }],
                     getValueFromEvent: args => {
