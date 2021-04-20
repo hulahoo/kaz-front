@@ -36,13 +36,15 @@ import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
 import {Address} from "../../../cuba/entities/base/tsadv$Address";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {ReadonlyField} from "../../components/ReadonlyField";
-import {restServices} from "../../../cuba/services";
+import {DEFAULT_DATE_PARSE_FORMAT, restServices} from "../../../cuba/services";
 import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {instanceStore} from "../../util/InstanceStore";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
+import moment from "moment";
+import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -162,7 +164,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     "statementFile"
   ];
 
-
   memberFields = [
     "relative",
     "firstName",
@@ -179,6 +180,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     "insuranceContract",
     "file",
   ];
+
+  rowIndex = -1;
+  colIndex = 0;
 
   @observable
   globalErrors: string[] = [];
@@ -246,7 +250,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
     this.update().then(value => this.updated = value);
   };
-
 
   showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
     Modal.confirm({
@@ -615,13 +618,31 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Row>
 
             {isMemberAttach ?
-              <Card title="Сведения по членам семьи" style={{margin: "10px"}}>
+              <Card title={this.props.intl.formatMessage({id: 'family.member.information'})} style={{margin: "10px"}}>
                 <DataTable
                   dataCollection={this.familyDataCollection}
                   fields={this.memberFields}
                   hideSelectionColumn={true}
                   onRowSelectionChange={this.handleRowSelectionChange}
                   buttons={buttons}
+                  columnProps={{
+                    render: (text, record, index) => {
+                      if (this.rowIndex != index) {
+                        this.rowIndex = index;
+                        this.colIndex = 0;
+                      }
+                      this.colIndex += 1;
+                      if (this.colIndex == 5 && record.birthdate){
+                        return moment(record.birthdate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
+                      }else if (this.colIndex == 9 && record.attachDate){
+                        return moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
+                      }
+                      return text;
+                    }
+                  }}
+                  // render={(text, record: InsuredPerson) => (
+                  //   (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT)))
+                  // )}
                 />
               </Card>
               : <></>}
@@ -682,16 +703,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     this.props.history.push(InsuredPersonManagement.PATH + "/" + InsuredPersonManagement.NEW_SUBPATH);
   };
 
-
   editMicMember = () => {
     this.props.history.push(InsuredPersonManagement.PATH + "/" + this.selectedRowKey);
   };
 
-
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
     this.selectedRowKey = selectedRowKeys[0];
   };
-
 
   getRecordById(id: string): SerializedEntity<InsuredPerson> {
     const record:
@@ -704,7 +722,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
     return record;
   }
-
 
   deleteSelectedRow = () => {
     this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
@@ -759,7 +776,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     this.reactionDisposer();
   }
 }
-
 
 export default injectIntl(
   withLocalizedForm<EditorProps>({

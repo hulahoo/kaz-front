@@ -403,5 +403,6 @@
   "bproc.startBproc.modal.roles": "Roles",
   "bproc.startBproc.modal.users": "Names",
   "insurance.information": "Insurance information",
-  "general.information": "General information"
+  "general.information": "General information",
+  "family.member.information": "Family member information"
 }
