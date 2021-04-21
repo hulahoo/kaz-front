@@ -45,7 +45,6 @@ import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagemen
 import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
 import {AbsenceForRecallManagement} from "./pages/MyTeam/timeManagement/AbsenceForRecall/AbsenceForRecallManagement";
 import {AbsenceRvdRequestManagement} from "./pages/MyTeam/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
-
 import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 
 @injectMainStore
@@ -146,6 +145,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        path={AbsenceRequestManagement.PATH + "/:entityId"}
                        component={AbsenceRequestManagement}/>
 
+                {/*<Route exact={true}*/}
+                {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
+                {/*       component={CurrentScheduleRequestManagement}/>*/}
                 <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>

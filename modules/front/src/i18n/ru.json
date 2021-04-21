@@ -365,7 +365,7 @@
   "attach.family.members": "Прикрепить членов семьи",
   "annexes": "Приложения",
   "see.documents": "Просьба ознакомиться с документами",
-  "enrollment.section.start.error.required": "Чтобы продолжить обучение необходимо завершить обязательный раздел",
+  "enrollment.section.start.error.required": "Чтобы продолжить обучение необходимо завершить раздел(ы)",
   "personalData": "Персональные данные",
   "timeManagement": "Управление временем",
   "cityOfResidence": "Город проживание",
@@ -400,6 +400,7 @@
   "family.member.information": "Сведения по членам семьи",
   "absenceForRecall.recallDateNotCorrect": "Дата отзыва не корректна",
   "cityOfResidence": "Город проживание",
+  "family.member.information": "Сведения по членам семьи",
   "workOnWeekend": "Утвержденные РВД,Сверхуроч.,Врем.перевод",
   "workOnWeekendRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод",
   "absenceRvdRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод"

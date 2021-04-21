@@ -204,19 +204,13 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       return;
     }
 
-    let isPrevRequiredCourseSectionPassed = true;
-
     const indexSelectedCourseSection = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
-    for (let i = indexSelectedCourseSection - 1; i >= 0; i--) {
-      const courseSection = this.dataInstance.course!.sections![i];
-      if (courseSection.mandatory && courseSection.courseSectionAttempts!.filter(a => a.success).length === 0) {
-        isPrevRequiredCourseSectionPassed = false;
-      }
-    }
-
-    if (!isPrevRequiredCourseSectionPassed) {
+    const notFinishedRequiredSections = this.dataInstance.course!.sections!
+      .filter(((value, index) => index < indexSelectedCourseSection))
+      .filter(courseSection => courseSection.mandatory && courseSection.courseSectionAttempts!.filter(a => a.success).length === 0);
+    if (notFinishedRequiredSections.length > 0) {
       Notification.info({
-        message: this.props.intl.formatMessage({id: 'enrollment.section.start.error.required'})
+        message: this.props.intl.formatMessage({id: 'enrollment.section.start.error.required'}) + (": " + notFinishedRequiredSections.map(cs => cs.sectionName).join(", "))
       });
       return;
     }
