@@ -210,7 +210,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       .filter(courseSection => courseSection.mandatory && courseSection.courseSectionAttempts!.filter(a => a.success).length === 0);
     if (notFinishedRequiredSections.length > 0) {
       Notification.info({
-        message: this.props.intl.formatMessage({id: 'enrollment.section.start.error.required'}) + (": " + notFinishedRequiredSections.join(", "))
+        message: this.props.intl.formatMessage({id: 'enrollment.section.start.error.required'}) + (": " + notFinishedRequiredSections.map(cs => cs.sectionName).join(", "))
       });
       return;
     }
