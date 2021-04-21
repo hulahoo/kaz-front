@@ -411,5 +411,7 @@
   "scheduleOffsetRequest": "Schedule offset request",
   "insurance.information": "Insurance information",
   "general.information": "General information",
-  "family.member.information": "Family member information"
+  "family.member.information": "Family member information",
+  "workOnWeekend": "WFD Approved, Overtime, Temporary Transfer",
+  "workOnWeekendRequest": "Applications for RRVD, Overtime, Temporary transfer"
 }
