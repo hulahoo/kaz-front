@@ -23,6 +23,7 @@ import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {withRouter} from "react-router";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 
 type EditorProps = {
   entityId: string;
@@ -142,6 +143,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   form={this.props.form}
                   disabled={true}
                   formItemOpts={{style: {marginBottom: "12px"}}}
+                  format={DEFAULT_DATE_PATTERN}
                   getFieldDecoratorOpts={{
                     rules: [{required: true,}]
                   }}

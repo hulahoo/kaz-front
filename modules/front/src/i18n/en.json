@@ -132,7 +132,7 @@
   "menu.job-offers": "Job Offers",
   "menu.certificateRequest": "JCL request",
   "menu.absenceRequest": "Отсутствие",
-  "menu.dmc-my": "My DMC",
+  "menu.dmc-my": "Medical insurance",
   "menu.absence": "Absence",
   "menu.schedule-offsets": "Schedule Offsets",
   "menu.welcome": "Welcome",
@@ -401,5 +401,8 @@
   "bproc.startBproc.modal.role": "Role",
   "bproc.startBproc.modal.user": "Name",
   "bproc.startBproc.modal.roles": "Roles",
-  "bproc.startBproc.modal.users": "Names"
+  "bproc.startBproc.modal.users": "Names",
+  "insurance.information": "Insurance information",
+  "general.information": "General information",
+  "family.member.information": "Family member information"
 }

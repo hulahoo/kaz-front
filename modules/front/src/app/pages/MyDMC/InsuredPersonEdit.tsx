@@ -8,10 +8,8 @@ import {Link, Redirect, withRouter} from "react-router-dom";
 import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
-import Notification from "../../util/Notification/Notification";
 
 import {downloadFile} from "../../util/util";
-
 
 import {
   clearFieldErrors,
@@ -19,7 +17,6 @@ import {
   constructFieldsWithErrors,
   DataTable,
   extractServerValidationErrors,
-  instance,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -39,11 +36,15 @@ import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
 import {Address} from "../../../cuba/entities/base/tsadv$Address";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {ReadonlyField} from "../../components/ReadonlyField";
-import {restServices} from "../../../cuba/services";
+import {DEFAULT_DATE_PARSE_FORMAT, restServices} from "../../../cuba/services";
 import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {instanceStore} from "../../util/InstanceStore";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
+import moment from "moment";
+import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -59,23 +60,16 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   @observable
   visible: boolean = false;
 
-  dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
-    view: "insuredPerson-editView",
-    loadImmediately: false
-  });
+  dataInstance = instanceStore<InsuredPerson>(InsuredPerson.NAME, {
+      view: "insuredPerson-editView",
+      loadImmediately: false
+    },
+    restServices.documentService.commitFromPortal);
   /*  */
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
     sort: "-updateTs",
-    filter: {
-      conditions: [
-        {
-          property: "1",
-          value: "1",
-          operator: "<>"
-        }
-      ]
-    }
+    loadImmediately: false,
   });
 
   statusRequestsDc = collection<DicMICAttachmentStatus>(
@@ -107,14 +101,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   regionsDc = collection<DicRegion>(DicRegion.NAME, {view: "_minimal"});
 
   addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
-
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
-  statementFilesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
 
   @observable
   updated = false;
@@ -178,7 +164,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     "statementFile"
   ];
 
-
   memberFields = [
     "relative",
     "firstName",
@@ -196,11 +181,14 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     "file",
   ];
 
+  rowIndex = -1;
+  colIndex = 0;
+
   @observable
   globalErrors: string[] = [];
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
+  update = (): Promise<boolean> => {
+    let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     this.props.form.validateFields((err, values) => {
       if (err) {
         message.error(
@@ -210,13 +198,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         );
         return;
       }
-      this.dataInstance
+      promise = this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
           message.success(
             this.props.intl.formatMessage({id: "management.editor.success"})
           );
-          this.updated = true;
+          return true;
         })
         .catch((e: any) => {
           if (e.response && typeof e.response.json === "function") {
@@ -254,8 +242,14 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           }
         });
     });
-  };
+    return promise;
+  }
 
+  handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    this.update().then(value => this.updated = value);
+  };
 
   showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
     Modal.confirm({
@@ -282,9 +276,11 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   @action
   onChangeVisible = (value: boolean): void => {
-    this.visible = value;
+    if (value)
+      this.update().then(value1 => this.visible = value1 && value);
+    else
+      this.visible = value;
   }
-
 
   render() {
     if (this.updated) {
@@ -328,7 +324,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           <Form onSubmit={this.handleSubmit} layout="vertical">
             <Row gutter={16}>
               <Col span={8}>
-                <Card size="small" title="Общие сведения" style={card_style}>
+                <Card size="small" title={this.props.intl.formatMessage({id: 'general.information'})}
+                      style={card_style}>
 
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
@@ -408,8 +405,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  form={this.props.form}
                                  formItemOpts={{style: field_style}}
                                  getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
+                                   rules: [{required: true}],
                                  }}
+                                 format={DEFAULT_DATE_PATTERN}
                   />
 
                   <ReadonlyField disabled={true}
@@ -495,7 +493,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                 </Card>
               </Col>
               <Col span={8}>
-                <Card size="small" title="Сведения по ДМС" style={card_style}>
+                <Card size="small" title={this.props.intl.formatMessage({id: 'insurance.information'})}
+                      style={card_style}>
                   <ReadonlyField entityName={InsuredPerson.NAME}
                                  propertyName="insuranceContract"
                                  form={this.props.form}
@@ -514,6 +513,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  getFieldDecoratorOpts={{
                                    rules: [{required: true}]
                                  }}
+                                 format={DEFAULT_DATE_PATTERN}
                   />
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
@@ -521,6 +521,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  form={this.props.form}
                                  formItemOpts={{style: field_style}}
                                  getFieldDecoratorOpts={{}}
+                                 format={DEFAULT_DATE_PATTERN}
                   />
 
 
@@ -579,7 +580,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                     propertyName="statementFile"
                     form={this.props.form}
                     formItemOpts={{style: field_style}}
-                    optionsContainer={this.statementFilesDc}
                     getFieldDecoratorOpts={{}}
                   />
 
@@ -618,13 +618,31 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Row>
 
             {isMemberAttach ?
-              <Card title="Сведения по членам семьи" style={{margin: "10px"}}>
+              <Card title={this.props.intl.formatMessage({id: 'family.member.information'})} style={{margin: "10px"}}>
                 <DataTable
                   dataCollection={this.familyDataCollection}
                   fields={this.memberFields}
                   hideSelectionColumn={true}
                   onRowSelectionChange={this.handleRowSelectionChange}
                   buttons={buttons}
+                  columnProps={{
+                    render: (text, record, index) => {
+                      if (this.rowIndex != index) {
+                        this.rowIndex = index;
+                        this.colIndex = 0;
+                      }
+                      this.colIndex += 1;
+                      if (this.colIndex == 5 && record.birthdate){
+                        return moment(record.birthdate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
+                      }else if (this.colIndex == 9 && record.attachDate){
+                        return moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
+                      }
+                      return text;
+                    }
+                  }}
+                  // render={(text, record: InsuredPerson) => (
+                  //   (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT)))
+                  // )}
                 />
               </Card>
               : <></>}
@@ -656,7 +674,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Form.Item>
           </Form>
         </Spin>
-        <InsuredPersonMemberComponent entityId={this.selectedRowKey!} visible={this.visible}
+        <InsuredPersonMemberComponent entityId={this.selectedRowKey!}
+                                      visible={this.visible}
+                                      insuranceContract={() => this.props.form.getFieldValue('insuranceContract')}
                                       onChangeVisible={this.onChangeVisible} refreshDs={this.refreshDs}/>
       </Card>
     );
@@ -683,16 +703,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     this.props.history.push(InsuredPersonManagement.PATH + "/" + InsuredPersonManagement.NEW_SUBPATH);
   };
 
-
   editMicMember = () => {
     this.props.history.push(InsuredPersonManagement.PATH + "/" + this.selectedRowKey);
   };
 
-
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
     this.selectedRowKey = selectedRowKeys[0];
   };
-
 
   getRecordById(id: string): SerializedEntity<InsuredPerson> {
     const record:
@@ -705,7 +722,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
     return record;
   }
-
 
   deleteSelectedRow = () => {
     this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
@@ -725,17 +741,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       }).then(value => {
         value.id = undefined;
         this.dataInstance.setItem(value);
-        restServices.documentService.checkPersonInsure({
-          contractId: value.insuranceContract!.id!,
-          personGroupId: this.props.rootStore!.userInfo.personGroupId,
-        }).then(value => {
-          if (value) {
-            this.props.history.goBack();
-            Notification.info({
-              message: `Данный сотрудник уже привязан к договору`
-            });
-          }
-        })
       });
     }
     this.reactionDisposer = reaction(
@@ -771,7 +776,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     this.reactionDisposer();
   }
 }
-
 
 export default injectIntl(
   withLocalizedForm<EditorProps>({
