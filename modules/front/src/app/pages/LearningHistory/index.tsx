@@ -1,9 +1,9 @@
 import React from 'react';
 import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
-import {Table} from "antd";
+import {Modal, Table} from "antd";
 import Column from "antd/es/table/Column";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {inject, observer} from "mobx-react";
 import {RootStoreProp} from "../../store";
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
@@ -13,6 +13,7 @@ import {CourseTrainer} from "../../../cuba/entities/base/tsadv$CourseTrainer";
 import {restServices} from "../../../cuba/services";
 import moment from "moment";
 import {RouteComponentProps, withRouter} from "react-router";
+import Button from "../../components/Button/Button";
 
 @injectMainStore
 @inject("rootStore")
@@ -39,6 +40,8 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
   ];
 
   @observable selectedRowKey: string | undefined;
+  @observable isModalVisible: boolean = false;
+  @observable noteValue: string;
 
   previewCertificate = (fileId: string) => {
     getCubaREST()!.getFile(fileId).then(responseBlob => {
@@ -69,6 +72,21 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                     key="course" render={(text, record: any) => {
               return record.course
             }}/>
+            <Column title={<FormattedMessage id="notes"/>}
+                    dataIndex="note"
+                    key="note" render={(text, record: any) => {
+              return record.note ?
+                <Button
+                  onClick={() => {
+                    this.noteValue = record.note;
+                    this.isModalVisible = true;
+                  }}
+                  type={"link"}>
+                  <span
+                    style={{color: 'blue'}}>{record.note.substring(0, 20) + (record.note.length > 20 ? " . . ." : "")}</span>
+                </Button> : null;
+              // return record.note
+            }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='status'/>}
                     dataIndex="enrollmentStatus"
                     key="enrollmentStatus"/>
@@ -96,6 +114,23 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             />
           </Table>
         </Section>
+
+        <Modal visible={this.isModalVisible}
+               okText={<FormattedMessage id={'download'}/>}
+               bodyStyle={{height: '500px'}}
+               onOk={() => {
+
+                 const element = document.createElement("a");
+                 const file = new Blob([this.noteValue], {type: 'text/plain'});
+                 element.href = URL.createObjectURL(file);
+                 element.download = "note.txt";
+                 document.body.appendChild(element); // Required for this to work in FireFox
+                 element.click();
+
+               }}
+               onCancel={() => this.isModalVisible = false}>
+          <textarea value={this.noteValue} style={{width: '100%', height: '100%'}} disabled={true}/>
+        </Modal>
       </Page>
     );
   }
