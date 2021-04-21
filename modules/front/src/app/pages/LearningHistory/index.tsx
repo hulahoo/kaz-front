@@ -14,6 +14,8 @@ import {restServices} from "../../../cuba/services";
 import moment from "moment";
 import {RouteComponentProps, withRouter} from "react-router";
 import Button from "../../components/Button/Button";
+import {Link} from "react-router-dom";
+import {CourseManagement} from "../Course/CourseManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -70,7 +72,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='course'/>}
                     dataIndex="course"
                     key="course" render={(text, record: any) => {
-              return record.course
+              return <Link to={CourseManagement.PATH + '/' + record.courseId}>{record.course}</Link>
             }}/>
             <Column title={<FormattedMessage id="notes"/>}
                     dataIndex="note"
@@ -83,7 +85,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                   }}
                   type={"link"}>
                   <span
-                    style={{color: 'blue'}}>{record.note.substring(0, 20) + (record.note.length > 20 ? " . . ." : "")}</span>
+                    style={{color: '#005487'}}>{record.note.substring(0, 20) + (record.note.length > 20 ? " . . ." : "")}</span>
                 </Button> : null;
               // return record.note
             }}/>
