@@ -49,11 +49,10 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
         restServices.courseService.createTestScormAttempt({
           ...this.scormIntegrationApi.getTestResult(),
           enrollmentId: this.props.enrollmentId,
-          courseSectionId: this.props.courseSection.id,
-          success: isSuccess
-        }).then(() => {
+          courseSectionId: this.props.courseSection.id
+        }).then(courseSectionAttempt => {
           this.props.setLoadingFinishCourseSection(false);
-          this.props.finishedCourseSection(this.props.courseSection.id, isSuccess);
+          this.props.finishedCourseSection(this.props.courseSection.id, courseSectionAttempt.success!);
           this.props.selectNextSection!();
         }).catch(reason => {
           Notification.error({
