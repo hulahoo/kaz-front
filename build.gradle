@@ -57,7 +57,7 @@ dependencies {
     appComponent("com.haulmont.fts:fts-global:$cubaVersion")
     appComponent("com.haulmont.charts:charts-global:$cubaVersion")
     appComponent('com.haulmont.addon.restapi:restapi-global:7.1.1')
-    appComponent('kz.uco.tsadv:tsadv-global:d72.1.0.77-SNAPSHOT')
+    appComponent('kz.uco.tsadv:tsadv-global:d72.1.0.82-SNAPSHOT')
     appComponent('kz.uco.mobile:mob-global:d72.1.0.1-SNAPSHOT')
 }
 
@@ -125,18 +125,18 @@ configure(coreModule) {
 
     task createDb(dependsOn: assembleDbScripts, description: 'Creates local database', type: CubaDbCreation) {
         dbms = 'postgres'
-        host = 'dev.uco.kz'
-        dbName = 'kazminhr_dev'
+        host = 'localhost'
+        dbName = 'tsadv_master7'
         dbUser = 'tal'
-        dbPassword = 'JAVjm4gTqe'
+        dbPassword = 'tal'
     }
 
     task updateDb(dependsOn: assembleDbScripts, description: 'Updates local database', type: CubaDbUpdate) {
         dbms = 'postgres'
-        host = 'dev.uco.kz'
-        dbName = 'kazminhr_dev'
+        host = 'localhost'
+        dbName = 'tsadv_master7'
         dbUser = 'tal'
-        dbPassword = 'JAVjm4gTqe'
+        dbPassword = 'tal'
     }
 }
 
