@@ -33,7 +33,6 @@ import StatusSteps, {StatusStepProp} from "../../common/StatusSteps";
 import DropdownButton from "../../components/Dropdown/DropdownButton";
 import {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import moment from "moment";
 import {EnumValueInfo, SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
