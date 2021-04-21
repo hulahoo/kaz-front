@@ -603,7 +603,7 @@ export type CourseInfo = {
   finished: number
   certificateUrl: string
   sections: any[]
-  logo: any
+  logo: string
   comments: Comment[]
   isIssuedCertificate: boolean
   learningProof: string
