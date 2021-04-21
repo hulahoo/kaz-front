@@ -28,18 +28,18 @@ import {DicRelationshipType} from "../../../cuba/entities/base/tsadv$DicRelation
 import {DicSex} from "../../../cuba/entities/base/base$DicSex";
 import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType";
 import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
-import {Address} from "../../../cuba/entities/base/tsadv$Address";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import {restServices} from "../../../cuba/services";
 import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
+import {DicAddressType} from "../../../cuba/entities/base/tsadv$DicAddressType";
 
 type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
-  entityId: string;
+  entityId?: string;
   visible: boolean;
 };
 
@@ -84,7 +84,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
   regionsDc = collection<DicRegion>(DicRegion.NAME, {view: "_minimal"});
 
-  addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
+  addressTypesDc = collection<DicAddressType>(DicAddressType.NAME, {view: "_minimal"});
 
   @observable
   updated = false;
