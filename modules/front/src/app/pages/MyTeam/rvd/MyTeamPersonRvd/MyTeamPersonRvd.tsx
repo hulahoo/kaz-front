@@ -38,10 +38,23 @@ class MyTeamPersonRvd extends React.Component<MyTeamCardProps & MainStoreInjecte
   render() {
     return (
       <div>
-        <Link to={AbsenceRvdRequestManagement.PATH + "/" + AbsenceRvdRequestManagement.NEW_SUBPATH}>
-          <Button buttonType={ButtonType.PRIMARY}
-                  style={{margin: "0 12px 12px 0"}}>
-            <span><FormattedMessage id="management.browser.create"/></span>
+        <Link
+          to={
+            AbsenceRvdRequestManagement.PATH +
+            "/" +
+            AbsenceRvdRequestManagement.NEW_SUBPATH
+          }
+          key="create"
+        >
+          <Button
+            htmlType="button"
+            style={{ margin: "0 12px 12px 0" }}
+            type="primary"
+            icon="plus"
+          >
+          <span>
+            <FormattedMessage id="management.browser.create" />
+          </span>
           </Button>
         </Link>
 {/*        <Link to={AbsenceRvdRequestManagement.PATH + "/" + AbsenceRvdRequestManagement.NEW_SUBPATH}>

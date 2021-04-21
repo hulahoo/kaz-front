@@ -120,6 +120,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   @observable
   absenceTypesDc: DictionaryDataCollectionStore<DicRequestStatus>;
 
+  @observable
+  isPurposeText = false;
+
+
   getUpdateEntityData = (): any => {
   console.log(this.props.rootStore!.userInfo.personGroupId);
 
@@ -201,7 +205,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     const {status} = this.dataInstance;
     console.log(this.props.history!.goBack);
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "absenceRvdRequest"})}>
+      <Page pageName={this.props.intl.formatMessage({id: "workOnWeekendRequest"})}>
         <Section size="large">
           <Card
             bordered={false}
@@ -262,6 +266,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
+                getValueFromEvent: args => {
+                  this.calcHours(args, null, null);
+                  return args;
+                },
               }}
             />
 
@@ -273,8 +281,27 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
+                getValueFromEvent: args => {
+                  if(args === 'OTHER' || 'Другое'){
+                    this.isPurposeText = true;
+                  }
+                  return args;
+                }
               }}
             />
+{/*
+            {isOther ? (
+              <ReadonlyField
+                entityName={AbsenceRvdRequest.NAME}
+                form={this.props.form}
+                propertyName="purposeText"
+                formItemOpts={{style: {marginBottom: "12px"}}}
+              />) : (<></>)
+            }*/}
+
+            {this.purposeText(this.isPurposeText)}
+
+
 
             <Field
               entityName={AbsenceRvdRequest.NAME}
@@ -283,6 +310,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
+                getValueFromEvent: args => {
+                  this.calcHours(null, args, null);
+                  return args
+                }
               }}
             />
 
@@ -293,6 +324,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
+                getValueFromEvent: args => {
+                  this.calcHours(null, null, args);
+                  return args
+                }
               }}
             />
 
@@ -426,9 +461,19 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       </Page>
     );
   }
-  //buttons
-//upload
-  //takCard
+
+  purposeText = (isPurposeText: boolean) => {
+    return <div style={isPurposeText ? {} : {display: 'none'}}>
+      <ReadonlyField
+        entityName={AbsenceRvdRequest.NAME}
+        propertyName="purposeText"
+        form={this.props.form}
+        getFieldDecoratorOpts={{}}
+        formItemOpts={{style: {marginBottom: "12px"}}}
+      />
+    </div>
+  }
+
   calcHours = (type?: string | null, dateFrom?: any, dateTo?: any) => {
     type = type || this.props.form.getFieldValue(`type`);
     dateFrom = dateFrom || this.props.form.getFieldValue(`timeOfStarting`);

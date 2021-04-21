@@ -138,7 +138,6 @@ class AbsenceRvdRequestListComponent extends React.Component<
         fields={this.fields}
         onRowSelectionChange={this.handleRowSelectionChange}
         hideSelectionColumn={true}
-        buttons={buttons}
       />
     );
   }
