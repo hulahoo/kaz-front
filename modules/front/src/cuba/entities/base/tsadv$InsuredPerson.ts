@@ -10,6 +10,7 @@ import { DicDocumentType } from "./tsadv$DicDocumentType";
 import { DicRegion } from "./base$DicRegion";
 import { Address } from "./tsadv$Address";
 import { FileDescriptor } from "./sys$FileDescriptor";
+import {DicAddressType} from "./tsadv$DicAddressType";
 export class InsuredPerson extends StandardEntity {
   static NAME = "tsadv$InsuredPerson";
   attachDate?: any | null;
@@ -29,7 +30,7 @@ export class InsuredPerson extends StandardEntity {
   documentType?: DicDocumentType | null;
   documentNumber?: string | null;
   region?: DicRegion | null;
-  addressType?: Address | null;
+  addressType?: DicAddressType | null;
   address?: string | null;
   insuranceProgram?: string | null;
   file?: FileDescriptor[] | null;

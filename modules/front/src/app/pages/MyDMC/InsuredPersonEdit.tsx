@@ -33,7 +33,6 @@ import {JobGroup} from "../../../cuba/entities/base/tsadv$JobGroup";
 import {DicSex} from "../../../cuba/entities/base/base$DicSex";
 import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType";
 import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
-import {Address} from "../../../cuba/entities/base/tsadv$Address";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import {DEFAULT_DATE_PARSE_FORMAT, restServices} from "../../../cuba/services";
@@ -45,6 +44,7 @@ import {instanceStore} from "../../util/InstanceStore";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import moment from "moment";
 import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
+import {DicAddressType} from "../../../cuba/entities/base/tsadv$DicAddressType";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -100,7 +100,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   regionsDc = collection<DicRegion>(DicRegion.NAME, {view: "_minimal"});
 
-  addressTypesDc = collection<Address>(Address.NAME, {view: "_minimal"});
+  addressTypesDc = collection<DicAddressType>(DicAddressType.NAME, {view: "_minimal"});
 
   @observable
   updated = false;
@@ -186,6 +186,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   @observable
   globalErrors: string[] = [];
+
+  @observable
+  isCreateMember: boolean = false;
 
   update = (): Promise<boolean> => {
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
@@ -277,7 +280,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   @action
   onChangeVisible = (value: boolean): void => {
     if (value)
-      this.update().then(value1 => this.visible = value1 && value);
+      this.update().then(updatedSuccess => this.visible = updatedSuccess && value);
     else
       this.visible = value;
   }
@@ -297,7 +300,10 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         style={{margin: "12px"}}
         type="primary"
         icon={"plus"}
-        onClick={this.showModal}
+        onClick={() => {
+          this.isCreateMember = true;
+          this.showModal();
+        }}
       />,
       <Button
         htmlType="button"
@@ -305,7 +311,10 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         type="primary"
         icon={"edit"}
         disabled={this.selectedRowKey === undefined}
-        onClick={this.showModal}
+        onClick={() => {
+          this.isCreateMember = false;
+          this.showModal();
+        }}
       />,
       <Button
         htmlType="button"
@@ -632,9 +641,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                         this.colIndex = 0;
                       }
                       this.colIndex += 1;
-                      if (this.colIndex == 5 && record.birthdate){
+                      if (this.colIndex == 5 && record.birthdate) {
                         return moment(record.birthdate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
-                      }else if (this.colIndex == 9 && record.attachDate){
+                      } else if (this.colIndex == 9 && record.attachDate) {
                         return moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
                       }
                       return text;
@@ -674,7 +683,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
             </Form.Item>
           </Form>
         </Spin>
-        <InsuredPersonMemberComponent entityId={this.selectedRowKey!}
+        <InsuredPersonMemberComponent entityId={this.isCreateMember ? undefined : this.selectedRowKey}
                                       visible={this.visible}
                                       insuranceContract={() => this.props.form.getFieldValue('insuranceContract')}
                                       onChangeVisible={this.onChangeVisible} refreshDs={this.refreshDs}/>
