@@ -32,6 +32,7 @@ import {DicCompany} from "./entities/base/base_DicCompany";
 import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
+import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
@@ -182,12 +183,14 @@ export const restServices = {
         {...params}
       );
     },
-    createTestScormAttempt: (params: { courseSectionId: string, enrollmentId: string, score: number, maxScore: number, minScore: number, success: boolean }): Promise<void> => {
+    createTestScormAttempt: (params: { courseSectionId: string, enrollmentId: string, score: number, maxScore: number, minScore: number }): Promise<CourseSectionAttempt> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "createTestScormAttempt",
         {...params}
-      );
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
     },
     validateEnroll: (params: { courseId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
       return getCubaREST()!.invokeService(
