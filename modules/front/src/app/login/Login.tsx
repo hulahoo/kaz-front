@@ -14,6 +14,7 @@ import {
 } from "react-intl";
 import {RootStoreProp} from "../store";
 import {RouteComponentProps, withRouter} from "react-router-dom";
+import Notification from "../util/Notification/Notification";
 
 @injectMainStore
 @inject("rootStore")
@@ -35,6 +36,13 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps & 
     e.preventDefault();
     this.performingLoginRequest = true;
     const {login, password} = this.props.rootStore!.login;
+    if (!password) {
+      Notification.error({
+        message: this.props.intl.formatMessage({id: "password.error.empty"})
+      });
+      this.performingLoginRequest = false;
+      return;
+    }
     getCubaREST()!.login(login!, password!, {tokenEndpoint: "auth/token"})
       .then(
         action(() => {
