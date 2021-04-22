@@ -98,6 +98,7 @@ class MaterialReviews extends Component<WrappedComponentProps & MaterialReviewsP
                       style={{backgroundColor: "#F3F3F3", margin: '5px 0', borderRadius: '4px', border: 'none'}}>
                       <List.Item.Meta
                         style={{margin: '0 5px'}}
+                        className="comment-block"
                         title={<div className={"comment-header"}
                                     style={{display: 'flex', justifyContent: "space-between"}}>
                           <div className="comment-name default-font">
