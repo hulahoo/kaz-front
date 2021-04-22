@@ -188,7 +188,9 @@ export const restServices = {
         "tsadv_CourseService",
         "createTestScormAttempt",
         {...params}
-      );
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
     },
     validateEnroll: (params: { courseId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
       return getCubaREST()!.invokeService(
