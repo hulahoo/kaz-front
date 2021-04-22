@@ -1,6 +1,13 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {collection, DataTable, injectMainStore} from "@cuba-platform/react";
+import {
+  collection,
+  DataTable,
+  getEnumCaption,
+  getPropertyInfoNN,
+  injectMainStore,
+  MainStoreInjected
+} from "@cuba-platform/react";
 import {Activity} from "../../../cuba/entities/base/uactivity$Activity";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
@@ -18,7 +25,7 @@ type Prop = { type: "tasks" | "notifications" }
 @injectMainStore
 @inject("rootStore")
 @observer
-class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
+class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootStoreProp & RouteComponentProps & MainStoreInjected> {
 
   dataCollection = collection<Activity>(Activity.NAME, {
     view: "portal-activity",
@@ -71,7 +78,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
                              return format(new Date(text), DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS);
                            }
                            columnIndex++;
-                           return text
+                           return getEnumCaption(record.status, getPropertyInfoNN("status", Activity.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!);
                          })
                        }}
                        dataCollection={this.dataCollection}/>
