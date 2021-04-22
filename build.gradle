@@ -1,6 +1,6 @@
 buildscript {
     ext.cubaVersion = '7.2.10'
-    repositories {
+    repositories { 
         mavenLocal()
         maven {
             url 'https://repo.cuba-platform.com/content/groups/work'
@@ -43,7 +43,7 @@ apply(plugin: 'cuba')
 cuba {
     artifact {
         group = 'kz.uco.kzm'
-        version = 'd72.1.0.1'
+        version = '0.1'
         isSnapshot = true
     }
     tomcat {
