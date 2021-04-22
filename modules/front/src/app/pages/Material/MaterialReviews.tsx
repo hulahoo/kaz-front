@@ -135,7 +135,7 @@ class MaterialReviews extends Component<WrappedComponentProps & MaterialReviewsP
                       message: this.props.intl.formatMessage({id: 'comment.error.required'})
                     }]
                   })(
-                    <TextArea/>
+                    <TextArea rows={5} maxLength={2000}/>
                   )}
                   <Row type="flex" justify="end">
                     <Col>
