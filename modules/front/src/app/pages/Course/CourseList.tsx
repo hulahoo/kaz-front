@@ -16,6 +16,7 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import Rate from "../../components/Rate/Rate";
 import {Course} from "../../../cuba/entities/base/tsadv$Course";
 import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
+import {getBlobUrl} from "../../util/util";
 
 @observer
 class CourseList<T> extends React.Component<WrappedComponentProps> {
@@ -71,8 +72,8 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                                  className="course-icon right-icon"/> :
                                                                                                                null}
                                                                                                            <ImageLogo
-                                                                                                             type="base64"
-                                                                                                             imgSrc={course.logo}
+                                                                                                             type="promise"
+                                                                                                             imgSrcProp={getBlobUrl(course.logo)}
                                                                                                              name={course.name!}/>
                                                                                                          </>
                                                                                                        )}>
