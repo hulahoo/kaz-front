@@ -101,6 +101,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
     }
 
     return <TestComponent test={this.testModel}
+                          setDisableFinishSectionBtn={this.setDisableFinishSectionBtn}
                           finishTimeHandler={this.finishTest}
                           addRemoveAnswer={this.addRemoveAnswer}/>
   };
@@ -109,7 +110,7 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
     if (!this.isStarted) return [<Button buttonType={ButtonType.PRIMARY}
                                          onClick={this.onStartTest}>{this.props.intl.formatMessage({id: "course.section.test.start"})}</Button>];
 
-    if (!this.isFinished) return [<Button buttonType={ButtonType.PRIMARY}
+    if (!this.isFinished) return [<Button buttonType={ButtonType.PRIMARY} disabled={this.isDisabledFinishSectionBtn}
                                           onClick={this.confirmModalFinishTest}>{this.props.intl.formatMessage({id: "course.section.test.finish"})}</Button>];
 
     return [<Button buttonType={ButtonType.PRIMARY}
@@ -137,8 +138,14 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
       });
       return response;
     });
-  }
+  };
 
+
+  componentDidMount() {
+    super.componentDidMount();
+
+    this.setDisableFinishSectionBtn(true);
+  }
 }
 
 export default injectIntl(TestCourseSectionRender);
