@@ -26,13 +26,14 @@ class QuestionBlock extends Component<Props & WrappedComponentProps> {
   setQuestionIndex = (value: number) => {
     const currentTestSection = this.props.testSections;
     const currentTestSectionQuestionsLength = currentTestSection[this.testSectionIndex].questionsAndAnswers.length;
-    console.log(currentTestSectionQuestionsLength);
+    const isLastSection = this.testSectionIndex === (this.props.testSections.length - 1);
+    const isLastQuestionIndex = value === (this.props.testSections[this.props.testSections.length - 1].questionsAndAnswers.length - 1);
+
     if (value === currentTestSectionQuestionsLength) {
       this.questionIndex = 0;
       this.testSectionIndex = this.testSectionIndex + 1;
 
-      const isLastQuestion = (this.testSectionIndex === (this.props.testSections.length - 1) && (this.questionIndex === (this.props.testSections[this.props.testSections.length - 1].questionsAndAnswers.length - 1)));
-      console.log(isLastQuestion);
+      const isLastQuestion = (isLastSection && isLastQuestionIndex);
       if (this.props.setDisableFinishSectionBtn) {
         this.props.setDisableFinishSectionBtn(!isLastQuestion);
       }
@@ -43,6 +44,11 @@ class QuestionBlock extends Component<Props & WrappedComponentProps> {
       this.questionIndex = currentTestSectionQuestionsLength - 1;
 
       return;
+    }
+
+    const isLastQuestion = (isLastSection && isLastQuestionIndex);
+    if (this.props.setDisableFinishSectionBtn) {
+      this.props.setDisableFinishSectionBtn(!isLastQuestion);
     }
     this.questionIndex = value;
   };

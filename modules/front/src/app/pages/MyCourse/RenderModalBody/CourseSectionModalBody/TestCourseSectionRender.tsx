@@ -143,7 +143,6 @@ class TestCourseSectionRender extends AbstractRenderModalBody<TestCourseSectionR
 
   componentDidMount() {
     super.componentDidMount();
-
     this.setDisableFinishSectionBtn(true);
   }
 }
