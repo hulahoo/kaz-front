@@ -67,7 +67,7 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
       this.disabledChangeVacationDates = (absence && absence.type && absence.type
         && absence.type.isVacationDate
         && absence.type.availableForChangeDate
-        && absence.type.availableForLeavingVacation
+        && absence.type.availableForRecallAbsence
         && absence.type.useInSelfService
         && moment(absence.dateFrom) > moment()) !== true;
       this.disabledAbsenceForRecall = (absence && absence.type && absence.type.useInSelfService
