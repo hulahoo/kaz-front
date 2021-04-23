@@ -125,7 +125,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
   isSelectedAbsenceTypeMaternity = (): boolean => {
     if (this.selectedRowKey === null || this.selectedRowKey === undefined) return true;
     const absence = this.getAbsenceById(this.selectedRowKey);
-    return !(absence !== null && absence.type !== undefined && absence.type !== null && absence.type.code === "MATERNITY");
+    return !(absence !== null && absence.type !== undefined && absence.type !== null && absence.type.availableForLeavingVacation );
   }
 
   render() {
