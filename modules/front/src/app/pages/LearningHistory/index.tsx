@@ -85,7 +85,10 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                   }}
                   type={"link"}>
                   <span
-                    style={{color: '#005487'}}>{record.note.substring(0, 20) + (record.note.length > 20 ? " . . ." : "")}</span>
+                    style={{color: '#005487'}}>
+                    {/*record.note.substring(0, 20) + (record.note.length > 20 ? " . . ." : "")*/}
+                    <i className="far fa-comment-alt" />
+                  </span>
                 </Button> : null;
               // return record.note
             }}/>
