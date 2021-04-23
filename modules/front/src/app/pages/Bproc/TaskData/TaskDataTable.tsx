@@ -33,7 +33,7 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 render={(text, record) => {
                   return <div className="break-words">{(record as ExtTaskData).hrRole ? ((record as ExtTaskData).hrRole as DicHrRole).langValue : ""}</div>;
                 }}/>
-        <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='assignee'/>}
+        <Column title={this.props.intl.formatMessage({ id: "bproc.startBproc.modal.user" })}
                 dataIndex="assigneeOrCandidates"
                 key="assigneeOrCandidates"
                 ellipsis
