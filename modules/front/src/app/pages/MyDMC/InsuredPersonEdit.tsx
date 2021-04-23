@@ -70,6 +70,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     view: "insuredPerson-browseView",
     sort: "-updateTs",
     loadImmediately: false,
+    filter: {
+      conditions: [{
+        property: 'id',
+        operator: '=',
+        value: null
+      }]
+    }
   });
 
   statusRequestsDc = collection<DicMICAttachmentStatus>(
@@ -698,11 +705,12 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       if (this.dataInstance.item!)
         this.props.form.setFieldsValue({totalAmount: value});
     })
-    // @ts-ignore
+
     restServices.documentService.getInsuredPersonMembers({
       insuredPersonId: this.props!.entityId!
     }).then(value => {
       this.familyDataCollection.clear();
+      console.log('value', value.length);
       // @ts-ignore
       this.familyDataCollection.items = Array.from(value);
     })
