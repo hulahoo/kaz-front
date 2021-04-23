@@ -134,7 +134,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   };
 
   managerAssessmentColumnRender = (text: string, record: any) => {
-    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
     return (
       <div>
         <Form.Item>
@@ -148,7 +148,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 validator: this.assessmentValidator
               }]
             })(
-              <InputNumber disabled={!this.isManager() || !isSecondStep}
+              <InputNumber disabled={!this.isManager() || !isThirdStep}
                            onChange={value => {
                              record.managerAssessment = value;
                              record.result = record.managerAssessment || record.assessment;
@@ -161,7 +161,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   assessmentColumnRender = (text: string, record: any) => {
-    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
     return (
       <div>
         <Form.Item>
@@ -175,7 +175,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 validator: this.assessmentValidator
               }]
             })(
-              <InputNumber disabled={!this.isInitiator() || !isSecondStep}
+              <InputNumber disabled={!this.isInitiator() || !isThirdStep}
                            onChange={value => {
                              record.assessment = value;
                              record.result = record.managerAssessment || record.assessment;
@@ -188,9 +188,9 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   validate = (): boolean => {
-    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
     let isValidatedSuccess = true;
-    if (isSecondStep)
+    if (isThirdStep)
       this.form.validateFields((err: any, values: any) => {
         isValidatedSuccess = !err;
         if (err) {
@@ -205,8 +205,8 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   update = () => {
-    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
-    if (isSecondStep && this.dataCollection)
+    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    if (isThirdStep && this.dataCollection)
       this.dataCollection.forEach(value => {
         getCubaREST()!.commitEntity(AssignedGoal.NAME, toJS(value))
           .catch(reason => {
@@ -220,14 +220,16 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   render() {
     const isFirstStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'DRAFT';
     const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
-    const assessmentColumn = !isFirstStep
+    const isDraft = !this.kpiDataInstance.item || !this.kpiDataInstance.item.status || this.kpiDataInstance.item.status.code == 'DRAFT'
+
+    const assessmentColumn = !isFirstStep && !isSecondStep
       ? <Column title={<FormattedMessage id="goalForm.column.assessment"/>}
                 dataIndex="assessment"
                 key="assessment"
                 render={this.assessmentColumnRender}/>
       : null;
 
-    const managerAssessmentColumn = !isFirstStep && (this.isUserManager || !isSecondStep)
+    const managerAssessmentColumn = !isFirstStep && !isSecondStep && (!this.isInitiator() || !isDraft)
       ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='managerAssessment'/>}
                 dataIndex="managerAssessment"
                 key="managerAssessment"
