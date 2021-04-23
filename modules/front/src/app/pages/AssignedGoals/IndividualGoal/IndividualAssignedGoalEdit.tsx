@@ -171,7 +171,7 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
                 form={this.props.form}
                 formItemOpts={{
                   style: {marginBottom: "12px"},
-                  label: this.props.intl.formatMessage({id: "goalLibrary"})
+                  label: this.props.intl.formatMessage({ id: "goalLibrary" })
                 }}
                 optionsContainer={this.categorysDc}
 
@@ -183,7 +183,7 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
                 form={this.props.form}
                 formItemOpts={{
                   style: {marginBottom: "12px"},
-                  label: this.props.intl.formatMessage({id: "goal"})
+                  label: this.props.intl.formatMessage({ id: "goal" })
                 }}
                 getFieldDecoratorOpts={{}}
               />
