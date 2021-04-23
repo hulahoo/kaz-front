@@ -26,6 +26,7 @@ class ImageLogo extends Component<ImageLogoProps & React.ImgHTMLAttributes<HTMLI
       <>
         {this.logo || imgSrc
           ? <img {...rest} alt={name}
+                 style={{maxHeight: "100%"}}
                  src={this.props.type === 'base64' ? "data:image/png;base64, " + img : img}/>
           : <NoImage {...this.props}/>} </>
     );
