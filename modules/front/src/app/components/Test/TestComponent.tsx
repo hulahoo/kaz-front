@@ -24,6 +24,7 @@ type Props = {
   finishTimeHandler?: () => void
   onFullScreenClick?: () => void
   onFinishTest?: (answers: any) => void
+  setDisableFinishSectionBtn: (value: boolean) => void
   addRemoveAnswer: (a: AnsweredQuestion) => void
 }
 
@@ -63,7 +64,7 @@ class TestComponent extends React.Component<Props & WrappedComponentProps> {
           ? <Countdown value={Date.now() + 1000 * 60 * this.props.test.timer}
                        onFinish={this.props.finishTimeHandler}/>
           : <></>}
-        <QuestionBlock testSections={this.props.test.testSections} addRemoveAnswer={this.props.addRemoveAnswer}/>
+        <QuestionBlock testSections={this.props.test.testSections} addRemoveAnswer={this.props.addRemoveAnswer} setDisableFinishSectionBtn={this.props.setDisableFinishSectionBtn}/>
       </div>
     );
   }
