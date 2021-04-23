@@ -1,7 +1,7 @@
 import React from 'react';
 import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
-import {Modal, Table} from "antd";
+import {Icon, Modal, Table} from "antd";
 import Column from "antd/es/table/Column";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {inject, observer} from "mobx-react";
@@ -16,6 +16,8 @@ import {RouteComponentProps, withRouter} from "react-router";
 import Button from "../../components/Button/Button";
 import {Link} from "react-router-dom";
 import {CourseManagement} from "../Course/CourseManagement";
+import {getMenuIcon} from "../../../resources/icons/menu";
+import {ReactComponent as SvgNode} from "../../../resources/icons/comment-alt-regular.svg";
 
 @injectMainStore
 @inject("rootStore")
@@ -84,11 +86,12 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                     this.isModalVisible = true;
                   }}
                   type={"link"}>
-                  <span
-                    style={{color: '#005487'}}>
-                    {/*record.note.substring(0, 20) + (record.note.length > 20 ? " . . ." : "")*/}
-                    <i className="far fa-comment-alt" />
-                  </span>
+                       <img
+                         style={{color: '#005487'}}
+                         src={require("../../../resources/icons/comment-alt-regular.svg")}
+                         alt="Note"
+                         className={"ant-menu-item-icon"}
+                       />
                 </Button> : null;
               // return record.note
             }}/>
