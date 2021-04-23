@@ -64,7 +64,11 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
     this.selectedRowKey = selectedRowKeys[0];
     if (this.selectedRowKey) {
       const absence = this.dataCollection.items.find(value => value.id === this.selectedRowKey);
-      this.disabledChangeVacationDates = (absence && absence.type && absence.type.code && absence.type.code.startsWith('ANNUAL')
+      this.disabledChangeVacationDates = (absence && absence.type && absence.type
+        && absence.type.isVacationDate
+        && absence.type.availableForChangeDate
+        && absence.type.availableForRecallAbsence
+        && absence.type.useInSelfService
         && moment(absence.dateFrom) > moment()) !== true;
       this.disabledAbsenceForRecall = (absence && absence.type && absence.type.useInSelfService
         && absence.type.availableForChangeDate && absence.type.availableForRecallAbsence) !== true;

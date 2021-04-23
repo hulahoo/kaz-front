@@ -283,11 +283,11 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         .map(s => s.index)[0]
       : undefined;
 
-    if (stepIndex === 0) return <></>;
+    if (!stepIndex || stepIndex < 2 || this.approverHrRoleCode === 'INITIATOR') return <></>;
 
-    const isExtraPointEnable = stepIndex === 1 && this.approverHrRoleCode === 'MANAGER';
+    const isExtraPointEnable = this.approverHrRoleCode === 'MANAGER';
 
-    const isForm2Visible = stepIndex !== undefined && stepIndex > 0 && this.isUserManager;
+    const isForm2Visible = this.isNotDraft() && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR';
 
     return (<div style={!isForm2Visible ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
 
@@ -295,6 +295,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "extraPoint"})}
         <Form.Item>{getFieldDecorator("extraPoint", {
           rules: [{validator: this.extraPointValidator}],
+          initialValue: this.dataInstance.item ? this.dataInstance.item.extraPoint : null
         })(
           <InputNumber
             onChange={this.setExtraPoint}
@@ -306,6 +307,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
         {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "purpose"})}
         <Form.Item>{getFieldDecorator("purpose", {
+          initialValue: this.dataInstance.item ? this.dataInstance.item.purpose : null,
           rules: [
             {
               validator: (rule, value, callback) => {
@@ -509,7 +511,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                   }}>
                   {this.props.intl.formatMessage({id: "result"})}: {Math.round(this.totalResult)}
                 </h1></div>
-                {stepIndex && stepIndex > 0 && this.isUserManager
+                {stepIndex && stepIndex > 1 && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR'
                   ? (<div>
                     <h1
                       id={'kpiScore'}

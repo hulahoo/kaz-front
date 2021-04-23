@@ -83,7 +83,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
     return (
       <Page>
         <Card className="narrow-layout card-actions-container" actions={[
-          <Link to={"/books"}>
+          <Link to={"/book"}>
             <Button buttonType={ButtonType.FOLLOW}>
               <FormattedMessage id="back"/>
             </Button>
@@ -130,7 +130,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                   <Col span={8}>
                     <Form.Item label={this.props.intl.formatMessage({id: "book.pageCount"})} className={"form-item"}
                                key='duration'>
-                      {this.dataInstance.item ? 20 : ""}
+                      {this.dataInstance.item && this.dataInstance.item.numberOfPage ? this.dataInstance.item.numberOfPage : ""}
                     </Form.Item>
                   </Col>
                 </Row>

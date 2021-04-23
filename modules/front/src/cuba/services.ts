@@ -414,6 +414,22 @@ export const restServices = {
         "countDays",
         {...param}
       );
+    },
+    countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "countDaysWithoutHolidays",
+        {...param}
+      );
+    },
+  },
+  absenceRvdService: {
+    countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+    return getCubaREST()!.invokeService<string>(
+      "tsadv_AbsenceRvdService",
+      "countTotalHours",
+      {...param}
+      );
     }
   },
   documentService: {
@@ -606,7 +622,7 @@ export type CourseInfo = {
   finished: number
   certificateUrl: string
   sections: any[]
-  logo: any
+  logo: string
   comments: Comment[]
   isIssuedCertificate: boolean
   learningProof: string

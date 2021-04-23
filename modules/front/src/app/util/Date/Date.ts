@@ -6,7 +6,6 @@ export const DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS = "DD.MM.YYYY hh:mm";
 export const DEFAULT_DATE_PATTERN = "DD.MM.YYYY";
 
 export const format = (date: Date, pattern: string) => {
-  console.log(date);
   return pattern.replace("YYYY", date.getFullYear().toString())
     .replace("MM", wrapZero(date.getMonth() + 1))
     .replace("DD", wrapZero(date.getDate()))
@@ -19,11 +18,11 @@ export const formatDefaultDate = (date: Date) => {
   return format(date, 'DD.MM.YYYY')
 };
 
-export const fonmatDefaultDateFromString=(date: any)=>{
+export const formatDefaultDateFromString=(date: any)=>{
   return moment(date,DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
 };
 
-const wrapZero = (value: number):string => {
+const wrapZero = (value: number): string => {
   if (value > 0 && value < 10) {
     return "0" + value;
   } else {

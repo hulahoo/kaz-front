@@ -34,9 +34,9 @@ export class QueryDataCollectionStore<T> extends DataCollectionStore<T> {
   }
 }
 
-export function queryCollection<T>(entityName: string, queryName: string, params: any): QueryDataCollectionStore<T> {
+export function queryCollection<T>(entityName: string, queryName: string, params: any, fetch?: {loadImmediately?: boolean}): QueryDataCollectionStore<T> {
   const queryDataCollectionStore = new QueryDataCollectionStore<T>(entityName, queryName, params);
-  if (typeof params.loadImmediately === 'undefined' || params.loadImmediately) {
+  if (typeof fetch === 'undefined' || fetch.loadImmediately) {
     queryDataCollectionStore.load();
   }
   return queryDataCollectionStore;

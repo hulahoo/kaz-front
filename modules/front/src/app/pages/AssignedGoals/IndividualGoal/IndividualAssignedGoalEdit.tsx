@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Form, InputNumber} from "antd";
+import {Alert, Card, Form, InputNumber, Select} from "antd";
 import {observer} from "mobx-react";
 import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect} from "react-router-dom";
@@ -169,15 +169,22 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
                 entityName={AssignedGoal.NAME}
                 propertyName="category"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{
+                  style: {marginBottom: "12px"},
+                  label: this.props.intl.formatMessage({ id: "goalLibrary" })
+                }}
                 optionsContainer={this.categorysDc}
-                getFieldDecoratorOpts={{}}
+
               />
+
               <Field
                 entityName={AssignedGoal.NAME}
                 propertyName="goalString"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{
+                  style: {marginBottom: "12px"},
+                  label: this.props.intl.formatMessage({ id: "goal" })
+                }}
                 getFieldDecoratorOpts={{}}
               />
               <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}

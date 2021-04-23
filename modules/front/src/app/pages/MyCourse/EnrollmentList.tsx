@@ -19,6 +19,7 @@ import {CourseManagement} from "../Course/CourseManagement";
 import Notification from "../../util/Notification/Notification";
 import Rate from "../../components/Rate/Rate";
 import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
+import {getBlobUrl} from "../../util/util";
 
 @inject("rootStore")
 @observer
@@ -82,8 +83,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                                         className="course-icon right-icon"/> :
                                                                                                       null}
                                                                                                     <ImageLogo
-                                                                                                      type="base64"
-                                                                                                      imgSrc={course.logo}
+                                                                                                      type="promise"
+                                                                                                      imgSrcProp={getBlobUrl(course.logo ? course.logo.id : null)}
                                                                                                       name={course.name!}/>
                                                                                                   </>)}>
 

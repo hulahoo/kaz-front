@@ -35,6 +35,7 @@ import {FileDescriptor} from "../../../../../cuba/entities/base/sys$FileDescript
 import {restServices} from "../../../../../cuba/services";
 import {AbsenceForRecall} from "../../../../../cuba/entities/base/tsadv_AbsenceForRecall";
 import TextArea from "antd/es/input/TextArea";
+import Notification from "../../../../util/Notification/Notification";
 
 type EditorProps = {
   entityId: string;
@@ -82,6 +83,10 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
 
     "purposeText",
 
+    "isAgree",
+
+    "isFamiliarization",
+
     "file"
   ];
 
@@ -97,19 +102,46 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
   @observable
   approverHrRoleCode: string;
 
+  isUpdateBeforeOutcome = true;
+
   initVariablesByBproc = () => {
     if (this.activeTask && this.activeTask.hrRole && this.activeTask.hrRole.code) {
       this.approverHrRoleCode = this.activeTask.hrRole.code;
     }
   }
 
+  beforeCompletePredicate = (outcome: string): Promise<boolean> => {
+    if (outcome == 'APPROVE' && this.approverHrRoleCode === 'EMPLOYEE') {
+      const isAgree = this.props.form.getFieldValue('isAgree');
+      const isFamiliarization = this.props.form.getFieldValue('isFamiliarization');
+
+      if (!isAgree) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isAgree']})
+          }
+        )
+      }
+
+      if (!isFamiliarization) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isFamiliarization']})
+          }
+        )
+      }
+
+      if (!isAgree || !isFamiliarization)
+        return new Promise(resolve => resolve(false));
+    }
+    return new Promise(resolve => resolve(true));
+  };
+
   getUpdateEntityData = (): any => {
-    const file = this.props.form.getFieldValue('file');
     const json = {
       ...this.props.form.getFieldsValue(this.fields)
     };
-    if (file)
-      json['file'] = [file['id']];
+
     if (this.isNotDraft())
       return json
 
@@ -191,14 +223,15 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   form={this.props.form}
                   getFieldDecoratorOpts={{
                     rules: [{
+                      required: true,
                       validator: (rule, value, callback) => {
                         if (!value) {
-                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateFrom']}));
+                          return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateFrom']}));
                         } else {
                           const startOf = value.clone().startOf('day');
                           if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
-                            callback();
-                          } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                            return callback();
+                          } else return callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
                         }
                       }
                     }]
@@ -213,6 +246,7 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   form={this.props.form}
                   getFieldDecoratorOpts={{
                     rules: [{
+                      required: true,
                       validator: (rule, value, callback) => {
                         if (!value) {
                           callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateTo']}));
@@ -290,13 +324,14 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
+                      required: true,
                       validator: (rule, value, callback) => {
                         if (!value && !(isNotDraft || this.isDatesDisabled))
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
                         const dateTo = this.props.form.getFieldValue('dateTo');
                         const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
                         const recallDateTo = this.props.form.getFieldValue('recallDateTo');
-                        if (value && dateTo && dateTo.clone().startOf('day') - value.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
+                        if (value && dateTo && recallDateFrom && recallDateTo && dateTo.clone().startOf('day') - value.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
                           callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
                         } else callback();
                       }
@@ -313,13 +348,14 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
+                      required: true,
                       validator: (rule, value, callback) => {
                         if (!value && !(isNotDraft || this.isDatesDisabled))
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
                         const dateFrom = this.props.form.getFieldValue('dateFrom');
                         const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
                         const recallDateTo = this.props.form.getFieldValue('recallDateTo');
-                        if (value && dateFrom && value.clone().startOf('day') - dateFrom.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
+                        if (value && dateFrom && recallDateFrom && recallDateTo && value.clone().startOf('day') - dateFrom.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
                           callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
                         } else callback();
                       }
@@ -335,6 +371,25 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                       rows={4}/>
                   )}
                 </Form.Item>
+
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="isAgree"
+                  form={this.props.form}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
+                  getFieldDecoratorOpts={{valuePropName: 'checked'}}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="isFamiliarization"
+                  form={this.props.form}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
+                  getFieldDecoratorOpts={{valuePropName: 'checked'}}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
 
                 {/*<ReadonlyField
                   entityName={'tsadv_AbsenceForRecall'}
