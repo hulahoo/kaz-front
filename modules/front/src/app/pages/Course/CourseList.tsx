@@ -73,7 +73,7 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                                null}
                                                                                                            <ImageLogo
                                                                                                              type="promise"
-                                                                                                             imgSrcProp={getBlobUrl(course.logo)}
+                                                                                                             imgSrcProp={getBlobUrl(course.logo ? course.logo.id : null)}
                                                                                                              name={course.name!}/>
                                                                                                          </>
                                                                                                        )}>
