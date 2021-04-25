@@ -18,8 +18,8 @@ import Section from "../../hoc/Section";
 import {CourseManagement} from "../Course/CourseManagement";
 import Notification from "../../util/Notification/Notification";
 import Rate from "../../components/Rate/Rate";
-import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
 import {getBlobUrl} from "../../util/util";
+import CardIconFactory from "../CourseCatalog/CardIconFactory";
 
 @inject("rootStore")
 @observer
@@ -71,9 +71,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                                   name={course.name!}
                                                                                                   header={(<>
                                                                                                     {
-                                                                                                      course.enrollments!.find(e => e.status === 'COMPLETED')
-                                                                                                        ?
-                                                                                                        <SvgFinishedCourse className="course-icon left-icon"/>
+                                                                                                      course.enrollments!.length > 0 && (CardIconFactory.getIcon(course.enrollments![0].status) != null)
+                                                                                                        ? React.createElement(CardIconFactory.getIcon(course.enrollments![0].status)!, {className: "course-icon left-icon"})
                                                                                                         : null
                                                                                                     }
                                                                                                     {course.isOnline ?
