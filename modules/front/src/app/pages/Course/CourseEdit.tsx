@@ -21,6 +21,7 @@ import MaterialDescription from "../Material/MaterialDescription";
 import MaterialTrainerModal from "../Material/MaterialTrainerModal";
 import MaterialReviews, {RateRenderMeta} from "../Material/MaterialReviews";
 import Rate from "../../components/Rate/Rate";
+import {getBlobUrl} from "../../util/util";
 
 type Props = {
   entityId: string;
@@ -181,8 +182,8 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                 enrollmentId={this.dataInstance.enrollmentId}
                 materialInfoType="course"
                 imageProps={{
-                  type: "base64",
-                  imgSrc: this.dataInstance.logo
+                  type: "promise",
+                  imgSrcProp: getBlobUrl(this.dataInstance.logo)
                 }}
                 reviewsCount={this.dataInstance.rateReviewCount}
                 subscribe={this.subscribeToCourse}
