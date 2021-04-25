@@ -10,18 +10,39 @@ export const getBlobUrl = (fileId: string): Promise<string> => {
 };
 
 export const downloadFile = (fileId: string, fileName: string, extension: string, fileNotFoundMessage: string) => {
-  getCubaREST()!.getFile(fileId).then((value: Blob) => {
-    const anchor = document.createElement('a');
-    anchor.href = URL.createObjectURL(value);
-    anchor.target = '_blank';
-    anchor.download = fileName + '.' + extension;
+  return getCubaREST()!.getFile(fileId)
+    .then((value: Blob) => {
+      const anchor = document.createElement('a');
+      anchor.href = URL.createObjectURL(value);
+      anchor.target = '_blank';
+      anchor.download = fileName + '.' + extension;
 
-    anchor.click();
-  }).catch(() => {
-    Notification.error({
-      message: fileNotFoundMessage,
-    })
-  });
+      anchor.click();
+    }).catch(reason => {
+      Notification.error({
+        message: fileNotFoundMessage,
+      });
+
+      throw reason;
+    });
+};
+
+export const openPdfInNewTab = (fileId: string, fileName: string, fileNotFoundMessage: string) => {
+  return getCubaREST()!.getFile(fileId)
+    .then((value: Blob) => {
+      const anchor = document.createElement('a');
+      anchor.href = URL.createObjectURL(value);
+      anchor.target = '_blank';
+      anchor.name = fileName;
+
+      anchor.click();
+    }).catch(reason => {
+      Notification.error({
+        message: fileNotFoundMessage,
+      });
+
+      throw reason;
+    });
 };
 
 export const link = (entityName: string) => {
@@ -57,7 +78,6 @@ export const getFullName = (person: PersonExt, lang: string): string => {
   if (lang === 'en') return person.lastNameLatin + ' ' + person.middleNameLatin + ' ' + person.firstNameLatin;
   return person.lastName + ' ' + person.middleName + ' ' + person.firstName;
 };
-
 
 export const catchException = (promise: Promise<any>): Promise<any> => {
   return promise.catch(async (response: any) => {

@@ -17,6 +17,7 @@ type MaterialHeaderProps = {
   showEnrollment?: boolean;
   imageProps?: ImageLogoProps;
   materialInfoType?: string;
+  additionalBlock?: JSX.Element;
 }
 
 type MaterialHeaderHandlers = {
@@ -57,6 +58,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
               </Col>
             </Row>
           </div>
+          {this.props.additionalBlock}
           {showEnrollment
             ? this.props.enrollmentId
               ? <Button buttonType={ButtonType.PRIMARY} loading={this.props.subscribing}
