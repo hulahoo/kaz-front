@@ -105,7 +105,6 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
     });
 
     this.dataCollection.afterLoad = () => {
-      console.log(this.dataCollection.items);
       this.dataCollection.items = this.dataCollection.items.map(category => {
         const newCategory = category;
         newCategory.books = category.books!.filter(b => b.active);
