@@ -311,7 +311,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                    pagination={false} showHeader={true}
                    rowKey={record => record.id}>
               <Column key='role' title={<FormattedMessage id="bproc.startBproc.modal.roles"/>}
-                      render={(text, record) => (record as NotPersisitBprocActors).hrRole!.langValue1}/>
+                      render={(text, record) => ((record as NotPersisitBprocActors).hrRole! as SerializedEntity<DicHrRole>)._instanceName}/>
               <Column key='candidates' title={<FormattedMessage id="bproc.startBproc.modal.users"/>}
                       render={(text, record) => {
                         return <Candidate
