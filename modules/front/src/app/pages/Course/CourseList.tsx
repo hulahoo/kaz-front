@@ -17,6 +17,7 @@ import Rate from "../../components/Rate/Rate";
 import {Course} from "../../../cuba/entities/base/tsadv$Course";
 import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
 import {getBlobUrl} from "../../util/util";
+import CardIconFactory from "../CourseCatalog/CardIconFactory";
 
 @observer
 class CourseList<T> extends React.Component<WrappedComponentProps> {
@@ -59,9 +60,8 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                        name={course.name!}
                                                                                                        header={(<>
                                                                                                            {
-                                                                                                             course.enrollments.length > 0
-                                                                                                               ?
-                                                                                                               <SvgFinishedCourse className="course-icon left-icon"/>
+                                                                                                             course.enrollments.length > 0 && (CardIconFactory.getIcon(course.enrollments![0].status) != null)
+                                                                                                               ? React.createElement(CardIconFactory.getIcon(course.enrollments![0].status)!, {className: "course-icon left-icon"})
                                                                                                                : null
                                                                                                            }
                                                                                                            {
@@ -73,7 +73,7 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                                null}
                                                                                                            <ImageLogo
                                                                                                              type="promise"
-                                                                                                             imgSrcProp={getBlobUrl(course.logo)}
+                                                                                                             imgSrcProp={getBlobUrl(course.logo ? course.logo.id : null)}
                                                                                                              name={course.name!}/>
                                                                                                          </>
                                                                                                        )}>

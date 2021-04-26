@@ -31,13 +31,15 @@ class ScormCourseSectionRender extends AbstractRenderModalBody<ScormCourseSectio
   getModalBody = () => {
     let scormUrl: string | undefined = this.props.courseSection.sectionObject!.content!.url!;
     if (!this.loaded) {
-      scormUrl = undefined;
+      return <Spin spinning={!this.loaded}>
+        <div className="course-section-modal-body">
+          <iframe width="100%" height="100%" src={undefined}/>
+        </div>
+      </Spin>
     }
-    return <Spin spinning={!this.loaded}>
-      <div className="course-section-modal-body">
-        <iframe width="100%" height="100%" src={scormUrl}/>
-      </div>
-    </Spin>;
+    return <div className="course-section-modal-body">
+      <iframe width="100%" height="100%" src={scormUrl}/>
+    </div>;
   };
 
   onFinishSection = () => {
