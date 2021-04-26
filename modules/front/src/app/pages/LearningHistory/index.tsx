@@ -80,7 +80,7 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             <Column title={<>{this.props.intl.formatMessage({ id: 'notes' })}</>}
                     dataIndex="note"
                     key="note"
-                    width="200px"
+                    width="100px"
                     render={(text, record: any) => {
                       return record.note ? (
                           <SvgNode
@@ -92,8 +92,9 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                             style={{
                             color: '#005487',
                             cursor: 'pointer',
+                            marginLeft: '10px'
                             }}
-                          />)
+                          /> )
                         : <></>;
               // return record.note
             }}/>
