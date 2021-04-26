@@ -73,22 +73,28 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='course'/>}
                     dataIndex="course"
+                    width="200px"
                     key="course" render={(text, record: any) => {
               return <Link to={CourseManagement.PATH + '/' + record.courseId}>{record.course}</Link>
             }}/>
-            <Column title={<FormattedMessage id="notes"/>}
+            <Column title={<>{this.props.intl.formatMessage({ id: 'notes' })}</>}
                     dataIndex="note"
-                    key="note" render={(text, record: any) => {
-              return record.note ?
-                  <SvgNode
-                    width="20px"
-                    onClick={() => {
-                      this.noteValue = record.note;
-                      this.isModalVisible = true;
-                    }}
-                    style={{
-                    color: '#005487'
-                  }} /> : null;
+                    key="note"
+                    width="200px"
+                    render={(text, record: any) => {
+                      return record.note ? (
+                          <SvgNode
+                            width="20px"
+                            onClick={() => {
+                              this.noteValue = record.note;
+                              this.isModalVisible = true;
+                            }}
+                            style={{
+                            color: '#005487',
+                            cursor: 'pointer',
+                            }}
+                          />)
+                        : <></>;
               // return record.note
             }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='status'/>}
