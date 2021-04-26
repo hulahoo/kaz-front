@@ -414,6 +414,20 @@ export const restServices = {
         "countDays",
         {...param}
       );
+    },
+    getReceivedVacationDaysOfYear: (param: { date: Date, absenceTypeId: string, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "getReceivedVacationDaysOfYear",
+        {...param}
+      );
+    },
+    getRemainingDaysWeekendWork: (personGroupId: string): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "getRemainingDaysWeekendWork",
+        {personGroupId: personGroupId}
+      );
     }
   },
   documentService: {

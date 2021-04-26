@@ -40,7 +40,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollectionVacationSchedule = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
       view: "_local",
-      sort: "-updateTs",
+      sort: "-startDate",
       filter: {
         conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
       }
@@ -49,7 +49,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollectionAbsence = collection<Absence>(Absence.NAME, {
     view: "absence.view",
-    sort: "-updateTs",
+    sort: "-dateFrom",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
