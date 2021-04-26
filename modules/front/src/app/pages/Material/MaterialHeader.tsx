@@ -27,7 +27,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
   render() {
     const {showEnrollment = true} = this.props;
     return (
-      <Row>
+      <Row type="flex">
         <Col span={16}>
           <div className="course-info-container">
             <div className={"course-name"}><span>{this.props.name}</span></div>
@@ -68,7 +68,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
                         onClick={this.props.subscribe}>{this.props.intl.formatMessage({id: this.props.materialInfoType + ".subscribe"})}</Button>
             : <></>}
         </Col>
-        <Col span={8}>
+        <Col span={8} style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
           <div className="course-info-image">
             <ImageLogo {...this.props.imageProps} />
           </div>
