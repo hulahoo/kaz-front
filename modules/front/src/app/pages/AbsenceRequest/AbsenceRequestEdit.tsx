@@ -79,6 +79,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   remainingDaysWeekendWork: number = 0;
 
+  absenceBalance: number = 0;
+
   isCheckWork = false;
 
   @observable
@@ -306,6 +308,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
                       this.checkDaysCalendarYear(absenceType);
 
+                      this.getAbsenceBalance(absenceType);
+
                       this.getRemainingDaysWeekendWork();
 
                       this.calcAbsenceDays(typeId, null, null);
@@ -332,6 +336,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                       this.calcAbsenceDays(null, args, null);
                       this.checkMinDayAbsence(null, args);
                       this.checkDaysCalendarYear(null, args);
+                      this.getAbsenceBalance(null, args);
                       return args
                     }
                   }}
@@ -368,12 +373,13 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                         validator: (rule, value, callback) => {
                           const type = this.getSelectedAbsenceType();
                           if (!type || !value) return callback();
-                          if (this.isCheckWork && this.remainingDaysWeekendWork < value){
+                          if (this.isLaborLeave && (this.absenceBalance + (type.daysAdvance || 0) < value)) {
+                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                          } else if (this.isCheckWork && this.remainingDaysWeekendWork < value) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.weekendWork'}, {
                               weekendWork: this.remainingDaysWeekendWork
                             }));
-                          }
-                          else if (type.numDaysCalendarYear && (this.numDaysCalendarYear + value) >= type.numDaysCalendarYear) {
+                          } else if (type.numDaysCalendarYear && (this.numDaysCalendarYear + value) >= type.numDaysCalendarYear) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.numDaysCalendarYear'}));
                           } else if (type.maxDay && type.maxDay < value) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.maxDay'}, {
@@ -509,7 +515,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
   }
 
   getRemainingDaysWeekendWork = () => {
-
     if (this.isCheckWork) {
       restServices.absenceService
         .getRemainingDaysWeekendWork(this.personGroupId)
@@ -518,7 +523,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           this.callForceAbsenceDayValidator();
         })
     }
-
   }
 
   checkDaysCalendarYear = (absenceType?: DicAbsenceType | null, dateFrom?: any) => {
@@ -536,6 +540,24 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         this.callForceAbsenceDayValidator();
       })
     }
+  }
+
+  getAbsenceBalance = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
+    dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
+    absenceType = absenceType || this.getSelectedAbsenceType();
+
+    if (this.isLaborLeave && absenceType && dateFrom) {
+      restServices.absenceBalanceService.getAbsenceBalance({
+        personGroupId: this.personGroupId,
+        dicAbsenceTypeId: absenceType.id,
+        absenceDate: dateFrom
+      })
+        .then(value => {
+          this.absenceBalance = value;
+          this.callForceAbsenceDayValidator();
+        })
+    }
+
   }
 
   checkMinDayAbsence = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
