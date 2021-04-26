@@ -33,6 +33,7 @@ export class DicAbsenceType extends AbstractDictionary {
   workOnWeekend?: boolean | null;
   temporaryTransfer?: boolean | null;
   overtimeWork?: boolean | null;
+  numDaysCalendarYear?: number | null;
 }
 export type DicAbsenceTypeViewName =
   | "_base"
@@ -97,6 +98,7 @@ export type DicAbsenceTypeView<
       | "active"
       | "isDefault"
       | "order"
+      | "numDaysCalendarYear"
     >
   : V extends "_local"
   ? Pick<
@@ -152,6 +154,7 @@ export type DicAbsenceTypeView<
       | "active"
       | "isDefault"
       | "order"
+      | "numDaysCalendarYear"
     >
   : V extends "_minimal"
   ? Pick<DicAbsenceType, "id" | "langValue" | "description">
@@ -211,5 +214,6 @@ export type DicAbsenceTypeView<
       | "order"
       | "absenceCategory"
       | "company"
+      | "numDaysCalendarYear"
     >
   : never;
