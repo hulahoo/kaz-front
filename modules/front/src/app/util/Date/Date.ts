@@ -18,11 +18,11 @@ export const formatDefaultDate = (date: Date) => {
   return format(date, 'DD.MM.YYYY')
 };
 
-export const fonmatDefaultDateFromString=(date: any)=>{
+export const formatDefaultDateFromString=(date: any)=>{
   return moment(date,DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
 };
 
-const wrapZero = (value: number):string => {
+const wrapZero = (value: number): string => {
   if (value > 0 && value < 10) {
     return "0" + value;
   } else {

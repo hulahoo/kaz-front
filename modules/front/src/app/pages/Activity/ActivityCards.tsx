@@ -1,23 +1,31 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import {collection, DataTable, injectMainStore} from "@cuba-platform/react";
+import {
+  collection,
+  DataTable,
+  getEnumCaption,
+  getPropertyInfoNN,
+  injectMainStore,
+  MainStoreInjected
+} from "@cuba-platform/react";
 import {Activity} from "../../../cuba/entities/base/uactivity$Activity";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
 import {observable} from "mobx";
-import {RouteComponentProps} from "react-router-dom";
+import {NavLink, RouteComponentProps} from "react-router-dom";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {withRouter} from "react-router";
 import Button from "../../components/Button/Button";
 import {link} from "../../util/util";
+import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, format} from "../../util/Date/Date";
 
 type Prop = { type: "tasks" | "notifications" }
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootStoreProp & RouteComponentProps> {
+class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootStoreProp & RouteComponentProps & MainStoreInjected> {
 
   dataCollection = collection<Activity>(Activity.NAME, {
     view: "portal-activity",
@@ -45,36 +53,34 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
 
   render() {
     const type = this.props.type;
-
-    const find = this.selectedRowKey != null
-      ? this.dataCollection.items.find(value => value.id === this.selectedRowKey) as Activity
-      : null;
-
-    const button = <Button disabled={find === null}
-                           type={"primary"}
-                           style={{padding: 0}}
-                           onClick={() => {
-                             if (find) {
-                               if (find.type!.code !== "NOTIFICATION")
-                                 this.props.history!.push(`../${link(find!.type!.windowProperty!.entityName!)}/${find!.referenceId}`);
-                               else
-                                 this.props.history!.push(find.id);
-                             }
-                           }}>{this.props.intl.formatMessage({id: "open"})}</Button>;
-
     const message = this.props.intl.formatMessage({id: type});
 
+    let columnIndex = 0;
     return (
       <Page pageName={message}>
         <Section size="large" visible={true}>
           <div>
-            <div style={{marginBottom: 16}}>
-              {button}
-            </div>
             <DataTable fields={this.fields}
-                       rowSelectionMode="single"
-                       canSelectRowByClick={true}
-                       onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
+                       rowSelectionMode="none"
+                       columnProps={{
+                         render: ((text, record, index) => {
+                           if (columnIndex === 1) {
+                             columnIndex = -1;
+                             if (record.type!.code !== 'NOTIFICATION')
+                             return <NavLink
+                               to={`..${link(record!.type!.windowProperty!.entityName!)}/${record!.referenceId}`}>{text}</NavLink>;
+                             else {
+                               return <NavLink
+                                 to={`${record!.id}`}>{text}</NavLink>;
+                             }
+                           } else if (columnIndex === 0) {
+                             columnIndex++;
+                             return format(new Date(text), DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS);
+                           }
+                           columnIndex++;
+                           return getEnumCaption(record.status, getPropertyInfoNN("status", Activity.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!);
+                         })
+                       }}
                        dataCollection={this.dataCollection}/>
           </div>
         </Section>
