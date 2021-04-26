@@ -28,7 +28,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
   render() {
     const {showEnrollment = true} = this.props;
     return (
-      <Row>
+      <Row type="flex">
         <Col span={16}>
           <div className="course-info-container">
             <div className={"course-name"}><span>{this.props.name}</span></div>
@@ -39,7 +39,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
             </>
           </div>
           <div className={"course-info-feedback"}>
-            <Row type="flex">
+            <Row>
               <Col style={{display: 'inline-block'}}>
                 <Form.Item label={this.props.intl.formatMessage({id: this.props.materialInfoType + ".studentFinished"})}
                            className={"form-item"}
