@@ -394,5 +394,6 @@
   "insurance.information": "Сведения по страхованию",
   "general.information": "Общие сведения",
   "family.member.information": "Сведения по членам семьи",
-  "password.error.empty": "Пароль не может быть пустым!"
+  "password.error.empty": "Пароль не может быть пустым!",
+  "book.view": "Читать"
 }
