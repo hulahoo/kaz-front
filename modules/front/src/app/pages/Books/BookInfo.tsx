@@ -95,7 +95,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
               {this.dataInstance.status === 'DONE' && this.dataInstance.item
                 ? <MaterialHeader
                   name={this.dataInstance.item._instanceName!}
-                  finished={0}
+                  finished={(this.dataInstance.item as any).viewed ? (this.dataInstance.item as any).viewed : 0}
                   showEnrollment={false}
                   materialInfoType="book"
                   avgRate={this.dataInstance.item.reviews
