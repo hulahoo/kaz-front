@@ -80,19 +80,15 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                     dataIndex="note"
                     key="note" render={(text, record: any) => {
               return record.note ?
-                <Button
-                  onClick={() => {
-                    this.noteValue = record.note;
-                    this.isModalVisible = true;
-                  }}
-                  type={"link"}>
-                       <img
-                         style={{color: '#005487'}}
-                         src={require("../../../resources/icons/comment-alt-regular.svg")}
-                         alt="Note"
-                         className={"ant-menu-item-icon"}
-                       />
-                </Button> : null;
+                  <SvgNode
+                    width="20px"
+                    onClick={() => {
+                      this.noteValue = record.note;
+                      this.isModalVisible = true;
+                    }}
+                    style={{
+                    color: '#005487'
+                  }} /> : null;
               // return record.note
             }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='status'/>}
