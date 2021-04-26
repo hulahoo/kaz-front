@@ -38,7 +38,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
             </>
           </div>
           <div className={"course-info-feedback"}>
-            <Row>
+            <Row type="flex">
               <Col style={{display: 'inline-block'}}>
                 <Form.Item label={this.props.intl.formatMessage({id: this.props.materialInfoType + ".studentFinished"})}
                            className={"form-item"}
@@ -68,7 +68,7 @@ class MaterialHeader extends Component<WrappedComponentProps & MaterialHeaderPro
                         onClick={this.props.subscribe}>{this.props.intl.formatMessage({id: this.props.materialInfoType + ".subscribe"})}</Button>
             : <></>}
         </Col>
-        <Col span={8}>
+        <Col span={8} style={{display: 'flex', alignItems: 'center', justifyContent: 'flex-end'}}>
           <div className="course-info-image">
             <ImageLogo {...this.props.imageProps} />
           </div>
