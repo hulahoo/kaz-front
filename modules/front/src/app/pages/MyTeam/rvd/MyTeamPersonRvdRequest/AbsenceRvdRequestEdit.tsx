@@ -115,20 +115,55 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     "agree",
   ];
 
+  purpose1 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+    view: "_minimal",
+    filter: {
+      conditions: [{
+        property: "absenceType",
+        operator: "=",
+        value: "ba902579-d681-6555-0a5a-b5ecfae610ef"
+      }]
+    }
+  });
+
+  purpose2 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+    view: "_minimal",
+    filter: {
+      conditions: [{
+        property: "absenceType",
+        operator: "=",
+        value: "a5a941c9-1202-31d4-3037-d47b45ed6a21"
+      }]
+    }
+  });
+
+
+  purpose3 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+    view: "_minimal",
+    filter: {
+      conditions: [{
+        property: "absenceType",
+        operator: "=",
+        value: "3be39648-a752-f7dc-3724-77cdae92fdd8"
+      }]
+    }
+  });
+
   typeDc = collection<DicAbsenceType>(DicAbsenceType.NAME, {
     view: "_base",
     filter: {
-      conditions: [{
-        property: 'type.availableForRecallAbsence',
-        operator: 'in',
-        value: 'workOnWeekend',
-      }, {
-        property: 'type.workOnWeekend',
-        operator: 'in',
-        value: 'TRUE',
-      },]
+      conditions:[ {
+        property: "id",
+        operator: "in",
+        value: ["ba902579-d681-6555-0a5a-b5ecfae610ef", "a5a941c9-1202-31d4-3037-d47b45ed6a21" ,"3be39648-a752-f7dc-3724-77cdae92fdd8"]
+      }]
     }
   });
+
+  purposeTempDc = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+
+  })
+
 
   @observable
   globalErrors: string[] = [];
@@ -150,6 +185,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       },
       ...this.props.form.getFieldsValue(this.fields)
     }
+  };
+
+  afterSendOnApprove = () => {
+    this.props.history!.push("/my-team/2");
   };
 
   processDefinitionKey = "absenceRvdRequest";
@@ -274,28 +313,29 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               entityName={AbsenceRvdRequest.NAME}
               propertyName="type"
               form={this.props.form}
-              optionsContainer={
-                this.typeDc
-              }
+              optionsContainer={this.typeDc}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
                 getValueFromEvent: args => {
-                  if (args === 'workOnWeekend' || 'temporaryTransfer' || 'overtimeWork'){
-                    this.calcHours(args, null, null);
-                    return args;
-                  }else{
-                    return null;
+                  if(args === "ba902579-d681-6555-0a5a-b5ecfae610ef"){
+                    this.purposeTempDc = this.purpose1;
+                  }else if(args === "a5a941c9-1202-31d4-3037-d47b45ed6a21"){
+                    this.purposeTempDc = this.purpose2;
+                  }else if(args === "3be39648-a752-f7dc-3724-77cdae92fdd8"){
+                    this.purposeTempDc = this.purpose3;
                   }
-                },
-              }}
+                  this.calcHours(args, null, null);
+                  return args;
+                  }
+                }}
             />
 
             <Field
               entityName={AbsenceRvdRequest.NAME}
               propertyName="purpose"
               form={this.props.form}
-              optionsContainer={this.purposeDc}
+              optionsContainer={this.purposeTempDc}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
