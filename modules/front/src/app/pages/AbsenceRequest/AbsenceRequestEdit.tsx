@@ -549,7 +549,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     if (this.isLaborLeave && absenceType && dateFrom) {
       restServices.absenceBalanceService.getAbsenceBalance({
         personGroupId: this.personGroupId,
-        dicAbsenceTypeId: absenceType.id,
         absenceDate: dateFrom
       })
         .then(value => {
@@ -557,7 +556,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           this.callForceAbsenceDayValidator();
         })
     }
-
   }
 
   checkMinDayAbsence = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
