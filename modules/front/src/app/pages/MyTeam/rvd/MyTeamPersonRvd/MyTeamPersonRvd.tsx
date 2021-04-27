@@ -50,7 +50,6 @@ class MyTeamPersonRvd extends React.Component<MyTeamCardProps & MainStoreInjecte
             htmlType="button"
             style={{ margin: "0 12px 12px 0" }}
             type="primary"
-            icon="plus"
           >
           <span>
             <FormattedMessage id="management.browser.create" />
