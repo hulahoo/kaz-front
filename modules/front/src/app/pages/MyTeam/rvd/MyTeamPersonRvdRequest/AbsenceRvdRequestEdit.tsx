@@ -40,6 +40,9 @@ import {DicAbsencePurpose} from "../../../../../cuba/entities/base/tsadv_DicAbse
 import {MyTeamStructureManagement} from "../../MyTeamStructureManagement";
 import Button, {ButtonType} from "../../../../components/Button/Button";
 import {withRouter} from "react-router";
+import {DEFAULT_DATE_PATTERN, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS} from "../../../../util/Date/Date";
+import {AbsPurposeSetting} from "../../../../../cuba/entities/base/tsadv_AbsPurposeSetting";
+import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -62,11 +65,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   });
 
 
-  absenceTypeDc = collection<DicAbsenceType>(DicAbsenceType.NAME, {
-    view: "_minimal"
-  });
 
-  purposeDc = collection<DicAbsencePurpose>(DicAbsencePurpose.NAME, {
+  purposeDc = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
     view: "_base"
   });
 
@@ -89,6 +89,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
   @observable
   approverHrRoleCode: string;
+
 
   fields = [
     "requestNumber",
@@ -114,6 +115,56 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     "agree",
   ];
 
+  purpose1 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+    view: "_minimal",
+    filter: {
+      conditions: [{
+        property: "absenceType",
+        operator: "=",
+        value: "ba902579-d681-6555-0a5a-b5ecfae610ef"
+      }]
+    }
+  });
+
+  purpose2 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+    view: "_minimal",
+    filter: {
+      conditions: [{
+        property: "absenceType",
+        operator: "=",
+        value: "a5a941c9-1202-31d4-3037-d47b45ed6a21"
+      }]
+    }
+  });
+
+
+  purpose3 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+    view: "_minimal",
+    filter: {
+      conditions: [{
+        property: "absenceType",
+        operator: "=",
+        value: "3be39648-a752-f7dc-3724-77cdae92fdd8"
+      }]
+    }
+  });
+
+  typeDc = collection<DicAbsenceType>(DicAbsenceType.NAME, {
+    view: "_base",
+    filter: {
+      conditions:[ {
+        property: "id",
+        operator: "in",
+        value: ["ba902579-d681-6555-0a5a-b5ecfae610ef", "a5a941c9-1202-31d4-3037-d47b45ed6a21" ,"3be39648-a752-f7dc-3724-77cdae92fdd8"]
+      }]
+    }
+  });
+
+  purposeTempDc = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+
+  })
+
+
   @observable
   globalErrors: string[] = [];
 
@@ -134,6 +185,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       },
       ...this.props.form.getFieldsValue(this.fields)
     }
+  };
+
+  afterSendOnApprove = () => {
+    this.props.history!.push("/my-team/2");
   };
 
   processDefinitionKey = "absenceRvdRequest";
@@ -204,16 +259,11 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
     const {status} = this.dataInstance;
     console.log(this.props.history!.goBack);
+    // @ts-ignore
     return (
       <Page pageName={this.props.intl.formatMessage({id: "workOnWeekendRequest"})}>
         <Section size="large">
-          <Card
-            bordered={false}
-            actions={[
-            <Button buttonType={ButtonType.FOLLOW} onClick={this.props.history!.goBack}>
-              {this.props.intl.formatMessage({ id: "close" })}
-            </Button>,
-            this.getOutcomeBtns()]}>
+          <Card bordered={false}>
 
           <Form onSubmit={this.validate} layout="vertical">
 
@@ -233,6 +283,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               propertyName="requestDate"
               form={this.props.form}
               disabled={true}
+              format={DEFAULT_DATE_PATTERN}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{}}
             />
@@ -262,28 +313,37 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               entityName={AbsenceRvdRequest.NAME}
               propertyName="type"
               form={this.props.form}
-              optionsContainer={this.absenceTypeDc}
+              optionsContainer={this.typeDc}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
                 getValueFromEvent: args => {
+                  if(args === "ba902579-d681-6555-0a5a-b5ecfae610ef"){
+                    this.purposeTempDc = this.purpose1;
+                  }else if(args === "a5a941c9-1202-31d4-3037-d47b45ed6a21"){
+                    this.purposeTempDc = this.purpose2;
+                  }else if(args === "3be39648-a752-f7dc-3724-77cdae92fdd8"){
+                    this.purposeTempDc = this.purpose3;
+                  }
                   this.calcHours(args, null, null);
                   return args;
-                },
-              }}
+                  }
+                }}
             />
 
             <Field
               entityName={AbsenceRvdRequest.NAME}
               propertyName="purpose"
               form={this.props.form}
-              optionsContainer={this.purposeDc}
+              optionsContainer={this.purposeTempDc}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
                 getValueFromEvent: args => {
-                  if(args === 'OTHER' || 'Другое'){
+                  if(args === 'Другое'){
                     this.isPurposeText = true;
+                  }else{
+                    this.isPurposeText = false;
                   }
                   return args;
                 }
@@ -303,11 +363,12 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
 
 
-            <Field
+            <ReadonlyField
               entityName={AbsenceRvdRequest.NAME}
               propertyName="timeOfStarting"
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
+              format={DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
                 getValueFromEvent: args => {
@@ -317,10 +378,11 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               }}
             />
 
-            <Field
+            <ReadonlyField
               entityName={AbsenceRvdRequest.NAME}
               propertyName="timeOfFinishing"
               form={this.props.form}
+              format={DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS}
               formItemOpts={{style: {marginBottom: "12px"}}}
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
@@ -454,6 +516,15 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
             </Form.Item>*/}
 
             {this.takCard()}
+
+            <Form.Item style={{textAlign: "center"}}>
+
+              {this.getOutcomeBtns()}
+
+              <Button buttonType={ButtonType.FOLLOW} htmlType="button" onClick={() => this.props.history!.goBack()}>
+                <FormattedMessage id="management.editor.cancel"/>
+              </Button>
+            </Form.Item>
 
           </Form>
           </Card>

@@ -19,7 +19,16 @@ class MyTeamPersonRvd extends React.Component<MyTeamCardProps & MainStoreInjecte
     view: "absence.view",
     sort: "-updateTs",
     filter: {
-      conditions: [{property: "personGroup.id", operator: "=", value: this.props.personGroupId!}]
+      conditions: [{
+        property: "personGroup.id",
+        operator: "=",
+        value: this.props.personGroupId!},
+        {
+          property: "type",
+          operator: "in",
+          value:  ["ba902579-d681-6555-0a5a-b5ecfae610ef", "a5a941c9-1202-31d4-3037-d47b45ed6a21" ,"3be39648-a752-f7dc-3724-77cdae92fdd8"]
+        }
+        ]
     }
   });
 
@@ -50,7 +59,6 @@ class MyTeamPersonRvd extends React.Component<MyTeamCardProps & MainStoreInjecte
             htmlType="button"
             style={{ margin: "0 12px 12px 0" }}
             type="primary"
-            icon="plus"
           >
           <span>
             <FormattedMessage id="management.browser.create" />
