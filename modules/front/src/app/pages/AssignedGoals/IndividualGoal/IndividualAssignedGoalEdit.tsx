@@ -32,6 +32,7 @@ import Button, {ButtonType} from "../../../components/Button/Button";
 import Notification from "../../../util/Notification/Notification";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
 import TextArea from "antd/es/input/TextArea";
+import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -252,6 +253,7 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
 
       const assignedGoal = new AssignedGoal();
       assignedGoal.assignedPerformancePlan = assignedPerformancePlan;
+      assignedGoal.goalType = AssignedGoalTypeEnum.INDIVIDUAL;
 
       this.dataInstance.setItem(assignedGoal);
     }
