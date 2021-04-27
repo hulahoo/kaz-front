@@ -395,5 +395,7 @@
   "general.information": "Общие сведения",
   "family.member.information": "Сведения по членам семьи",
   "password.error.empty": "Пароль не может быть пустым!",
-  "book.view": "Читать"
+  "book.view": "Читать",
+  "readed": "Прочитано",
+  "name": "Название"
 }
