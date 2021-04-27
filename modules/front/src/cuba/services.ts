@@ -192,7 +192,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    validateEnroll: (params: { courseId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
+    validateEnroll: (params: { courseId: string, personGroupId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "validateEnroll",
