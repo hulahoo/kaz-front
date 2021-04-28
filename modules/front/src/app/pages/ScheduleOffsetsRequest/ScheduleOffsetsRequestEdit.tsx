@@ -31,6 +31,7 @@ import LoadingPage from "../LoadingPage";
 import {restQueries} from "../../../cuba/queries";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import AbstractAgreedBprocEdit from "../Bproc/abstract/AbstractAgreedBprocEdit";
+import Notification from "../../util/Notification/Notification";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -119,6 +120,33 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   globalErrors: string[] = [];
 
   currentStandardSchedule: StandardSchedule;
+
+  beforeCompletePredicate = (outcome: string): Promise<boolean> => {
+    if (outcome == 'APPROVE' && this.approverHrRoleCode === 'EMPLOYEE') {
+      const isAgree = this.props.form.getFieldValue('agree');
+      const isFamiliarization = this.props.form.getFieldValue('acquainted');
+
+      if (!isAgree) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isAgree']})
+          }
+        )
+      }
+
+      if (!isFamiliarization) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isFamiliarization']})
+          }
+        )
+      }
+
+      if (!isAgree || !isFamiliarization)
+        return new Promise(resolve => resolve(false));
+    }
+    return new Promise(resolve => resolve(true));
+  };
 
   render() {
 
@@ -235,20 +263,22 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                   getFieldDecoratorOpts={{}}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={ScheduleOffsetsRequest.NAME}
                   propertyName="agree"
                   form={this.props.form}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     valuePropName: "checked"
                   }}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={ScheduleOffsetsRequest.NAME}
                   propertyName="acquainted"
                   form={this.props.form}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     valuePropName: "checked"
@@ -263,8 +293,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{}}
                 />
-
-                {this.agreedFields()}
 
                 {this.globalErrors.length > 0 && (
                   <Alert
