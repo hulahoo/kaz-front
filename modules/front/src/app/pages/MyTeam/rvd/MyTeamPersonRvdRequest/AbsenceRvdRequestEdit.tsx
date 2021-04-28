@@ -43,6 +43,8 @@ import {withRouter} from "react-router";
 import {DEFAULT_DATE_PATTERN, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS} from "../../../../util/Date/Date";
 import {AbsPurposeSetting} from "../../../../../cuba/entities/base/tsadv_AbsPurposeSetting";
 import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {queryCollection} from "../../../../util/QueryDataCollectionStore";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -160,10 +162,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     }
   });
 
-  purposeTempDc = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-
-  })
-
+  purposeTempDc:DataCollectionStore<DicPurposeAbsence>;
 
   @observable
   globalErrors: string[] = [];
@@ -318,13 +317,16 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
                 getValueFromEvent: args => {
-                  if(args === "ba902579-d681-6555-0a5a-b5ecfae610ef"){
-                    this.purposeTempDc = this.purpose1;
-                  }else if(args === "a5a941c9-1202-31d4-3037-d47b45ed6a21"){
-                    this.purposeTempDc = this.purpose2;
-                  }else if(args === "3be39648-a752-f7dc-3724-77cdae92fdd8"){
-                    this.purposeTempDc = this.purpose3;
-                  }
+                  this.purposeTempDc = queryCollection<DicPurposeAbsence>(DicPurposeAbsence.NAME, "myQueryForSerch", {
+                    typeId: args
+                  })
+                  // if(args === "ba902579-d681-6555-0a5a-b5ecfae610ef"){
+                  //   this.purposeTempDc = this.purpose1;
+                  // }else if(args === "a5a941c9-1202-31d4-3037-d47b45ed6a21"){
+                  //   this.purposeTempDc = this.purpose2;
+                  // }else if(args === "3be39648-a752-f7dc-3724-77cdae92fdd8"){
+                  //   this.purposeTempDc = this.purpose3;
+                  // }
                   this.calcHours(args, null, null);
                   return args;
                   }
