@@ -30,6 +30,7 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import LoadingPage from "../LoadingPage";
 import {restQueries} from "../../../cuba/queries";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import AbstractAgreedBprocEdit from "../Bproc/abstract/AbstractAgreedBprocEdit";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -41,7 +42,7 @@ type EditorProps = {
 @injectMainStore
 @inject("rootStore")
 @observer
-class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffsetsRequest, EditorProps> {
+class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<ScheduleOffsetsRequest, EditorProps> {
   dataInstance = instance<ScheduleOffsetsRequest>(ScheduleOffsetsRequest.NAME, {
     view: "scheduleOffsetsRequest-for-my-team",
     loadImmediately: false
@@ -262,6 +263,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{}}
                 />
+
+                {this.agreedFields()}
 
                 {this.globalErrors.length > 0 && (
                   <Alert
