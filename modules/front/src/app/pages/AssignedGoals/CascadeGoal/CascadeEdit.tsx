@@ -277,6 +277,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
     const successCriteria = goal ? goal.successCriteria : null;
 
     this.props.form.setFieldsValue({
+      successCriteria: successCriteria,
       goalSuccessCriteria: successCriteria,
       goalString: option.props['children'],
       category: option!.props["category"],
