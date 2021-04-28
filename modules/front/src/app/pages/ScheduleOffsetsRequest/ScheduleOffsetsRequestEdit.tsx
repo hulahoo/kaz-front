@@ -32,19 +32,21 @@ import {restQueries} from "../../../cuba/queries";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import AbstractAgreedBprocEdit from "../Bproc/abstract/AbstractAgreedBprocEdit";
 import Notification from "../../util/Notification/Notification";
+import {instanceStore} from "../../util/InstanceStore";
 
 type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
   entityId: string;
-  personGroupId: string;
+  personGroupId?: string;
 };
 
 @injectMainStore
 @inject("rootStore")
 @observer
 class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<ScheduleOffsetsRequest, EditorProps> {
-  dataInstance = instance<ScheduleOffsetsRequest>(ScheduleOffsetsRequest.NAME, {
+
+  dataInstance = instanceStore<ScheduleOffsetsRequest>(ScheduleOffsetsRequest.NAME, {
     view: "scheduleOffsetsRequest-for-my-team",
     loadImmediately: false
   });
@@ -56,13 +58,13 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     view: "_minimal"
   });
 
-  statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
+  statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
 
   personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_minimal",
-    filter: {
+    filter: this.props.personGroupId ? {
       conditions: [
         {
           property: "id",
@@ -70,7 +72,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
           value: this.props.personGroupId
         }
       ]
-    },
+    } : undefined,
+    loadImmediately: false,
     limit: 10
   });
 
@@ -182,7 +185,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                   disabled={true}
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.statussDc}
+                  optionsContainer={this.statusesDc}
                   getFieldDecoratorOpts={{
                     rules: [{required: true,}]
                   }}
@@ -318,7 +321,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     if (this.isNotDraft())
       return {
         ...this.props.form.getFieldsValue(this.fields)
-      }
+      };
 
     return {
       ...this.props.form.getFieldsValue(this.fields)
@@ -326,18 +329,34 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   };
 
   componentDidMount() {
+    this.dataInstance.afterLoad = () => {
+      this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+        view: "_minimal",
+        filter: {
+          conditions: [{
+            property: "id",
+            operator: "=",
+            value: this.dataInstance.item!.personGroup!.id
+          }]
+        },
+        limit: 10
+      });
+    };
+
     super.componentDidMount();
-
-    this.loadPerson().then(value => {
-      this.personGroup = value;
-      this.dataInstance.item!.personGroup = value;
-      const fieldValues = this.dataInstance.getFieldValues(this.fields);
-      this.props.form.setFieldsValue(fieldValues);
-    });
-
-    this.loadCurrentScheduleOffset()
-
-    this.setEmployee(this.props.personGroupId);
+    if (this.props.personGroupId) {
+      this.loadPerson(this.props.personGroupId).then(value => {
+        this.personGroup = value;
+        this.dataInstance.item!.personGroup = value;
+        const fieldValues = this.dataInstance.getFieldValues(this.fields);
+        this.props.form.setFieldsValue(fieldValues);
+      });
+      this.loadCurrentScheduleOffset(this.props.personGroupId);
+      this.setEmployee(this.props.personGroupId);
+      this.personGroupDc.load();
+    } else {
+      this.personGroupDc.load();
+    }
   }
 
 
@@ -346,25 +365,24 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   }
 
   afterSendOnApprove = () => {
-    console.log(this.props.history);
     this.props.history!.goBack();
   };
 
-  loadPerson = (): Promise<PersonGroupExt> => {
+  loadPerson = (personGroupId: string): Promise<PersonGroupExt> => {
     return getCubaREST()!.searchEntities(PersonGroupExt.NAME, {
       conditions: [{
         property: 'id',
         operator: '=',
-        value: this.props.personGroupId,
+        value: personGroupId,
       }]
     }, {
       view: 'personGroupExt-absenceEdit'
     }).then(value => value[0] as PersonGroupExt);
-  }
+  };
 
 
-  loadCurrentScheduleOffset() {
-    return restQueries.currentStandardSchedule(this.props.personGroupId)
+  loadCurrentScheduleOffset(personGroupId: string) {
+    return restQueries.currentStandardSchedule(personGroupId)
       .then(value => {
         if (value.length > 0) {
           this.currentStandardSchedule = value[0];
