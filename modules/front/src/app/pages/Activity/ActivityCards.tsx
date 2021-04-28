@@ -5,7 +5,7 @@ import {
   DataTable,
   getEnumCaption,
   getPropertyInfoNN,
-  injectMainStore, MainStore,
+  injectMainStore,
   MainStoreInjected
 } from "@cuba-platform/react";
 import {Activity} from "../../../cuba/entities/base/uactivity$Activity";
@@ -22,7 +22,6 @@ import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, format} from "../../util/Date
 import {SendingMessage} from "../../../cuba/entities/base/sys$SendingMessage";
 import {SendingNotification} from "../../../cuba/entities/base/base$SendingNotification";
 import {Icon, Spin} from "antd";
-import {EntityMessages, MetaClassInfo, MetaPropertyInfo} from "@cuba-platform/rest";
 
 type Prop = { type: "tasks" | "notifications" }
 
@@ -38,6 +37,9 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
 
   fields: string[];
 
+  // changedSendingNotificationMainStore = this.isTask()? this.props.mainStore! : this.props.mainStore!.metadata.
+
+  @observable
   selectedRowKey: string | undefined;
   columnIndex = 0;
 
@@ -51,7 +53,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
           <div>
             {this.dataCollection
               ? <DataTable fields={this.fields}
-                           mainStore={this.changedSendingNotificationMainStore!}
+                           // mainStore={}
                            rowSelectionMode="none"
                            columnProps={{
                              render: ((text, record, index) => {
@@ -143,17 +145,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
       "sendingMessage",
       "readed"
     ];
-  };
-
-  //Кастомные заголовки для таблицы
-  changedSendingNotificationMainStore: MainStore = this.isTask() ? this.props.mainStore! : {
-    ...this.props.mainStore,
-    messages: {
-      ...this.props.mainStore!.messages,
-      'base$SendingNotification.readed': this.props.intl.formatMessage({id: 'readed'}),
-      'base$SendingNotification.sendingMessage': this.props.intl.formatMessage({id: 'name'})
-    } as EntityMessages
-  } as MainStore;
+  }
 }
 
 export default withRouter(injectIntl(ActivityCards));
