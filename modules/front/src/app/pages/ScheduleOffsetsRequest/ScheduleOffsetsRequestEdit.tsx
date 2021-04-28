@@ -7,7 +7,7 @@ import {injectIntl} from "react-intl";
 import {withRouter} from "react-router-dom";
 
 import {
-  collection,
+  collection, DataCollectionStore,
   Field,
   getCubaREST,
   injectMainStore,
@@ -62,20 +62,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     view: "_minimal"
   });
 
-  personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal",
-    filter: this.props.personGroupId ? {
-      conditions: [
-        {
-          property: "id",
-          operator: "=",
-          value: this.props.personGroupId
-        }
-      ]
-    } : undefined,
-    loadImmediately: false,
-    limit: 10
-  });
+  personGroupDc: DataCollectionStore<PersonGroupExt>;
 
   processDefinitionKey = "scheduleOffsetsRequest";
 
@@ -329,22 +316,40 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   };
 
   componentDidMount() {
-    this.dataInstance.afterLoad = () => {
-      this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-        view: "_minimal",
-        filter: {
-          conditions: [{
-            property: "id",
-            operator: "=",
-            value: this.dataInstance.item!.personGroup!.id
-          }]
-        },
-        limit: 10
-      });
-    };
+    if (!this.props.personGroupId) {
+      this.dataInstance.afterLoad = () => {
+        this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+          view: "_minimal",
+          filter: {
+            conditions: [{
+              property: "id",
+              operator: "=",
+              value: this.dataInstance.item!.personGroup!.id
+            }]
+          },
+          limit: 10
+        });
+        this.personGroupDc.load();
+      };
+    }
 
     super.componentDidMount();
     if (this.props.personGroupId) {
+      this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+        view: "_minimal",
+        filter: {
+          conditions: [
+            {
+              property: "id",
+              operator: "=",
+              value: this.props.personGroupId
+            }
+          ]
+        },
+        loadImmediately: false,
+        limit: 10
+      });
+
       this.loadPerson(this.props.personGroupId).then(value => {
         this.personGroup = value;
         this.dataInstance.item!.personGroup = value;
@@ -353,8 +358,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       });
       this.loadCurrentScheduleOffset(this.props.personGroupId);
       this.setEmployee(this.props.personGroupId);
-      this.personGroupDc.load();
-    } else {
       this.personGroupDc.load();
     }
   }
