@@ -30,19 +30,23 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import LoadingPage from "../LoadingPage";
 import {restQueries} from "../../../cuba/queries";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import AbstractAgreedBprocEdit from "../Bproc/abstract/AbstractAgreedBprocEdit";
+import Notification from "../../util/Notification/Notification";
+import {instanceStore} from "../../util/InstanceStore";
 
 type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
   entityId: string;
-  personGroupId: string;
+  personGroupId?: string;
 };
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffsetsRequest, EditorProps> {
-  dataInstance = instance<ScheduleOffsetsRequest>(ScheduleOffsetsRequest.NAME, {
+class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<ScheduleOffsetsRequest, EditorProps> {
+
+  dataInstance = instanceStore<ScheduleOffsetsRequest>(ScheduleOffsetsRequest.NAME, {
     view: "scheduleOffsetsRequest-for-my-team",
     loadImmediately: false
   });
@@ -54,13 +58,13 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
     view: "_minimal"
   });
 
-  statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
+  statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
 
   personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_minimal",
-    filter: {
+    filter: this.props.personGroupId ? {
       conditions: [
         {
           property: "id",
@@ -68,7 +72,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
           value: this.props.personGroupId
         }
       ]
-    },
+    } : undefined,
+    loadImmediately: false,
     limit: 10
   });
 
@@ -119,6 +124,33 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
 
   currentStandardSchedule: StandardSchedule;
 
+  beforeCompletePredicate = (outcome: string): Promise<boolean> => {
+    if (outcome == 'APPROVE' && this.approverHrRoleCode === 'EMPLOYEE') {
+      const isAgree = this.props.form.getFieldValue('agree');
+      const isFamiliarization = this.props.form.getFieldValue('acquainted');
+
+      if (!isAgree) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isAgree']})
+          }
+        )
+      }
+
+      if (!isFamiliarization) {
+        Notification.info({
+            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isFamiliarization']})
+          }
+        )
+      }
+
+      if (!isAgree || !isFamiliarization)
+        return new Promise(resolve => resolve(false));
+    }
+    return new Promise(resolve => resolve(true));
+  };
+
   render() {
 
     if (!this.dataInstance) {
@@ -153,7 +185,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
                   disabled={true}
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.statussDc}
+                  optionsContainer={this.statusesDc}
                   getFieldDecoratorOpts={{
                     rules: [{required: true,}]
                   }}
@@ -234,20 +266,22 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
                   getFieldDecoratorOpts={{}}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={ScheduleOffsetsRequest.NAME}
                   propertyName="agree"
                   form={this.props.form}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     valuePropName: "checked"
                   }}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={ScheduleOffsetsRequest.NAME}
                   propertyName="acquainted"
                   form={this.props.form}
+                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     valuePropName: "checked"
@@ -287,7 +321,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
     if (this.isNotDraft())
       return {
         ...this.props.form.getFieldsValue(this.fields)
-      }
+      };
 
     return {
       ...this.props.form.getFieldsValue(this.fields)
@@ -295,18 +329,34 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
   };
 
   componentDidMount() {
+    this.dataInstance.afterLoad = () => {
+      this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+        view: "_minimal",
+        filter: {
+          conditions: [{
+            property: "id",
+            operator: "=",
+            value: this.dataInstance.item!.personGroup!.id
+          }]
+        },
+        limit: 10
+      });
+    };
+
     super.componentDidMount();
-
-    this.loadPerson().then(value => {
-      this.personGroup = value;
-      this.dataInstance.item!.personGroup = value;
-      const fieldValues = this.dataInstance.getFieldValues(this.fields);
-      this.props.form.setFieldsValue(fieldValues);
-    });
-
-    this.loadCurrentScheduleOffset()
-
-    this.setEmployee(this.props.personGroupId);
+    if (this.props.personGroupId) {
+      this.loadPerson(this.props.personGroupId).then(value => {
+        this.personGroup = value;
+        this.dataInstance.item!.personGroup = value;
+        const fieldValues = this.dataInstance.getFieldValues(this.fields);
+        this.props.form.setFieldsValue(fieldValues);
+      });
+      this.loadCurrentScheduleOffset(this.props.personGroupId);
+      this.setEmployee(this.props.personGroupId);
+      this.personGroupDc.load();
+    } else {
+      this.personGroupDc.load();
+    }
   }
 
 
@@ -315,25 +365,24 @@ class ScheduleOffsetsRequestEditComponent extends AbstractBprocEdit<ScheduleOffs
   }
 
   afterSendOnApprove = () => {
-    console.log(this.props.history);
     this.props.history!.goBack();
   };
 
-  loadPerson = (): Promise<PersonGroupExt> => {
+  loadPerson = (personGroupId: string): Promise<PersonGroupExt> => {
     return getCubaREST()!.searchEntities(PersonGroupExt.NAME, {
       conditions: [{
         property: 'id',
         operator: '=',
-        value: this.props.personGroupId,
+        value: personGroupId,
       }]
     }, {
       view: 'personGroupExt-absenceEdit'
     }).then(value => value[0] as PersonGroupExt);
-  }
+  };
 
 
-  loadCurrentScheduleOffset() {
-    return restQueries.currentStandardSchedule(this.props.personGroupId)
+  loadCurrentScheduleOffset(personGroupId: string) {
+    return restQueries.currentStandardSchedule(personGroupId)
       .then(value => {
         if (value.length > 0) {
           this.currentStandardSchedule = value[0];

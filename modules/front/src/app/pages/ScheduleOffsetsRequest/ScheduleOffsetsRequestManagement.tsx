@@ -8,8 +8,8 @@ type Props = RouteComponentProps<{ entityId: string, personGroupId: string }>;
 
 @observer
 export class ScheduleOffsetsRequestManagement extends React.Component<Props> {
-  static PATH_WITH_PARAMS = "/schedule-offsets/:entityId/:personGroupId";
-  static PATH = "/schedule-offsets";
+  static PATH_WITH_PARAMS = "/scheduleOffsetsRequest/:entityId/:personGroupId?";
+  static PATH = "/scheduleOffsetsRequest";
   static NEW_SUBPATH = "new";
 
   render() {

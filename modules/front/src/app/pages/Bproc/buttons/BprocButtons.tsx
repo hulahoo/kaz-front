@@ -52,7 +52,7 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
   render() {
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
-        ? this.props.formData.outcomes.reverse().map(value => <OutcomeButtonModal outcome={value}
+        ? this.props.formData.outcomes.sort((a1, a2) => a1.id!.localeCompare(a2.id!) * (-1)).map(value => <OutcomeButtonModal outcome={value}
                                                                                   key={value.id}
                                                                                   form={this.props.form}
                                                                                   beforeCompletePredicate={this.props.beforeCompletePredicate}

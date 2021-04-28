@@ -267,7 +267,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
     return (
       <>
-        <CustomButton buttonType={ButtonType.FOLLOW}
+        <CustomButton buttonType={ButtonType.PRIMARY}
                       onClick={this.showModalOrMessage}
                       key="start">
           {this.props.intl.formatMessage({
