@@ -415,7 +415,5 @@
   "workOnWeekend": "WFD Approved, Overtime, Temporary Transfer",
   "workOnWeekendRequest": "Applications for RRVD, Overtime, Temporary transfer",
   "password.error.empty": "Password can not be empty!",
-  "book.view": "View",
-  "readed": "Readed",
-  "name": "Name"
+  "book.view": "View"
 }
