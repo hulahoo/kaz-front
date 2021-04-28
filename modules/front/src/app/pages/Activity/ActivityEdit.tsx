@@ -15,8 +15,6 @@ import {link} from "../../util/util";
 import Section from "../../hoc/Section";
 import {FormComponentProps} from "antd/lib/form";
 import Notification from "../../util/Notification/Notification";
-import {SendingMessage} from "../../../cuba/entities/base/sys$SendingMessage";
-import {SendingNotification} from "../../../cuba/entities/base/base$SendingNotification";
 
 type EditorProps = {
   entityId: string;
@@ -27,18 +25,18 @@ type EditorProps = {
 @observer
 class ActivityEdit extends React.Component<EditorProps & WrappedComponentProps & FormComponentProps & MainStoreInjected & RootStoreProp & RouteComponentProps> {
 
-  dataInstance = instance<SerializedEntity<SendingNotification>>(SendingNotification.NAME, {
-    view: "sendingNotification.view",
+  dataInstance = instance<SerializedEntity<Activity>>(Activity.NAME, {
+    view: "portal-activity",
     loadImmediately: false
   });
 
   update = () => {
-    return this.dataInstance.update({readed: true}); //todo delete from entity @Notnull fot column name
-  };
+    return this.dataInstance.update({status: "done", name: "name"}); //todo delete from entity @Notnull fot column name
+  }
 
   close = () => {
     this.props.history!.goBack();
-  };
+  }
 
   updateAndClose = () => {
     this.update()
@@ -61,10 +59,13 @@ class ActivityEdit extends React.Component<EditorProps & WrappedComponentProps &
 
     if (status === "LOADING" || status === "CLEAN") return <LoadingPage/>
 
-    const item = this.dataInstance.item! as SendingNotification;
+    const item = this.dataInstance.item! as Activity;
 
-    const notificationHeader = item.sendingMessage!.caption;
-    const notificationBody = item.sendingMessage!.contentText;
+    if (item && item.type && item.type.code !== "NOTIFICATION" && item.type.windowProperty)
+      return <Redirect to={link(item.type.windowProperty!.entityName!) + "/" + item.referenceId}/>
+
+    const notificationHeader = this.props.rootStore!.userInfo.language === "ru" ? item.notificationHeaderRu : item.notificationHeaderEn;
+    const notificationBody = this.props.rootStore!.userInfo.language === "ru" ? item.notificationBodyRu : item.notificationBodyEn;
 
     const buttons = [
       <Button
@@ -86,7 +87,7 @@ class ActivityEdit extends React.Component<EditorProps & WrappedComponentProps &
           <Card className="narrow-layout card-actions-container" bordered={false} actions={buttons}>
             <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
               <Section size="large"
-                       sectionName={<Msg entityName={Activity.NAME} propertyName="notificationHeader"/>}>
+                       sectionName={<Msg entityName={this.dataInstance.entityName} propertyName="notificationHeader"/>}>
                 <div dangerouslySetInnerHTML={{__html: (notificationHeader ? notificationHeader : "") as string}}/>
               </Section>
             </div>
