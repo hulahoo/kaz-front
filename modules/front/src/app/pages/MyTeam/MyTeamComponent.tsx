@@ -5,15 +5,15 @@ import {observable} from "mobx";
 
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {Col, Icon, Row, Tree} from "antd";
+import {Icon, Tree} from "antd";
 import {AntTreeNode, AntTreeNodeExpandedEvent} from "antd/lib/tree/Tree";
 import {restServices} from "../../../cuba/services";
 import LoadingPage from "../LoadingPage";
 import {rootStore} from "../../store";
 import Search from "antd/es/input/Search";
 import {MyTeamNew} from "../../../cuba/entities/base/tsadv$MyTeamNew";
-import ScrollContainer from "react-indiana-drag-scroll";
 import MyTeamCard from "./MyTeamCard";
+import {SplitPane} from "react-multi-split-pane";
 
 const {TreeNode} = Tree;
 
@@ -40,6 +40,8 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   @observable isSearch = false;
   @observable expandedKeys: string[] = [];
   @observable selectedData?: MyTeamData;
+  @observable mainSplitPaneDefaultSizes?: number[];
+
   selectedTapAndLeftMenu: {
     selectedTab?: string,
     selectedLeftMenu?: string,
@@ -159,35 +161,37 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
       return <LoadingPage/>
     return (
 
-      <div>
-        <Row>
-          <Col md={24} lg={6}>
-            <div style={{borderRight: '2px solid #e8e8e8', marginRight: '20px', paddingRight: '20px'}}>
-              {
-                this.props.searchVisible === false
-                  ? null
-                  : <Search style={{marginBottom: 8}}
-                            placeholder="Search"
-                            onSearch={this.onSearch}/>
-              }
+      <div style={{height: "100%", position: 'relative'}}>
+        <SplitPane key={'mainSplitPane'}
+                   split="vertical"
+                   defaultSizes={this.mainSplitPaneDefaultSizes}
+                   onDragFinished={sizes => this.saveDefaultSettings(sizes)}>
+          <div style={{
+            height: '100%',
+            overflowX: "auto",
+            width: '100%',
+          }}>
+            {
+              this.props.searchVisible === false
+                ? null
+                : <Search style={{padding: '10px 5px 10px 10px'}}
+                          placeholder="Search"
+                          onSearch={this.onSearch}/>
+            }
 
-              <ScrollContainer
-                className="scroll-container attendance-scroller"
-                hideScrollbars={false}
-                nativeMobileScroll={true}>
+            <Tree
+              expandedKeys={[...this.expandedKeys]}
+              onExpand={this.onExpand}
+              showIcon
+              style={{overflowX: 'auto', fontSize: 'small'}}
+              onSelect={this.onSelect}
+              loadData={this.onLoadData}>
+              {this.isSearch ? this.renderSearch(this.myTeamData) : this.renderTreeNodes(this.myTeamData)}
+            </Tree>
 
-                <Tree
-                  expandedKeys={[...this.expandedKeys]}
-                  onExpand={this.onExpand}
-                  showIcon
-                  onSelect={this.onSelect}
-                  loadData={this.onLoadData}>
-                  {this.isSearch ? this.renderSearch(this.myTeamData) : this.renderTreeNodes(this.myTeamData)}
-                </Tree>
-              </ScrollContainer>
-            </div>
-          </Col>
-          <Col md={24} lg={18}>
+          </div>
+
+          <div style={{height: '100%', width: '100%',}}>
             {this.selectedData && this.selectedData.personGroupId ?
               this.props.personCard
                 ? this.props.personCard(this.selectedData.personGroupId!)
@@ -197,8 +201,8 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
                               setSelectedTabOrLeftMenu={this.selectedTapAndLeftMenu.setSelectedTabOrLeftMenu}
                               key={this.selectedData.personGroupId!}/>
               : <></>}
-          </Col>
-        </Row>
+          </div>
+        </SplitPane>
       </div>
     );
   }
@@ -243,9 +247,23 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
       .then(value => value.map(this.parseToMyTeamData));
   }
 
+  loadDefaultSettings = () => {
+    restServices.userSettingService.loadSetting<number[]>('MyTeamComponent.mainSplitPane')
+      .then(value => {
+        if (value) this.mainSplitPaneDefaultSizes = value;
+      });
+  }
+
+  saveDefaultSettings = (sizes: number[]) => {
+    restServices.userSettingService.saveSetting('MyTeamComponent.mainSplitPane', '[' + sizes + ']');
+  }
+
   componentDidMount() {
     this.loadData()
       .then(value => this.myTeamData = [...value,]);
+
+    this.loadDefaultSettings();
+
   }
 }
 

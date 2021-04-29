@@ -424,10 +424,10 @@ export const restServices = {
   },
   absenceRvdService: {
     countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
-    return getCubaREST()!.invokeService<string>(
-      "tsadv_AbsenceRvdService",
-      "countTotalHours",
-      {...param}
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AbsenceRvdService",
+        "countTotalHours",
+        {...param}
       );
     }
   },
@@ -607,6 +607,29 @@ export const restServices = {
         "isManagerOrSupManager",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+  },
+  userSettingService: {
+    saveSetting: (name: string, value: string): void => {
+      getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "saveSetting",
+        {
+          clientType: 'P',
+          name: name,
+          value: value
+        }
+      );
+    },
+    loadSetting: <T>(name: string): Promise<T> => {
+      return getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "loadSetting",
+        {
+          clientType: 'P',
+          name: name
+        }
+      ).then(value => JSON.parse(value));
     },
   }
 };
