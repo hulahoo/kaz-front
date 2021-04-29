@@ -123,13 +123,18 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
       return;
     }
 
+    const personGroupId = this.props.rootStore!.userInfo.personGroupId!;
     this.subscribingToCourse = true;
-    restServices.courseService.validateEnroll({courseId: this.props.entityId, locale: this.props.mainStore!.locale!})
+    restServices.courseService.validateEnroll({
+      courseId: this.props.entityId,
+      personGroupId: personGroupId,
+      locale: this.props.mainStore!.locale!
+    })
       .then(response => {
         if (response.key) {
           getCubaREST()!.commitEntity(Enrollment.NAME, ({
             personGroup: {
-              id: this.props.rootStore!.userInfo.personGroupId!
+              id: personGroupId
             },
             status: "APPROVED",
             course: {
@@ -194,7 +199,8 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
               <MaterialDescription descriptionHtml={this.dataInstance.description}>
                 <Row>
                   <Col span={5}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.trainers"})} className={"form-item break-words"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.trainers"})}
+                               className={"form-item break-words"}
                                key='trainers'>
                       {this.dataInstance.trainers.map((trainer: any) => <a className={"default-link"}
                                                                            style={{marginRight: '10px'}}
@@ -211,19 +217,22 @@ class CourseEdit extends React.Component<Props & WrappedComponentProps & RootSto
                     </Form.Item>
                   </Col>
                   <Col span={5}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.duration"})} className={"form-item break-words"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.duration"})}
+                               className={"form-item break-words"}
                                key='duration'>
                       {this.dataInstance.educationDuration}
                     </Form.Item>
                   </Col>
                   <Col span={5}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.period"})} className={"form-item break-words"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.period"})}
+                               className={"form-item break-words"}
                                key='duration'>
                       {this.dataInstance.educationPeriod}
                     </Form.Item>
                   </Col>
                   <Col span={4}>
-                    <Form.Item label={this.props.intl.formatMessage({id: "course.confirm"})} className={"form-item break-words"}
+                    <Form.Item label={this.props.intl.formatMessage({id: "course.confirm"})}
+                               className={"form-item break-words"}
                                key='certificate'>
                       {/*<span>{this.props.intl.formatMessage({id: "course.certificate." + this.dataInstance.isIssuedCertificate})}</span>*/}
                       <span>{this.dataInstance.learningProof}</span>
