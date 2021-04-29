@@ -328,6 +328,9 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
     if (this.props.entityId !== "new") {
       this.dataInstance.load(this.props.entityId);
     } else {
+      const assignedGoal = new AssignedGoal();
+      assignedGoal.goalType = AssignedGoalTypeEnum.LIBRARY;
+
       this.dataInstance.setItem(new AssignedGoal());
     }
     this.reactionDisposer = reaction(
