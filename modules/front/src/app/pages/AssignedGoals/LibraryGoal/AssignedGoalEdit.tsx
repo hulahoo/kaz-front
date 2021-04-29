@@ -34,6 +34,7 @@ import Button, {ButtonType} from "../../../components/Button/Button";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
 import Input from "../../../components/Input/Input";
 import TextArea from "antd/es/input/TextArea";
+import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -327,6 +328,9 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
     if (this.props.entityId !== "new") {
       this.dataInstance.load(this.props.entityId);
     } else {
+      const assignedGoal = new AssignedGoal();
+      assignedGoal.goalType = AssignedGoalTypeEnum.LIBRARY;
+
       this.dataInstance.setItem(new AssignedGoal());
     }
     this.reactionDisposer = reaction(
