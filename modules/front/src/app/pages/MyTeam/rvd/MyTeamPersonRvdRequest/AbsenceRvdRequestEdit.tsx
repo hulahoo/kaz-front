@@ -317,7 +317,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               getFieldDecoratorOpts={{
                 rules: [{required: true,}],
                 getValueFromEvent: args => {
-                  this.purposeTempDc = queryCollection<DicPurposeAbsence>(DicPurposeAbsence.NAME, "myQueryForSerch", {
+                  this.purposeTempDc = queryCollection<DicPurposeAbsence>(DicPurposeAbsence.NAME, "myTeamRvd", {
                     typeId: args
                   })
                   // if(args === "ba902579-d681-6555-0a5a-b5ecfae610ef"){
@@ -327,6 +327,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                   // }else if(args === "3be39648-a752-f7dc-3724-77cdae92fdd8"){
                   //   this.purposeTempDc = this.purpose3;
                   // }
+                  console.log(this.purposeTempDc);
                   this.calcHours(args, null, null);
                   return args;
                   }
@@ -562,7 +563,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
         personGroupId: personGroupId
       }).then(value => {
         this.props.form.setFields({"totalHours": {value: value}});
-        this.props.form.validateFields(['totalHours'], {force: true})
       })
     }
   }
