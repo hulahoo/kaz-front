@@ -34,8 +34,7 @@ import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 
-export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
-export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
+export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
 export type Sort = {
   columnKey: string,
@@ -415,6 +414,20 @@ export const restServices = {
         {...param}
       );
     },
+    getReceivedVacationDaysOfYear: (param: { date: Date, absenceTypeId: string, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "getReceivedVacationDaysOfYear",
+        {...param}
+      );
+    },
+    getRemainingDaysWeekendWork: (personGroupId: string): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "getRemainingDaysWeekendWork",
+        {personGroupId: personGroupId}
+      );
+    },
     countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
       return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceService",
@@ -425,12 +438,21 @@ export const restServices = {
   },
   absenceRvdService: {
     countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
-    return getCubaREST()!.invokeService<string>(
-      "tsadv_AbsenceRvdService",
-      "countTotalHours",
-      {...param}
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AbsenceRvdService",
+        "countTotalHours",
+        {...param}
       );
     }
+  },
+  absenceBalanceService: {
+    getAbsenceBalance: (param: { absenceTypeId?: string, absenceDate: any, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceBalanceService",
+        "getAbsenceBalance",
+        {...param}
+      );
+    },
   },
   documentService: {
     getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
@@ -608,6 +630,29 @@ export const restServices = {
         "isManagerOrSupManager",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+  },
+  userSettingService: {
+    saveSetting: (name: string, value: string): void => {
+      getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "saveSetting",
+        {
+          clientType: 'P',
+          name: name,
+          value: value
+        }
+      );
+    },
+    loadSetting: <T>(name: string): Promise<T> => {
+      return getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "loadSetting",
+        {
+          clientType: 'P',
+          name: name
+        }
+      ).then(value => JSON.parse(value));
     },
   }
 };

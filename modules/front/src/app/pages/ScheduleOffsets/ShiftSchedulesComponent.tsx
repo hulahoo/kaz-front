@@ -19,7 +19,7 @@ import {
 } from "react-intl";
 import Page from "../../hoc/PageContentHoc";
 import { AssignmentSchedule } from "../../../cuba/entities/base/tsadv$AssignmentSchedule";
-import { formatDefaultDateFromString } from "../../util/Date/Date";
+import { formatDate } from "../../util/Date/Date";
 
 type ObvserverProps = {
     personGroupId: string;
@@ -107,7 +107,7 @@ class ShiftSchedulesComponent extends React.Component<MainStoreInjected & Wrappe
         }
         this.columnIndex++
         if (this.columnIndex === 2 || this.columnIndex === 3) {
-            return formatDefaultDateFromString(text);
+            return formatDate(text);
         } 
         return text;
     }
@@ -119,7 +119,7 @@ class ShiftSchedulesComponent extends React.Component<MainStoreInjected & Wrappe
         }
         this.reqColumnIndex++
         if (this.reqColumnIndex === 3 || this.reqColumnIndex === 9 || this.reqColumnIndex === 10 ) {
-            return formatDefaultDateFromString(text);
+            return formatDate(text);
         }
         return text;
     }

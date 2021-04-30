@@ -39,23 +39,21 @@ class KpiTeamListComponent extends React.Component<MainStoreInjected & WrappedCo
     const {Option} = Select;
 
     return (
-      <Page>
-        <Section size={"large"}>
-          <Row style={{"margin": '10px 0'}}>
-            <Col span={8}>
-              <Select onChange={value => this.performancePlan = value ? value as string : undefined}
-                      style={{width: '100%'}}
-                      allowClear
-                      placeholder={this.props.intl.formatMessage({id: "kpiTeam.list.filter.performancePlan"})}>
-                {this.performancePlans ? this.performancePlans.map(pp => {
-                  return <Option value={pp.id} key={pp.id}>{pp._instanceName}</Option>
-                }) : <Option key={"empty"}/>}
-              </Select>
-            </Col>
-          </Row>
-          <MyTeamComponent personCard={this.personCard}/>
-        </Section>
-      </Page>
+      <div style={{height: '100%'}}>
+        <Row style={{"margin": '10px 0'}}>
+          <Col span={8} style={{height: '100%'}}>
+            <Select onChange={value => this.performancePlan = value ? value as string : undefined}
+                    style={{width: '100%'}}
+                    allowClear
+                    placeholder={this.props.intl.formatMessage({id: "kpiTeam.list.filter.performancePlan"})}>
+              {this.performancePlans ? this.performancePlans.map(pp => {
+                return <Option value={pp.id} key={pp.id}>{pp._instanceName}</Option>
+              }) : <Option key={"empty"}/>}
+            </Select>
+          </Col>
+        </Row>
+        <MyTeamComponent personCard={this.personCard}/>
+      </div>
     );
   }
 

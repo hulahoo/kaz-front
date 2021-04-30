@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
-import Input, {CommonInputProps} from "../Input/Input";
 import {DatePicker} from "antd";
 import {DatePickerProps} from "antd/lib/date-picker/interface";
-import moment from "moment";
-
-export const DEFAULT_DATE_FORMAT = "DD.MM.yyyy"
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 
 interface DefaultDatePickerProps extends DatePickerProps {
 }
@@ -12,7 +9,7 @@ interface DefaultDatePickerProps extends DatePickerProps {
 class DefaultDatePicker extends Component<DefaultDatePickerProps> {
   render() {
     return (
-      <DatePicker format={DEFAULT_DATE_FORMAT} {...this.props}/>
+      <DatePicker format={DEFAULT_DATE_PATTERN} {...this.props}/>
     );
   }
 }

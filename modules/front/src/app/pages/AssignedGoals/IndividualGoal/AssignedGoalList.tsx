@@ -20,6 +20,10 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {restServices} from "../../../../cuba/services";
 import {rootStore} from "../../../store";
 import {DicGoalCategory} from "../../../../cuba/entities/base/tsadv$DicGoalCategory";
+import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
+import {ReactComponent as CascadeSvg} from "../../../../resources/icons/goal/cascade-goal.svg";
+import {ReactComponent as IndividualSvg} from "../../../../resources/icons/goal/individual-goal.svg";
+import {ReactComponent as LibrarySvg} from "../../../../resources/icons/goal/library-goal.svg";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -240,12 +244,18 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
       <Table
         dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
         size="default" bordered={false} rowKey="id">
+        <Column key="category"
+                render={((text, record: AssignedGoal, index) => {
+                  const GoalTypeIcon = this.getGoalTypeIcon(record.goalType);
+                  return GoalTypeIcon ? <GoalTypeIcon style={{width: '14px'}}/> : null
+                })}/>
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
                 dataIndex="category._instanceName"
                 key="category"
-                sorter={(a: AssignedGoal, b: AssignedGoal) =>
-                  (a.category as SerializedEntity<DicGoalCategory>)._instanceName!.localeCompare((b.category as SerializedEntity<DicGoalCategory>)._instanceName)
-                }/>
+                sorter={(a: AssignedGoal, b: AssignedGoal) => {
+                  console.log((a.category as SerializedEntity<DicGoalCategory>));
+                  return (a.category as SerializedEntity<DicGoalCategory>)._instanceName!.localeCompare((b.category as SerializedEntity<DicGoalCategory>)._instanceName)
+                }}/>
         <Column title={<FormattedMessage id="goalForm.column.kpiName"/>}
                 dataIndex="goalString"
                 key="goalString"
@@ -354,6 +364,23 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   getGoalUrl = (assignedGoal: AssignedGoal): string => {
     return `${this.props.match.url}${this.props.match.url[this.props.match.url.length - 1] === '/' ? '' : '/'}goal/${assignedGoal.goalLibrary ? "library" : assignedGoal.assignedByPersonGroup ? "cascade" : "individual"}/${assignedGoal.id}`;
   };
+
+  getGoalTypeIcon = (goalType: AssignedGoalTypeEnum | undefined) => {
+    switch (goalType) {
+      case AssignedGoalTypeEnum.CASCADE: {
+        return CascadeSvg;
+      }
+      case AssignedGoalTypeEnum.LIBRARY: {
+        return LibrarySvg;
+      }
+      case AssignedGoalTypeEnum.INDIVIDUAL: {
+        return IndividualSvg;
+      }
+      default: {
+        return null;
+      }
+    }
+  }
 }
 
 export default injectIntl(withRouter(AssignedGoalList));

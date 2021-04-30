@@ -34,6 +34,7 @@ import {observable, reaction} from "mobx";
 import moment from "moment/moment";
 import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
+import {EntitiesWithCount} from "@cuba-platform/rest";
 
 type EditorProps = {
   entityId: string;
@@ -69,6 +70,18 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   @observable
   isVacationDate = false;
+
+  isLaborLeave = false;
+
+  hasMinDayAbsence = false;
+
+  numDaysCalendarYear: number = 0;
+
+  remainingDaysWeekendWork: number = 0;
+
+  absenceBalance: number = 0;
+
+  isCheckWork = false;
 
   @observable
   isAbsenceIntersected = false;
@@ -279,9 +292,26 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                     }],
                     getValueFromEvent: typeId => {
                       const absenceType = this.absenceTypesDc.items.find(value => value.id === typeId) as DicAbsenceType;
+                      if (!absenceType) return typeId;
                       this.isJustRequired = !!absenceType.isJustRequired;
                       this.isOriginalSheet = !!absenceType.isOriginalSheet;
                       this.isVacationDate = !!absenceType.isVacationDate;
+                      this.isLaborLeave = !!(absenceType
+                        && absenceType.isVacationDate
+                        && absenceType.availableForChangeDate
+                        && absenceType.availableForRecallAbsence
+                        && absenceType.useInSelfService);
+
+                      this.isCheckWork = !!absenceType.isCheckWork;
+
+                      this.checkMinDayAbsence(absenceType);
+
+                      this.checkDaysCalendarYear(absenceType);
+
+                      this.getAbsenceBalance(absenceType);
+
+                      this.getRemainingDaysWeekendWork();
+
                       this.calcAbsenceDays(typeId, null, null);
 
                       this.setDaysBeforeAbsenceWaring(absenceType);
@@ -304,6 +334,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                     }],
                     getValueFromEvent: args => {
                       this.calcAbsenceDays(null, args, null);
+                      this.checkMinDayAbsence(null, args);
+                      this.checkDaysCalendarYear(null, args);
+                      this.getAbsenceBalance(null, args);
                       return args
                     }
                   }}
@@ -340,14 +373,30 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                         validator: (rule, value, callback) => {
                           const type = this.getSelectedAbsenceType();
                           if (!type || !value) return callback();
-                          if (type.maxDay && type.maxDay < value) {
+                          if (type.isEcologicalAbsence && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
+                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                          }
+                          if (this.isLaborLeave && (this.absenceBalance + (type.daysAdvance || 0) < value)) {
+                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                          } else if (this.isCheckWork && this.remainingDaysWeekendWork < value) {
+                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.weekendWork'}, {
+                              weekendWork: this.remainingDaysWeekendWork
+                            }));
+                          } else if (type.numDaysCalendarYear && (this.numDaysCalendarYear + value) >= type.numDaysCalendarYear) {
+                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.numDaysCalendarYear'}));
+                          } else if (type.maxDay && type.maxDay < value) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.maxDay'}, {
                               maxDay: type.maxDay
                             }));
-                          } else if (type.minDay && type.minDay > value) {
-                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.minDay'}, {
-                              minDay: type.minDay
-                            }));
+                          } else if (type.minDay) {
+                            if (type.minDay > value && !this.hasMinDayAbsence && this.isLaborLeave)
+                              callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.minDay'}, {
+                                minDay: type.minDay
+                              }));
+                            else if (type.minDay < value && (!this.isLaborLeave || this.hasMinDayAbsence))
+                              callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.has.minDay'}, {
+                                minDay: type.minDay
+                              }));
                           } else callback();
                         }
                       }
@@ -468,6 +517,122 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     </div>
   }
 
+  getRemainingDaysWeekendWork = () => {
+    if (this.isCheckWork) {
+      restServices.absenceService
+        .getRemainingDaysWeekendWork(this.personGroupId)
+        .then(value => {
+          this.remainingDaysWeekendWork = value;
+          this.callForceAbsenceDayValidator();
+        })
+    }
+  }
+
+  checkDaysCalendarYear = (absenceType?: DicAbsenceType | null, dateFrom?: any) => {
+    dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
+    absenceType = absenceType || this.getSelectedAbsenceType();
+
+    if (absenceType && absenceType.numDaysCalendarYear && dateFrom) {
+      restServices.absenceService.getReceivedVacationDaysOfYear({
+        date: dateFrom,
+        personGroupId: this.personGroupId,
+        absenceTypeId: absenceType.id
+      }).then(value => {
+        this.numDaysCalendarYear = value || 0;
+
+        this.callForceAbsenceDayValidator();
+      })
+    }
+  }
+
+  getAbsenceBalance = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
+    dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
+    absenceType = absenceType || this.getSelectedAbsenceType();
+
+    if (absenceType && dateFrom && (this.isLaborLeave || absenceType.isEcologicalAbsence)) {
+      restServices.absenceBalanceService.getAbsenceBalance({
+        absenceTypeId: absenceType.id,
+        personGroupId: this.personGroupId,
+        absenceDate: dateFrom
+      })
+        .then(value => {
+          this.absenceBalance = value;
+          this.callForceAbsenceDayValidator();
+        })
+    }
+  }
+
+  checkMinDayAbsence = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
+    dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
+    absenceType = absenceType || this.getSelectedAbsenceType();
+
+    if (absenceType && absenceType.minDay && dateFrom) {
+
+      const changeHasMinDayAbsence = (result: EntitiesWithCount<any>) => {
+        this.hasMinDayAbsence = (result.count > 0);
+        this.callForceAbsenceDayValidator();
+      }
+
+      const year = parseInt(dateFrom.format('YYYY'));
+      getCubaREST()!.searchEntitiesWithCount(Absence.NAME, {
+        conditions: [{
+          property: 'personGroup.id',
+          operator: '=',
+          value: this.personGroupId!
+        }, {
+          property: 'type.id',
+          operator: '=',
+          value: absenceType!.id
+        }, {
+          property: 'absenceDays',
+          operator: '>=',
+          value: absenceType.minDay
+        }, {
+          property: 'dateFrom',
+          operator: '>',
+          value: (year - 1) + '-12-31'
+        }, {
+          property: 'dateFrom',
+          operator: '<',
+          value: (year + 1) + '-01-01'
+        }]
+      })
+        .then(value => {
+          changeHasMinDayAbsence(value);
+          if (!this.hasMinDayAbsence) {
+            getCubaREST()!.searchEntitiesWithCount(AbsenceRequest.NAME, {
+              conditions: [{
+                property: 'status.code',
+                operator: '=',
+                value: 'APPROVING'
+              }, {
+                property: 'personGroup.id',
+                operator: '=',
+                value: this.personGroupId!
+              }, {
+                property: 'type.id',
+                operator: '=',
+                value: absenceType!.id
+              }, {
+                property: 'dateFrom',
+                operator: '>',
+                value: (year - 1) + '-12-31'
+              }, {
+                property: 'dateFrom',
+                operator: '<',
+                value: (year + 1) + '-01-01'
+              }, {
+                property: 'absenceDays',
+                operator: '>=',
+                value: absenceType!.minDay!
+              }]
+            })
+              .then(changeHasMinDayAbsence);
+          }
+        })
+    }
+  }
+
   calcAbsenceDays = (type?: string | null, dateFrom?: any, dateTo?: any) => {
     type = type || this.props.form.getFieldValue(`type`);
     dateFrom = dateFrom || this.props.form.getFieldValue(`dateFrom`);
@@ -483,7 +648,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         personGroupId: personGroupId
       }).then(value => {
         this.props.form.setFields({"absenceDays": {value: value}});
-        this.props.form.validateFields(['absenceDays'], {force: true})
+        this.callForceAbsenceDayValidator();
       })
     }
   }
@@ -533,6 +698,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
       }
     );
   };
+
+  callForceAbsenceDayValidator = () => this.props.form.validateFields(['absenceDays'], {force: true});
 }
 
 const onValuesChange = (props: any, changedValues: any) => {

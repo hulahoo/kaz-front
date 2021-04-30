@@ -17,8 +17,8 @@ import {Table} from "antd/es";
 import Column from "antd/lib/table/Column";
 import {DEFAULT_DATE_PARSE_FORMAT, restServices} from "../../../cuba/services";
 import {InsuranceContract} from "../../../cuba/entities/base/tsadv$InsuranceContract";
-import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
 import moment from "moment";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 
 @injectMainStore
 @observer
@@ -95,7 +95,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
               title={<Msg entityName={InsuranceContract.NAME} propertyName='startDate'/>}
               dataIndex="insuranceContract.startDate"
               render={(text, record: InsuredPerson) => (
-                (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT)))
+                (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN)))
               )}
             />
 
@@ -103,7 +103,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
               title={<Msg entityName={InsuranceContract.NAME} propertyName='expirationDate'/>}
               dataIndex="insuranceContract.expirationDate"
               render={(text, record: InsuredPerson) => (
-                (React.createElement("div", null, moment(record.insuranceContract!.expirationDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT)))
+                (React.createElement("div", null, moment(record.insuranceContract!.expirationDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN)))
               )}
             />
 
@@ -111,7 +111,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
               title={<Msg entityName={InsuredPerson.NAME} propertyName='attachDate'/>}
               dataIndex="attachDate"
               render={(text, record: InsuredPerson) => (
-                (React.createElement("div", null, moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT)))
+                (React.createElement("div", null, moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN)))
               )}
             />
 

@@ -6,7 +6,7 @@ import {observable} from "mobx";
 
 import {Tabs} from "antd";
 
-import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {collection, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
@@ -20,6 +20,7 @@ import {AllAbsenceRequest} from "../../../cuba/entities/base/tsadv_AllAbsenceReq
 import {link} from "../../util/util";
 import {VacationScheduleRequestManagement} from "../VacationScheduleRequest/VacationScheduleRequestManagement";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
+import DataTableFormat from "../../components/DataTable/intex";
 
 const {TabPane} = Tabs;
 
@@ -40,7 +41,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollectionVacationSchedule = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
       view: "_local",
-      sort: "-updateTs",
+      sort: "-startDate",
       filter: {
         conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
       }
@@ -49,7 +50,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollectionAbsence = collection<Absence>(Absence.NAME, {
     view: "absence.view",
-    sort: "-updateTs",
+    sort: "-dateFrom",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
@@ -91,32 +92,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   @observable selectedRowKey: string | undefined;
 
-  lastIndex = -1;
-
-  renderColumn = (text: string, record: AllAbsenceRequest, index: number) => {
-    if (text === record["requestNumber"] && this.lastIndex !== index) {
-      this.lastIndex = index;
-      return <Link to={link(record.entityName!) + "/" + record.id}>
-        {text}
-      </Link>
-    }
-
-    return text;
-  }
-
-  lastVacationScheduleRequestIndex = -1;
-
-  renderVacationScheduleRequestColumn = (text: string, record: VacationScheduleRequest, index: number) => {
-    if (text === record.requestNumber && this.lastVacationScheduleRequestIndex !== index) {
-      this.lastVacationScheduleRequestIndex = index;
-      return <Link to={VacationScheduleRequestManagement.PATH + "/" + record.id}>
-        {text}
-      </Link>
-    }
-
-    return text;
-  }
-
   @observable
   pageName = "absence";
 
@@ -125,7 +100,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
   isSelectedAbsenceTypeMaternity = (): boolean => {
     if (this.selectedRowKey === null || this.selectedRowKey === undefined) return true;
     const absence = this.getAbsenceById(this.selectedRowKey);
-    return !(absence !== null && absence.type !== undefined && absence.type !== null && absence.type.availableForLeavingVacation );
+    return !(absence !== null && absence.type !== undefined && absence.type !== null && absence.type.availableForLeavingVacation);
   }
 
   render() {
@@ -162,7 +137,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                 <div style={{marginBottom: 16}}>
                   {btns}
                 </div>
-                <DataTable
+                <DataTableFormat
                   dataCollection={this.dataCollectionAbsence}
                   onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
                   fields={this.absenceFields}
@@ -182,25 +157,35 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                     </Button>
                   </Link>
                 </div>
-                <DataTable
+                <DataTableFormat
                   dataCollection={this.dataCollectionVacationSchedule}
                   fields={this.vacationScheduleFields}
                   hideSelectionColumn={true}
-                  columnProps={{
-                    render: this.renderVacationScheduleRequestColumn
-                  }}
+                  render={[{
+                    column: this.vacationScheduleFields[0],
+                    render: (text, record) => {
+                      return <Link to={VacationScheduleRequestManagement.PATH + "/" + record.id}>
+                        {text}
+                      </Link>
+                    }
+                  }]}
                 />
               </div>
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "absenceRequest"})} key="3">
               <div>
-                <DataTable
+                <DataTableFormat
                   dataCollection={this.dataCollection}
                   fields={this.absenceRequestFields}
                   hideSelectionColumn={true}
-                  columnProps={{
-                    render: this.renderColumn
-                  }}
+                  render={[{
+                    column: this.absenceRequestFields[0],
+                    render: (text, record) => {
+                      return <Link to={link(record.entityName!) + "/" + record.id}>
+                        {text}
+                      </Link>
+                    }
+                  }]}
                 />
               </div>
             </TabPane>

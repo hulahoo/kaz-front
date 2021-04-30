@@ -41,6 +41,7 @@ import Notification from "../../../util/Notification/Notification";
 import {PositionGroupExt} from "../../../../cuba/entities/base/base$PositionGroupExt";
 import TextArea from "antd/es/input/TextArea";
 import Input from "../../../components/Input/Input";
+import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -277,6 +278,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
     const successCriteria = goal ? goal.successCriteria : null;
 
     this.props.form.setFieldsValue({
+      successCriteria: successCriteria,
       goalSuccessCriteria: successCriteria,
       goalString: option.props['children'],
       category: option!.props["category"],
@@ -293,6 +295,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
 
       const assignedGoal = new AssignedGoal();
       assignedGoal.assignedPerformancePlan = assignedPerformancePlan;
+      assignedGoal.goalType = AssignedGoalTypeEnum.CASCADE;
 
       this.dataInstance.setItem(assignedGoal);
     }
