@@ -35,6 +35,7 @@ import {withRouter} from "react-router";
 import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
 import Section from "../../hoc/Section";
 import Page from "../../hoc/PageContentHoc";
+import moment from "moment/moment";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -82,6 +83,8 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
   @observable
   globalErrors: string[] = [];
+
+  personGroupId: string;
 
   handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -205,8 +208,14 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="startDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
+                  getFieldDecoratorOpts={{
+                    getValueFromEvent: args => {
+                      this.getAbsenceBalance(null, args);
+                      return args
+                    }
+                  }}
                   disabled={isNotDraft}
+
                 />
 
                 <ReadonlyField
@@ -223,18 +232,30 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="absenceDays"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
+                  getFieldDecoratorOpts={{
+                    rules: [
+                      {
+                        validator: (rule, value, callback) => {
+                          const balance = this.props.form.getFieldValue('balance');
+                          if (!value || !balance) return callback();
+                          if (balance < parseInt(value)) {
+                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                          }
+                        }
+                      }
+                    ]
+                  }}
                   disabled={true}
                 />
 
-                {/*<ReadonlyField*/}
-                {/*  entityName={VacationScheduleRequest.NAME}*/}
-                {/*  propertyName="balance"*/}
-                {/*  form={this.props.form}*/}
-                {/*  formItemOpts={{style: {marginBottom: "12px"}}}*/}
-                {/*  getFieldDecoratorOpts={{}}*/}
-                {/*  disabled={true}*/}
-                {/*/>*/}
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="balance"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{}}
+                  disabled={true}
+                />
 
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
@@ -279,6 +300,23 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     );
   }
 
+  getAbsenceBalance = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
+    dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
+
+    if (dateFrom) {
+      restServices.absenceBalanceService.getAbsenceBalance({
+        personGroupId: this.personGroupId,
+        absenceDate: dateFrom
+      })
+        .then(value => {
+          this.props.form.setFieldsValue({"balance": value});
+          this.callForceAbsenceDayValidator();
+        })
+    }
+  }
+
+  callForceAbsenceDayValidator = () => this.props.form.validateFields(['absenceDays'], {force: true});
+
   componentDidMount() {
     if (this.props.entityId !== VacationScheduleRequestManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
@@ -291,7 +329,10 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
       () => {
         return this.dataInstance.item;
       },
-      () => {
+      (item) => {
+
+        this.personGroupId = item && item.personGroup ? item.personGroup.id : this.props.rootStore!.userInfo.personGroupId!;
+
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );
