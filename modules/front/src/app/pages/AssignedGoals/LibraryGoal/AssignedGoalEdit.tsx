@@ -258,7 +258,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Form.Item>
 
               <Form.Item label={<FormattedMessage id="my.goal.description"/>}
-                         key='successCriteria'
+                         key='goalSuccessCriteria'
                          style={{marginBottom: '12px'}}>{
                 this.props.form.getFieldDecorator('successCriteria')(
                   <TextArea/>
@@ -331,7 +331,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
       const assignedGoal = new AssignedGoal();
       assignedGoal.goalType = AssignedGoalTypeEnum.LIBRARY;
 
-      this.dataInstance.setItem(new AssignedGoal());
+      this.dataInstance.setItem(assignedGoal);
     }
     this.reactionDisposer = reaction(
       () => {
