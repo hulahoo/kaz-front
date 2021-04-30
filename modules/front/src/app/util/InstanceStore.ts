@@ -35,26 +35,25 @@ export class InstanceStore<T> extends DataInstanceStore<T> {
       };
   }
 
-  load = (id: string) => {
+  load = async (id: string) => {
     this.item = undefined;
     if (!id) {
       return;
     }
     this.status = "LOADING";
-    getCubaREST()!.loadEntity(this.entityName, id, {view: this.viewName})
-      .then((loadedEntity) => {
-        runInAction(() => {
-          this.item = (loadedEntity as SerializedEntity<T>);
-          this.status = "DONE";
+    try {
+      const loadedEntity = await getCubaREST()!.loadEntity(this.entityName, id, {view: this.viewName});
+      runInAction(() => {
+        this.item = (loadedEntity as SerializedEntity<T>);
+        this.status = "DONE";
 
-          this.afterLoad();
-        });
-      })
-      .catch(() => {
-        runInAction(() => {
-          this.status = "ERROR";
-        });
+        this.afterLoad();
       });
+    } catch (e) {
+      runInAction(() => {
+        this.status = "ERROR";
+      });
+    }
   };
 
   afterLoad = () => {

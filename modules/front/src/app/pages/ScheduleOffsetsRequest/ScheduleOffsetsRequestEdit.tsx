@@ -1,8 +1,8 @@
 import * as React from "react";
-import {Alert, Card, Form} from "antd";
+import {Alert, Card, Col, Form, Input, Select, Spin} from "antd";
 import {inject, observer} from "mobx-react";
 import {FormComponentProps} from "antd/lib/form";
-import {IReactionDisposer, observable, toJS} from "mobx";
+import {action, IReactionDisposer, observable, toJS} from "mobx";
 import {injectIntl} from "react-intl";
 import {withRouter} from "react-router-dom";
 
@@ -11,7 +11,7 @@ import {
   Field,
   getCubaREST,
   injectMainStore,
-  instance,
+  instance, Msg,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -33,6 +33,15 @@ import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStat
 import AbstractAgreedBprocEdit from "../Bproc/abstract/AbstractAgreedBprocEdit";
 import Notification from "../../util/Notification/Notification";
 import {instanceStore} from "../../util/InstanceStore";
+import {restServices} from "../../../cuba/services";
+import {OrgStructureRequest} from "../../../cuba/entities/base/tsadv_OrgStructureRequest";
+import DefaultDatePicker, {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
+import EntityField from "../../components/EntityField/EntityField";
+import {queryCollection, QueryDataCollectionStore} from "../../util/QueryDataCollectionStore";
+import {DicSchedulePurpose} from "../../../cuba/entities/base/tsadv_DicSchedulePurpose";
+import {Goal} from "../../../cuba/entities/base/tsadv$Goal";
+import TextArea from "antd/es/input/TextArea";
+import MsgEntity from '../../components/MsgEntity';
 
 type Props = FormComponentProps & EditorProps;
 
@@ -52,7 +61,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   });
 
   @observable
-  personGroup: PersonGroupExt;
+  loaded: boolean = false;
 
   newSchedulesDc = collection<StandardSchedule>(StandardSchedule.NAME, {
     view: "_minimal"
@@ -62,12 +71,37 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     view: "_minimal"
   });
 
+  purposesDc = collection<DicSchedulePurpose>(DicSchedulePurpose.NAME, {
+    view: "_minimal",
+    filter: {
+      conditions: [
+        {
+          group: "OR",
+          conditions: [{
+            property: 'company',
+            operator: '=',
+            value: this.props.rootStore!.userInfo.companyId!
+          }, {
+            property: 'company.code',
+            operator: '=',
+            value: 'empty'
+          }]
+        }]
+    }
+  });
+
+  standardScheduleDc: QueryDataCollectionStore<StandardSchedule>;
+
   personGroupDc: DataCollectionStore<PersonGroupExt>;
 
   processDefinitionKey = "scheduleOffsetsRequest";
 
   @observable
   updated = false;
+
+  @observable
+  isVisiblePurposeText = false;
+
   reactionDisposer: IReactionDisposer;
 
   fields = [
@@ -107,9 +141,9 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   ];
 
   @observable
-  globalErrors: string[] = [];
-
-  currentStandardSchedule: StandardSchedule;
+  globalErrors
+    :
+    string[] = [];
 
   beforeCompletePredicate = (outcome: string): Promise<boolean> => {
     if (outcome == 'APPROVE' && this.approverHrRoleCode === 'EMPLOYEE') {
@@ -144,165 +178,211 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       return <LoadingPage/>
     }
 
+    const {Option} = Select;
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "scheduleOffsetsRequest"})}>
-        <Section size="large">
-          <div>
-            <Card className="narrow-layout card-actions-container" actions={[
-              <Button buttonType={ButtonType.FOLLOW}
-                      onClick={() => this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
-              this.getOutcomeBtns()]}
-                  bordered={false}>
-              <Form onSubmit={this.validate} layout="vertical">
+      <Page pageName={<MsgEntity entityName={ScheduleOffsetsRequest.NAME}/>}>
+        <Spin spinning={!this.loaded}>
+          <Section size="large">
+            <div>
+              <Card className="narrow-layout card-actions-container" actions={[
+                <Button buttonType={ButtonType.FOLLOW}
+                        onClick={() => this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                this.getOutcomeBtns()]}
+                    bordered={false}>
+                <Form onSubmit={this.validate} layout="vertical">
 
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="requestNumber"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  disabled={true}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="status"
-                  disabled={true}
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.statusesDc}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="requestDate"
-                  form={this.props.form}
-                  disabled={true}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-
-                <ReadonlyField
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="personGroup"
-                  optionsContainer={this.personGroupDc}
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  disabled={true}
-                  getFieldDecoratorOpts={{}}
-                />
-
-
-                <ReadonlyField
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="currentSchedule"
-                  form={this.props.form}
-                  disabled={true}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
-                />
-
-                <Field
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="newSchedule"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.newSchedulesDc}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
-                />
-
-                <Field
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="purposeText"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
-                />
-
-                <Field
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="dateOfNewSchedule"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
-                />
-
-                <Field
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="dateOfStartNewSchedule"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
-                />
-
-                <Field
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="detailsOfActualWork"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
-                />
-
-                <ReadonlyField
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="agree"
-                  form={this.props.form}
-                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    valuePropName: "checked"
-                  }}
-                />
-
-                <ReadonlyField
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="acquainted"
-                  form={this.props.form}
-                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    valuePropName: "checked"
-                  }}
-                />
-
-
-                <Field
-                  entityName={ScheduleOffsetsRequest.NAME}
-                  propertyName="comment"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
-                />
-
-                {this.globalErrors.length > 0 && (
-                  <Alert
-                    message={<MultilineText lines={toJS(this.globalErrors)}/>}
-                    type="error"
-                    style={{marginBottom: "24px"}}
+                  <ReadonlyField
+                    entityName={this.dataInstance.entityName}
+                    propertyName="requestNumber"
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    disabled={true}
+                    getFieldDecoratorOpts={{
+                      rules: [{required: true,}]
+                    }}
                   />
-                )}
 
-                {this.takCard()}
+                  <ReadonlyField
+                    entityName={this.dataInstance.entityName}
+                    propertyName="status"
+                    disabled={true}
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    optionsContainer={this.statusesDc}
+                    getFieldDecoratorOpts={{
+                      rules: [{required: true,}]
+                    }}
+                  />
 
-              </Form>
-            </Card>
+                  <ReadonlyField
+                    entityName={this.dataInstance.entityName}
+                    propertyName="requestDate"
+                    disabled={true}
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    optionsContainer={this.statusesDc}
+                    format={DEFAULT_DATE_FORMAT}
+                    getFieldDecoratorOpts={{
+                      rules: [{required: true,}]
+                    }}
+                  />
 
-          </div>
-        </Section>
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="personGroup"
+                    optionsContainer={this.personGroupDc}
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    disabled={true}
+                    getFieldDecoratorOpts={{}}
+                  />
+
+
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="currentSchedule"
+                    optionsContainer={this.standardScheduleDc}
+                    form={this.props.form}
+                    disabled={true}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    getFieldDecoratorOpts={{}}
+                  />
+
+                  <Field
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="newSchedule"
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    optionsContainer={this.newSchedulesDc}
+                    getFieldDecoratorOpts={{
+                      rules: [{required: true,}]
+                    }}
+                  />
+
+                  <Form.Item label={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName={"purpose"}/>}
+                             key='purpose'
+                             style={{marginBottom: '12px'}}>
+                    {this.props.form.getFieldDecorator('purpose', {
+                      validateTrigger: ["onChange", "onBlur"],
+                      rules: [{required: true}]
+                    })(
+                      <Select onChange={this.changePurpose}>
+                        {this.purposesDc.items.map(p => {
+                          //@ts-ignore
+                          return <Option value={p.id}
+                                         code={p.code}>{p._instanceName}</Option>
+                        })}
+                      </Select>
+                    )}
+                  </Form.Item>
+
+                  <Form.Item label={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName={"purposeText"}/>}
+                             key='purposeText'
+                             style={{marginBottom: '12px', display: this.isVisiblePurposeText ? 'block' : 'none'}}>
+                    {this.props.form.getFieldDecorator('purposeText', {})(
+                      <Input maxLength={50}/>
+                    )}
+                  </Form.Item>
+
+                  <ReadonlyField
+                    entityName={this.dataInstance.entityName}
+                    propertyName="dateOfNewSchedule"
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    optionsContainer={this.statusesDc}
+                    format={DEFAULT_DATE_FORMAT}
+                    getFieldDecoratorOpts={{
+                      rules: [{required: true,}]
+                    }}
+                  />
+
+                  <ReadonlyField
+                    entityName={this.dataInstance.entityName}
+                    propertyName="dateOfStartNewSchedule"
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    optionsContainer={this.statusesDc}
+                    format={DEFAULT_DATE_FORMAT}
+                    getFieldDecoratorOpts={{
+                      rules: [{required: true,}]
+                    }}
+                  />
+
+                  <Form.Item
+                    label={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName={"detailsOfActualWork"}/>}
+                    key='detailsOfActualWork'
+                    style={{marginBottom: '12px'}}>
+                    {this.props.form.getFieldDecorator('detailsOfActualWork', {})(
+                      <TextArea
+                        rows={4} maxLength={2000}/>
+                    )}
+                  </Form.Item>
+
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="agree"
+                    form={this.props.form}
+                    disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    getFieldDecoratorOpts={{
+                      valuePropName: "checked"
+                    }}
+                  />
+
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="acquainted"
+                    form={this.props.form}
+                    disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    getFieldDecoratorOpts={{
+                      valuePropName: "checked"
+                    }}
+                  />
+
+
+                  <Field
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="comment"
+                    form={this.props.form}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    getFieldDecoratorOpts={{}}
+                  />
+
+                  {this.globalErrors.length > 0 && (
+                    <Alert
+                      message={<MultilineText lines={toJS(this.globalErrors)}/>}
+                      type="error"
+                      style={{marginBottom: "24px"}}
+                    />
+                  )}
+
+                  {this.takCard()}
+
+                </Form>
+              </Card>
+
+            </div>
+          </Section>
+        </Spin>
       </Page>
     );
   }
 
+  changePurpose = (value: string, option: React.ReactElement<HTMLLIElement>) => {
+    const purposeCode = option!.props["code"];
+    this.setIsVisiblePurposeText(purposeCode);
+
+    this.props.form.setFieldsValue({
+      purposeText: undefined
+    });
+  };
+
+  @action
+  setIsVisiblePurposeText = (purposeCode?: string | null) => {
+    console.log(purposeCode);
+    this.isVisiblePurposeText = purposeCode == undefined ? false : purposeCode.toLowerCase() === 'other';
+  };
 
   getUpdateEntityData = (): any => {
     if (this.isNotDraft())
@@ -315,53 +395,71 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     }
   };
 
+  loadData = async () => {
+    if (!this.isNew()) {
+      await this.dataInstance.load(this.props.entityId);
+    } else {
+      const entityName = this.dataInstance.entityName;
+      this.initItem(await restServices.portalHelperService.newEntity({entityName: entityName}));
+    }
+  };
+
   componentDidMount() {
-    if (!this.props.personGroupId) {
-      this.dataInstance.afterLoad = () => {
-        this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-          view: "_minimal",
-          filter: {
-            conditions: [{
-              property: "id",
-              operator: "=",
-              value: this.dataInstance.item!.personGroup!.id
-            }]
-          },
-          limit: 10
-        });
-        this.personGroupDc.load();
-      };
-    }
+    (async () => {
+      this.setReactionDisposer();
+      await this.loadData();
+      await this.loadBpmProcessData();
 
-    super.componentDidMount();
-    if (this.props.personGroupId) {
-      this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-        view: "_minimal",
-        filter: {
-          conditions: [
-            {
-              property: "id",
-              operator: "=",
-              value: this.props.personGroupId
-            }
-          ]
-        },
-        loadImmediately: false,
-        limit: 10
+      const personGroupId: string = this.props.personGroupId ? this.props.personGroupId : this.dataInstance.item!.personGroup!.id;
+
+      this.standardScheduleDc = queryCollection<StandardSchedule>(StandardSchedule.NAME, "currentStandardSchedule", {
+        personGroupId: personGroupId
       });
 
-      this.loadPerson(this.props.personGroupId).then(value => {
-        this.personGroup = value;
-        this.dataInstance.item!.personGroup = value;
-        const fieldValues = this.dataInstance.getFieldValues(this.fields);
-        this.props.form.setFieldsValue(fieldValues);
-      });
-      this.loadCurrentScheduleOffset(this.props.personGroupId);
-      this.setEmployee(this.props.personGroupId);
-      this.personGroupDc.load();
-    }
+      if (this.isNew()) {
+        this.standardScheduleDc.afterLoad = () => {
+          this.dataInstance.item!.currentSchedule = this.standardScheduleDc.items![0];
+          this.updateFields();
+
+          this.loaded = true;
+        }
+      } else {
+        this.setIsVisiblePurposeText(this.dataInstance.item!.purpose!.code)
+      }
+
+      this.loadPersonGroupDc(personGroupId);
+
+      await this.loadPerson(personGroupId);
+
+      this.setEmployee(personGroupId);
+
+      this.updateFields();
+
+      if (!this.isNew()) {
+        this.loaded = true;
+      }
+    })()
   }
 
+  updateFields = () => {
+    const fieldValues = this.dataInstance.getFieldValues(this.fields);
+    this.props.form.setFieldsValue(fieldValues);
+  };
+
+  loadPersonGroupDc = (personGroupId: string) => {
+    this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+      view: "_minimal",
+      filter: {
+        conditions: [{
+          property: "id",
+          operator: "=",
+          value: personGroupId
+        }]
+      },
+      limit: 10
+    });
+    this.personGroupDc.load();
+  };
 
   componentWillUnmount() {
     this.reactionDisposer();
@@ -371,8 +469,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     this.props.history!.goBack();
   };
 
-  loadPerson = (personGroupId: string): Promise<PersonGroupExt> => {
-    return getCubaREST()!.searchEntities(PersonGroupExt.NAME, {
+  loadPerson = async (personGroupId: string): Promise<void> => {
+    const response = await getCubaREST()!.searchEntities<PersonGroupExt>(PersonGroupExt.NAME, {
       conditions: [{
         property: 'id',
         operator: '=',
@@ -380,21 +478,25 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       }]
     }, {
       view: 'personGroupExt-absenceEdit'
-    }).then(value => value[0] as PersonGroupExt);
+    });
+    this.dataInstance.item!.personGroup = response[0];
   };
 
-
-  loadCurrentScheduleOffset(personGroupId: string) {
-    return restQueries.currentStandardSchedule(personGroupId)
-      .then(value => {
-        if (value.length > 0) {
-          this.currentStandardSchedule = value[0];
-          this.dataInstance.item!.currentSchedule = this.currentStandardSchedule;
-          const fieldValues = this.dataInstance.getFieldValues(this.fields);
-          this.props.form.setFieldsValue(fieldValues);
-        }
-      });
+  isNew = () => {
+    return this.props.entityId === "new";
   }
+
+  // loadCurrentScheduleOffset(personGroupId: string) {
+  //   return restQueries.currentStandardSchedule(personGroupId)
+  //     .then(value => {
+  //       if (value.length > 0) {
+  //         this.currentStandardSchedule = value[0];
+  //         this.dataInstance.item!.currentSchedule = this.currentStandardSchedule;
+  //         const fieldValues = this.dataInstance.getFieldValues(this.fields);
+  //         this.props.form.setFieldsValue(fieldValues);
+  //       }
+  //     });
+  // }
 }
 
 export default injectIntl(
