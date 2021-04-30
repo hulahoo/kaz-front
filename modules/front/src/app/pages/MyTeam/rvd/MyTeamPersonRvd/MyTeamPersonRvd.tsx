@@ -49,11 +49,10 @@ class MyTeamPersonRvd extends React.Component<MyTeamCardProps & MainStoreInjecte
       <div>
         <Link
           to={
-            AbsenceRvdRequestManagement.PATH +
-            "/" +
-            AbsenceRvdRequestManagement.NEW_SUBPATH
+            AbsenceRvdRequestManagement.PATH + "/" + AbsenceRvdRequestManagement.NEW_SUBPATH + "/" + this.props.personGroupId
           }
           key="create"
+
         >
           <Button
             htmlType="button"

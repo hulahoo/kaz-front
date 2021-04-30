@@ -138,11 +138,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
 
                 <Route exact={true}
-                       path={AbsenceRvdRequestManagement.PATH + "/:entityId"}
+                       path={AbsenceRvdRequestManagement.PATH_WITH_PARAMS}
                        component={AbsenceRvdRequestManagement}/>
-                <Route exact={true}
-                       path={AbsenceRequestManagement.PATH + "/:entityId"}
-                       component={AbsenceRequestManagement}/>
+
 
                 {/*<Route exact={true}*/}
                 {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
