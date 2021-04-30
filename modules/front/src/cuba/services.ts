@@ -631,6 +631,29 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     },
+  },
+  userSettingService: {
+    saveSetting: (name: string, value: string): void => {
+      getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "saveSetting",
+        {
+          clientType: 'P',
+          name: name,
+          value: value
+        }
+      );
+    },
+    loadSetting: <T>(name: string): Promise<T> => {
+      return getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "loadSetting",
+        {
+          clientType: 'P',
+          name: name
+        }
+      ).then(value => JSON.parse(value));
+    },
   }
 };
 
