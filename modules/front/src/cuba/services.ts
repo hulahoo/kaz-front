@@ -414,13 +414,6 @@ export const restServices = {
         {...param}
       );
     },
-    countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
-      return getCubaREST()!.invokeService<number>(
-        "tsadv_AbsenceService",
-        "countDaysWithoutHolidays",
-        {...param}
-      );
-    },
     getReceivedVacationDaysOfYear: (param: { date: Date, absenceTypeId: string, personGroupId: string }): Promise<number> => {
       return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceService",
@@ -434,16 +427,32 @@ export const restServices = {
         "getRemainingDaysWeekendWork",
         {personGroupId: personGroupId}
       );
-    }
+    },
+    countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "countDaysWithoutHolidays",
+        {...param}
+      );
+    },
   },
   absenceRvdService: {
     countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
-    return getCubaREST()!.invokeService<string>(
-      "tsadv_AbsenceRvdService",
-      "countTotalHours",
-      {...param}
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AbsenceRvdService",
+        "countTotalHours",
+        {...param}
       );
-    },
+    }
+  },
+  absenceBalanceService: {
+    getAbsenceBalance: (param: { absenceTypeId?: string, absenceDate: any, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceBalanceService",
+        "getAbsenceBalance",
+        {...param}
+      );
+    }
   },
   documentService: {
     getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {

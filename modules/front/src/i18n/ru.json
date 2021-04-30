@@ -280,6 +280,7 @@
   "validation.absenceRequest.absenceDays.has.minDay": "Длительность данного типа отсутствия согласно ТР РК может составлять не менее {minDay}.",
   "validation.absenceRequest.absenceDays.numDaysCalendarYear": "Лимит по данному типу отсутствия в текущем календарном году исчерпан. Вы не можете подать заявку на данный тип отсутствия.",
   "validation.absenceRequest.absenceDays.weekendWork": "Остаток дней отдыха за РВД составляет {weekendWork} дней.",
+  "validation.absenceRequest.absenceDays.balance": "Количество дней в заявке превышает остаток по балансу отпуска.",
   "warning.absenceRequest.daysBeforeAbsence.draft": "Заявку на данный тип отсутствия необходимо подать за {daysBeforeAbsence} дней. Вы указали меньший период.",
   "warning.absenceRequest.daysBeforeAbsence.onApproval": "Заявка подана менее чем за {daysBeforeAbsence} дней",
   "exclude.type.1": "организацию",

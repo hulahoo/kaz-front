@@ -34,6 +34,7 @@ export class DicAbsenceType extends AbstractDictionary {
   temporaryTransfer?: boolean | null;
   overtimeWork?: boolean | null;
   numDaysCalendarYear?: number | null;
+  isEcologicalAbsence?: number | null;
   isFileRequired?: number | null;
 }
 export type DicAbsenceTypeViewName =
@@ -100,6 +101,7 @@ export type DicAbsenceTypeView<
       | "isDefault"
       | "order"
       | "numDaysCalendarYear"
+      | "isEcologicalAbsence"
       | "isFileRequired"
     >
   : V extends "_local"
@@ -157,6 +159,7 @@ export type DicAbsenceTypeView<
       | "isDefault"
       | "order"
       | "numDaysCalendarYear"
+      | "isEcologicalAbsence"
       | "isFileRequired"
     >
   : V extends "_minimal"
@@ -218,6 +221,7 @@ export type DicAbsenceTypeView<
       | "absenceCategory"
       | "company"
       | "numDaysCalendarYear"
+      | "isEcologicalAbsence"
       | "isFileRequired"
     >
   : never;
