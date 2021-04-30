@@ -446,7 +446,7 @@ export const restServices = {
     }
   },
   absenceBalanceService: {
-    getAbsenceBalance: (param: { absenceDate: any, personGroupId: string }): Promise<number> => {
+    getAbsenceBalance: (param: { absenceTypeId?: string, absenceDate: any, personGroupId: string }): Promise<number> => {
       return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceBalanceService",
         "getAbsenceBalance",
