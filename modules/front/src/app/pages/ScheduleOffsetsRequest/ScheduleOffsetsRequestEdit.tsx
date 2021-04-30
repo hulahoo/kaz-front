@@ -42,6 +42,7 @@ import {DicSchedulePurpose} from "../../../cuba/entities/base/tsadv_DicScheduleP
 import {Goal} from "../../../cuba/entities/base/tsadv$Goal";
 import TextArea from "antd/es/input/TextArea";
 import MsgEntity from '../../components/MsgEntity';
+import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -178,6 +179,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       return <LoadingPage/>
     }
 
+    const messages = this.props.mainStore!.messages!;
+
     const {Option} = Select;
     return (
       <Page pageName={<MsgEntity entityName={ScheduleOffsetsRequest.NAME}/>}>
@@ -198,7 +201,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     disabled={true}
                     getFieldDecoratorOpts={{
-                      rules: [{required: true,}]
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'requestNumber']})
+                      }]
                     }}
                   />
 
@@ -210,7 +216,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
                     getFieldDecoratorOpts={{
-                      rules: [{required: true,}]
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'status']})
+                      }]
                     }}
                   />
 
@@ -223,7 +232,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     optionsContainer={this.statusesDc}
                     format={DEFAULT_DATE_FORMAT}
                     getFieldDecoratorOpts={{
-                      rules: [{required: true,}]
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'requestDate']})
+                      }]
                     }}
                   />
 
@@ -255,7 +267,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.newSchedulesDc}
                     getFieldDecoratorOpts={{
-                      rules: [{required: true,}]
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'newSchedule']})
+                      }]
                     }}
                   />
 
@@ -264,7 +279,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                              style={{marginBottom: '12px'}}>
                     {this.props.form.getFieldDecorator('purpose', {
                       validateTrigger: ["onChange", "onBlur"],
-                      rules: [{required: true}]
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'purpose']})
+                      }]
                     })(
                       <Select onChange={this.changePurpose}>
                         {this.purposesDc.items.map(p => {
@@ -292,7 +310,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     optionsContainer={this.statusesDc}
                     format={DEFAULT_DATE_FORMAT}
                     getFieldDecoratorOpts={{
-                      rules: [{required: true,}]
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'dateOfNewSchedule']})
+                      }]
                     }}
                   />
 
@@ -304,7 +325,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     optionsContainer={this.statusesDc}
                     format={DEFAULT_DATE_FORMAT}
                     getFieldDecoratorOpts={{
-                      rules: [{required: true,}]
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'dateOfNewSchedule']})
+                      }]
                     }}
                   />
 
@@ -380,7 +404,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
   @action
   setIsVisiblePurposeText = (purposeCode?: string | null) => {
-    console.log(purposeCode);
     this.isVisiblePurposeText = purposeCode == undefined ? false : purposeCode.toLowerCase() === 'other';
   };
 
