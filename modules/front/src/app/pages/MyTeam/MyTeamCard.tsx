@@ -36,6 +36,7 @@ export type PersonProfile = {
   positionName?: string,
   email?: string,
   phone?: string,
+  companyId?: string,
 }
 
 export type MyTeamCardProps = {

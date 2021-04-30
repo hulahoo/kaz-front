@@ -73,11 +73,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
       isValidatedSuccess = !err;
       if (err) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
-        );
+        Notification.error({
+          message: this.props.intl.formatMessage({id: "management.editor.validationError"})
+        });
       }
     });
     return new Promise(resolve => resolve(isValidatedSuccess));

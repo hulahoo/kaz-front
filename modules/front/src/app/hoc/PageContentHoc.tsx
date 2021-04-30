@@ -2,7 +2,7 @@ import React, {CSSProperties} from "react";
 import {observer} from "mobx-react";
 
 export interface ContentProps {
-  pageName?: string,
+  pageName?: string | JSX.Element,
   wrapperCss?: CSSProperties,
   contentWrapperCss?: CSSProperties,
   onHeaderClick?: () => void

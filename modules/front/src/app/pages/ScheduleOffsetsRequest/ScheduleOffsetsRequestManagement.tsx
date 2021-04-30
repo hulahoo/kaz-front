@@ -1,6 +1,6 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { observer } from "mobx-react";
+import {RouteComponentProps} from "react-router";
+import {observer} from "mobx-react";
 import ScheduleOffsetsRequestEdit from "./ScheduleOffsetsRequestEdit";
 import ScheduleOffsetsRequestList from "./ScheduleOffsetsRequestList";
 
@@ -17,9 +17,9 @@ export class ScheduleOffsetsRequestManagement extends React.Component<Props> {
     return (
       <>
         {entityId ? (
-          <ScheduleOffsetsRequestEdit  entityId={entityId} personGroupId={personGroupId}/>
+          <ScheduleOffsetsRequestEdit entityId={entityId} personGroupId={personGroupId}/>
         ) : (
-          <ScheduleOffsetsRequestList />
+          <ScheduleOffsetsRequestList/>
         )}
       </>
     );

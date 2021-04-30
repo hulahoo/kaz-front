@@ -406,5 +406,8 @@
   "workOnWeekendRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод",
   "absenceRvdRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод",
   "password.error.empty": "Пароль не может быть пустым!",
-  "book.view": "Читать"
+  "book.view": "Читать",
+  "scheduleOffsetsRequest": "Заявка на смену графика",
+  "scheduleStandard": "Графики смен",
+  "scheduleOffsetRequest": "Заявки на изменения графика смен"
 }
