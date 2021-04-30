@@ -238,7 +238,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                         validator: (rule, value, callback) => {
                           const balance = this.props.form.getFieldValue('balance');
                           if (!value || !balance) return callback();
-                          if (balance < value) {
+                          if (balance < parseInt(value)) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
                           }
                         }

@@ -66,9 +66,8 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "goalSuccessCriteria", "successCriteria"];/*
-  fields1 = ["performancePlan", "assignedByPersonGroup", "goalString", "weight", "category", "goal", "goalSuccessCriteria", "successCriteria"];
-*/
+  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "successCriteria"];
+
   @observable
   globalErrors: string[] = [];
 
