@@ -36,6 +36,7 @@ import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
 export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
+export const DEFAULT_DATE_TIME_SEC_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
 export type Sort = {
   columnKey: string,
