@@ -424,7 +424,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
           this.loaded = true;
         }
       } else {
-        this.setIsVisiblePurposeText(this.dataInstance.item!.purpose!.code)
+        this.setIsVisiblePurposeText(this.dataInstance.item!.purpose! ? this.dataInstance.item!.purpose!.code : undefined)
       }
 
       this.loadPersonGroupDc(personGroupId);
