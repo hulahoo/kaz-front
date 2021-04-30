@@ -43,7 +43,6 @@ import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {instanceStore} from "../../util/InstanceStore";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import moment from "moment";
-import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
 import {DicAddressType} from "../../../cuba/entities/base/tsadv$DicAddressType";
 
 type Props = FormComponentProps & EditorProps;
@@ -649,15 +648,15 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                       }
                       this.colIndex += 1;
                       if (this.colIndex == 5 && record.birthdate) {
-                        return moment(record.birthdate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
+                        return moment(record.birthdate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
                       } else if (this.colIndex == 9 && record.attachDate) {
-                        return moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT);
+                        return moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
                       }
                       return text;
                     }
                   }}
                   // render={(text, record: InsuredPerson) => (
-                  //   (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT)))
+                  //   (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN)))
                   // )}
                 />
               </Card>
