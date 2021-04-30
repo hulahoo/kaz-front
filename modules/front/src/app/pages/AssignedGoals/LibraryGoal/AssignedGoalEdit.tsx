@@ -66,9 +66,8 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "goalSuccessCriteria", "successCriteria"];/*
-  fields1 = ["performancePlan", "assignedByPersonGroup", "goalString", "weight", "category", "goal", "goalSuccessCriteria", "successCriteria"];
-*/
+  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "successCriteria"];
+
   @observable
   globalErrors: string[] = [];
 
@@ -208,7 +207,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Button>]
           } bordered={false}>
             <Section size={"large"}>
-              <Form.Item label={this.props.intl.formatMessage({ id: "goalLibrary" })}
+              <Form.Item label={this.props.intl.formatMessage({id: "goalLibrary"})}
                          key='goalLibrary'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goalLibrary', {
@@ -224,7 +223,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                 )}
               </Form.Item>
 
-              <Form.Item label={this.props.intl.formatMessage({ id: "goal" })}
+              <Form.Item label={this.props.intl.formatMessage({id: "goal"})}
                          key='goal'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goal', {
