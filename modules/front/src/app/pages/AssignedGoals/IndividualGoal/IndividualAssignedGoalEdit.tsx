@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Form, InputNumber} from "antd";
+import {Alert, Card, Form, InputNumber, Select} from "antd";
 import {observer} from "mobx-react";
 import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect} from "react-router-dom";
@@ -174,8 +174,9 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
                   label: this.props.intl.formatMessage({ id: "goalLibrary" })
                 }}
                 optionsContainer={this.categorysDc}
-                getFieldDecoratorOpts={{}}
+
               />
+
               <Field
                 entityName={AssignedGoal.NAME}
                 propertyName="goalString"

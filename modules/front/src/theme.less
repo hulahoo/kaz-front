@@ -22,7 +22,7 @@
 @import "/src/app/components/Test/style";
 @import "/src/app/components/Carousel/style";
 @import "/src/app/pages/MyEducation/style";
-
+@import "/src/app/pages/Books/style";
 .additional-panel {
   display: flex;
   justify-content: space-between;
@@ -337,4 +337,12 @@ img.ant-menu-item-icon {
 .break-words {
    word-wrap: break-word;
    white-space: initial;
+}
+
+.comment-block {
+  .ant-list-item-meta-description {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
 }

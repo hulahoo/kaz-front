@@ -21,6 +21,7 @@ export class Book extends StandardEntity {
   pdf?: FileDescriptor | null;
   djvu?: FileDescriptor | null;
   reviews?: BookReview[] | null;
+  numberOfPage?: number | null;
 }
 export type BookViewName =
   | "_base"

@@ -22,6 +22,7 @@ import Notification from "../../util/Notification/Notification";
 import {RootStoreProp} from "../../store";
 import Rate from "../../components/Rate/Rate";
 import {instanceStore} from "../../util/InstanceStore";
+import HeaderButtonsContainer from "./HeaderButtonsContainer";
 
 type EditorProps = {
   entityId: string;
@@ -83,7 +84,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
     return (
       <Page>
         <Card className="narrow-layout card-actions-container" actions={[
-          <Link to={"/books"}>
+          <Link to={"/book"}>
             <Button buttonType={ButtonType.FOLLOW}>
               <FormattedMessage id="back"/>
             </Button>
@@ -94,7 +95,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
               {this.dataInstance.status === 'DONE' && this.dataInstance.item
                 ? <MaterialHeader
                   name={this.dataInstance.item._instanceName!}
-                  finished={0}
+                  finished={(this.dataInstance.item as any).viewed ? (this.dataInstance.item as any).viewed : 0}
                   showEnrollment={false}
                   materialInfoType="book"
                   avgRate={this.dataInstance.item.reviews
@@ -105,6 +106,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                     imgSrc: this.imgUrl
                   }}
                   reviewsCount={this.dataInstance.item.reviews ? this.dataInstance.item.reviews.length : 0}
+                  additionalBlock={<HeaderButtonsContainer book={this.dataInstance.item}/>}
                   // subscribe={this.subscribeToCourse}
                   // subscribing={this.subscribingToCourse}
                 />
@@ -130,7 +132,7 @@ class BookInfo extends Component<WrappedComponentProps & EditorProps & RootStore
                   <Col span={8}>
                     <Form.Item label={this.props.intl.formatMessage({id: "book.pageCount"})} className={"form-item"}
                                key='duration'>
-                      {this.dataInstance.item ? 20 : ""}
+                      {this.dataInstance.item && this.dataInstance.item.numberOfPage ? this.dataInstance.item.numberOfPage : ""}
                     </Form.Item>
                   </Col>
                 </Row>

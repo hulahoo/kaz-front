@@ -1,7 +1,7 @@
 import React from 'react';
 import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
-import {Modal, Table} from "antd";
+import {Icon, Modal, Table} from "antd";
 import Column from "antd/es/table/Column";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {inject, observer} from "mobx-react";
@@ -16,6 +16,8 @@ import {RouteComponentProps, withRouter} from "react-router";
 import Button from "../../components/Button/Button";
 import {Link} from "react-router-dom";
 import {CourseManagement} from "../Course/CourseManagement";
+import {getMenuIcon} from "../../../resources/icons/menu";
+import {ReactComponent as SvgNode} from "../../../resources/icons/comment-alt-regular.svg";
 
 @injectMainStore
 @inject("rootStore")
@@ -71,22 +73,29 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='course'/>}
                     dataIndex="course"
+                    width="200px"
                     key="course" render={(text, record: any) => {
               return <Link to={CourseManagement.PATH + '/' + record.courseId}>{record.course}</Link>
             }}/>
-            <Column title={<FormattedMessage id="notes"/>}
+            <Column title={<>{this.props.intl.formatMessage({ id: 'notes' })}</>}
                     dataIndex="note"
-                    key="note" render={(text, record: any) => {
-              return record.note ?
-                <Button
-                  onClick={() => {
-                    this.noteValue = record.note;
-                    this.isModalVisible = true;
-                  }}
-                  type={"link"}>
-                  <span
-                    style={{color: '#005487'}}>{record.note.substring(0, 20) + (record.note.length > 20 ? " . . ." : "")}</span>
-                </Button> : null;
+                    key="note"
+                    width="100px"
+                    render={(text, record: any) => {
+                      return record.note ? (
+                          <SvgNode
+                            width="20px"
+                            onClick={() => {
+                              this.noteValue = record.note;
+                              this.isModalVisible = true;
+                            }}
+                            style={{
+                            color: '#005487',
+                            cursor: 'pointer',
+                            marginLeft: '10px'
+                            }}
+                          /> )
+                        : <></>;
               // return record.note
             }}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='status'/>}

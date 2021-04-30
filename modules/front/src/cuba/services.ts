@@ -34,8 +34,7 @@ import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 
-export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
-export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
+export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
 export type Sort = {
   columnKey: string,
@@ -192,7 +191,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    validateEnroll: (params: { courseId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
+    validateEnroll: (params: { courseId: string, personGroupId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "validateEnroll",
@@ -415,6 +414,22 @@ export const restServices = {
         {...param}
       );
     },
+    countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "countDaysWithoutHolidays",
+        {...param}
+      );
+    },
+  },
+  absenceRvdService: {
+    countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+    return getCubaREST()!.invokeService<string>(
+      "tsadv_AbsenceRvdService",
+      "countTotalHours",
+      {...param}
+      );
+    },
     getReceivedVacationDaysOfYear: (param: { date: Date, absenceTypeId: string, personGroupId: string }): Promise<number> => {
       return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceService",
@@ -620,7 +635,7 @@ export type CourseInfo = {
   finished: number
   certificateUrl: string
   sections: any[]
-  logo: any
+  logo: string
   comments: Comment[]
   isIssuedCertificate: boolean
   learningProof: string

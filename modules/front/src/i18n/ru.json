@@ -245,7 +245,7 @@
   "course.sendComment": "Оставить комментарий",
   "course.greetingTrainer": "Приветствие от тренера",
   "course.courses": "Курсов",
-  "goalLibrary": "Библиотека целей",
+  "goalLibrary": "Категория целей",
   "weight": "Вес",
   "ratingCount": "оценок",
   "book.information": "Информация о книге",
@@ -397,5 +397,6 @@
   "insurance.information": "Сведения по страхованию",
   "general.information": "Общие сведения",
   "family.member.information": "Сведения по членам семьи",
-  "password.error.empty": "Пароль не может быть пустым!"
+  "password.error.empty": "Пароль не может быть пустым!",
+  "book.view": "Читать"
 }

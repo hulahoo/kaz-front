@@ -30,7 +30,6 @@ import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDat
 import {BooksManagement} from "./pages/Books/BooksManagement";
 import {OrgStructureRequestManagement} from "./pages/orgStructureRequest/OrgStructureRequestManagement";
 import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
-import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsets/ScheduleOffsetsRequestManagement";
 import {CertificateRequestManagement} from "./pages/CertificateRequest/CertificateRequestManagement";
 import {ActivityManagement} from "./pages/Activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
@@ -45,6 +44,8 @@ import {PortalFeedbackQuestionManagement} from "./pages/PortalFeedbackQuestions/
 import {MyTeamStructureManagement} from "./pages/MyTeam/MyTeamStructureManagement";
 import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
 import {AbsenceForRecallManagement} from "./pages/MyTeam/timeManagement/AbsenceForRecall/AbsenceForRecallManagement";
+import {AbsenceRvdRequestManagement} from "./pages/MyTeam/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
+import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -114,7 +115,8 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/kpi-team/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-books/:entityId?" component={KpiTeamManagement}/>
                 <Route exact={true} path="/my-dmc/:entityId?" component={InsuredPersonManagement}/>
-                <Route exact={true} path="/schedule-offsets/:entityId?" component={ScheduleOffsetsRequestManagement}/>
+                <Route exact={true} path={ScheduleOffsetsRequestManagement.PATH_WITH_PARAMS}
+                       component={ScheduleOffsetsRequestManagement}/>
                 <Route exact={true} path={"/" + BooksManagement.PATH + "/:entityId?"} component={BooksManagement}/>
                 <Route exact={true} path={"/" + MyEducationManagement.PATH} component={MyEducation}/>
                 <Route exact={true} path={"/" + EnrollmentManagement.PATH + "/:entityId?" + "/:homework?"}
@@ -135,6 +137,17 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
+
+                <Route exact={true}
+                       path={AbsenceRvdRequestManagement.PATH + "/:entityId"}
+                       component={AbsenceRvdRequestManagement}/>
+                <Route exact={true}
+                       path={AbsenceRequestManagement.PATH + "/:entityId"}
+                       component={AbsenceRequestManagement}/>
+
+                {/*<Route exact={true}*/}
+                {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
+                {/*       component={CurrentScheduleRequestManagement}/>*/}
                 <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>

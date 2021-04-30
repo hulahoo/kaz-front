@@ -7,18 +7,21 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import PanelCard from "../../components/CourseCard";
 import {Link} from "react-router-dom";
 import {downloadFile, getBlobUrl} from "../../util/util";
-import {queryCollection} from "../../util/QueryDataCollectionStore";
+import {queryCollection, QueryDataCollectionStore} from "../../util/QueryDataCollectionStore";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {Book} from "../../../cuba/entities/base/tsadv$Book";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 import Section from "../../hoc/Section";
+import {observable} from "mobx";
 
 export const bookFileProperties = ["fb2", "epub", "mobi", "kf8", "pdf", "djvu"];
 
 @observer
 class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
-  dataCollection = queryCollection<DicBookCategory>(DicBookCategory.NAME, "books", {});
+
+  @observable
+  dataCollection: QueryDataCollectionStore<DicBookCategory>;
 
   fields = [
     "langValue",
@@ -43,11 +46,11 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
   };
 
   render() {
-    const {status, items} = this.dataCollection;
-
-    if (status === "LOADING") {
+    if (!this.dataCollection || this.dataCollection.status === "LOADING") {
       return <Icon type="spin"/>;
     }
+
+    const {status, items} = this.dataCollection;
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.books"})}>
@@ -72,7 +75,8 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
                       <Meta title={(book as SerializedEntity<Book>)._instanceName}
                             description={<>
                               {bookFileProperties.find(fp => (book as {}).hasOwnProperty(fp)) != undefined
-                                ? <Select placeholder={this.props.intl.formatMessage({id: "book.download"})} style={{width: '100%'}}
+                                ? <Select placeholder={this.props.intl.formatMessage({id: "book.download"})}
+                                          style={{width: '100%'}}
                                           onSelect={this.selectBookHandler}>
                                   {bookFileProperties.filter(fp => (book as {}).hasOwnProperty(fp)).map(fp =>
                                     // @ts-ignore
@@ -92,6 +96,23 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
         </Section>
       </Page>
     );
+  }
+
+
+  componentDidMount(): void {
+    this.dataCollection = queryCollection<DicBookCategory>(DicBookCategory.NAME, "books", {}, {
+      loadImmediately: false
+    });
+
+    this.dataCollection.afterLoad = () => {
+      this.dataCollection.items = this.dataCollection.items.map(category => {
+        const newCategory = category;
+        newCategory.books = category.books!.filter(b => b.active);
+        return newCategory;
+      }).filter(category => category.books!.length > 0)
+    };
+
+    this.dataCollection.load();
   }
 }
 

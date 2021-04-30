@@ -1,11 +1,9 @@
-import moment from "moment";
-import { DEFAULT_DATE_PARSE_FORMAT } from "../../../cuba/services";
-
 export const DEFAULT_DATE_TIME_PATTERN = "DD.MM.YYYY hh:mm:ss";
 export const DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS = "DD.MM.YYYY hh:mm";
 export const DEFAULT_DATE_PATTERN = "DD.MM.YYYY";
 
-export const format = (date: Date, pattern: string) => {
+export const format = (date: Date, pattern: string = DEFAULT_DATE_PATTERN): string => {
+  if (!date) return '';
   return pattern.replace("YYYY", date.getFullYear().toString())
     .replace("MM", wrapZero(date.getMonth() + 1))
     .replace("DD", wrapZero(date.getDate()))
@@ -14,18 +12,11 @@ export const format = (date: Date, pattern: string) => {
     .replace("ss", wrapZero(date.getSeconds()));
 };
 
-export const formatDefaultDate = (date: Date) => {
-  return format(date, 'DD.MM.YYYY')
+export const formatDate = (date: number | string | Date | null, pattern: string = DEFAULT_DATE_PATTERN): string => {
+  if (!date) return '';
+  return format(new Date(date), pattern);
 };
 
-export const fonmatDefaultDateFromString=(date: any)=>{
-  return moment(date,DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
-};
-
-const wrapZero = (value: number):string => {
-  if (value > 0 && value < 10) {
-    return "0" + value;
-  } else {
-    return value.toString();
-  }
+const wrapZero = (value: number): string => {
+  return (value < 10 ? '0' : '') + value;
 };
