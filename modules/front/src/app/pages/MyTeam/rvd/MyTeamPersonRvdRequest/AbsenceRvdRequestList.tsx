@@ -24,7 +24,7 @@ import {
 import {MyTeamCardProps} from "../../MyTeamCard";
 import moment from "moment";
 import {DEFAULT_DATE_PARSE_FORMAT} from "../../../../../cuba/services";
-import {DEFAULT_DATE_FORMAT} from "../../../../components/Datepicker";
+import {DEFAULT_DATE_PATTERN} from "../../../../util/Date/Date";
 
 @injectMainStore
 @observer
@@ -185,7 +185,7 @@ class AbsenceRvdRequestListComponent extends React.Component<MainStoreInjected &
       </Link>
     } else if (this.lastIndex === 1) {
       this.lastIndex++;
-      return React.createElement("div", null, moment((record as AbsenceRvdRequest).requestDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT));
+      return React.createElement("div", null, moment((record as AbsenceRvdRequest).requestDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN));
     }
     if (this.lastIndex === this.fields.length - 1) {
       this.lastIndex = 0;
