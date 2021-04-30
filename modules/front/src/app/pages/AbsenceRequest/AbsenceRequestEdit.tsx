@@ -56,10 +56,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
   @observable
   absenceTypesDc: DictionaryDataCollectionStore<DicRequestStatus>;
 
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
   personGroupId: string;
 
   @observable
@@ -420,8 +416,17 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   form={this.props.form}
                   disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.filesDc}
-                  getFieldDecoratorOpts={{}}/>
+                  getFieldDecoratorOpts={{
+                    rules:[{
+                      validator:(rule, value, callback) => {
+                        const absenceType = this.getSelectedAbsenceType();
+                        if (!absenceType) return;
+                        if (absenceType.isFileRequired && !value){
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.attachment']}));
+                        }else callback();
+                      }
+                    }]
+                  }}/>
 
                 {this.takCard()}
 

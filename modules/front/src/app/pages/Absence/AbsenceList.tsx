@@ -33,7 +33,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollection = collection<AllAbsenceRequest>(AllAbsenceRequest.NAME, {
     view: "allAbsenceRequest-view",
-    sort: "-updateTs",
+    sort: "-startDate",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
