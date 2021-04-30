@@ -412,8 +412,8 @@
   "general.information": "General information",
   "family.member.information": "Family member information",
   "comment.rate.error.required": "Rate is not selected",
-  "workOnWeekend": "WFD Approved, Overtime, Temporary Transfer",
-  "workOnWeekendRequest": "Applications for RRVD, Overtime, Temporary transfer",
+  "workOnWeekend": "Weekend work",
+  "workOnWeekendRequest": "Weekend work request",
   "password.error.empty": "Password can not be empty!",
   "book.view": "View"
 }
