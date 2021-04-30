@@ -10,7 +10,7 @@ import {Table} from "antd";
 import Column from "antd/es/table/Column";
 import {ScheduleOffsetsRequest} from "../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
 import moment from "moment";
-import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import {Link} from "react-router-dom";
 import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 
@@ -50,7 +50,7 @@ class MyTeamScheduleOffsetRequestList extends React.Component<MyTeamCardProps & 
                   dataIndex="requestDate"
                   render={text => {
                     if (text) {
-                      return moment(text).format(DEFAULT_DATE_FORMAT);
+                      return moment(text).format(DEFAULT_DATE_PATTERN);
                     }
                     return text;
                   }}
@@ -64,7 +64,7 @@ class MyTeamScheduleOffsetRequestList extends React.Component<MyTeamCardProps & 
                   render={text => {
                     console.log(text);
                     if (text) {
-                      return moment(text).format(DEFAULT_DATE_FORMAT);
+                      return moment(text).format(DEFAULT_DATE_PATTERN);
                     }
                     return text;
                   }}
@@ -73,7 +73,7 @@ class MyTeamScheduleOffsetRequestList extends React.Component<MyTeamCardProps & 
                   dataIndex="dateOfStartNewSchedule"
                   render={text => {
                     if (text) {
-                      return moment(text).format(DEFAULT_DATE_FORMAT);
+                      return moment(text).format(DEFAULT_DATE_PATTERN);
                     }
                     return text;
                   }}

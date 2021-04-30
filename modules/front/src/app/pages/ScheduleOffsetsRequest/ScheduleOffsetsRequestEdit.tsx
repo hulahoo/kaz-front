@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Alert, Card, Col, Form, Input, Select, Spin} from "antd";
+import {Alert, Card, Form, Input, Select, Spin} from "antd";
 import {inject, observer} from "mobx-react";
 import {FormComponentProps} from "antd/lib/form";
 import {action, IReactionDisposer, observable, toJS} from "mobx";
@@ -7,11 +7,12 @@ import {injectIntl} from "react-intl";
 import {withRouter} from "react-router-dom";
 
 import {
-  collection, DataCollectionStore,
+  collection,
+  DataCollectionStore,
   Field,
   getCubaREST,
   injectMainStore,
-  instance, Msg,
+  Msg,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -21,28 +22,22 @@ import "../../../app/App.css";
 import {ScheduleOffsetsRequest} from "../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {StandardSchedule} from "../../../cuba/entities/base/tsadv$StandardSchedule";
-import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import {rootStore} from "../../store";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import Button, {ButtonType} from "../../components/Button/Button";
 import LoadingPage from "../LoadingPage";
-import {restQueries} from "../../../cuba/queries";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import AbstractAgreedBprocEdit from "../Bproc/abstract/AbstractAgreedBprocEdit";
 import Notification from "../../util/Notification/Notification";
 import {instanceStore} from "../../util/InstanceStore";
 import {restServices} from "../../../cuba/services";
-import {OrgStructureRequest} from "../../../cuba/entities/base/tsadv_OrgStructureRequest";
-import DefaultDatePicker, {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
-import EntityField from "../../components/EntityField/EntityField";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import {queryCollection, QueryDataCollectionStore} from "../../util/QueryDataCollectionStore";
 import {DicSchedulePurpose} from "../../../cuba/entities/base/tsadv_DicSchedulePurpose";
-import {Goal} from "../../../cuba/entities/base/tsadv$Goal";
 import TextArea from "antd/es/input/TextArea";
 import MsgEntity from '../../components/MsgEntity';
-import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -230,7 +225,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
-                    format={DEFAULT_DATE_FORMAT}
+                    format={DEFAULT_DATE_PATTERN}
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,
@@ -308,7 +303,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
-                    format={DEFAULT_DATE_FORMAT}
+                    format={DEFAULT_DATE_PATTERN}
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,
@@ -323,7 +318,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
-                    format={DEFAULT_DATE_FORMAT}
+                    format={DEFAULT_DATE_PATTERN}
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,

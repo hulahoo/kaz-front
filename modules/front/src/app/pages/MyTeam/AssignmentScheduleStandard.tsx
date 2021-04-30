@@ -11,7 +11,7 @@ import Column from "antd/es/table/Column";
 import {Link} from "react-router-dom";
 import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import moment from "moment";
 
 @injectMainStore
@@ -58,7 +58,7 @@ class AssignmentScheduleStandard extends React.Component<MyTeamCardProps & MainS
                   dataIndex="startDate"
                   render={text => {
                     if (text) {
-                      return moment(text).format(DEFAULT_DATE_FORMAT);
+                      return moment(text).format(DEFAULT_DATE_PATTERN);
                     }
                     return text;
                   }}
@@ -67,7 +67,7 @@ class AssignmentScheduleStandard extends React.Component<MyTeamCardProps & MainS
                   dataIndex="endDate"
                   render={text => {
                     if (text) {
-                      return moment(text).format(DEFAULT_DATE_FORMAT);
+                      return moment(text).format(DEFAULT_DATE_PATTERN);
                     }
                     return text;
                   }}
