@@ -186,7 +186,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
             <div>
               <Card className="narrow-layout card-actions-container" actions={[
                 <Button buttonType={ButtonType.FOLLOW}
-                        onClick={() => this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                        onClick={this.props.history!.goBack.bind(null)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
                 this.getOutcomeBtns()]}
                     bordered={false}>
                 <Form onSubmit={this.validate} layout="vertical">

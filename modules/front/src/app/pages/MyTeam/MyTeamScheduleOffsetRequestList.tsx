@@ -11,6 +11,8 @@ import Column from "antd/es/table/Column";
 import {ScheduleOffsetsRequest} from "../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
 import moment from "moment";
 import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
+import {Link} from "react-router-dom";
+import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 
 @injectMainStore
 @observer
@@ -37,6 +39,12 @@ class MyTeamScheduleOffsetRequestList extends React.Component<MyTeamCardProps & 
           size="default" bordered={false} rowKey="id">
           <Column title={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName='requestNumber'/>}
                   dataIndex="requestNumber"
+                  render={(text, record: ScheduleOffsetsRequest) => {
+                    if (text) {
+                      return <Link to={ScheduleOffsetsRequestManagement.PATH + "/" + record.id} children={text}/>;
+                    }
+                    return text;
+                  }}
                   key="requestNumber"/>
           <Column title={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName='requestDate'/>}
                   dataIndex="requestDate"
