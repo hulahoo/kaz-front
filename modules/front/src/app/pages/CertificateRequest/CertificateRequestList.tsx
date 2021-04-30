@@ -23,7 +23,7 @@ import {downloadFile} from "../../util/util";
 import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
 import moment from "moment";
 import {DEFAULT_DATE_PARSE_FORMAT} from "../../../cuba/services";
-import {DEFAULT_DATE_FORMAT} from "../../components/Datepicker";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 
 @injectMainStore
 @inject("rootStore")
@@ -117,7 +117,7 @@ class CertificateRequestListComponent extends React.Component<MainStoreInjected 
                 title={<Msg entityName={CertificateRequest.NAME} propertyName='requestDate'/>}
                 dataIndex="requestDate"
                 render={(text, record: InsuredPerson) => (
-                  (React.createElement("div", null, moment((record as CertificateRequest).requestDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_FORMAT)))
+                  (React.createElement("div", null, moment((record as CertificateRequest).requestDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN)))
                 )}
               />
               <Column
