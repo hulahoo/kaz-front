@@ -36,6 +36,8 @@ export class AbsenceRequest extends AbstractBprocRequest {
   vacationSchedule?: VacationSchedule | null;
   vacationDurationType?: any | null;
   files?: FileDescriptor[] | null;
+  startTime?: any | null;
+  endTime?: any | null;
 }
 export type AbsenceRequestViewName =
   | "_base"
@@ -79,6 +81,8 @@ export type AbsenceRequestView<
       | "organizationBin"
       | "integrationUserLogin"
       | "comment"
+      | "startTime"
+      | "endTime"
     >
   : V extends "_local"
   ? Pick<
@@ -111,6 +115,8 @@ export type AbsenceRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
+      | "startTime"
+      | "endTime"
     >
   : V extends "_minimal"
   ? Pick<AbsenceRequest, "id" | "requestNumber" | "requestDate">
@@ -150,6 +156,8 @@ export type AbsenceRequestView<
       | "purpose"
       | "status"
       | "files"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest-for-my-team"
   ? Pick<
@@ -186,6 +194,8 @@ export type AbsenceRequestView<
       | "personGroup"
       | "purpose"
       | "status"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest-for-ss-my-team"
   ? Pick<
@@ -218,6 +228,8 @@ export type AbsenceRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest.edit"
   ? Pick<
@@ -259,6 +271,8 @@ export type AbsenceRequestView<
       | "vacationSchedule"
       | "vacationDurationType"
       | "files"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest.view"
   ? Pick<
@@ -298,5 +312,7 @@ export type AbsenceRequestView<
       | "personGroup"
       | "purpose"
       | "vacationSchedule"
+      | "startTime"
+      | "endTime"
     >
   : never;
