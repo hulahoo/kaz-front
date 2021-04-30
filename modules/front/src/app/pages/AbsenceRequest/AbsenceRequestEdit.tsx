@@ -373,6 +373,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                         validator: (rule, value, callback) => {
                           const type = this.getSelectedAbsenceType();
                           if (!type || !value) return callback();
+                          if (type.isEcologicalAbsence && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
+                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                          }
                           if (this.isLaborLeave && (this.absenceBalance + (type.daysAdvance || 0) < value)) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
                           } else if (this.isCheckWork && this.remainingDaysWeekendWork < value) {
@@ -546,8 +549,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
     dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
     absenceType = absenceType || this.getSelectedAbsenceType();
 
-    if (this.isLaborLeave && absenceType && dateFrom) {
+    if (absenceType && dateFrom && (this.isLaborLeave || absenceType.isEcologicalAbsence)) {
       restServices.absenceBalanceService.getAbsenceBalance({
+        absenceTypeId: absenceType.id,
         personGroupId: this.personGroupId,
         absenceDate: dateFrom
       })
