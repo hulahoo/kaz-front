@@ -9,7 +9,7 @@ import {Col, DatePicker, Form, Input, Row} from "antd";
 import {PersonExt} from "../../../../../cuba/entities/base/base$PersonExt";
 import {FormComponentProps} from "antd/lib/form";
 import moment from "moment";
-import {DEFAULT_DATE_FORMAT} from "../../../../components/Datepicker";
+import {DEFAULT_DATE_PATTERN} from "../../../../util/Date/Date";
 
 export  type  PersonCardProps = {
   person?: PersonProfile
@@ -44,7 +44,7 @@ class MyTeamPersonCard extends React.Component<PersonCardProps & MainStoreInject
                   {
                     initialValue: this.person ? moment(this.person.birthDate) : null
                   })(
-                  <DatePicker format={DEFAULT_DATE_FORMAT} disabled/>
+                  <DatePicker format={DEFAULT_DATE_PATTERN} disabled/>
                 )}
               </Form.Item>
 
@@ -86,7 +86,7 @@ class MyTeamPersonCard extends React.Component<PersonCardProps & MainStoreInject
                   {
                     initialValue: this.person ? moment(this.person.hireDate) : null
                   })(
-                  <DatePicker format={DEFAULT_DATE_FORMAT} disabled/>
+                  <DatePicker format={DEFAULT_DATE_PATTERN} disabled/>
                 )}
               </Form.Item>
 
