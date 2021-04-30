@@ -12,6 +12,9 @@ import {LearningFeedbackTemplate} from "./entities/base/tsadv$LearningFeedbackTe
 import {Homework} from "./entities/base/tsadv_Homework";
 import {StudentHomework} from "./entities/base/tsadv_StudentHomework";
 import {StandardSchedule} from "./entities/base/tsadv$StandardSchedule";
+import {AbsenceRvdRequest} from "./entities/base/tsadv_AbsenceRvdRequest";
+import {DicAbsenceType} from "./entities/base/tsadv$DicAbsenceType";
+import {AbsPurposeSetting} from "./entities/base/tsadv_AbsPurposeSetting";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -80,4 +83,9 @@ export var restQueries = {
       personGroupId: personGroupId
     })
   },
+  myTeamRvd: (typeId: string): Promise<SerializedEntity<AbsPurposeSetting>[]> => {
+    return getCubaREST()!.query<AbsPurposeSetting>(AbsPurposeSetting.NAME, "myTeamRvd", {
+      typeId: typeId
+    })
+  }
 };
