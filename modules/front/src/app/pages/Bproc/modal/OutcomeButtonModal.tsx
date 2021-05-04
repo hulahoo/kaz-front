@@ -20,7 +20,9 @@ type Props = {
   update?(): Promise<any>;
   commentRequiredOutcomes?: string[],
   beforeCompletePredicate?: (outcome: string) => Promise<boolean>;
-  form: WrappedFormUtils,
+  form: WrappedFormUtils;
+  setOpenedOutcomeModal: (value: string | null) => void,
+  openedOutcomeModal: string | null;
 }
 
 @observer
@@ -31,9 +33,18 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
 
   showModal = (outcome: BprocFormOutcome) => {
     const setModalVisible = () => {
-      if (this.props.beforeCompletePredicate) this.props.beforeCompletePredicate(outcome.id!).then(value => this.modalVisibleMap.set(outcome.id!, value));
-      else this.modalVisibleMap.set(outcome.id!, true);
-    }
+      if (this.props.beforeCompletePredicate) {
+        this.props.beforeCompletePredicate(outcome.id!).then(value => {
+          this.modalVisibleMap.set(outcome.id!, value);
+          if ((value as boolean)) {
+            this.props.setOpenedOutcomeModal(outcome.id!);
+          }
+        });
+      } else {
+        this.modalVisibleMap.set(outcome.id!, true);
+        this.props.setOpenedOutcomeModal(outcome.id!);
+      }
+    };
 
     if (this.modalVisibleMap.get(outcome.id!) !== true) {
       if (this.props.validate)
@@ -84,6 +95,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
     })
       .then(value => {
         this.modalVisibleMap.set(outcome.id!, false);
+        this.props.setOpenedOutcomeModal(null);
         if (this.props.afterSendOnApprove) {
           this.props.afterSendOnApprove();
         }
@@ -100,12 +112,15 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
 
   handleCancel = (outcome: BprocFormOutcome) => {
     this.modalVisibleMap.set(outcome.id!, false);
+    this.props.setOpenedOutcomeModal(null);
+    this.props.form.resetFields(["bproc-comment"]);
   };
 
   commentValidator = (rule: any, value: any, callback: any) => {
-    const {outcome} = this.props;
-    if (!value && this.props.commentRequiredOutcomes && this.props.commentRequiredOutcomes.find(o => o == outcome.id) && this.modalVisibleMap.get(outcome.id!)) {
+    if (!value
+      && this.props.commentRequiredOutcomes && this.props.commentRequiredOutcomes.find(o => o == this.props.openedOutcomeModal)) {
       callback('Необходимо заполнить комментарий');
+      return;
     }
     callback();
   };
@@ -124,7 +139,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
         title={title}
         visible={this.modalVisibleMap.get(outcome.id!)}
         onOk={this.handleOk.bind(null, outcome)}
-        onCancel={() => this.handleCancel(outcome)}>
+        onCancel={this.handleCancel.bind(null, outcome)}>
         <Form.Item>
           {createElement(Fragment, null, this.props.intl.formatMessage({id: 'comment'}))}
           {getFieldDecorator("bproc-comment", {

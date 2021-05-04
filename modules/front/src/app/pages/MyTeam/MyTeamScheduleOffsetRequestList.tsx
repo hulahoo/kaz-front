@@ -1,5 +1,5 @@
 import * as React from "react";
-import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {getEnumCaption, getPropertyInfoNN, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observer} from "mobx-react";
 import {MyTeamCardProps} from "./MyTeamCard";
 import {injectIntl, WrappedComponentProps} from "react-intl";
@@ -13,6 +13,9 @@ import moment from "moment";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import {Link} from "react-router-dom";
 import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
+import {AssignedPerformancePlan} from "../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
+import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 @injectMainStore
 @observer
@@ -62,7 +65,6 @@ class MyTeamScheduleOffsetRequestList extends React.Component<MyTeamCardProps & 
           <Column title={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName='dateOfNewSchedule'/>}
                   dataIndex="dateOfNewSchedule"
                   render={text => {
-                    console.log(text);
                     if (text) {
                       return moment(text).format(DEFAULT_DATE_PATTERN);
                     }
@@ -80,6 +82,12 @@ class MyTeamScheduleOffsetRequestList extends React.Component<MyTeamCardProps & 
                   key="dateOfStartNewSchedule"/>
           <Column title={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName='status'/>}
                   dataIndex="status"
+                  render={(text, record: ScheduleOffsetsRequest) => {
+                    if (text) {
+                      return (record.status as SerializedEntity<DicRequestStatus>)._instanceName;
+                    }
+                    return text;
+                  }}
                   key="status"/>
         </Table>
       </div>

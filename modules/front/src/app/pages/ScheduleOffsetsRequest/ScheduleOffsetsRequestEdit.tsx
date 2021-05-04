@@ -98,6 +98,9 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   @observable
   isVisiblePurposeText = false;
 
+  @observable
+  isDisabledFields = true;
+
   reactionDisposer: IReactionDisposer;
 
   fields = [
@@ -137,9 +140,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   ];
 
   @observable
-  globalErrors
-    :
-    string[] = [];
+  globalErrors: string[] = [];
 
   beforeCompletePredicate = (outcome: string): Promise<boolean> => {
     if (outcome == 'APPROVE' && this.approverHrRoleCode === 'EMPLOYEE') {
@@ -149,7 +150,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       if (!isAgree) {
         Notification.info({
             message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
-              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isAgree']})
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.agree']})
           }
         )
       }
@@ -157,7 +158,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       if (!isFamiliarization) {
         Notification.info({
             message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
-              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isFamiliarization']})
+              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.familiarization']})
           }
         )
       }
@@ -194,7 +195,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     propertyName="requestNumber"
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
-                    disabled={true}
+                    disabled
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,
@@ -206,7 +207,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                   <ReadonlyField
                     entityName={this.dataInstance.entityName}
                     propertyName="status"
-                    disabled={true}
+                    disabled
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
@@ -221,7 +222,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                   <ReadonlyField
                     entityName={this.dataInstance.entityName}
                     propertyName="requestDate"
-                    disabled={true}
+                    disabled
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
@@ -240,7 +241,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     optionsContainer={this.personGroupDc}
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
-                    disabled={true}
+                    disabled
                     getFieldDecoratorOpts={{}}
                   />
 
@@ -250,17 +251,18 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     propertyName="currentSchedule"
                     optionsContainer={this.standardScheduleDc}
                     form={this.props.form}
-                    disabled={true}
+                    disabled
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     getFieldDecoratorOpts={{}}
                   />
 
-                  <Field
+                  <ReadonlyField
                     entityName={ScheduleOffsetsRequest.NAME}
                     propertyName="newSchedule"
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.newSchedulesDc}
+                    disabled={this.isDisabledFields}
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,
@@ -279,7 +281,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                         message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'purpose']})
                       }]
                     })(
-                      <Select onChange={this.changePurpose}>
+                      <Select onChange={this.changePurpose} disabled={this.isDisabledFields}>
                         {this.purposesDc.items.map(p => {
                           //@ts-ignore
                           return <Option value={p.id}
@@ -293,7 +295,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                              key='purposeText'
                              style={{marginBottom: '12px', display: this.isVisiblePurposeText ? 'block' : 'none'}}>
                     {this.props.form.getFieldDecorator('purposeText', {})(
-                      <Input maxLength={50}/>
+                      <Input maxLength={50} disabled={this.isDisabledFields}/>
                     )}
                   </Form.Item>
 
@@ -301,6 +303,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     entityName={this.dataInstance.entityName}
                     propertyName="dateOfNewSchedule"
                     form={this.props.form}
+                    disabled={this.isDisabledFields}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
                     format={DEFAULT_DATE_PATTERN}
@@ -319,6 +322,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     optionsContainer={this.statusesDc}
                     format={DEFAULT_DATE_PATTERN}
+                    disabled={this.isDisabledFields}
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,
@@ -333,6 +337,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     style={{marginBottom: '12px'}}>
                     {this.props.form.getFieldDecorator('detailsOfActualWork', {})(
                       <TextArea
+                        disabled={this.isDisabledFields}
                         rows={4} maxLength={2000}/>
                     )}
                   </Form.Item>
@@ -360,10 +365,11 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                   />
 
 
-                  <Field
+                  <ReadonlyField
                     entityName={ScheduleOffsetsRequest.NAME}
                     propertyName="comment"
                     form={this.props.form}
+                    disabled={this.isDisabledFields}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     getFieldDecoratorOpts={{}}
                   />
@@ -380,7 +386,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
                 </Form>
               </Card>
-
             </div>
           </Section>
         </Spin>
@@ -428,7 +433,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       await this.loadData();
       await this.loadBpmProcessData();
 
-      const personGroupId: string = this.props.personGroupId ? this.props.personGroupId : this.dataInstance.item!.personGroup!.id;
+      const scheduleOffsetRequest = this.dataInstance.item!;
+      const personGroupId: string = this.props.personGroupId ? this.props.personGroupId : scheduleOffsetRequest.personGroup!.id;
 
       this.standardScheduleDc = queryCollection<StandardSchedule>(StandardSchedule.NAME, "currentStandardSchedule", {
         personGroupId: personGroupId
@@ -442,8 +448,9 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
           this.loaded = true;
         }
       } else {
-        this.setIsVisiblePurposeText(this.dataInstance.item!.purpose! ? this.dataInstance.item!.purpose!.code : undefined)
+        this.setIsVisiblePurposeText(scheduleOffsetRequest.purpose! ? scheduleOffsetRequest.purpose!.code : undefined)
       }
+      this.setIsDisabledFields(scheduleOffsetRequest.status!.code!.toLowerCase() != 'draft');
 
       this.loadPersonGroupDc(personGroupId);
 
@@ -504,6 +511,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     return this.props.entityId === "new";
   }
 
+  @action
+  setIsDisabledFields = (value: boolean): void => {
+    this.isDisabledFields = value;
+  }
   // loadCurrentScheduleOffset(personGroupId: string) {
   //   return restQueries.currentStandardSchedule(personGroupId)
   //     .then(value => {
