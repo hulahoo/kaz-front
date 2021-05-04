@@ -16,6 +16,7 @@ import AbsenceRvdRequestList from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdReques
 import {rootStore, RootStoreProp} from "../../store";
 import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
+import MyTeamAbsenceRequest from "./timeManagement/MyTeamAbsenceRequest/MyTeamAbsenceRequest";
 
 const {TabPane} = Tabs;
 
@@ -72,6 +73,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <MyTeamPersonCard person={this.person}/>
       case 'absence':
         return <MyTeamAbsence personGroupId={this.person!.groupId}/>
+      case 'absenceRequest':
+        return <MyTeamAbsenceRequest personGroupId={this.person!.groupId}/>
       case 'workOnWeekend':
         return <MyTeamPersonRvd personGroupId={this.person!.groupId}/>
       case 'workOnWeekendRequest':
