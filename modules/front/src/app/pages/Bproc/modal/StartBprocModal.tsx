@@ -153,21 +153,18 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
                 });
               })
                 .catch((e: any) => {
-                  console.log(e);
                   Notification.error({
                     message: this.props.intl.formatMessage({id: "management.editor.error"})
                   });
                 })
             })
               .catch((e: any) => {
-                console.log(e);
                 Notification.error({
                   message: this.props.intl.formatMessage({id: "management.editor.error"})
                 });
               });
           })
           .catch((e: any) => {
-            console.log(e);
             Notification.error({
               message: this.props.intl.formatMessage({id: "management.editor.error"})
             });
@@ -201,6 +198,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
         id: value,
         langValue1: (option.props['children'] as any)
       };
+      this.selectedHrRole["_instanceName"] = this.selectedHrRole.langValue1;
     } else {
       this.selectedHrRole = null;
     }
