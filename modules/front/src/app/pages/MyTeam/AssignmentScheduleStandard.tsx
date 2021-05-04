@@ -41,7 +41,7 @@ class AssignmentScheduleStandard extends React.Component<MyTeamCardProps & MainS
           }
           key="create"
         >
-          <Button buttonType={ButtonType.PRIMARY} icon="plus">
+          <Button buttonType={ButtonType.PRIMARY}>
           <span>
             <FormattedMessage id="management.browser.create"/>
           </span>
