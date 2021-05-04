@@ -12,6 +12,7 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import {FormComponentProps} from "antd/es/form";
 import OutcomeButtonModal from "../modal/OutcomeButtonModal";
+import {observable} from "mobx";
 
 type TaskProps = {
   dataInstance: DataInstanceStore<AbstractBprocRequest>;
@@ -35,6 +36,10 @@ type TaskProps = {
 @injectMainStore
 @observer
 class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & FormComponentProps> {
+
+  @observable
+  openedOutcomeModal: string | null;
+
   StartForm = () => {
     return <StartBprocModal
       employee={this.props.employee}
@@ -52,16 +57,23 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
   render() {
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
-        ? this.props.formData.outcomes.sort((a1, a2) => a1.id!.localeCompare(a2.id!) * (-1)).map(value => <OutcomeButtonModal outcome={value}
-                                                                                  key={value.id}
-                                                                                  form={this.props.form}
-                                                                                  beforeCompletePredicate={this.props.beforeCompletePredicate}
-                                                                                  validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}
-                                                                                  update={this.props.isUpdateBeforeOutcome ? this.props.update : undefined}
-                                                                                  afterSendOnApprove={this.props.afterSendOnApprove}
-                                                                                  commentRequiredOutcomes={this.props.commentRequiredOutcomes}
-                                                                                  task={this.props.task}/>)
+        ? this.props.formData.outcomes.sort((a1, a2) => a1.id!.localeCompare(a2.id!) * (-1)).map(value =>
+          <OutcomeButtonModal outcome={value}
+                              key={value.id}
+                              form={this.props.form}
+                              beforeCompletePredicate={this.props.beforeCompletePredicate}
+                              validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}
+                              update={this.props.isUpdateBeforeOutcome ? this.props.update : undefined}
+                              setOpenedOutcomeModal={this.setOpenedOutcomeModal}
+                              afterSendOnApprove={this.props.afterSendOnApprove}
+                              commentRequiredOutcomes={this.props.commentRequiredOutcomes}
+                              openedOutcomeModal={this.openedOutcomeModal}
+                              task={this.props.task}/>)
         : "";
+  }
+
+  setOpenedOutcomeModal = (value: string | null): void => {
+    this.openedOutcomeModal = value;
   }
 }
 
