@@ -3,7 +3,7 @@ import {inject, observer} from "mobx-react";
 
 import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import {Button, Card, List, Tabs} from "antd";
+import {Card, List, Tabs} from "antd";
 import Meta from "antd/lib/card/Meta";
 import {observable} from "mobx";
 import {restServices} from "../../../cuba/services";
@@ -13,10 +13,6 @@ import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
 import MyTeamPersonRvd from "./rvd/MyTeamPersonRvd/MyTeamPersonRvd";
 // import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
 import AbsenceRvdRequestList from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
-import {AbsenceRvdRequestManagement} from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
-
-import {Link} from "react-router-dom";
-import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 import {rootStore, RootStoreProp} from "../../store";
 import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
@@ -29,6 +25,7 @@ export type PersonProfile = {
   positionGroupId: string,
   positionId: string,
   fullName: string,
+  firstLastName: string,
   hireDate?: any,
   birthDate?: any,
   sex?: string,
@@ -124,16 +121,19 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
     if (!this.person) return <></>;
 
     return (
-      <div>
-        <div style={{float: 'left', marginTop: '40px'}}>
+      <div style={{height: '100%', overflowY: 'auto'}}>
+        <div style={{
+          float: 'left', marginTop: '40px',
+          marginRight: "10px",
+          width: "200px",
+        }}>
           <Card
             hoverable
-            style={{width: 200}}
             cover={<img alt="example"
                         src={this.urlImg ? this.urlImg : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"}/>}>
             <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
                   title={this.person.fullName}>
-            <Meta title={<div style={{fontSize: 10, marginTop: '10px'}}>{this.person.fullName}</div>}/>
+            <Meta title={<div style={{fontSize: 10, marginTop: '10px'}}>{this.person.firstLastName}</div>}/>
             </span>
             <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
                   title={this.person.organizationName || ''}>
@@ -149,7 +149,7 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         </span>}/>
             <Meta title={<span style={{fontSize: 9}}>{"тел: " + (this.person.phone || '')}</span>}/>
           </Card>
-          <List>
+          <List style={{fontSize: 'smaller'}}>
             {this.getLeftMenu().map((menu: Menu) => <List.Item
               style={this.selectedLeftMenu === menu.id ? {
                 backgroundColor: '#bae7ff',
