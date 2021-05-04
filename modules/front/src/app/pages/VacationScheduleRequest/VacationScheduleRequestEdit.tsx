@@ -210,7 +210,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     getValueFromEvent: args => {
-                      this.getAbsenceBalance(null, args);
+                      this.getAbsenceBalance(args);
                       return args
                     }
                   }}
@@ -300,7 +300,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     );
   }
 
-  getAbsenceBalance = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
+  getAbsenceBalance = (dateFrom?: moment.Moment) => {
     dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
 
     if (dateFrom) {
@@ -370,9 +370,13 @@ const component = injectIntl(
           if ((fieldName === "startDate" || fieldName === "endDate")
             && endDate && startDate && personGroupId) {
             getCubaREST()!.searchEntities(DicAbsenceType.NAME, {
-              conditions: [{property: "code", operator: "=", value: 'ANNUAL'}]
+              conditions: [{property: "isVacationDate", operator: "=", value: 'TRUE'},
+                {property: "availableForChangeDate", operator: "=", value: 'TRUE'},
+                {property: "availableForRecallAbsence", operator: "=", value: 'TRUE'},
+                {property: "useInSelfService", operator: "=", value: 'TRUE'}]
             }, {
-              view: "_minimal"
+              view: "_minimal",
+              limit: 1,
             }).then((value) => {
               if (value.length === 1)
                 restServices.absenceService.countDays({

@@ -209,7 +209,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   dateFromValidator = (rule: any, value: any, callback: any) => {
     this.setDaysBeforeAbsenceWaring(this.getSelectedAbsenceType());
-    if (!this.dateValidator('dateFrom') || !value) {
+    const requestDate = this.props.form.getFieldValue('requestDate');
+    if (requestDate && requestDate > value) {
+      callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.dateFrom.start'}));
+    } else if (!this.dateValidator('dateFrom') || !value) {
       callback(this.props.intl.formatMessage({id: "validation.absenceRequest.dateFrom"}));
     } else callback();
   }

@@ -458,8 +458,8 @@ export const restServices = {
         "tsadv_AbsenceBalanceService",
         "getAbsenceBalance",
         {...param}
-      );
-    },
+      ).then(value => value ? (Math.round(value * 100) / 100) : value);
+    }
   },
   documentService: {
     getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
