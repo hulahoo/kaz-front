@@ -2,6 +2,13 @@ import {UserInfo} from "@cuba-platform/rest/dist-node/model";
 import RootStore from "./RootStore";
 import {action, observable} from "mobx";
 import {restServices} from "../../cuba/services";
+import {MyTeamData} from "../pages/MyTeam/MyTeamComponent";
+
+export type MyTeamInfo = {
+  selectedMyTeamData?: MyTeamData,
+  selectedTab?: string,
+  selectedMenu?: string,
+}
 
 export default class {
   rootStore: RootStore;
@@ -22,6 +29,8 @@ export default class {
   positionGroupId?: string;
   companyId?: string;
   @observable initialized: boolean = false;
+
+  myTeamInfo: MyTeamInfo = {}
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 import {observable} from "mobx";
 
@@ -9,11 +9,13 @@ import {Icon, Tree} from "antd";
 import {AntTreeNode, AntTreeNodeExpandedEvent} from "antd/lib/tree/Tree";
 import {restServices} from "../../../cuba/services";
 import LoadingPage from "../LoadingPage";
-import {rootStore} from "../../store";
+import {rootStore, RootStoreProp} from "../../store";
 import Search from "antd/es/input/Search";
 import {MyTeamNew} from "../../../cuba/entities/base/tsadv$MyTeamNew";
 import MyTeamCard from "./MyTeamCard";
 import {SplitPane} from "react-multi-split-pane";
+import {withRouter} from "react-router";
+import {RouteComponentProps} from "react-router-dom";
 
 const {TreeNode} = Tree;
 
@@ -33,13 +35,14 @@ export type MyTeamStructureProps = {
 };
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreInjected & WrappedComponentProps> {
+class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreInjected & RootStoreProp & WrappedComponentProps & RouteComponentProps<any>> {
 
   @observable myTeamData: MyTeamData[] = [];
   @observable isSearch = false;
   @observable expandedKeys: string[] = [];
-  @observable selectedData?: MyTeamData;
+  @observable selectedData?: MyTeamData = this.props.rootStore!.userInfo.myTeamInfo.selectedMyTeamData;
   @observable mainSplitPaneDefaultSizes?: number[];
 
   selectedTapAndLeftMenu: {
@@ -50,7 +53,12 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
     setSelectedTabOrLeftMenu: (selectedTab, selectedLeftMenu) => {
       this.selectedTapAndLeftMenu.selectedTab = selectedTab;
       this.selectedTapAndLeftMenu.selectedLeftMenu = selectedLeftMenu;
-    }
+
+      this.props.rootStore!.userInfo.myTeamInfo.selectedTab = selectedTab;
+      this.props.rootStore!.userInfo.myTeamInfo.selectedMenu = selectedLeftMenu;
+    },
+    selectedTab: this.props.rootStore!.userInfo.myTeamInfo.selectedTab,
+    selectedLeftMenu: this.props.rootStore!.userInfo.myTeamInfo.selectedMenu,
   };
 
   onSearch = (searchText: string): Promise<MyTeamData[]> => {
@@ -210,8 +218,10 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   getKey = (data: MyTeamData): string => data.id + "/" + data.positionGroupId;
 
   onSelect = (keys: string[]): void => {
-    if (keys && keys.length > 0)
+    if (keys && keys.length > 0) {
       this.selectedData = this.getRecordByKey(keys[0]);
+      this.props.rootStore!.userInfo.myTeamInfo.selectedMyTeamData = this.selectedData;
+    }
   }
 
   getRecordByKey = (key: string): MyTeamData | undefined => {
@@ -267,4 +277,4 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   }
 }
 
-export default injectIntl(MyTeamComponent);
+export default injectIntl(withRouter(MyTeamComponent));
