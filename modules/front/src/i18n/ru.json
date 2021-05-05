@@ -284,6 +284,7 @@
   "validation.absenceRequest.absenceDays.balance": "Количество дней в заявке превышает остаток по балансу отпуска.",
   "warning.absenceRequest.daysBeforeAbsence.draft": "Заявку на данный тип отсутствия необходимо подать за {daysBeforeAbsence} дней. Вы указали меньший период.",
   "warning.absenceRequest.daysBeforeAbsence.onApproval": "Заявка подана менее чем за {daysBeforeAbsence} дней",
+  "validation.vacationScheduleRequest.startDate.start": "Дата начала отпуска не может быть меньше текущей даты.",
   "exclude.type.1": "организацию",
   "exclude.type.2": "позицию",
   "sendOnApprove": "Отправить на согласование",

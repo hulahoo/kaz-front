@@ -293,6 +293,7 @@
   "validation.absenceRequest.absenceDays.balance": "The count of days in the request exceeds the balance of the vacation balance.",
   "warning.absenceRequest.daysBeforeAbsence.draft": "An application for this type of absence must be submitted {daysBeforeAbsence} days in advance. You have specified a shorter period.",
   "warning.absenceRequest.daysBeforeAbsence.onApproval": "Application submitted in less than {daysBeforeAbsence} days",
+  "validation.vacationScheduleRequest.startDate.start": "Vacation start date cannot be less than the current date",
   "bproc.participants": "Approval steps",
   "create.leavingVacationRequest": "Create a request to leave the vacation",
   "leavingVacationRequest": "Request to leave the vacation",
