@@ -2,6 +2,13 @@ import {UserInfo} from "@cuba-platform/rest/dist-node/model";
 import RootStore from "./RootStore";
 import {action, observable} from "mobx";
 import {restServices} from "../../cuba/services";
+import {MyTeamData} from "../pages/MyTeam/MyTeamComponent";
+
+export type MyTeamInfo = {
+  selectedMyTeamData?: MyTeamData,
+  selectedTab?: string,
+  selectedMenu?: string,
+}
 
 export default class {
   rootStore: RootStore;
@@ -20,7 +27,10 @@ export default class {
   personGroupId?: string;
   positionId?: string;
   positionGroupId?: string;
+  companyId?: string;
   @observable initialized: boolean = false;
+
+  myTeamInfo: MyTeamInfo = {}
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -33,6 +43,7 @@ export default class {
         this.personGroupId = personProfile.groupId;
         this.positionId = personProfile.positionId;
         this.positionGroupId = personProfile.positionGroupId;
+        this.companyId = personProfile.companyId;
       }
       this.initialized = true;
     }).catch(() => {
@@ -56,6 +67,7 @@ export default class {
     this.timeZone = undefined;
     this.personGroupId = undefined;
     this.positionGroupId = undefined;
+    this.companyId = undefined;
   };
 
   loadUserInfo = async () => {

@@ -34,9 +34,7 @@ import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 
-export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD";
-export const DEFAULT_DATE_TIME_PARSE_FORMAT = "YYYY-MM-DD";
-export const DEFAULT_DATE_TIME_SEC_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
+export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
 export type Sort = {
   columnKey: string,
@@ -193,7 +191,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    validateEnroll: (params: { courseId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
+    validateEnroll: (params: { courseId: string, personGroupId: string, locale: string }): Promise<PairModel<boolean, string[]>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "validateEnroll",
@@ -455,13 +453,13 @@ export const restServices = {
     }
   },
   absenceBalanceService: {
-    getAbsenceBalance: (param: { absenceDate: any, personGroupId: string }): Promise<number> => {
+    getAbsenceBalance: (param: { absenceTypeId?: string, absenceDate: any, personGroupId: string }): Promise<number> => {
       return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceBalanceService",
         "getAbsenceBalance",
         {...param}
-      );
-    },
+      ).then(value => value ? (Math.round(value * 100) / 100) : value);
+    }
   },
   documentService: {
     getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
@@ -639,6 +637,29 @@ export const restServices = {
         "isManagerOrSupManager",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+  },
+  userSettingService: {
+    saveSetting: (name: string, value: string): void => {
+      getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "saveSetting",
+        {
+          clientType: 'P',
+          name: name,
+          value: value
+        }
+      );
+    },
+    loadSetting: <T>(name: string): Promise<T> => {
+      return getCubaREST()!.invokeService<string>(
+        "cuba_UserSettingService",
+        "loadSetting",
+        {
+          clientType: 'P',
+          name: name
+        }
+      ).then(value => JSON.parse(value));
     },
   }
 };

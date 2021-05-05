@@ -8,6 +8,7 @@ import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import Candidate from "../component/Candidate";
 import {injectIntl, WrappedComponentProps} from "react-intl";
+import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, formatDate} from "../../../util/Date/Date";
 
 type TaskProps = {
   tasks: ExtTaskData[];
@@ -31,9 +32,10 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 ellipsis
                 key="hrRole"
                 render={(text, record) => {
-                  return <div className="break-words">{(record as ExtTaskData).hrRole ? ((record as ExtTaskData).hrRole as DicHrRole).langValue : ""}</div>;
+                  return <div
+                    className="break-words">{(record as ExtTaskData).hrRole ? ((record as ExtTaskData).hrRole as DicHrRole).langValue : ""}</div>;
                 }}/>
-        <Column title={this.props.intl.formatMessage({ id: "bproc.startBproc.modal.user" })}
+        <Column title={this.props.intl.formatMessage({id: "bproc.startBproc.modal.user"})}
                 dataIndex="assigneeOrCandidates"
                 key="assigneeOrCandidates"
                 ellipsis
@@ -45,14 +47,16 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 key="createTime"
                 ellipsis
                 render={(text, record, index) => {
-                  return <div className="break-words">{(record as ExtTaskData).createTime}</div>;
+                  return <div
+                    className="break-words">{formatDate((record as ExtTaskData).createTime!, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>;
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='endTime'/>}
                 dataIndex="endTime"
                 ellipsis
                 key="endTime"
                 render={(text, record, index) => {
-                  return <div className="break-words">{(record as ExtTaskData).endTime}</div>;
+                  return <div
+                    className="break-words">{formatDate((record as ExtTaskData).endTime, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>;
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='outcome'/>}
                 dataIndex="outcome"
@@ -60,7 +64,8 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 ellipsis
                 render={(text, record, index) => {
                   const outcome = (record as ExtTaskData).outcome;
-                  return outcome ? <div className="break-words">{this.props.intl.formatMessage({id: outcome!})}</div> : "";
+                  return outcome ?
+                    <div className="break-words">{this.props.intl.formatMessage({id: outcome!})}</div> : "";
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='comment'/>}
                 dataIndex="comment"

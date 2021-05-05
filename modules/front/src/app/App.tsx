@@ -72,19 +72,18 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
       return <CenteredLoader/>;
     }
 
-
     const menuIdx = 1;
     return (
       <Layout className="main-layout">
         <Layout.Header>
           <AppHeader/>
         </Layout.Header>
-        <Layout>
+        <Layout style={{height: '100%'}}>
           <Layout.Sider
             width={200}
             breakpoint="sm"
             collapsedWidth={0}
-            style={{background: "#fff"}}
+            style={{background: "#fff", height: "100%"}}
           >
             <Menu mode="inline" style={{height: "100%", borderRight: 0}} className={"side-menu"}>
               {menuItems.map((item, idx) =>
@@ -93,7 +92,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
             </Menu>
           </Layout.Sider>
           <Layout>
-            <Layout.Content>
+            <Layout.Content style={{height: "100%"}}>
               <Switch>
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
@@ -162,7 +161,6 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
         </Layout>
       </Layout>
     )
-      ;
   }
 
   menuItem = (

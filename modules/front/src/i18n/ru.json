@@ -274,6 +274,7 @@
   "CALENDAR": "Календарный",
   "WORK": "Рабочий",
   "validation.absenceRequest.dateFrom": "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
+  "validation.absenceRequest.dateFrom.start": "Начало отсутствия должно быть больше чем дата заявки",
   "validation.absenceRequest.dateTo": "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\"",
   "validation.absenceRequest.absenceDays.maxDay": "Длительность данного типа отсутствия не должна превышать {maxDay}. Укажите другой период.",
   "validation.absenceRequest.absenceDays.minDay": "Одна из частей отпуска должна быть не менее {minDay} дней. Измените даты отпуска в заявке",
@@ -406,5 +407,8 @@
   "workOnWeekendRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод",
   "absenceRvdRequest": "Заявки на РВД,Сверхуроч.,Врем.перевод",
   "password.error.empty": "Пароль не может быть пустым!",
-  "book.view": "Читать"
+  "book.view": "Читать",
+  "scheduleOffsetsRequest": "Заявка на смену графика",
+  "scheduleStandard": "Графики смен",
+  "scheduleOffsetRequest": "Заявки на изменения графика смен"
 }

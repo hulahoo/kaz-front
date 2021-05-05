@@ -33,6 +33,7 @@ import {FormComponentProps} from "antd/es/form";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
 import Input from "../../../components/Input/Input";
+import TextArea from "antd/es/input/TextArea";
 import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
 
 type Props = FormComponentProps & EditorProps;
@@ -65,7 +66,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "goalSuccessCriteria"];
+  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "successCriteria"];
 
   @observable
   globalErrors: string[] = [];
@@ -163,6 +164,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
     this.props.form.setFieldsValue({
       goalString: option.props["children"],
       goalSuccessCriteria: successCriteria,
+      successCriteria: successCriteria,
     });
   };
 
@@ -205,7 +207,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Button>]
           } bordered={false}>
             <Section size={"large"}>
-              <Form.Item label={this.props.intl.formatMessage({id: "goalLibrary"})}
+              <Form.Item label={this.props.intl.formatMessage({ id: "goalLibrary" })}
                          key='goalLibrary'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goalLibrary', {
@@ -233,11 +235,32 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Form.Item>
 
 
-              <Form.Item label={<Msg entityName={Goal.NAME} propertyName='successCriteria'/>}
+              <Form.Item label={<FormattedMessage id="goal.description"/>}
                          key='goalSuccessCriteria'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goalSuccessCriteria')(
                   (<Input disabled/>)
+                )}
+              </Form.Item>
+
+              <Form.Item label={<FormattedMessage id="my.goal"/>}
+                         key='goalString'
+                         style={{marginBottom: '12px'}}>
+                {this.props.form.getFieldDecorator('goalString', {
+                  rules: [{
+                    required: true,
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[AssignedGoal.NAME + '.' + 'goalString']})
+                  }]
+                })(
+                  (<Input/>)
+                )}
+              </Form.Item>
+
+              <Form.Item label={<FormattedMessage id="my.goal.description"/>}
+                         key='goalSuccessCriteria'
+                         style={{marginBottom: '12px'}}>{
+                this.props.form.getFieldDecorator('successCriteria')(
+                  <TextArea/>
                 )}
               </Form.Item>
 

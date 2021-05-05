@@ -3,7 +3,7 @@ import {ColumnProps} from "antd/es/table";
 import KzmTable from "../../components/Table/KzmTable";
 import {inject} from "mobx-react";
 import {RootStoreProp} from "../../store";
-import {formatDefaultDate} from "../../util/Date/Date";
+import {formatDate} from "../../util/Date/Date";
 import {kpiService} from "../../../cuba/kpi-service/kpiService";
 import {RouteComponentProps, withRouter} from "react-router";
 
@@ -26,7 +26,7 @@ const tableColumns: ColumnProps<MyKpiTableMeta>[] = [{
   sorter: true,
   filtered: true,
   render: (value: string) => {
-    return <span>{formatDefaultDate(new Date(value))}</span>
+    return <span>{formatDate(new Date(value))}</span>
   }
 }, {
   title: "Оцениваемые периоды - окончание",
@@ -34,7 +34,7 @@ const tableColumns: ColumnProps<MyKpiTableMeta>[] = [{
   sorter: true,
   filtered: true,
   render: (value: string) => {
-    return <span>{formatDefaultDate(new Date(value))}</span>
+    return <span>{formatDate(new Date(value))}</span>
   }
 }, {
   title: "Этап",

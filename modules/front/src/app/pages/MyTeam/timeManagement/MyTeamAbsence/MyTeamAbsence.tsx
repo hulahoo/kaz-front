@@ -8,9 +8,10 @@ import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
 import {observable} from "mobx";
 import {Link} from "react-router-dom";
 import {ChangeAbsenceDaysRequestManagement} from "../ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
-import {Button} from "antd";
 import moment from "moment/moment";
 import {AbsenceForRecallManagement} from "../AbsenceForRecall/AbsenceForRecallManagement";
+import Button, {ButtonType} from "../../../../components/Button/Button";
+import {formatDate} from "../../../../util/Date/Date";
 
 
 @injectMainStore
@@ -19,7 +20,7 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
 
   dataCollection = collection<Absence>(Absence.NAME, {
     view: "absence.view",
-    sort: "-updateTs",
+    sort: "-dateFrom",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.personGroupId!}]
     }
@@ -43,12 +44,15 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
     return (
       <DataTable
         buttons={[<Link to={AbsenceForRecallManagement.PATH + '/new/' + this.selectedRowKey}>
-          <Button disabled={this.disabledAbsenceForRecall}>
+          <Button disabled={this.disabledAbsenceForRecall}
+                  buttonType={ButtonType.PRIMARY}
+                  style={{margin: "0 12px 12px 0", width: 'auto'}}>
             <FormattedMessage id={'create.request.absence.for.recall'}/>
           </Button>
         </Link>,
           <Link to={ChangeAbsenceDaysRequestManagement.PATH + '/new/' + this.selectedRowKey}>
-            <Button disabled={this.disabledChangeVacationDates}>
+            <Button disabled={this.disabledChangeVacationDates} buttonType={ButtonType.PRIMARY}
+                    style={{margin: "0 12px 12px 0", width: 'auto'}}>
               <FormattedMessage id={'create.request.change.vacation.dates'}/>
             </Button>
           </Link>]}
@@ -56,8 +60,26 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
         onRowSelectionChange={this.selectRow}
         fields={this.absenceFields}
         hideSelectionColumn={true}
+        columnProps={{
+          render: this.absenceColumnRender
+        }}
       />
     )
+  }
+
+  indexCount = -1;
+  columnCount = 0;
+
+  absenceColumnRender = (text: any, record: any, index: number) => {
+    if (this.indexCount != index) {
+      this.indexCount = index;
+      this.columnCount = 0;
+    }
+    this.columnCount++;
+
+    if (this.columnCount > 1 && this.columnCount < 4)
+      return formatDate(record[this.absenceFields[this.columnCount - 1]]);
+    return text;
   }
 
   selectRow = (selectedRowKeys: string[]) => {
