@@ -25,10 +25,14 @@ import {MyTeamCardProps} from "../../MyTeamCard";
 import moment from "moment";
 import {DEFAULT_DATE_PARSE_FORMAT} from "../../../../../cuba/services";
 import {DEFAULT_DATE_FORMAT} from "../../../../components/Datepicker";
+import {queryCollection} from "../../../../util/QueryDataCollectionStore";
+import {DicAbsenceType} from "../../../../../cuba/entities/base/tsadv$DicAbsenceType";
+import {AbsPurposeSetting} from "../../../../../cuba/entities/base/tsadv_AbsPurposeSetting";
 
 @injectMainStore
 @observer
 class AbsenceRvdRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & MyTeamCardProps> {
+
   dataCollection = collection<AbsenceRvdRequest>(AbsenceRvdRequest.NAME, {
     view: "absenceRvdRequest.edit",
     sort: "-updateTs",
@@ -39,11 +43,7 @@ class AbsenceRvdRequestListComponent extends React.Component<MainStoreInjected &
           operator: "=",
           value: this.props.personGroupId!
         },
-        {
-          property: "type",
-          operator: "in",
-          value: ["ba902579-d681-6555-0a5a-b5ecfae610ef", "a5a941c9-1202-31d4-3037-d47b45ed6a21", "3be39648-a752-f7dc-3724-77cdae92fdd8"]
-        }],
+      ],
     },
   });
 

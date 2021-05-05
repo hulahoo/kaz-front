@@ -1,6 +1,6 @@
 import * as React from "react";
-import {FormEvent} from "react";
-import {Alert, Card, Form, message} from "antd";
+import {createElement, FormEvent} from "react";
+import {Alert, Card, Form, message, TimePicker} from "antd";
 import {inject, observer} from "mobx-react";
 import {AbsenceRvdRequestManagement} from "./AbsenceRvdRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -19,7 +19,7 @@ import {
   extractServerValidationErrors,
   constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText, collection, injectMainStore
+  MultilineText, collection, injectMainStore, Msg
 } from "@cuba-platform/react";
 
 import "../../../../../app/App.css";
@@ -42,6 +42,7 @@ import {AbsPurposeSetting} from "../../../../../cuba/entities/base/tsadv_AbsPurp
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {queryCollection} from "../../../../util/QueryDataCollectionStore";
 import {PersonProfile} from "../../MyTeamCard";
+import DefaultDatePicker from "../../../../components/Datepicker";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -69,24 +70,15 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     view: "_base"
   });
 
+  typesAbsenceDC = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+    view: "_base"
+  })
 
   @observable person?: PersonProfile;
 
   @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
-
-  @observable
-  isJustRequired = false;
-
-  @observable
-  isOriginalSheet = false;
-
-  @observable
-  isVacationDate = false;
-
-  @observable
-  isAbsenceIntersected = false;
 
   @observable
   approverHrRoleCode: string;
@@ -116,50 +108,42 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     "agree",
   ];
 
-  purpose1 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-    view: "_minimal",
-    filter: {
-      conditions: [{
-        property: "absenceType",
-        operator: "=",
-        value: "ba902579-d681-6555-0a5a-b5ecfae610ef"
-      }]
-    }
-  });
+  @observable
+  workOnWeekend = true;
 
-  purpose2 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-    view: "_minimal",
-    filter: {
-      conditions: [{
-        property: "absenceType",
-        operator: "=",
-        value: "a5a941c9-1202-31d4-3037-d47b45ed6a21"
-      }]
-    }
-  });
+  @observable
+  temporaryTransfer = true;
+
+  @observable
+  overtimeWork = true;
+
+  /*  typeDc = collection<DicAbsenceType>(DicAbsenceType.NAME, {
+      view: "_local",
+      filter: {
+        conditions: [{
+          group: "OR",
+          conditions: [
+            {
+              property: 'workOnWeekend',
+              operator: '=',
+              value: 'TRUE'
+            },
+            {
+              property: 'temporaryTransfer',
+              operator: '=',
+              value: 'TRUE'
+            },
+            {
+              property: 'overtimeWork',
+              operator: '=',
+              value: 'TRUE',
+            },
+          ]
+        }]
+      }
+    });*/
 
 
-  purpose3 = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-    view: "_minimal",
-    filter: {
-      conditions: [{
-        property: "absenceType",
-        operator: "=",
-        value: "3be39648-a752-f7dc-3724-77cdae92fdd8"
-      }]
-    }
-  });
-
-  typeDc = collection<DicAbsenceType>(DicAbsenceType.NAME, {
-    view: "_base",
-    filter: {
-      conditions: [{
-        property: "id",
-        operator: "in",
-        value: ["ba902579-d681-6555-0a5a-b5ecfae610ef", "a5a941c9-1202-31d4-3037-d47b45ed6a21", "3be39648-a752-f7dc-3724-77cdae92fdd8"]
-      }]
-    }
-  });
 
   purposeTempDc: DataCollectionStore<DicPurposeAbsence>;
 
@@ -252,13 +236,16 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   };
 
   render() {
+
     if (this.updated) {
       return <Redirect to={AbsenceRvdRequestManagement.PATH}/>;
     }
-
+    const {getFieldDecorator} = this.props.form;
     const {status} = this.dataInstance;
     console.log(this.props.history!.goBack);
     // @ts-ignore
+
+    this.typesAbsenceDC = queryCollection<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType", {})
     return (
       <Page pageName={this.props.intl.formatMessage({id: "workOnWeekendRequest"})}>
         <Section size="large">
@@ -308,11 +295,12 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               getFieldDecoratorOpts={{}}
             />*/}
 
+
               <Field
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="type"
                 form={this.props.form}
-                optionsContainer={this.typeDc}
+                optionsContainer={this.typesAbsenceDC}
                 formItemOpts={{style: {marginBottom: "12px"}}}
                 getFieldDecoratorOpts={{
                   rules: [{required: true,}],
@@ -365,7 +353,61 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               {this.purposeText(this.isPurposeText)}
 
 
-              <ReadonlyField
+              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "timeOfStarting"})}
+                <div style={{display: 'flex'}}>
+                  <Form.Item>
+                    {getFieldDecorator("timeOfStarting", {
+                      rules: [{
+                        required: true,
+                      }],
+                      getValueFromEvent: args => {
+                        this.calcHours(null, args, null);
+                        return args
+                      }
+                    })(
+                      <DefaultDatePicker />
+                    )}
+                  </Form.Item>
+
+                  <Form.Item
+                    style={{position: 'absolute', paddingLeft: 170}}>
+                    {getFieldDecorator("timeOfStarting")(
+                      <TimePicker/>
+                    )}
+                  </Form.Item>
+                </div>
+              </div>
+
+
+
+              <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "timeOfFinishing"})}
+                <div style={{display: 'flex'}}>
+                  <Form.Item>
+                    {getFieldDecorator("timeOfFinishing", {
+                      rules: [{
+                        required: true,
+                      }],
+                      getValueFromEvent: args => {
+                        this.calcHours(null, null, args);
+                        return args
+                      }
+                    })(
+                      <DefaultDatePicker />
+                    )}
+                  </Form.Item>
+
+                  <Form.Item
+                    style={{position: 'absolute', paddingLeft: 170}}>
+                    {getFieldDecorator("timeOfFinishing")(
+                      <TimePicker/>
+                    )}
+                  </Form.Item>
+                </div>
+              </div>
+
+              {/*        <ReadonlyField
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="timeOfStarting"
                 form={this.props.form}
@@ -378,9 +420,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                     return args
                   }
                 }}
-              />
+              />*/}
 
-              <ReadonlyField
+              {/*           <ReadonlyField
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="timeOfFinishing"
                 form={this.props.form}
@@ -393,7 +435,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                     return args
                   }
                 }}
-              />
+              />*/}
 
               <ReadonlyField
                 entityName={AbsenceRvdRequest.NAME}
@@ -581,3 +623,7 @@ const component = injectIntl(
 );
 
 export default (component);
+
+
+
+
