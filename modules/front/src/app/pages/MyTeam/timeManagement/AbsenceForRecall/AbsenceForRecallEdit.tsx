@@ -36,6 +36,7 @@ import {restServices} from "../../../../../cuba/services";
 import {AbsenceForRecall} from "../../../../../cuba/entities/base/tsadv_AbsenceForRecall";
 import TextArea from "antd/es/input/TextArea";
 import Notification from "../../../../util/Notification/Notification";
+import AbstractAgreedBprocEdit from "../../../Bproc/abstract/AbstractAgreedBprocEdit";
 
 type EditorProps = {
   entityId: string;
@@ -45,7 +46,7 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorProps> {
+class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, EditorProps> {
 
   processDefinitionKey = "absenceForRecallRequest";
 
@@ -98,44 +99,6 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
 
   @observable
   isDatesDisabled: boolean = false;
-
-  @observable
-  approverHrRoleCode: string;
-
-  isUpdateBeforeOutcome = true;
-
-  initVariablesByBproc = () => {
-    if (this.activeTask && this.activeTask.hrRole && this.activeTask.hrRole.code) {
-      this.approverHrRoleCode = this.activeTask.hrRole.code;
-    }
-  }
-
-  beforeCompletePredicate = (outcome: string): Promise<boolean> => {
-    if (outcome == 'APPROVE' && this.approverHrRoleCode === 'EMPLOYEE') {
-      const isAgree = this.props.form.getFieldValue('isAgree');
-      const isFamiliarization = this.props.form.getFieldValue('isFamiliarization');
-
-      if (!isAgree) {
-        Notification.info({
-            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
-              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isAgree']})
-          }
-        )
-      }
-
-      if (!isFamiliarization) {
-        Notification.info({
-            message: this.props.intl.formatMessage({id: "for.approving.must.to.check.field"},
-              {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.isFamiliarization']})
-          }
-        )
-      }
-
-      if (!isAgree || !isFamiliarization)
-        return new Promise(resolve => resolve(false));
-    }
-    return new Promise(resolve => resolve(true));
-  };
 
   getUpdateEntityData = (): any => {
     const json = {
@@ -229,6 +192,9 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateFrom']}));
                         } else {
                           const startOf = value.clone().startOf('day');
+                          console.log(moment(this.absence.dateFrom));
+                          console.log(startOf);
+                          console.log(moment(this.absence.dateFrom) <= startOf);
                           if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
                             return callback();
                           } else return callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
@@ -372,24 +338,7 @@ class AbsenceForRecallEdit extends AbstractBprocEdit<AbsenceForRecall, EditorPro
                   )}
                 </Form.Item>
 
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="isAgree"
-                  form={this.props.form}
-                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
-                  getFieldDecoratorOpts={{valuePropName: 'checked'}}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="isFamiliarization"
-                  form={this.props.form}
-                  disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
-                  getFieldDecoratorOpts={{valuePropName: 'checked'}}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
+                {this.agreedFields()}
 
                 {/*<ReadonlyField
                   entityName={'tsadv_AbsenceForRecall'}

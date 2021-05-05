@@ -20,7 +20,6 @@ export default class RootStore {
   @observable kpiEditStore: KpiStore;
   @observable goalStore: DefaultGoalStore;
 
-
   constructor(cubaRest: CubaApp) {
     this.cubaRest = cubaRest;
     this.menu = new MenuStore(this);

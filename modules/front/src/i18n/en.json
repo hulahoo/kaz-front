@@ -411,5 +411,8 @@
   "family.member.information": "Family member information",
   "comment.rate.error.required": "Rate is not selected",
   "password.error.empty": "Password can not be empty!",
-  "book.view": "View"
+  "book.view": "View",
+  "scheduleOffsetsRequest": "Schedule change request",
+  "scheduleStandard": "Schedule offset",
+  "scheduleOffsetRequest": "Schedule offset request"
 }
