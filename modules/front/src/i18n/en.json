@@ -283,6 +283,7 @@
   "CALENDAR": "Calendar",
   "WORK": "Work",
   "validation.absenceRequest.dateFrom": "\"Date from\" is required and cannot be more than \"Date to\"",
+  "validation.absenceRequest.dateFrom.start": "The beginning of the absence must be greater than the date of the application",
   "validation.absenceRequest.dateTo": "\"Date to\" is required and cannot be less  than \"Date from\"",
   "validation.absenceRequest.absenceDays.maxDay": "The duration of this type of absence must not exceed {maxDay}. Please specify a different period.",
   "validation.absenceRequest.absenceDays.minDay": "One of the vacation parts must be at least {minDay} days. Change the vacation dates in the request.",
