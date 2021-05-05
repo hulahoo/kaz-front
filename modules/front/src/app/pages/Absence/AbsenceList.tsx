@@ -33,7 +33,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollection = collection<AllAbsenceRequest>(AllAbsenceRequest.NAME, {
     view: "allAbsenceRequest-view",
-    sort: "-startDate",
+    sort: "-requestNumber",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
@@ -180,11 +180,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                   hideSelectionColumn={true}
                   render={[{
                     column: this.absenceRequestFields[0],
-                    render: (text, record) => {
-                      return <Link to={link(record.entityName!) + "/" + record.id}>
-                        {text}
-                      </Link>
-                    }
+                    render: (text, record) => <Link to={link(record.entityName!) + "/" + record.id}>{text}</Link>
                   }]}
                 />
               </div>
