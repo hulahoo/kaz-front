@@ -157,6 +157,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     }
 
     const {getFieldDecorator} = this.props.form;
+    const messages = this.props.mainStore!.messages!;
 
     const {status} = this.dataInstance;
 
@@ -186,9 +187,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="requestNumber"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true}]
-                  }}
                   disabled={true}
                 />
 
@@ -197,9 +195,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="requestDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true}]
-                  }}
                   disabled={true}
                 />
 
@@ -212,10 +207,23 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                     getValueFromEvent: args => {
                       this.getAbsenceBalance(args);
                       return args
-                    }
+                    },
+                    rules: [{
+                      required: true,
+                      validator: (rule, value, callback) => {
+                        if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.startDate']}));
+
+                        const requestDate = this.props.form.getFieldValue('requestDate');
+
+                        if (requestDate && requestDate > value) {
+                          callback(this.props.intl.formatMessage({id: 'validation.vacationScheduleRequest.startDate.start'}));
+                        }
+
+                        return callback();
+                      }
+                    }]
                   }}
                   disabled={isNotDraft}
-
                 />
 
                 <ReadonlyField
@@ -223,8 +231,13 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="endDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                   disabled={isNotDraft}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.endDate']})
+                    }]
+                  }}
                 />
 
                 <ReadonlyField
@@ -253,7 +266,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="balance"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                   disabled={true}
                 />
 
@@ -273,7 +285,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="attachment"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                 />
 
                 <ReadonlyField
@@ -281,7 +292,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="sentToOracle"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                   disabled={true}
                 />
 
