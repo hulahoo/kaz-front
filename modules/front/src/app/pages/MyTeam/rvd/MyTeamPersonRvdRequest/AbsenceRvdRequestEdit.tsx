@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement, FormEvent} from "react";
-import {Alert, Card, Form, message, TimePicker} from "antd";
+import {Alert, Card, Form, Input, message, TimePicker} from "antd";
 import {inject, observer} from "mobx-react";
 import {AbsenceRvdRequestManagement} from "./AbsenceRvdRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -19,7 +19,7 @@ import {
   extractServerValidationErrors,
   constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText, collection, injectMainStore, Msg
+  MultilineText, collection, injectMainStore, Msg, getCubaREST
 } from "@cuba-platform/react";
 
 import "../../../../../app/App.css";
@@ -27,7 +27,7 @@ import "../../../../../app/App.css";
 import {AbsenceRvdRequest} from "../../../../../cuba/entities/base/tsadv_AbsenceRvdRequest";
 import Page from "../../../../hoc/PageContentHoc";
 import Section from "../../../../hoc/Section";
-import {DictionaryDataCollectionStore} from "../../../../util/DictionaryDataCollectionStore";
+import {dictionaryCollection, DictionaryDataCollectionStore} from "../../../../util/DictionaryDataCollectionStore";
 import {DicRequestStatus} from "../../../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {DicAbsenceType} from "../../../../../cuba/entities/base/tsadv$DicAbsenceType";
 import AbstractBprocEdit from "../../../Bproc/abstract/AbstractBprocEdit";
@@ -43,6 +43,12 @@ import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {queryCollection} from "../../../../util/QueryDataCollectionStore";
 import {PersonProfile} from "../../MyTeamCard";
 import DefaultDatePicker from "../../../../components/Datepicker";
+import {getFullName} from "../../../../util/util";
+import {PersonExt} from "../../../../../cuba/entities/base/base$PersonExt";
+import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
+import {checkIfStateModificationsAreAllowed} from "mobx/lib/core/derivation";
+import {PersonGroupExt} from "../../../../../cuba/entities/base/base$PersonGroupExt";
+import {InsuranceContract} from "../../../../../cuba/entities/base/tsadv$InsuranceContract";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -61,6 +67,13 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     loadImmediately: false
   });
 
+
+  @observable
+  person: PersonExt;
+
+  @observable
+  absence: Absence;
+
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
@@ -70,12 +83,15 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     view: "_base"
   });
 
-  typesAbsenceDC = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-    view: "_base"
-  })
 
-  @observable person?: PersonProfile;
+  // typesAbsenceDC = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+  //   view: "_base"
+  // })
 
+
+  personDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+    view: "_minimal"
+  });
   @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
@@ -150,11 +166,42 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   @observable
   globalErrors: string[] = [];
 
-  @observable
-  absenceTypesDc: DictionaryDataCollectionStore<DicRequestStatus>;
 
   @observable
   isPurposeText = false;
+
+  @observable
+  typesAbsenceDC: DataCollectionStore<DicAbsenceType>;
+
+/*
+  typesAbsenceDC = queryCollection<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType", {
+    companyId: restServices.portalHelperService.companiesForLoadDictionary({personGroupId: this.props.personGroupId as string})
+      .then(value => {
+        return value
+      })
+  });*/
+
+  componentDidMount() {
+    getCubaREST()!.query<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType").then(a => {
+      this.typesAbsenceDC = dictionaryCollection<DicRequestStatus>(DicAbsenceType.NAME, this.props.personGroupId, {
+        view: '_local',
+        filter: {
+          conditions: [{
+            property:'id',
+            operator:'in',
+             value:a.map(s=> s.id) as string[],
+          }]
+        }
+      });
+    } )
+    // restServices.portalHelperService.companiesForLoadDictionary({personGroupId: this.props.personGroupId as string})
+    //   .then(value => {
+    //     this.typesAbsenceDC = queryCollection<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType", {
+    //       companyId: value
+    //     });
+    //   }
+    //   );
+  }
 
 
   getUpdateEntityData = (): any => {
@@ -166,8 +213,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       personGroup: {
         id: this.props.personGroupId
       },
+        person: this.props.personGroupId,
       ...this.props.form.getFieldsValue(this.fields)
     }
+
   };
 
   afterSendOnApprove = () => {
@@ -236,7 +285,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   };
 
   render() {
-
     if (this.updated) {
       return <Redirect to={AbsenceRvdRequestManagement.PATH}/>;
     }
@@ -245,7 +293,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     console.log(this.props.history!.goBack);
     // @ts-ignore
 
-    this.typesAbsenceDC = queryCollection<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType", {})
     return (
       <Page pageName={this.props.intl.formatMessage({id: "workOnWeekendRequest"})}>
         <Section size="large">
@@ -285,16 +332,22 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                   rules: [{required: true,}],
                 }}
               />
-              {/*
+
+
+        {/*      <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "person"})}
+                <Input disabled={true}
+                       value={this.props.personGroupId ? getFullName(this.props.personGroupId, this.props.rootStore!.userInfo!.locale!) || '' : ''}/>
+              </div>*/}
             <ReadonlyField
               entityName={AbsenceRvdRequest.NAME}
               propertyName="personGroup"
               form={this.props.form}
+              optionsContainer={this.personDc}
               formItemOpts={{style: {marginBottom: "12px"}}}
               disabled={true}
               getFieldDecoratorOpts={{}}
-            />*/}
-
+            />
 
               <Field
                 entityName={AbsenceRvdRequest.NAME}

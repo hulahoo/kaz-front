@@ -88,7 +88,9 @@ export var restQueries = {
       typeId: typeId
     })
   },
-  myTeamRvdAbsenceType: (): Promise<SerializedEntity<AbsPurposeSetting>[]> => {
-    return getCubaREST()!.query<AbsPurposeSetting>(AbsPurposeSetting.NAME, "myTeamRvdAbsenceType", {})
+  myTeamRvdAbsenceType: (companyId: any): Promise<SerializedEntity<AbsPurposeSetting>[]> => {
+    return getCubaREST()!.query<AbsPurposeSetting>(AbsPurposeSetting.NAME, "myTeamRvdAbsenceType", {
+      companyId: companyId
+    })
   }
 };
