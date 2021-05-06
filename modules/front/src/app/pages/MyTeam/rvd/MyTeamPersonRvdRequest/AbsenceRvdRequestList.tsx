@@ -10,7 +10,7 @@ import {
   collection,
   injectMainStore,
   MainStoreInjected,
-  DataTable
+  DataTable, getCubaREST
 } from "@cuba-platform/react";
 
 import {AbsenceRvdRequest} from "../../../../../cuba/entities/base/tsadv_AbsenceRvdRequest";
@@ -25,24 +25,31 @@ import {MyTeamCardProps} from "../../MyTeamCard";
 import moment from "moment";
 import {DEFAULT_DATE_PARSE_FORMAT} from "../../../../../cuba/services";
 import {DEFAULT_DATE_PATTERN} from "../../../../util/Date/Date";
+import {DicAbsenceType} from "../../../../../cuba/entities/base/tsadv$DicAbsenceType";
+import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {dictionaryCollection} from "../../../../util/DictionaryDataCollectionStore";
 
 @injectMainStore
 @observer
 class AbsenceRvdRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & MyTeamCardProps> {
 
-  dataCollection = collection<AbsenceRvdRequest>(AbsenceRvdRequest.NAME, {
-    view: "absenceRvdRequest.edit",
-    sort: "-updateTs",
-    filter: {
-      conditions: [
-        {
-          property: "personGroup.id",
-          operator: "=",
-          value: this.props.personGroupId!
-        },
-      ],
-    },
-  });
+  /*  dataCollection = collection<AbsenceRvdRequest>(AbsenceRvdRequest.NAME, {
+      view: "absenceRvdRequest.edit",
+      sort: "-updateTs",
+      filter: {
+        conditions: [
+          {
+            property: "personGroup.id",
+            operator: "=",
+            value: this.props.personGroupId!
+          },
+        ],
+      },
+    });*/
+
+  @observable
+  dataCollection: DataCollectionStore<Absence>;
 
   fields = [
 
@@ -94,6 +101,53 @@ class AbsenceRvdRequestListComponent extends React.Component<MainStoreInjected &
     });
   };
 
+  componentDidMount() {
+    getCubaREST()!.query<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType").then(a => {
+      this.dataCollection = collection<AbsenceRvdRequest>(AbsenceRvdRequest.NAME, {
+        view: 'absenceRvdRequest.edit',
+        sort: "-updateTs",
+        filter: {
+          conditions: [{
+            property: 'type.id',
+            operator: 'in',
+            value: a.map(s => s.id) as string[],
+          },
+            {
+              property: "personGroup.id",
+              operator: "=",
+              value: this.props.personGroupId!
+            },]
+        }
+      });
+    })
+  }
+
+/*  componentDidMount() {
+    getCubaREST()!.query<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType").then(a => {
+      this.dataCollection = collection<AbsenceRvdRequest>(AbsenceRvdRequest.NAME, {
+        view: 'absenceRvdRequest.edit',
+        sort: "-updateTs",
+        filter: {
+          conditions: [{
+            group: "AND",
+            conditions: [
+              {
+                property: 'workOnWeekend',
+                operator: '=',
+                value: 'TRUE'
+              },
+              {
+                property: "personGroup.id",
+                operator: "=",
+                value: this.props.personGroupId!
+              },
+            ]
+          }]
+        }
+      });
+    });
+}*/
+
   render() {
     const buttons = [
       <Link
@@ -141,7 +195,7 @@ class AbsenceRvdRequestListComponent extends React.Component<MainStoreInjected &
     ];
 
     return (
-      <DataTable
+  /*    <DataTable
         dataCollection={this.dataCollection}
         fields={this.fields}
         onRowSelectionChange={this.handleRowSelectionChange}
@@ -149,8 +203,23 @@ class AbsenceRvdRequestListComponent extends React.Component<MainStoreInjected &
         columnProps={{
           render: this.renderLinkColumn
         }}
-      />
-    );
+      />*/
+    <div>
+      {
+        this.dataCollection ? <DataTable
+            dataCollection={this.dataCollection}
+            onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
+            fields={this.fields}
+            hideSelectionColumn={true}
+            columnProps={{
+              render: this.renderLinkColumn
+            }}
+          />
+          : null
+      }
+    </div>
+  )
+    ;
   }
 
   getRecordById(id: string): SerializedEntity<AbsenceRvdRequest> {

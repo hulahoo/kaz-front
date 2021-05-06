@@ -49,6 +49,7 @@ import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
 import {checkIfStateModificationsAreAllowed} from "mobx/lib/core/derivation";
 import {PersonGroupExt} from "../../../../../cuba/entities/base/base$PersonGroupExt";
 import {InsuranceContract} from "../../../../../cuba/entities/base/tsadv$InsuranceContract";
+import {ScheduleOffsetsRequest} from "../../../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -89,9 +90,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   // })
 
 
-  personDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal"
-  });
+  personGroupDc: DataCollectionStore<PersonGroupExt>;
+
   @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
@@ -183,17 +183,35 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
   componentDidMount() {
     getCubaREST()!.query<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType").then(a => {
-      this.typesAbsenceDC = dictionaryCollection<DicRequestStatus>(DicAbsenceType.NAME, this.props.personGroupId, {
+      this.typesAbsenceDC = dictionaryCollection<DicAbsenceType>(DicAbsenceType.NAME, this.props.personGroupId, {
         view: '_local',
         filter: {
           conditions: [{
-            property:'id',
-            operator:'in',
-             value:a.map(s=> s.id) as string[],
+            property: 'id',
+            operator: 'in',
+            value: a.map(s => s.id) as string[],
           }]
         }
       });
-    } )
+    })
+
+    this.loadPersonGroupDc(this.props.personGroupId);
+
+  }
+
+  loadPersonGroupDc = (personGroupId: string) => {
+    this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+      view: "_minimal",
+      filter: {
+        conditions: [{
+          property: "id",
+          operator: "=",
+          value: personGroupId
+        }]
+      },
+    });
+    this.personGroupDc.load();
+  };
     // restServices.portalHelperService.companiesForLoadDictionary({personGroupId: this.props.personGroupId as string})
     //   .then(value => {
     //     this.typesAbsenceDC = queryCollection<DicAbsenceType>(DicAbsenceType.NAME, "myTeamRvdAbsenceType", {
@@ -201,8 +219,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     //     });
     //   }
     //   );
-  }
-
 
   getUpdateEntityData = (): any => {
     console.log(this.props.rootStore!.userInfo.personGroupId);
@@ -339,15 +355,15 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                 <Input disabled={true}
                        value={this.props.personGroupId ? getFullName(this.props.personGroupId, this.props.rootStore!.userInfo!.locale!) || '' : ''}/>
               </div>*/}
-            <ReadonlyField
-              entityName={AbsenceRvdRequest.NAME}
-              propertyName="personGroup"
-              form={this.props.form}
-              optionsContainer={this.personDc}
-              formItemOpts={{style: {marginBottom: "12px"}}}
-              disabled={true}
-              getFieldDecoratorOpts={{}}
-            />
+              <ReadonlyField
+                entityName={AbsenceRvdRequest.NAME}
+                propertyName="personGroup"
+                optionsContainer={this.personGroupDc}
+                form={this.props.form}
+                formItemOpts={{style: {marginBottom: "12px"}}}
+                disabled
+                getFieldDecoratorOpts={{}}
+              />
 
               <Field
                 entityName={AbsenceRvdRequest.NAME}
