@@ -9,7 +9,6 @@ import {withRouter} from "react-router-dom";
 import {
   collection,
   DataCollectionStore,
-  Field,
   getCubaREST,
   injectMainStore,
   Msg,
@@ -38,6 +37,7 @@ import {queryCollection, QueryDataCollectionStore} from "../../util/QueryDataCol
 import {DicSchedulePurpose} from "../../../cuba/entities/base/tsadv_DicSchedulePurpose";
 import TextArea from "antd/es/input/TextArea";
 import MsgEntity from '../../components/MsgEntity';
+import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -67,24 +67,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     view: "_minimal"
   });
 
-  purposesDc = collection<DicSchedulePurpose>(DicSchedulePurpose.NAME, {
-    view: "_minimal",
-    filter: {
-      conditions: [
-        {
-          group: "OR",
-          conditions: [{
-            property: 'company',
-            operator: '=',
-            value: this.props.rootStore!.userInfo.companyId!
-          }, {
-            property: 'company.code',
-            operator: '=',
-            value: 'empty'
-          }]
-        }]
-    }
-  });
+  purposesDc: DictionaryDataCollectionStore<DicSchedulePurpose>;
 
   standardScheduleDc: QueryDataCollectionStore<StandardSchedule>;
 
@@ -439,6 +422,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       this.standardScheduleDc = queryCollection<StandardSchedule>(StandardSchedule.NAME, "currentStandardSchedule", {
         personGroupId: personGroupId
       });
+
+      this.purposesDc = dictionaryCollection(DicSchedulePurpose.NAME, personGroupId);
 
       if (this.isNew()) {
         this.standardScheduleDc.afterLoad = () => {

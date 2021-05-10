@@ -13,6 +13,7 @@ export class CertificateRequest extends AbstractBprocRequest {
   showSalary?: boolean | null;
   numberOfCopy?: number | null;
   file?: FileDescriptor | null;
+  placeOfDelivery?: string | null;
 }
 export type CertificateRequestViewName =
   | "_base"
@@ -34,6 +35,7 @@ export type CertificateRequestView<
       | "integrationUserLogin"
       | "requestDate"
       | "comment"
+      | "placeOfDelivery"
     >
   : V extends "_local"
   ? Pick<
@@ -47,6 +49,7 @@ export type CertificateRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
+      | "placeOfDelivery"
     >
   : V extends "_minimal"
   ? Pick<CertificateRequest, "id" | "requestNumber">
@@ -68,6 +71,7 @@ export type CertificateRequestView<
       | "file"
       | "language"
       | "certificateType"
+      | "placeOfDelivery"
     >
   : V extends "portal.certificateRequest-edit"
   ? Pick<
@@ -87,5 +91,6 @@ export type CertificateRequestView<
       | "file"
       | "language"
       | "certificateType"
+      | "placeOfDelivery"
     >
   : never;

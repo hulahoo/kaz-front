@@ -8,7 +8,6 @@ import {IReactionDisposer, observable, reaction} from "mobx";
 import {ProcessInstanceData} from "../../../../cuba/entities/base/bproc_ProcessInstanceData";
 import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 import {BprocFormData} from "../../../../cuba/entities/bproc/bproc_FormData";
-import {message} from "antd";
 import {restServices} from "../../../../cuba/services";
 import ExtTaskDataCards from "../TaskData/ExtTaskDataCards";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
@@ -250,7 +249,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       () => {
         return this.dataInstance.item;
       },
-      () => {
+      (item) => {
+        this.onReactionDisposerEffect(item);
         const obj = {
           ...this.dataInstance.getFieldValues(this.fields)
         };
@@ -263,6 +263,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       }
     );
   };
+
+  onReactionDisposerEffect = (item: T | undefined) => {
+
+  }
 
   afterSendOnApprove = () => {
     this.props.history!.goBack();
