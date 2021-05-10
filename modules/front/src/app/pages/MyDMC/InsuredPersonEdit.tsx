@@ -172,8 +172,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   memberFields = [
     "relative",
-    "firstName",
     "secondName",
+    "firstName",
     "middleName",
     "birthdate",
     "iin",
@@ -366,22 +366,21 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
-                                 propertyName="firstName"
-                                 form={this.props.form}
-                                 formItemOpts={{style: {display: "none"}}}
-                                 getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
-                                 }}
-                  />
-
-                  <ReadonlyField disabled={true}
-                                 entityName={InsuredPerson.NAME}
                                  propertyName="secondName"
                                  form={this.props.form}
                                  formItemOpts={{style: {display: "none"}}}
                                  getFieldDecoratorOpts={{
                                    rules: [{required: true}],
+                                 }}
+                  />
 
+                  <ReadonlyField disabled={true}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="firstName"
+                                 form={this.props.form}
+                                 formItemOpts={{style: {display: "none"}}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
                                  }}
                   />
 
