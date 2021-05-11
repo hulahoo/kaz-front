@@ -36,6 +36,7 @@ import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
 import Section from "../../hoc/Section";
 import Page from "../../hoc/PageContentHoc";
 import moment from "moment/moment";
+import {isNumber} from "../../util/util";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -250,7 +251,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                       {
                         validator: (rule, value, callback) => {
                           const balance = this.props.form.getFieldValue('balance');
-                          if (!value || !balance) return callback();
+                          if (!isNumber(value) || !isNumber(balance)) return callback();
                           if (balance < parseInt(value)) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
                           }

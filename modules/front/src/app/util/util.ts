@@ -108,3 +108,7 @@ export const catchException = (promise: Promise<any>): Promise<any> => {
     throw new Error(parse.message);
   })
 };
+
+export const isNumber = (number: any): boolean => {
+  return number !== undefined && number !== null && !isNaN(number);
+}
