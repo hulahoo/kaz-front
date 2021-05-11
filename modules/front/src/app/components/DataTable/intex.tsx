@@ -3,6 +3,8 @@ import {DataTable, injectMainStore} from "@cuba-platform/react";
 import {DataTableProps} from "@cuba-platform/react/dist/ui/table/DataTable";
 import {MetaPropertyInfo} from "@cuba-platform/rest";
 import {formatDate} from "../../util/Date/Date";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
+import {downloadFile} from "../../util/util";
 
 export type ColumnRender<T> = {
   column: string,
@@ -40,12 +42,33 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
     }
 
     const propertyInfo = this.getPropertyInfo(field);
-    const isDate = propertyInfo && (propertyInfo.type == 'date' || propertyInfo.type == 'dateTime');
+    const isDate = propertyInfo && (propertyInfo.type === 'date' || propertyInfo.type === 'dateTime');
+    const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
+
+    if (propertyInfo) console.log(propertyInfo.type);
 
     if (isDate)
       return formatDate(record[field]);
 
+    if (isFile) return this.renderFile(record[field]);
+
     return text;
+  }
+
+  renderFile = (file?: FileDescriptor) => {
+    console.log(file);
+    if (file)
+      return (
+        <a onClick={() => {
+          downloadFile((file as FileDescriptor).id,
+            (file as FileDescriptor).name as string,
+            (file as FileDescriptor).extension as string,
+            "");
+        }}>
+          {(file as FileDescriptor).name}
+        </a>
+      )
+    return (<span/>);
   }
 
   getPropertyInfo = (propertyName: string): MetaPropertyInfo | null => {
