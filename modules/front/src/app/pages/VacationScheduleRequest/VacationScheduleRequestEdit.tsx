@@ -50,7 +50,7 @@ type EditorProps = {
 class VacationScheduleRequestEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
   dataInstance = instance<VacationScheduleRequest>(
     VacationScheduleRequest.NAME,
-    {view: "vacationScheduleRequest-edit", loadImmediately: false}
+    {view: "vacationScheduleRequest-edit"}
   );
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
@@ -207,6 +207,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   getFieldDecoratorOpts={{
                     getValueFromEvent: args => {
                       this.getAbsenceBalance(args);
+                      this.getAbsenceDays(args);
                       return args
                     },
                     rules: [{
@@ -237,7 +238,11 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                     rules: [{
                       required: true,
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.endDate']})
-                    }]
+                    }],
+                    getValueFromEvent: args => {
+                      this.getAbsenceDays(undefined, args);
+                      return args;
+                    }
                   }}
                 />
 
@@ -255,6 +260,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                           if (balance < parseInt(value)) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
                           }
+                          callback();
                         }
                       }
                     ]
@@ -309,6 +315,38 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
         </Section>
       </Page>
     );
+  }
+
+  getAbsenceDays = (startDate?: any, endDate?: any) => {
+    if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
+
+      startDate = startDate || this.props.form.getFieldValue(`startDate`);
+      endDate = endDate || this.props.form.getFieldValue(`endDate`);
+
+      const personGroupId = rootStore.userInfo.personGroupId;
+
+      if (endDate && startDate && personGroupId) {
+        getCubaREST()!.searchEntities(DicAbsenceType.NAME, {
+          conditions: [{property: "isVacationDate", operator: "=", value: 'TRUE'},
+            {property: "availableForChangeDate", operator: "=", value: 'TRUE'},
+            {property: "availableForRecallAbsence", operator: "=", value: 'TRUE'},
+            {property: "useInSelfService", operator: "=", value: 'TRUE'}]
+        }, {
+          view: "_minimal",
+          limit: 1,
+        }).then((value) => {
+          if (value.length === 1)
+            restServices.absenceService.countDays({
+              dateFrom: startDate,
+              dateTo: endDate,
+              absenceTypeId: (value[0] as DicAbsenceType).id,
+              personGroupId: personGroupId
+            }).then(value => {
+              this.props.form.setFields({"absenceDays": {value: value}});
+            })
+        })
+      }
+    }
   }
 
   getAbsenceBalance = (dateFrom?: moment.Moment) => {
@@ -366,42 +404,6 @@ const component = injectIntl(
             value: changedValues[fieldName]
           }
         });
-
-        if (fieldName === "startDate" || fieldName === "endDate") {
-          props.form.validateFields();
-        }
-
-        if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
-
-          const startDate = props.form.getFieldValue(`startDate`);
-          const endDate = props.form.getFieldValue(`endDate`);
-
-          const personGroupId = rootStore.userInfo.personGroupId;
-
-          if ((fieldName === "startDate" || fieldName === "endDate")
-            && endDate && startDate && personGroupId) {
-            getCubaREST()!.searchEntities(DicAbsenceType.NAME, {
-              conditions: [{property: "isVacationDate", operator: "=", value: 'TRUE'},
-                {property: "availableForChangeDate", operator: "=", value: 'TRUE'},
-                {property: "availableForRecallAbsence", operator: "=", value: 'TRUE'},
-                {property: "useInSelfService", operator: "=", value: 'TRUE'}]
-            }, {
-              view: "_minimal",
-              limit: 1,
-            }).then((value) => {
-              if (value.length === 1)
-                restServices.absenceService.countDays({
-                  dateFrom: startDate,
-                  dateTo: endDate,
-                  absenceTypeId: (value[0] as DicAbsenceType).id,
-                  personGroupId: personGroupId
-                }).then(value => {
-                  props.form.setFields({"absenceDays": {value: value}});
-                })
-            })
-          }
-        }
-
       });
     }
   })(VacationScheduleRequestEditComponent)
