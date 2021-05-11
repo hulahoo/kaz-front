@@ -133,13 +133,13 @@ export default class MenuStore {
       //   pathPattern: "/job-offers",
       //   component: null,
       // },
-      // {
-      //   id: "org-structure-request",
-      //   caption: "Заявка по Орг.структуре",
-      //   menuLink: "/org-structure-request",
-      //   pathPattern: "/org-structure-request",
-      //   component: null,
-      // }
+      {
+        id: "org-structure-request",
+        caption: "Заявка по Орг.структуре",
+        menuLink: "/org-structure-request",
+        pathPattern: "/org-structure-request",
+        component: null,
+      }
     ]
     // restServices.userMenuService.userMenuList().then((response: string) => {
     //   const menuIdList: string[] = JSON.parse(response);
