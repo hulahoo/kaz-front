@@ -38,6 +38,8 @@ import {queryCollection, QueryDataCollectionStore} from "../../util/QueryDataCol
 import {DicSchedulePurpose} from "../../../cuba/entities/base/tsadv_DicSchedulePurpose";
 import TextArea from "antd/es/input/TextArea";
 import MsgEntity from '../../components/MsgEntity';
+import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
+import {DicEarningPolicy} from "../../../cuba/entities/base/tsadv_DicEarningPolicy";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -67,28 +69,13 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     view: "_minimal"
   });
 
-  purposesDc = collection<DicSchedulePurpose>(DicSchedulePurpose.NAME, {
-    view: "_minimal",
-    filter: {
-      conditions: [
-        {
-          group: "OR",
-          conditions: [{
-            property: 'company',
-            operator: '=',
-            value: this.props.rootStore!.userInfo.companyId!
-          }, {
-            property: 'company.code',
-            operator: '=',
-            value: 'empty'
-          }]
-        }]
-    }
-  });
+  purposesDc: DictionaryDataCollectionStore<DicSchedulePurpose>;
 
   standardScheduleDc: QueryDataCollectionStore<StandardSchedule>;
 
   personGroupDc: DataCollectionStore<PersonGroupExt>;
+
+  earningPolicyDc: DictionaryDataCollectionStore<DicEarningPolicy>;
 
   processDefinitionKey = "scheduleOffsetsRequest";
 
@@ -136,7 +123,9 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
     "newSchedule",
 
-    "status"
+    "status",
+
+    "earningPolicy"
   ];
 
   @observable
@@ -282,11 +271,14 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                       }]
                     })(
                       <Select onChange={this.changePurpose} disabled={this.isDisabledFields}>
-                        {this.purposesDc.items.map(p => {
-                          //@ts-ignore
-                          return <Option value={p.id}
-                                         code={p.code}>{p._instanceName}</Option>
-                        })}
+                        {this.purposesDc && this.purposesDc.items
+                          ? this.purposesDc.items.map(p => {
+                            //@ts-ignore
+                            return <Option value={p.id}
+                                           code={p.code}>{p._instanceName}</Option>
+                          })
+                          : null
+                        }
                       </Select>
                     )}
                   </Form.Item>
@@ -361,6 +353,22 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     getFieldDecoratorOpts={{
                       valuePropName: "checked"
+                    }}
+                  />
+
+
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="earningPolicy"
+                    form={this.props.form}
+                    disabled={this.isDisabledFields}
+                    optionsContainer={this.earningPolicyDc}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    getFieldDecoratorOpts={{
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'earningPolicy']})
+                      }]
                     }}
                   />
 
@@ -456,6 +464,10 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
       await this.loadPerson(personGroupId);
 
+      this.loadEarningPolicyDc(personGroupId);
+
+      this.loadPurposesDc(personGroupId);
+
       this.setEmployee(personGroupId);
 
       this.updateFields();
@@ -466,12 +478,23 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     })()
   }
 
+  loadEarningPolicyDc = (personGroupId: string) => {
+    this.earningPolicyDc = dictionaryCollection<DicEarningPolicy>(DicEarningPolicy.NAME, personGroupId, {});
+    this.earningPolicyDc.load();
+  };
+
+  loadPurposesDc = (personGroupId: string) => {
+    this.purposesDc = dictionaryCollection<DicSchedulePurpose>(DicSchedulePurpose.NAME, personGroupId, {});
+    this.purposesDc.load();
+  };
+
   updateFields = () => {
     const fieldValues = this.dataInstance.getFieldValues(this.fields);
     this.props.form.setFieldsValue(fieldValues);
   };
 
   loadPersonGroupDc = (personGroupId: string) => {
+    console.log(1);
     this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
       view: "_minimal",
       filter: {

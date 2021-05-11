@@ -2,6 +2,7 @@ import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicSchedulePurpose } from "./tsadv_DicSchedulePurpose";
 import { StandardSchedule } from "./tsadv$StandardSchedule";
+import { DicEarningPolicy } from "./tsadv_DicEarningPolicy";
 export class ScheduleOffsetsRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ScheduleOffsetsRequest";
   static PROCESS_DEFINITION_KEY = "scheduleOffsetsRequest";
@@ -16,6 +17,7 @@ export class ScheduleOffsetsRequest extends AbstractBprocRequest {
   detailsOfActualWork?: string | null;
   agree?: boolean | null;
   acquainted?: boolean | null;
+  earningPolicy?: DicEarningPolicy | null;
 }
 export type ScheduleOffsetsRequestViewName =
   | "_base"
