@@ -30,7 +30,7 @@ export default class {
   companyCode?: string;
   @observable initialized: boolean = false;
 
-  myTeamInfo: MyTeamInfo = {}
+  myTeamInfo: MyTeamInfo;
 
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore;
@@ -72,6 +72,7 @@ export default class {
 
   loadUserInfo = async () => {
     this.initialized = false;
+    this.myTeamInfo = {};
     return await this.rootStore.cubaRest.getUserInfo().then((response: UserInfo) => {
       this.timeZone = response.timeZone;
       this._instanceName = response._instanceName;
