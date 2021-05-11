@@ -45,8 +45,6 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
     const isDate = propertyInfo && (propertyInfo.type === 'date' || propertyInfo.type === 'dateTime');
     const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
 
-    if (propertyInfo) console.log(propertyInfo.type);
-
     if (isDate)
       return formatDate(record[field]);
 
@@ -56,7 +54,6 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
   }
 
   renderFile = (file?: FileDescriptor) => {
-    console.log(file);
     if (file)
       return (
         <a onClick={() => {
