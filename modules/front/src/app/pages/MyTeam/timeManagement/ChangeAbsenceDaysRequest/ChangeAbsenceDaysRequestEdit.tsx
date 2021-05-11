@@ -127,7 +127,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
             personGroupId: personGroupId
           })
             .then(countScheduleDay => {
-              this.validatedDatesSuccess = Math.max(countDay, countScheduleDay) == countScheduleDay; //(countDay) <= (countScheduleDay);
+              this.validatedDatesSuccess = countDay <= countScheduleDay + (this.absence.type!.daysAdvance || 0);
               this.props.form.validateFields(['newStartDate', 'newEndDate'], {force: true});
             });
         })
@@ -305,27 +305,23 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
 
-
-                <div className={"ant-row ant-form-item"}
-                     style={this.isPurposeTypeOther ? {marginBottom: "12px"} : {display: 'none'}}>
+                <Form.Item style={this.isPurposeTypeOther ? {marginBottom: "12px"} : {display: 'none'}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "purposeText"})}
-                  <Form.Item>
-                    {this.props.form.getFieldDecorator("purposeText", {
-                      rules: [{
-                        required: true,
-                        validator: (rule, value, callback) => {
-                          if (this.isPurposeTypeOther && !value)
-                            callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.purposeText']}));
-                          else callback();
-                        },
-                      }]
-                    })(
-                      <TextArea
-                        disabled={isNotDraft}
-                        rows={4}/>
-                    )}
-                  </Form.Item>
-                </div>
+                  {this.props.form.getFieldDecorator("purposeText", {
+                    rules: [{
+                      required: true,
+                      validator: (rule, value, callback) => {
+                        if (this.isPurposeTypeOther && !value)
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.purposeText']}));
+                        else callback();
+                      },
+                    }]
+                  })(
+                    <TextArea
+                      disabled={isNotDraft}
+                      rows={4}/>
+                  )}
+                </Form.Item>
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
@@ -478,7 +474,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
       },
       (item) => {
 
-        if (item!.vacation)
+        if (this.props.entityId !== "new" && item!.vacation)
           this.loadVacation(item!.vacation.id)
             .then(absence => this.absence = absence)
             .then(absence => {

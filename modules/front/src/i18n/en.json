@@ -386,7 +386,7 @@
   "personalData": "Личные данные",
   "timeManagement": "Time management",
   "cityOfResidence": "City of residence",
-  "new.annual.days.not.correct": "Days not correct",
+  "new.annual.days.not.correct": "The duration of absence exceeds the allowable value",
   "create.request.change.vacation.dates": "Create a request to change vacation dates",
   "create.request.absence.for.recall": "Create a feedback request from vacation",
   "changeAbsenceDaysRequest": "Request to change vacation dates",

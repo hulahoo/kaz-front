@@ -375,7 +375,7 @@
   "personalData": "Персональные данные",
   "timeManagement": "Управление временем",
   "cityOfResidence": "Город проживание",
-  "new.annual.days.not.correct": "Новый период ежегодного трудового отпуска не правильные",
+  "new.annual.days.not.correct": "Длительность отсутствия превышает допустимое значение",
   "create.request.change.vacation.dates": "Создать заявку на изменение дат отпуска",
   "create.request.absence.for.recall": "Создать заявку на отзыв из отпуска",
   "changeAbsenceDaysRequest": "Заявка на изменение дат отпуска",
