@@ -92,8 +92,11 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
         && absence.type.availableForRecallAbsence
         && absence.type.useInSelfService
         && moment(absence.dateFrom) > moment()) !== true;
-      this.disabledAbsenceForRecall = (absence && absence.type && absence.type.useInSelfService
-        && absence.type.availableForChangeDate && absence.type.availableForRecallAbsence) !== true;
+      this.disabledAbsenceForRecall = (absence && absence.type
+        && absence.type.useInSelfService
+        && absence.type.availableForChangeDate
+        && absence.type.availableForRecallAbsence
+        && moment(absence.dateTo) > moment()) !== true;
     }
   }
 }
