@@ -6,6 +6,8 @@ import { OrganizationGroupExt } from "./base$OrganizationGroupExt";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 export class OrgStructureRequest extends AbstractBprocRequest {
   static NAME = "tsadv_OrgStructureRequest";
+  static PROCESS_DEFINITION_KEY = "orgStructureRequest";
+
   orgStructureDetail?: OrgStructureRequestDetail[] | null;
   modifyDate?: any | null;
   file?: FileDescriptor[] | null;

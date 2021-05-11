@@ -116,10 +116,10 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
               <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestDate"}/>}
                       dataIndex={"requestDate"}
                       key={"requestDate"}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestStatus"}/>}
-                      dataIndex={"requestStatus"}
-                      key={"requestStatus"} render={(text, record: SerializedEntity<any>) => {
-                return <span>{(record.requestStatus! as SerializedEntity<DicRequestStatus>)._instanceName}</span>
+              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"status"}/>}
+                      dataIndex={"status"}
+                      key={"status"} render={(text, record: SerializedEntity<any>) => {
+                return <span>{(record.status! as SerializedEntity<DicRequestStatus>)._instanceName}</span>
               }}/>
               <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"company"}/>}
                       dataIndex={"company"}

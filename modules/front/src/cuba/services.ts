@@ -33,6 +33,7 @@ import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
+import {DicHrRole} from "./entities/base/tsadv$DicHrRole";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -555,6 +556,13 @@ export const restServices = {
         "findManagerListByPositionGroupReturnListPosition",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+    availableSalary: (param?: {}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "availableSalary",
+        {...param}
+      ).then(r => JSON.parse(r));
     }
   },
   orgStructureService: {
@@ -630,6 +638,17 @@ export const restServices = {
         "isManagerOrSupManager",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+    getDicHrRoles: (params: { userId: string }): Promise<DicHrRole[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_OrganizationHrUserService",
+        "getDicHrRoles",
+        {
+          ...params
+        }
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
     },
   },
   userSettingService: {
