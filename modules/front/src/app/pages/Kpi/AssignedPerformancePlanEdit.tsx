@@ -46,6 +46,8 @@ import TextArea from "antd/es/input/TextArea";
 import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
 import TaskDataTable from "../Bproc/TaskData/TaskDataTable";
 import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
+import {ScoreSetting} from "../../../cuba/entities/base/tsadv_ScoreSetting";
+import {collectionWithAfterLoad, DataCollectionStoreWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
 
 const {TreeNode} = Tree;
 
@@ -74,6 +76,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     view: "assignedPerformancePlan-myKpi-edit",
     loadImmediately: false
   });
+
+  @observable
+  scoreSettingsCollection: DataCollectionStoreWithAfterLoad<ScoreSetting>;
 
   @observable
   totalWeight: number;
@@ -179,14 +184,10 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   };
 
   getPoint = (value?: number): number => {
-    if (value === undefined) return 0;
-    if (value < 50) return 6;
-    if (value <= 66) return 7;
-    if (value <= 74) return 8;
-    if (value <= 82) return 9;
-    if (value <= 89) return 10;
-    if (value <= 94) return 11;
-    return 12;
+    if (value === undefined || !this.scoreSettingsCollection || this.scoreSettingsCollection.status !== 'DONE' || this.scoreSettingsCollection.items.length <= 0) return 0;
+    const scoreSetting = this.scoreSettingsCollection.items.find(scoreSetting => scoreSetting.minPercent <= value && value <= scoreSetting.maxPercent);
+    if (scoreSetting) return scoreSetting.finalScore || 0;
+    return 0;
   }
 
   @action
@@ -198,7 +199,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     }
   };
 
-  setKpiScore = () => {
+  setKpiScore = (): void => {
     if (this.kpiScoreRef)
       this.kpiScoreRef.innerHTML = this.props.intl.formatMessage({id: "kpiScore"}) + ': ' + this.getPoint(this.totalResult);
     this.setFinalScore();
@@ -514,7 +515,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                   }}>
                   {this.props.intl.formatMessage({id: "result"})}: {Math.round(this.totalResult)}
                 </h1></div>
-                {stepIndex && stepIndex > 1 && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR'
+                {stepIndex && stepIndex > 1 && (this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR' || this.isUserManager)
                   ? (<div>
                     <h1
                       id={'kpiScore'}
@@ -620,6 +621,21 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         this.loadBpmProcessData();
 
         this.setReadOnly();
+
+        if (item)
+          this.scoreSettingsCollection = collectionWithAfterLoad<ScoreSetting>(ScoreSetting.NAME,
+            this.setKpiScore,
+            {
+              view: "_local",
+              loadImmediately: true,
+              filter: {
+                conditions: [{
+                  property: 'performancePlan.id',
+                  operator: '=',
+                  value: item.performancePlan!.id
+                }]
+              }
+            });
 
         restServices.employeeService.personProfile(item!.assignedPerson!.id).then(value => {
           this.props.form.setFieldsValue({
