@@ -36,6 +36,7 @@ import {DicPurposeAbsence} from "../../../../../cuba/entities/base/tsadv_DicPurp
 import {FileDescriptor} from "../../../../../cuba/entities/base/sys$FileDescriptor";
 import {restServices} from "../../../../../cuba/services";
 import Notification from "../../../../util/Notification/Notification";
+import TextArea from "antd/es/input/TextArea";
 
 type EditorProps = {
   entityId: string;
@@ -56,6 +57,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   });
 
   @observable
+  isPurposeTypeOther = false;
+
+  @observable
   dicPurposeAbsence: DictionaryDataCollectionStore<DicPurposeAbsence>;
 
   filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
@@ -74,6 +78,8 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     "scheduleEndDate",
 
     "purpose",
+
+    "purposeText",
 
     "newStartDate",
 
@@ -121,7 +127,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
             personGroupId: personGroupId
           })
             .then(countScheduleDay => {
-              this.validatedDatesSuccess = Math.max(countDay, countScheduleDay) == countScheduleDay; //(countDay) <= (countScheduleDay);
+              this.validatedDatesSuccess = countDay <= countScheduleDay + (this.absence.type!.daysAdvance || 0);
               this.props.form.validateFields(['newStartDate', 'newEndDate'], {force: true});
             });
         })
@@ -284,10 +290,38 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                     rules: [{
                       required: true,
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.purpose']}),
-                    }]
+                    }],
+                    getValueFromEvent: args => {
+
+                      if (args) {
+                        const purpose = this.dicPurposeAbsence.items.find(value => value.id == args);
+                        if (purpose)
+                          this.isPurposeTypeOther = purpose.code === 'OTHER';
+                      }
+
+                      return args;
+                    }
                   }}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
+
+                <Form.Item style={this.isPurposeTypeOther ? {marginBottom: "12px"} : {display: 'none'}}>
+                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "purposeText"})}
+                  {this.props.form.getFieldDecorator("purposeText", {
+                    rules: [{
+                      required: true,
+                      validator: (rule, value, callback) => {
+                        if (this.isPurposeTypeOther && !value)
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.purposeText']}));
+                        else callback();
+                      },
+                    }]
+                  })(
+                    <TextArea
+                      disabled={isNotDraft}
+                      rows={4}/>
+                  )}
+                </Form.Item>
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
@@ -440,7 +474,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
       },
       (item) => {
 
-        if (item!.vacation)
+        if (this.props.entityId !== "new" && item!.vacation)
           this.loadVacation(item!.vacation.id)
             .then(absence => this.absence = absence)
             .then(absence => {
@@ -452,6 +486,8 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
               this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
               this.setEmployee(absence.personGroup!.id!);
             });
+
+        this.isPurposeTypeOther = (item && item.purpose && item.purpose.code === 'OTHER') == true;
 
         const obj = {
           ...this.dataInstance.getFieldValues(this.fields)

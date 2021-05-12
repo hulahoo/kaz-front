@@ -15,7 +15,6 @@ import {
   clearFieldErrors,
   collection,
   constructFieldsWithErrors,
-  DataTable,
   extractServerValidationErrors,
   MultilineText,
   withLocalizedForm
@@ -35,15 +34,15 @@ import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType
 import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {ReadonlyField} from "../../components/ReadonlyField";
-import {DEFAULT_DATE_PARSE_FORMAT, restServices} from "../../../cuba/services";
+import {restServices} from "../../../cuba/services";
 import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {instanceStore} from "../../util/InstanceStore";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
-import moment from "moment";
 import {DicAddressType} from "../../../cuba/entities/base/tsadv$DicAddressType";
+import DataTableFormat from "../../components/DataTable/intex";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -172,8 +171,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   memberFields = [
     "relative",
-    "firstName",
     "secondName",
+    "firstName",
     "middleName",
     "birthdate",
     "iin",
@@ -184,7 +183,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     "amount",
     "region",
     "insuranceContract",
-    "file",
+    "statementFile",
   ];
 
   rowIndex = -1;
@@ -366,22 +365,21 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
-                                 propertyName="firstName"
-                                 form={this.props.form}
-                                 formItemOpts={{style: {display: "none"}}}
-                                 getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
-                                 }}
-                  />
-
-                  <ReadonlyField disabled={true}
-                                 entityName={InsuredPerson.NAME}
                                  propertyName="secondName"
                                  form={this.props.form}
                                  formItemOpts={{style: {display: "none"}}}
                                  getFieldDecoratorOpts={{
                                    rules: [{required: true}],
+                                 }}
+                  />
 
+                  <ReadonlyField disabled={true}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="firstName"
+                                 form={this.props.form}
+                                 formItemOpts={{style: {display: "none"}}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
                                  }}
                   />
 
@@ -634,30 +632,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
             {isMemberAttach ?
               <Card title={this.props.intl.formatMessage({id: 'family.member.information'})} style={{margin: "10px"}}>
-                <DataTable
+                <DataTableFormat
                   dataCollection={this.familyDataCollection}
                   fields={this.memberFields}
+                  enableFiltersOnColumns={[]}
                   hideSelectionColumn={true}
                   onRowSelectionChange={this.handleRowSelectionChange}
                   buttons={buttons}
-                  columnProps={{
-                    render: (text, record, index) => {
-                      if (this.rowIndex != index) {
-                        this.rowIndex = index;
-                        this.colIndex = 0;
-                      }
-                      this.colIndex += 1;
-                      if (this.colIndex == 5 && record.birthdate) {
-                        return moment(record.birthdate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
-                      } else if (this.colIndex == 9 && record.attachDate) {
-                        return moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
-                      }
-                      return text;
-                    }
-                  }}
-                  // render={(text, record: InsuredPerson) => (
-                  //   (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN)))
-                  // )}
                 />
               </Card>
               : <></>}
@@ -709,7 +690,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       insuredPersonId: this.props!.entityId!
     }).then(value => {
       this.familyDataCollection.clear();
-      console.log('value', value.length);
       // @ts-ignore
       this.familyDataCollection.items = Array.from(value);
     })

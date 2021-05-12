@@ -436,11 +436,11 @@ export const restServices = {
       );
     },
     countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
-      return getCubaREST()!.invokeService<number>(
+      return getCubaREST()!.invokeService<string>(
         "tsadv_AbsenceService",
         "countDaysWithoutHolidays",
         {...param}
-      );
+      ).then(value => parseInt(value));
     },
   },
   absenceRvdService: {

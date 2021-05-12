@@ -62,8 +62,8 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
                               key={value.id}
                               form={this.props.form}
                               beforeCompletePredicate={this.props.beforeCompletePredicate}
-                              validate={this.props.isUpdateBeforeOutcome ? this.props.validate : undefined}
-                              update={this.props.isUpdateBeforeOutcome ? this.props.update : undefined}
+                              validate={(this.props.isUpdateBeforeOutcome || value.id == 'START' || value.id == 'SEND_FOR_APPROVAL') ? this.props.validate : undefined}
+                              update={(this.props.isUpdateBeforeOutcome || value.id == 'START' || value.id == 'SEND_FOR_APPROVAL') ? this.props.update : undefined}
                               setOpenedOutcomeModal={this.setOpenedOutcomeModal}
                               afterSendOnApprove={this.props.afterSendOnApprove}
                               commentRequiredOutcomes={this.props.commentRequiredOutcomes}

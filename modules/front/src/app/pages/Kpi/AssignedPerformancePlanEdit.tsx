@@ -289,7 +289,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const isForm2Visible = this.isNotDraft() && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR';
 
-    return (<div style={!isForm2Visible ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
+    const file = this.dataInstance.item && this.dataInstance.item.file ? this.dataInstance.item.file : undefined;
+
+    return (<div style={!isForm2Visible ? {display: 'none'} : {}}>
 
       <div className={"ant-row ant-form-item"} style={{marginBottom: "12px", marginTop: '40px'}}>
         {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "extraPoint"})}
@@ -326,16 +328,17 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         </Form.Item>
       </div>
 
-      {/*todo это не работает???????? animation exception*/}
-      {/*<ReadonlyField
+      <ReadonlyField
         formItemKey={"file"}
-        style={this.isUserManager ? {visibility: "hidden"} : {}}
         entityName={this.dataInstance.entityName}
         propertyName="file"
         form={this.props.form}
         disabled={!isExtraPointEnable}
+        getFieldDecoratorOpts={{
+          initialValue: file ? {id: file.id, name: file.name} : undefined
+        }}
         formItemOpts={{style: {marginBottom: "12px"}}}
-      />*/}
+      />
 
     </div>)
   }
@@ -640,7 +643,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
             status: (item!.status! as SerializedEntity<AbstractBprocRequest>)._instanceName,
             purpose: item!.purpose,
             extraPoint: item!.extraPoint,
-            file: {...item!.file},
+            file: item!.file,
           }
         };
         this.props.form.setFieldsValue(values);

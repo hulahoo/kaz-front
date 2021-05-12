@@ -295,6 +295,7 @@
   "validation.absenceRequest.absenceDays.balance": "The count of days in the request exceeds the balance of the vacation balance.",
   "warning.absenceRequest.daysBeforeAbsence.draft": "An application for this type of absence must be submitted {daysBeforeAbsence} days in advance. You have specified a shorter period.",
   "warning.absenceRequest.daysBeforeAbsence.onApproval": "Application submitted in less than {daysBeforeAbsence} days",
+  "validation.vacationScheduleRequest.startDate.start": "Vacation start date cannot be less than the current date",
   "bproc.participants": "Approval steps",
   "create.leavingVacationRequest": "Create a request to leave the vacation",
   "leavingVacationRequest": "Request to leave the vacation",
@@ -387,7 +388,7 @@
   "personalData": "Личные данные",
   "timeManagement": "Time management",
   "cityOfResidence": "City of residence",
-  "new.annual.days.not.correct": "Days not correct",
+  "new.annual.days.not.correct": "The duration of absence exceeds the allowable value",
   "create.request.change.vacation.dates": "Create a request to change vacation dates",
   "create.request.absence.for.recall": "Create a feedback request from vacation",
   "changeAbsenceDaysRequest": "Request to change vacation dates",
@@ -419,5 +420,6 @@
   "book.view": "View",
   "scheduleOffsetsRequest": "Schedule change request",
   "scheduleStandard": "Schedule offset",
+  "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\"",
   "scheduleOffsetRequest": "Schedule offset request"
 }

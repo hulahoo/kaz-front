@@ -37,7 +37,7 @@ export type PersonProfile = {
   positionName?: string,
   email?: string,
   phone?: string,
-  companyId?: string,
+  companyCode?: string,
 }
 
 export type MyTeamCardProps = {

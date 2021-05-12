@@ -1,12 +1,13 @@
 import * as React from "react";
+import {createElement} from "react";
 import {Alert, Card, Form} from "antd";
 import {inject, observer} from "mobx-react";
 import {CertificateRequestManagement} from "./CertificateRequestManagement";
 import {Redirect} from "react-router-dom";
-import {toJS} from "mobx";
+import {observable, toJS} from "mobx";
 import {FormattedMessage, injectIntl} from "react-intl";
 
-import {collection, injectMainStore, instance, MultilineText, withLocalizedForm} from "@cuba-platform/react";
+import {collection, injectMainStore, instance, Msg, MultilineText, withLocalizedForm} from "@cuba-platform/react";
 
 import "../../App.css";
 
@@ -24,6 +25,8 @@ import Section from "../../hoc/Section";
 import {withRouter} from "react-router";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
+import TextArea from "antd/es/input/TextArea";
+import {restServices} from "../../../cuba/services";
 
 type EditorProps = {
   entityId: string;
@@ -74,8 +77,13 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
 
     "language",
 
+    "placeOfDelivery",
+
     "certificateType"
   ];
+
+  @observable
+  isCompanyVcm = this.props.rootStore!.userInfo!.companyCode === 'VCM';
 
   getUpdateEntityData = (): any => {
     return {
@@ -153,7 +161,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   entityName={CertificateRequest.NAME}
                   propertyName="receivingType"
                   form={this.props.form}
-                  disabled={isNotDraft}
+                  disabled={isNotDraft || this.isCompanyVcm}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.receivingTypesDc}
                   getFieldDecoratorOpts={{
@@ -179,6 +187,15 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   }}
                 />
 
+                <Form.Item style={this.isCompanyVcm ? {marginBottom: "12px"} : {display: 'none'}}>
+                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "placeOfDelivery"})}
+                  {this.props.form.getFieldDecorator("placeOfDelivery")(
+                    <TextArea
+                      disabled={isNotDraft}
+                      rows={4}/>
+                  )}
+                </Form.Item>
+
                 <ReadonlyField
                   entityName={CertificateRequest.NAME}
                   propertyName="language"
@@ -199,7 +216,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                   propertyName="showSalary"
                   form={this.props.form}
                   disabled={isNotDraft}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  formItemOpts={{style: this.isCompanyVcm ? {display: 'none'} : {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     valuePropName: "checked"
                   }}
@@ -246,6 +263,21 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
       </Page>
     );
   }
+
+  protected initItem(request: CertificateRequest): void {
+    if (this.isCompanyVcm)
+      request.receivingType = this.receivingTypesDc.items.find(value => value.code == "ON_HAND") as DicReceivingType;
+
+    super.initItem(request);
+  }
+
+  onReactionDisposerEffect = (item: CertificateRequest | undefined) => {
+    if (item) {
+      restServices.employeeService.personProfile(item.personGroup!.id)
+        .then(value => this.isCompanyVcm = value.companyCode === 'VCM');
+    }
+  }
+
 }
 
 export default injectIntl(

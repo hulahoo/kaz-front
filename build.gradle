@@ -57,8 +57,8 @@ dependencies {
     appComponent("com.haulmont.fts:fts-global:$cubaVersion")
     appComponent("com.haulmont.charts:charts-global:$cubaVersion")
     appComponent('com.haulmont.addon.restapi:restapi-global:7.1.1')
-    appComponent('kz.uco.tsadv:tsadv-global:d72.1.0.160-SNAPSHOT')
-    appComponent('kz.uco.mobile:mob-global:d72.1.0.1-SNAPSHOT')
+    appComponent('kz.uco.tsadv:tsadv-global:2.0.371-SNAPSHOT')
+    appComponent('kz.uco.mobile:mob-global:0.16-SNAPSHOT')
 }
 
 def postgres = 'org.postgresql:postgresql:42.2.5'

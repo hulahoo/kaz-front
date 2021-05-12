@@ -35,6 +35,7 @@ import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
 import {EntitiesWithCount} from "@cuba-platform/rest";
 import DefaultDatePicker from "../../components/Datepicker";
+import {isNumber} from "../../util/util";
 
 type EditorProps = {
   entityId: string;
@@ -396,7 +397,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                       {
                         validator: (rule, value, callback) => {
                           const type = this.getSelectedAbsenceType();
-                          if (!type || !value) return callback();
+                          if (!type || !isNumber(value)) return callback();
                           if (type.isEcologicalAbsence && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
                           }
@@ -406,18 +407,18 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.weekendWork'}, {
                               weekendWork: this.remainingDaysWeekendWork
                             }));
-                          } else if (type.numDaysCalendarYear && (this.numDaysCalendarYear + value) >= type.numDaysCalendarYear) {
+                          } else if (isNumber(type.numDaysCalendarYear) && (this.numDaysCalendarYear + value) >= type.numDaysCalendarYear!) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.numDaysCalendarYear'}));
-                          } else if (type.maxDay && type.maxDay < value) {
+                          } else if (isNumber(type.maxDay) && type.maxDay! < value) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.maxDay'}, {
                               maxDay: type.maxDay
                             }));
-                          } else if (type.minDay) {
-                            if (type.minDay > value && !this.hasMinDayAbsence && this.isLaborLeave)
+                          } else if (isNumber(type.minDay)) {
+                            if (type.minDay! > value && !this.hasMinDayAbsence && this.isLaborLeave)
                               callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.minDay'}, {
                                 minDay: type.minDay
                               }));
-                            else if (type.minDay < value && (!this.isLaborLeave || this.hasMinDayAbsence))
+                            else if (type.minDay! < value && (!this.isLaborLeave || this.hasMinDayAbsence))
                               callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.has.minDay'}, {
                                 minDay: type.minDay
                               }));

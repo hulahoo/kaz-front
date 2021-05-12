@@ -342,6 +342,19 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
                 <ReadonlyField
                   entityName={InsuredPerson.NAME}
+                  propertyName="secondName"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.secondName']}),
+                    }]
+                  }}
+                />
+
+                <ReadonlyField
+                  entityName={InsuredPerson.NAME}
                   propertyName="firstName"
                   form={this.props.form}
                   formItemOpts={{style: field_style}}
@@ -353,18 +366,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                   }}
                 />
 
-                <ReadonlyField
-                  entityName={InsuredPerson.NAME}
-                  propertyName="secondName"
-                  form={this.props.form}
-                  formItemOpts={{style: field_style}}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.secondName']}),
-                    }]
-                  }}
-                />
                 <ReadonlyField
                   entityName={InsuredPerson.NAME}
                   propertyName="middleName"
