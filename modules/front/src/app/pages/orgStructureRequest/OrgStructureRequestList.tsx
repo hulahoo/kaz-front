@@ -43,14 +43,6 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
 
   fields = ["requestNumber", "requestDate", "company", "department", "author"];
 
-  state = {
-    rowId: null
-  }
-
-  setRowClassName = (record: OrgStructureRequest) => {
-    return record.id === this.state.rowId ? 'ant-table-row-selected' : '';
-  }
-
   render() {
     const buttons = [
       <Link
@@ -63,29 +55,7 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
           <Icon type="plus"/>
           <FormattedMessage id="management.browser.create"/>
         </Button>
-      </Link>,
-      <Link
-        to={OrgStructureRequestManagement.PATH + "/" + this.state.rowId}
-        key="edit">
-        <Button
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          disabled={!this.state.rowId}
-          type="default">
-          <Icon type="edit"/>
-          <FormattedMessage id="management.browser.edit"/>
-        </Button>
-      </Link>,
-      <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        disabled={!this.state.rowId}
-        onClick={this.deleteSelectedRow}
-        key="remove"
-        type="default">
-        <Icon type="delete"/>
-        <FormattedMessage id="management.browser.remove"/>
-      </Button>
+      </Link>
     ];
 
     return (
@@ -100,7 +70,6 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
             <Table dataSource={Array.from(this.dataCollection.items || '')}
                    pagination={false}
                    size="default" bordered={false} rowKey="id"
-                   rowClassName={this.setRowClassName}
                    onRow={(record) => {
                      return {
                        onClick: () => {
@@ -112,7 +81,14 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
                    }}>
               <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestNumber"}/>}
                       dataIndex={"requestNumber"}
-                      key={"requestNumber"}/>
+                      key={"requestNumber"}
+                      render={(text, record: OrgStructureRequest) => {
+                        return <Link
+                          to={OrgStructureRequestManagement.PATH + "/" + record.id}
+                          key="edit">
+                          {text}
+                        </Link>
+                      }}/>
               <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestDate"}/>}
                       dataIndex={"requestDate"}
                       key={"requestDate"}/>
@@ -174,10 +150,6 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
 
     return record;
   }
-
-  deleteSelectedRow = () => {
-    this.showDeletionDialog(this.getRecordById(this.state.rowId!));
-  };
 }
 
 const OrgStructureRequestList = injectIntl(OrgStructureRequestListComponent);

@@ -27,7 +27,7 @@ import FormContainer from "../../common/FormContainer";
 import TextArea from "antd/es/input/TextArea";
 import {ClickParam} from "antd/lib/menu";
 import OrganizationEditor from "./OrganizationEditor";
-import {restServices} from "../../../cuba/services";
+import {OrgStructureFilterParams, restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
 import {EnumValueInfo} from "@cuba-platform/rest/dist-browser/model";
 import PositionEditor from "./PositionEditor";
@@ -152,6 +152,20 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
 
   availableSalary: boolean = false;
 
+  fetchDataService = restServices.orgStructureService.getMergedOrgStructure.bind(null, {requestId: this.props.entityId});
+
+  @observable
+  changeTypeSelectedValue: string = 'all';
+
+  @observable
+  displaySelectedValue: string = 'all';
+
+  @observable
+  disabledChangeTypeSelect: boolean = false;
+
+  @observable
+  disabledDisplaySelect: boolean = false;
+
   @observable
   treeData: OrgRequestRow[];
 
@@ -196,38 +210,8 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
 
   reloadTreeData = () => {
     this.treeLoading = true;
-    restServices.orgStructureService.getMergedOrgStructure({requestId: this.props.entityId})
-      .then(loadedData => {
-        //console.log('loadedData: ', loadedData)
-        this.treeData = loadedData;
-      })
-      .catch(async (response: any) => {
-        const reader = response.response.body.getReader();
-        let receivedLength = 0;
-        let chunks = [];
-        while (true) {
-          const {done, value} = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          receivedLength += value.length;
-        }
-
-        let chunksAll = new Uint8Array(receivedLength);
-        let position = 0;
-        for (let chunk of chunks) {
-          chunksAll.set(chunk, position);
-          position += chunk.length;
-        }
-
-        let result = new TextDecoder("utf-8").decode(chunksAll);
-        const parse = JSON.parse(result);
-        Notification.error({message: parse.message});
-      })
-      .finally(() => {
-        this.treeLoading = false;
-        this.selectedRow = null;
-      });
-  }
+    this.fillTreeData(this.fetchDataService());
+  };
 
   getProperty = (propertyName: string, object: any) => {
     if (!object) return null;
@@ -240,7 +224,23 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     return property;
   }
 
-  onChangeFilter = (value: string, option: React.ReactElement<HTMLLIElement>) => {
+  onChangeTypeFilter = (propertyFilterName: string, value: string, option: React.ReactElement<HTMLLIElement>) => {
+    this.changeTypeSelectedValue = value;
+    if (value !== 'all') {
+      this.displaySelectedValue = this.props.intl.formatMessage({id: "org.request.filter.v1"});
+    }
+    this.disabledDisplaySelect = value !== 'all';
+
+    this.filterTable(propertyFilterName, value);
+  }
+
+  onChangeDisplayFilter = (propertyFilterName: string, value: string, option: React.ReactElement<HTMLLIElement>) => {
+    this.displaySelectedValue = value;
+    if (value !== 'all') {
+      this.changeTypeSelectedValue = this.props.intl.formatMessage({id: "org.request.filter.v1"})
+    }
+    this.disabledChangeTypeSelect = value !== 'all';
+    this.filterTable(propertyFilterName, value);
   }
 
   onChangeColumnFilter = (e: CheckboxChangeEvent) => {
@@ -565,10 +565,10 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                   <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.filter"})}</h3>
                   <Form layout="vertical" className="compact-form">
                     <Form.Item label={this.props.intl.formatMessage({id: "org.request.filter.1"})}>
-                      <Select onChange={this.onChangeFilter}
+                      <Select onChange={this.onChangeTypeFilter.bind(null, 'changeTypeFilter')}
                               defaultActiveFirstOption={true}
-                              defaultValue={"all"}
-                              disabled={isDisabledFields}
+                              value={this.changeTypeSelectedValue}
+                              disabled={this.disabledChangeTypeSelect}
                               filterOption={(input, option) =>
                                 (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
                               }>
@@ -581,8 +581,10 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                       </Select>
                     </Form.Item>
                     <Form.Item label={this.props.intl.formatMessage({id: "org.request.filter.2"})}>
-                      <Select onChange={this.onChangeFilter} defaultActiveFirstOption={true} defaultValue={"all"}
-                              disabled={isDisabledFields}>
+                      <Select onChange={this.onChangeDisplayFilter.bind(null, 'displayFilter')}
+                              defaultActiveFirstOption={true}
+                              value={this.displaySelectedValue}
+                              disabled={this.disabledDisplaySelect}>
                         <Select.Option
                           key="all">{this.props.intl.formatMessage({id: "org.request.filter.v1"})}</Select.Option>
                         <Select.Option
@@ -824,6 +826,49 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     }
     buttons.push(refreshButton);
     return buttons;
+  };
+
+  filterTable = (propertyFilterName: string, value: string) => {
+    this.fetchDataService = restServices.orgStructureService.getMergedOrgStructureFilter.bind(null, ({
+      requestId: this.props.entityId,
+      [propertyFilterName]: value.toUpperCase()
+    } as OrgStructureFilterParams));
+
+    this.treeLoading = true;
+    this.fillTreeData(this.fetchDataService());
+  };
+
+  fillTreeData = (fetchServiceResponse: Promise<Array<OrgRequestRow>>) => {
+    fetchServiceResponse.then(loadedData => {
+      //console.log('loadedData: ', loadedData)
+      this.treeData = loadedData;
+    })
+      .catch(async (response: any) => {
+        const reader = response.response.body.getReader();
+        let receivedLength = 0;
+        let chunks = [];
+        while (true) {
+          const {done, value} = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          receivedLength += value.length;
+        }
+
+        let chunksAll = new Uint8Array(receivedLength);
+        let position = 0;
+        for (let chunk of chunks) {
+          chunksAll.set(chunk, position);
+          position += chunk.length;
+        }
+
+        let result = new TextDecoder("utf-8").decode(chunksAll);
+        const parse = JSON.parse(result);
+        Notification.error({message: parse.message});
+      })
+      .finally(() => {
+        this.treeLoading = false;
+        this.selectedRow = null;
+      })
   }
 }
 

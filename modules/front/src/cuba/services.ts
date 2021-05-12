@@ -69,6 +69,10 @@ export type ScormInputData = {
   minScore: number;
 }
 
+export type OrgStructureFilterParams = {
+  requestId: string
+} & ({ changeTypeFilter: "ALL" | "NEW" | "EDIT" | "CLOSE" } | { displayFilter: "ALL" | "CHANGES" })
+
 export const restServices = {
   userMenuService: {
     getTimeZones: (params?: {}, fetchOpts?: FetchOptions) => {
@@ -614,6 +618,13 @@ export const restServices = {
         null
       ).then(r => JSON.parse(r));
     },
+    getMergedOrgStructureFilter: (param: OrgStructureFilterParams): Promise<Array<OrgRequestRow>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "getMergedOrgStructure",
+        {...param}
+      ).then(r => JSON.parse(r));
+    }
   },
   myTeamService: {
     getChildren: (param: { parentPositionGroupId: string, parent?: MyTeamNew }): Promise<Array<MyTeamNew>> => {
