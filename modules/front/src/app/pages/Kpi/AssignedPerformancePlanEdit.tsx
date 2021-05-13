@@ -130,10 +130,14 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         );
         return;
       }
+      const entityPatch = {
+        ...this.props.form.getFieldsValue(this.fields)
+      };
+      if (this.approverHrRoleCode === 'MANAGER') {
+        entityPatch['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
+      }
       this.dataInstance
-        .update({
-          ...this.props.form.getFieldsValue(this.fields)
-        })
+        .update(entityPatch)
         .then(() => {
           message.success(
             this.props.intl.formatMessage({id: "management.editor.success"})
