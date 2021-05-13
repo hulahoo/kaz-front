@@ -243,7 +243,10 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                 entityName={AssignedGoal.NAME}
                 propertyName="weight"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{
+                  style: {marginBottom: "12px"},
+                  label: this.props.intl.formatMessage({ id: "goal.weight" })
+                }}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,

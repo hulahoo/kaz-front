@@ -35,6 +35,8 @@ import SecurityStateAssignedGoal from "../SecurityStateAssignedGoal";
 import Input from "../../../components/Input/Input";
 import TextArea from "antd/es/input/TextArea";
 import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
+import {DicGoalCategory} from "../../../../cuba/entities/base/tsadv$DicGoalCategory";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -159,7 +161,14 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
     const goalId = option!.props["value"];
     const goal = this.goalsDc && this.goalsDc.items ? this.goalsDc.items.find(goal => goal.id === goalId) : undefined;
 
-    const successCriteria = goal ? goal.successCriteria : null;
+    const successCriteria = goal
+      ? this.props.mainStore!.locale === 'ru'
+        ? goal.successCriteria
+        : goal.successCriteriaLang3
+          ?
+          goal.successCriteriaLang3
+          : goal.successCriteria
+      : null;
 
     this.props.form.setFieldsValue({
       goalString: option.props["children"],
@@ -217,7 +226,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                     {this.goalLibrarysDc.items.map(gl => {
                       //@ts-ignore
                       return <Option value={gl.id}
-                                     category={gl.category!.id}>{gl._instanceName}</Option>
+                                     category={gl.category!.id}>{(gl.category! as SerializedEntity<DicGoalCategory>)._instanceName}</Option>
                     })}
                   </Select>
                 )}
@@ -264,7 +273,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                 )}
               </Form.Item>
 
-              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+              <Form.Item label={this.props.intl.formatMessage({id: "goal.weight"})}
                          key='weight'
                          style={{marginBottom: '12px'}} className={"button-actions-group"}>{
                 this.props.form.getFieldDecorator('weight', {

@@ -251,7 +251,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   commentValidator = (rule: any, value: any, callback: any) => {
     if (this.modalVisible && !value && this.props.isStartCommentVisible
       && this.props.commentRequiredOutcomes && this.props.commentRequiredOutcomes.find(outcome => outcome === 'START')) {
-      callback('Необходимо заполнить комментарий');
+      callback(this.props.intl.formatMessage({id: 'comment.required'}));
     }
     callback();
   };
