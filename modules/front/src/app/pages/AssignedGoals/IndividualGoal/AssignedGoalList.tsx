@@ -3,7 +3,7 @@ import {observer} from "mobx-react";
 
 import {action, IReactionDisposer, observable, reaction, runInAction, toJS} from "mobx";
 
-import {Button, Form, Icon, InputNumber, message, Modal, Table} from "antd";
+import {Button, Form, Icon, Input, InputNumber, message, Modal, Table} from "antd";
 
 import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 
@@ -24,6 +24,7 @@ import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
 import {ReactComponent as CascadeSvg} from "../../../../resources/icons/goal/cascade-goal.svg";
 import {ReactComponent as IndividualSvg} from "../../../../resources/icons/goal/individual-goal.svg";
 import {ReactComponent as LibrarySvg} from "../../../../resources/icons/goal/library-goal.svg";
+import TextArea from "antd/es/input/TextArea";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -137,6 +138,34 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
     callback();
   };
 
+  managerCommentRender = (text: string, record: any) => {
+    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const disabled = !this.isManager() || !isThirdStep;
+    return (
+      <div>
+        <Form.Item>
+          {
+            this.form.getFieldDecorator('managerComment/' + record.id, {
+              initialValue: record.managerComment,
+              rules: [{
+                required: true,
+                validator: (rule: any, value: any, callback: any) => {
+                  if (!value && !disabled) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.messages[AssignedGoal.NAME + '.' + 'managerComment']}));
+                  callback();
+                }
+              }]
+            })(
+              <TextArea disabled={disabled}
+                        style={{minWidth: 300}}
+                        onChange={event => {
+                          record.managerComment = event.currentTarget.value;
+                        }}/>
+            )}
+        </Form.Item>
+      </div>
+    )
+  }
+
   managerAssessmentColumnRender = (text: string, record: any) => {
     const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
     return (
@@ -158,6 +187,36 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                              record.result = record.managerAssessment || record.assessment;
                              this.recalcTotalResult();
                            }}/>
+            )}
+        </Form.Item>
+      </div>
+    )
+  }
+
+  employeeCommentRender = (text: string, record: any) => {
+    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const disabled = !this.isInitiator() || !isThirdStep;
+    // console.log(record);
+    console.log(record.employeeComment);
+    return (
+      <div>
+        <Form.Item>
+          {
+            this.form.getFieldDecorator('employeeComment/' + record.id, {
+              initialValue: record.employeeComment,
+              rules: [{
+                required: true,
+                validator: (rule: any, value: any, callback: any) => {
+                  if (!value && !disabled) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.messages[AssignedGoal.NAME + '.' + 'employeeComment']}));
+                  callback();
+                }
+              }],
+            })(
+              <Input.TextArea disabled={disabled}
+                              style={{minWidth: 300}}
+                              onChange={event => {
+                                record.employeeComment = event.currentTarget.value;
+                              }}/>
             )}
         </Form.Item>
       </div>
@@ -233,6 +292,13 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 render={this.assessmentColumnRender}/>
       : null;
 
+    const employeeCommentColumn = !isFirstStep && !isSecondStep
+      ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='employeeComment'/>}
+                dataIndex="employeeCommentColumn"
+                key="employeeCommentColumn"
+                render={this.employeeCommentRender}/>
+      : null;
+
     const managerAssessmentColumn = !isFirstStep && !isSecondStep && (!this.isInitiator() || !isDraft)
       ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='managerAssessment'/>}
                 dataIndex="managerAssessment"
@@ -240,11 +306,18 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 render={this.managerAssessmentColumnRender}/>
       : null;
 
+    const managerComment = !isFirstStep && !isSecondStep && (!this.isInitiator() || !isDraft)
+      ? <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='managerComment'/>}
+                dataIndex="managerComment"
+                key="managerComment"
+                render={this.managerCommentRender}/>
+      : null;
+
     return (
       <Table
         dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
         size="default" bordered={false} rowKey="id">
-        <Column key="category"
+        <Column key="category_icon"
                 render={((text, record: AssignedGoal, index) => {
                   const GoalTypeIcon = this.getGoalTypeIcon(record.goalType);
                   return GoalTypeIcon ? <GoalTypeIcon style={{width: '14px'}}/> : null
@@ -253,7 +326,6 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 dataIndex="category._instanceName"
                 key="category"
                 sorter={(a: AssignedGoal, b: AssignedGoal) => {
-                  console.log((a.category as SerializedEntity<DicGoalCategory>));
                   return (a.category as SerializedEntity<DicGoalCategory>)._instanceName!.localeCompare((b.category as SerializedEntity<DicGoalCategory>)._instanceName)
                 }}/>
         <Column title={<FormattedMessage id="goalForm.column.kpiName"/>}
@@ -304,7 +376,11 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
         {assessmentColumn}
 
+        {employeeCommentColumn}
+
         {managerAssessmentColumn}
+
+        {managerComment}
 
         <Column
           title=""

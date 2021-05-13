@@ -33,6 +33,8 @@ export class AssignedGoal extends AbstractParentEntity {
   goalLibrary?: GoalLibrary | null;
   assessment?: any | null;
   managerAssessment?: any | null;
+  employeeComment?: string | null;
+  managerComment?: string | null;
 }
 export type AssignedGoalViewName =
   | "_base"
@@ -117,6 +119,8 @@ export type AssignedGoalView<V extends AssignedGoalViewName> = V extends "_base"
       | "goal"
       | "goalLibrary"
       | "assignedByPersonGroup"
+      | "employeeComment"
+      | "managerComment"
     >
   : V extends "assignedGoal-view"
   ? Pick<
