@@ -5,6 +5,7 @@ import {MetaPropertyInfo} from "@cuba-platform/rest";
 import {formatDate} from "../../util/Date/Date";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {downloadFile} from "../../util/util";
+import {FormattedMessage} from "react-intl";
 
 export type ColumnRender<T> = {
   column: string,
@@ -19,7 +20,9 @@ interface DataTableFormatProps<E> extends DataTableProps<E> {
 export default class DataTableFormat<E> extends Component<DataTableFormatProps<E>> {
   render() {
     return (
-      <DataTable columnProps={{render: this.renderColumn}} {...this.props}/>
+      <DataTable
+        columnProps={{render: this.renderColumn}}
+        {...this.props}/>
     );
   }
 
@@ -44,13 +47,20 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
     const propertyInfo = this.getPropertyInfo(field);
     const isDate = propertyInfo && (propertyInfo.type === 'date' || propertyInfo.type === 'dateTime');
     const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
+    const isBoolean = propertyInfo && (propertyInfo.type === 'boolean');
 
+    if (isBoolean)
+      return this.renderBoolean(record[field])
     if (isDate)
       return formatDate(record[field]);
 
     if (isFile) return this.renderFile(record[field]);
 
     return text;
+  }
+
+  renderBoolean = (booleanValue?: boolean) => {
+    return <FormattedMessage id={booleanValue ? 'cubaReact.dataTable.yes' : 'cubaReact.dataTable.no'}/>;
   }
 
   renderFile = (file?: FileDescriptor) => {

@@ -207,7 +207,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Button>]
           } bordered={false}>
             <Section size={"large"}>
-              <Form.Item label={this.props.intl.formatMessage({id: "goalLibrary"})}
+              <Form.Item label={this.props.intl.formatMessage({ id: "goalLibrary" })}
                          key='goalLibrary'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goalLibrary', {

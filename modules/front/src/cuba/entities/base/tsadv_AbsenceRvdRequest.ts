@@ -2,16 +2,17 @@ import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicAbsenceType } from "./tsadv$DicAbsenceType";
 import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
+import {AbsPurposeSetting} from "./tsadv_AbsPurposeSetting";
 export class AbsenceRvdRequest extends AbstractBprocRequest {
   static NAME = "tsadv_AbsenceRvdRequest";
   personGroup?: PersonGroupExt | null;
   type?: DicAbsenceType | null;
-  purpose?: DicAbsencePurpose | null;
+  purpose?: DicAbsencePurpose| AbsPurposeSetting | null;
   purposeText?: string | null;
   timeOfStarting?: any | null;
   timeOfFinishing?: any | null;
   totalHours?: number | null;
-  compencation?: boolean | null;
+  compensation?: boolean | null;
   vacationDay?: boolean | null;
   acquainted?: boolean | null;
   agree?: boolean | null;
@@ -33,7 +34,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -51,7 +52,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -72,7 +73,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -95,7 +96,7 @@ export type AbsenceRvdRequestView<
       | "timeOfStarting"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"

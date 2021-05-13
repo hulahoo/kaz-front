@@ -32,4 +32,6 @@ export type AbsPurposeSettingView<
     >
   : V extends "_minimal"
   ? Pick<AbsPurposeSetting, "id" | "absenceType" | "absencePurpose">
+  : V extends "absPurposeSetting-absence"
+  ? Pick<AbsPurposeSetting, "id" | "absenceType" | "absencePurpose">
   : never;

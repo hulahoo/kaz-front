@@ -73,18 +73,28 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       })
         .then(value => {
           this.bprocRolesDefiner = value;
-          restServices.startBprocService.getNotPersisitBprocActors({
+
+          catchException(restServices.startBprocService.getNotPersisitBprocActors({
             employee: this.props.employee ? this.props.employee() || null : null,
             initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
             bpmRolesDefiner: value
           }).then(notPersisitBprocActors => {
             this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
+          })).catch((reason: Error) => {
+            this.handleCancel();
+            Notification.error({
+              message: reason.message
+            });
           })
+
         })
     )
-      .catch(reason => Notification.error({
-        message: reason
-      }));
+      .catch((reason: Error) => {
+        this.handleCancel();
+        Notification.error({
+          message: reason.message
+        });
+      });
 
     this.props.validate().then((isValid) => {
       if (isValid) {
@@ -101,19 +111,6 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
         }
       }
     })
-
-
-    /*if (this.bprocActorMessage) {
-      Notification.error({
-        message: this.bprocActorMessage
-      });
-      return;
-    }
-    this.props.validate().then((isValid) => {
-      if (isValid) {
-        this.modalVisible = true;
-      }
-    });*/
   };
 
   handleOk = (e: any) => {
@@ -188,7 +185,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
   };
 
-  handleCancel = (e: any) => {
+  handleCancel = (e?: any) => {
     this.modalVisible = false;
   };
 
