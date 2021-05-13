@@ -264,6 +264,9 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
       let formData = this.props.form.getFieldsValue(this.fields);
       formData.requestDate = moment(formData.requstDate).format('YYYY-MM-DD HH:mm:ss.SSS');
       formData.modifyDate = moment(formData.modifyDate).format('YYYY-MM-DD HH:mm:ss.SSS');
+      if (!this.isNewEntity()) {
+        formData.id = this.props.entityId;
+      }
 
       //console.log(formData)
 
@@ -668,7 +671,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
               </Col>
             </Row>
           </div>
-          {this.props.entityId != OrgStructureRequestManagement.NEW_SUBPATH ?
+          {!this.isNewEntity() ?
             <div className={"large-section section-container"}>
               <div>
                 {this.tableButtons()}
@@ -713,16 +716,16 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
   }
 
   loadData = () => {
-    if (this.props.entityId !== OrgStructureRequestManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
-
-      this.reloadTreeData();
-    } else {
+    if (this.isNewEntity()) {
       restServices.orgStructureService.initialCreate()
         .then(data => {
           delete data.id;
           this.dataInstance.setItem(data);
         });
+    } else {
+      this.dataInstance.load(this.props.entityId);
+
+      this.reloadTreeData();
     }
   };
 
@@ -869,6 +872,10 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
         this.treeLoading = false;
         this.selectedRow = null;
       })
+  }
+
+  isNewEntity = () => {
+    return this.props.entityId === OrgStructureRequestManagement.NEW_SUBPATH;
   }
 }
 
