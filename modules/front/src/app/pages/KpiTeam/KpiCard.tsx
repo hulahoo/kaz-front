@@ -69,7 +69,7 @@ class KpiCard extends React.Component<KpiCardProps & MainStoreInjected & Wrapped
       <Table dataSource={this.dataCollection.items}
              size="default" bordered={false}
              rowKey="id">
-        <Column title={<Msg entityName={AssignedPerformancePlan.NAME} propertyName={"performancePlan"}/>}
+        <Column title={this.props.intl.formatMessage({ id: "performancePlan" })}
                 dataIndex={"performancePlan"}
                 key={"performancePlan"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
           return <Link

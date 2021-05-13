@@ -70,7 +70,7 @@ class AssignedPerformancePlanListComponent extends React.Component<MainStoreInje
         <Section visible={false} size={"large"}>
           <Table dataSource={this.dataCollection.items} pagination={false}
                  size="default" bordered={false} rowKey="id">
-            <Column title={<Msg entityName={AssignedPerformancePlan.NAME} propertyName={"performancePlan"}/>}
+            <Column title={this.props.intl.formatMessage({id: "performancePlan"})}
                     dataIndex={"performancePlan"}
                     key={"performancePlan"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
               return <Link
