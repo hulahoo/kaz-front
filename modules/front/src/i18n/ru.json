@@ -405,5 +405,6 @@
   "scheduleOffsetsRequest": "Заявка на смену графика",
   "scheduleStandard": "Графики смен",
   "for.approving.must.to.check.field": "Для утверждения необходимо поставить галочку «{fieldName}»",
-  "scheduleOffsetRequest": "Заявки на изменения графика смен"
+  "scheduleOffsetRequest": "Заявки на изменения графика смен",
+  "withholding.statement": "Заявление на удержание"
 }

@@ -417,5 +417,6 @@
   "scheduleOffsetsRequest": "Schedule change request",
   "scheduleStandard": "Schedule offset",
   "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\"",
-  "scheduleOffsetRequest": "Schedule offset request"
+  "scheduleOffsetRequest": "Schedule offset request",
+  "withholding.statement": "Withholding statement"
 }

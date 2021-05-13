@@ -57,7 +57,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     view: "insuredPerson-editView",
     loadImmediately: false
   });
-  /*  */
+
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
     sort: "-updateTs"
@@ -121,8 +121,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     "exclusionDate",
 
-    "comment",
-
     "statusRequest",
 
     "company",
@@ -141,11 +139,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     "addressType",
 
-    "file",
-
     "statementFile",
-
-    "insuredPersonId"
   ];
 
   @observable
@@ -213,7 +207,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
         });
     });
   };
-
 
   showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
     Modal.confirm({
@@ -544,12 +537,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
               entityName={InsuredPerson.NAME}
               propertyName="statementFile"
               form={this.props.form}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.statementFile']}),
-                }]
-              }}
             />
 
             {this.globalErrors.length > 0 && (
@@ -580,8 +567,9 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
       () => {
         return this.dataInstance.item;
       },
-      () => {
-        this.props.form.setFieldsValue(this.dataInstance.getFieldValues(this.fields));
+      (item) => {
+        if (this.props.visible)
+          this.props.form.setFieldsValue(this.dataInstance.getFieldValues(this.fields));
       }
     );
   }
@@ -590,7 +578,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     this.reactionDisposer();
   }
 }
-
 
 export default injectIntl(
   withLocalizedForm<EditorProps & EditorHandlers>({
@@ -604,17 +591,17 @@ export default injectIntl(
           }
         });
 
-        const bithDate = props.form.getFieldsValue(["birthdate"]);
-        const relative = props.form.getFieldsValue(["relative"]);
-        if (bithDate && relative && (fieldName == 'birthdate' || fieldName == 'relative'))
-          restServices.documentService.calcAmount({
-            personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
-            insuranceContractId: props.insuranceContract(),
-            bith: bithDate["birthdate"],
-            relativeTypeId: relative["relative"],
-          }).then(val => {
-            props.form.setFieldsValue({amount: val});
-          });
+        // const bithDate = props.form.getFieldsValue(["birthdate"]);
+        // const relative = props.form.getFieldsValue(["relative"]);
+        // if (bithDate && relative && (fieldName == 'birthdate' || fieldName == 'relative'))
+        //   restServices.documentService.calcAmount({
+        //     personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
+        //     insuranceContractId: props.insuranceContract(),
+        //     bith: bithDate["birthdate"],
+        //     relativeTypeId: relative["relative"],
+        //   }).then(val => {
+        //     props.form.setFieldsValue({amount: val});
+        //   });
 
       });
     }

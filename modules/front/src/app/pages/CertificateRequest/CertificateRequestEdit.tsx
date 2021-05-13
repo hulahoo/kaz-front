@@ -83,7 +83,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
   ];
 
   @observable
-  isCompanyVcm = this.props.rootStore!.userInfo!.companyCode !== 'VCM';
+  isCompanyVcm = this.props.rootStore!.userInfo!.companyCode === 'VCM';
 
   getUpdateEntityData = (): any => {
     return {

@@ -29,10 +29,3 @@ function flattenRoutes(
 export function getRouteList() {
   return flattenRoutes(rootStore.menu.menuList);
 }
-
-menuItems.push({
-  pathPattern: "/absenceRvdRequestManagement/:entityId?",
-  menuLink: "/absenceRvdRequestManagement",
-  component: AbsenceRvdRequestManagement,
-  caption: "AbsenceRvdRequestManagement"
-});

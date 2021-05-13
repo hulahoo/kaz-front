@@ -437,16 +437,14 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
                 {this.rescheduleFields(isNotDraft)}
 
-                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                <Form.Item>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
-                  <Form.Item>
-                    {getFieldDecorator("comment")(
-                      <TextArea
-                        disabled={isNotDraft}
-                        rows={4}/>
-                    )}
-                  </Form.Item>
-                </div>
+                  {getFieldDecorator("comment")(
+                    <TextArea
+                      disabled={isNotDraft}
+                      rows={4}/>
+                  )}
+                </Form.Item>
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
