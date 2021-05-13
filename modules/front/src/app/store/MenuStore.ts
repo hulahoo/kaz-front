@@ -35,20 +35,20 @@ export default class MenuStore {
       //   pathPattern: "/my-profile",
       //   component: null
       // },
-      {
-        id: "my-team",
-        caption: "Моя команда",
-        menuLink: "/my-team",
-        pathPattern: "/my-team",
-        component: null
-      },
-      {
-        id: "absence",
-        caption: "Absence",
-        menuLink: "/absence",
-        pathPattern: "/absence",
-        component: AbsenceList
-      },
+      // {
+      //   id: "my-team",
+      //   caption: "Моя команда",
+      //   menuLink: "/my-team",
+      //   pathPattern: "/my-team",
+      //   component: null
+      // },
+      // {
+      //   id: "absence",
+      //   caption: "Absence",
+      //   menuLink: "/absence",
+      //   pathPattern: "/absence",
+      //   component: AbsenceList
+      // },
       {
         id: "dmc-my",
         caption: "Мои ДМС",
