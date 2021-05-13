@@ -257,7 +257,6 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                 </Form.Item>
               </Form>
             </Card>
-
           </div>
         </Section>
       </Page>

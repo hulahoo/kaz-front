@@ -277,6 +277,7 @@
   "validation.absenceRequest.dateFrom": "\"Дата с\" обязательна и не может быть больше чем \"Дата по\"",
   "validation.absenceRequest.dateFrom.start": "Начало отсутствия должно быть больше чем дата заявки",
   "validation.absenceRequest.dateTo": "\"Дата по\" обязательна и не может быть меньше чем \"Дата с\"",
+  "validation.compare.date": "{endDate} может быть меньше чем {startDate}",
   "validation.absenceRequest.absenceDays.maxDay": "Длительность данного типа отсутствия не должна превышать {maxDay}. Укажите другой период.",
   "validation.absenceRequest.absenceDays.minDay": "Одна из частей отпуска должна быть не менее {minDay} дней. Измените даты отпуска в заявке",
   "validation.absenceRequest.absenceDays.has.minDay": "Длительность данного типа отсутствия согласно ТР РК может составлять не менее {minDay}.",
