@@ -44,7 +44,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
 
   fields = [
     "createTs",
-    "name" + this.language.charAt(0).toUpperCase() + this.language.slice(1),
+    "name",
     "status"
   ];
 

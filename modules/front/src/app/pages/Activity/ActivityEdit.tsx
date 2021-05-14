@@ -64,9 +64,6 @@ class ActivityEdit extends React.Component<EditorProps & WrappedComponentProps &
     if (item && item.type && item.type.code !== "NOTIFICATION" && item.type.windowProperty)
       return <Redirect to={link(item.type.windowProperty!.entityName!) + "/" + item.referenceId}/>
 
-    const notificationHeader = this.props.rootStore!.userInfo.language === "ru" ? item.notificationHeaderRu : item.notificationHeaderEn;
-    const notificationBody = this.props.rootStore!.userInfo.language === "ru" ? item.notificationBodyRu : item.notificationBodyEn;
-
     const buttons = [
       <Button
         onClick={this.updateAndClose}
@@ -88,13 +85,13 @@ class ActivityEdit extends React.Component<EditorProps & WrappedComponentProps &
             <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
               <Section size="large"
                        sectionName={<Msg entityName={this.dataInstance.entityName} propertyName="notificationHeader"/>}>
-                <div dangerouslySetInnerHTML={{__html: (notificationHeader ? notificationHeader : "") as string}}/>
+                <div dangerouslySetInnerHTML={{__html: (item.notificationHeader) as string}}/>
               </Section>
             </div>
 
             <Section size="large"
                      sectionName={this.props.intl.formatMessage({id: "notification.body.section"})}>
-              <div dangerouslySetInnerHTML={{__html: (notificationBody ? notificationBody : "") as string}}/>
+              <div dangerouslySetInnerHTML={{__html: (item.notificationBody) as string}}/>
             </Section>
           </Card>
         </div>
