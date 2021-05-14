@@ -190,7 +190,7 @@
   "goal.create": "Создание цели",
   "form.validation.required": "Поле {fieldName} является обязательным.",
   "form.validation.number.min": "Значение поля {fieldName} не должно быть менее {value}.",
-  "employeeInfo": "Информация о сотруднике",
+  "employeeInfo": "Информация о работнике",
   "addKpi": "Добавить KPI",
   "newGoal": "Новый KPI",
   "fromLibrary": "Библиотека",
