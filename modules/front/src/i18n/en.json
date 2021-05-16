@@ -425,5 +425,7 @@
   "for.approving.must.to.check.field": "For approving must to check \"{fieldName}\"",
   "scheduleOffsetRequest": "Schedule offset request",
   "withholding.statement": "Withholding statement",
-  "comment.required": "Fill in comments"
+  "comment.required": "Fill in comments",
+  "endDate": "End date",
+  "startDate": "Start date"
 }

@@ -413,5 +413,7 @@
   "for.approving.must.to.check.field": "Для утверждения необходимо поставить галочку «{fieldName}»",
   "scheduleOffsetRequest": "Заявки на изменения графика смен",
   "withholding.statement": "Заявление на удержание",
-  "comment.required": "Необходимо заполнить комментарий"
+  "comment.required": "Необходимо заполнить комментарий",
+  "endDate": "Дата окончания",
+  "startDate": "Дата создания"
 }
