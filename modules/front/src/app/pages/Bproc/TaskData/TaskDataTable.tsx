@@ -7,7 +7,7 @@ import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import Candidate from "../component/Candidate";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {DEFAULT_DATE_PATTERN, formatDate} from "../../../util/Date/Date";
 
 type TaskProps = {
@@ -42,7 +42,7 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 render={(text, record) =>
                   (<Candidate candidates={((record as ExtTaskData).assigneeOrCandidates as TsadvUser[] | null)}/>)
                 }/>
-        <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='createTime'/>}
+        <Column title={<FormattedMessage id="createDate"/>}
                 dataIndex="createTime"
                 key="createTime"
                 ellipsis
@@ -50,7 +50,7 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                   return <div
                     className="break-words">{formatDate((record as ExtTaskData).createTime!, DEFAULT_DATE_PATTERN)}</div>;
                 }}/>
-        <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='endTime'/>}
+        <Column title={<FormattedMessage id="endDate"/>}
                 dataIndex="endTime"
                 ellipsis
                 key="endTime"
