@@ -399,10 +399,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                           const type = this.getSelectedAbsenceType();
                           if (!type || !isNumber(value)) return callback();
                           if (type.isEcologicalAbsence && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
-                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                            callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           }
                           if (this.isLaborLeave && (this.absenceBalance + (type.daysAdvance || 0) < value)) {
-                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                            callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           } else if (this.isCheckWork && this.remainingDaysWeekendWork < value) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.weekendWork'}, {
                               weekendWork: this.remainingDaysWeekendWork
