@@ -444,7 +444,7 @@ export const restServices = {
     },
   },
   absenceRvdService: {
-    countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+    countTotalHours: (param: { dateFrom: any, dateTo: any, absenceTypeId: string, personGroupId: string }): Promise<any> => {
       return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceRvdService",
         "countTotalHours",

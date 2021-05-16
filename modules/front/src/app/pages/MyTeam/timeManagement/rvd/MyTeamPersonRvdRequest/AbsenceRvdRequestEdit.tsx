@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement} from "react";
-import {Card, Form, Input} from "antd";
+import {Card, Form, Input, TimePicker} from "antd";
 import {inject, observer} from "mobx-react";
 import {AbsenceRvdRequestManagement} from "./AbsenceRvdRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -107,6 +107,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   @observable
   overtimeWork = true;
 
+  timeStarting?: moment.Moment; //only time
+  timeFinishing?: moment.Moment; //only time
+
   purposeTempDc = collection<DicPurposeAbsence>(DicPurposeAbsence.NAME, {
     filter: {
       conditions: [{
@@ -211,7 +214,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     };
     return {
       personGroup: {
-        id: this.props.personGroupId
+        id: this.personGroupId
       },
       ...this.props.form.getFieldsValue(this.fields),
       timeOfStarting: (this.props.form.getFieldValue('timeOfStarting') as moment.Moment).format(JSON_DATE_TIME_FORMAT),
@@ -245,6 +248,16 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     }
     return new Promise(resolve => resolve(true));
   };
+
+  setTime = (time?: moment.Moment, dateTime?: moment.Moment) => {
+    if (time && dateTime)
+      dateTime.set({
+        hour: time.get("hour"),
+        minute: time.get("minute"),
+        second: time.get("second"),
+        millisecond: 0
+      });
+  }
 
   render() {
     if (this.updated) {
@@ -347,67 +360,130 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
               {this.purposeText(this.isPurposeText)}
 
-              <Form.Item>
-                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "timeOfStarting"})}
-                <br/>
-                {getFieldDecorator("timeOfStarting", {
-                  rules: [{
-                    required: true,
-                    validator: (rule, value, callback) => {
-                      if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.timeOfStarting']}));
-                      const timeOfFinishing = this.props.form.getFieldValue('timeOfFinishing');
-                      if (!timeOfFinishing) return callback();
-                      if (value > timeOfFinishing)
-                        return callback(this.props.intl.formatMessage({id: 'validation.compare.date'},
-                          {
-                            startDate: messages[this.dataInstance.entityName + '.timeOfStarting'],
-                            endDate: messages[this.dataInstance.entityName + '.timeOfFinishing']
-                          }));
-                      return callback();
-                    }
-                  }],
-                  getValueFromEvent: args => {
-                    this.calcHours(null, args, null);
-                    this.props.form.validateFields(['timeOfStarting', 'timeOfFinishing'], {force: true});
-                    return args
-                  }
-                })(
-                  <DefaultDatePicker
-                    disabled={isNotDraft}
-                    showTime/>
-                )}
-              </Form.Item>
+              <div>
+                <div style={{display: 'flex'}}>
+                  <Form.Item label={createElement(Msg, {
+                    entityName: this.dataInstance.entityName,
+                    propertyName: "timeOfStarting"
+                  })}>
+                    {getFieldDecorator("timeOfStarting", {
+                      rules: [{
+                        required: true,
+                        validator: (rule, value, callback) => {
+                          if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.timeOfStarting']}));
+                          this.props.form.validateFields(['timeOfFinishing', 'timeStarting'], {force: true});
+                          return callback();
+                        }
+                      }],
+                      getValueFromEvent: args => {
+                        this.setTime(this.timeStarting, args);
+                        this.calcHours(null, args, null);
+                        return args
+                      }
+                    })(
+                      <DefaultDatePicker
+                        disabled={isNotDraft}/>
+                    )}
+                  </Form.Item>
 
-              <Form.Item>
-                {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "timeOfFinishing"})}
-                <br/>
-                {getFieldDecorator("timeOfFinishing", {
-                  rules: [{
-                    required: true,
-                    validator: (rule, value, callback) => {
-                      if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.timeOfFinishing']}));
-                      const timeOfStarting = this.props.form.getFieldValue('timeOfStarting');
-                      if (!timeOfStarting) return callback();
-                      if (timeOfStarting > value)
-                        return callback(this.props.intl.formatMessage({id: 'validation.compare.date'},
-                          {
-                            startDate: messages[this.dataInstance.entityName + '.timeOfStarting'],
-                            endDate: messages[this.dataInstance.entityName + '.timeOfFinishing']
-                          }));
-                      return callback();
-                    }
-                  }],
-                  getValueFromEvent: args => {
-                    this.calcHours(null, null, args);
-                    this.props.form.validateFields(['timeOfStarting', 'timeOfFinishing'], {force: true});
-                    return args
-                  }
-                })(
-                  <DefaultDatePicker
-                    disabled={isNotDraft}
-                    showTime/>
-                )}
-              </Form.Item>
+                  <div style={{position: 'absolute', paddingLeft: 170}}>
+                    <Form.Item label={''} style={{paddingTop: 17}}>
+                      {getFieldDecorator("timeStarting", {
+                        rules: [{
+                          required: true,
+                          message: <div
+                            style={{marginLeft: -170}}>{this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.timeOfStarting']})}</div>
+                        }],
+                        initialValue: this.dataInstance.item && this.dataInstance.item.timeOfStarting ? moment(this.dataInstance.item.timeOfStarting) : undefined,
+                        getValueFromEvent: time => {
+                          if (time) {
+                            const timeOfStarting = this.props.form.getFieldValue('timeOfStarting') as moment.Moment;
+                            this.timeStarting = time;
+
+                            this.setTime(time, timeOfStarting);
+
+                            this.calcHours(null, null, null);
+
+                            this.props.form.validateFields(['timeOfStarting'], {force: true});
+                          }
+                          return time;
+                        }
+                      })(
+                        <TimePicker
+                          disabled={isNotDraft}/>
+                      )}
+                    </Form.Item>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div style={{display: 'flex'}}>
+                  <Form.Item label={createElement(Msg, {
+                    entityName: this.dataInstance.entityName,
+                    propertyName: "timeOfFinishing"
+                  })}>
+                    {getFieldDecorator("timeOfFinishing", {
+                      rules: [{
+                        required: true,
+                        validator: (rule, value, callback) => {
+                          if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.timeOfFinishing']}));
+
+                          this.props.form.validateFields(['timeFinishing'], {force: true});
+                          const timeFinishing = this.props.form.getFieldValue('timeFinishing');
+                          const timeOfStarting = this.props.form.getFieldValue('timeOfStarting');
+
+                          if (!timeOfStarting || !timeFinishing) return callback();
+                          if (timeOfStarting > value)
+                            return callback(this.props.intl.formatMessage({id: 'validation.compare.date'},
+                              {
+                                startDate: messages[this.dataInstance.entityName + '.timeOfStarting'],
+                                endDate: messages[this.dataInstance.entityName + '.timeOfFinishing']
+                              }));
+                          return callback();
+                        }
+                      }],
+                      getValueFromEvent: args => {
+                        this.setTime(this.timeFinishing, args);
+                        this.calcHours(null, null, args);
+                        return args
+                      }
+                    })(
+                      <DefaultDatePicker
+                        disabled={isNotDraft}/>
+                    )}
+                  </Form.Item>
+
+                  <div style={{position: 'absolute', paddingLeft: 170}}>
+                    <Form.Item label={''} style={{paddingTop: 17}}>
+                      {getFieldDecorator("timeFinishing", {
+                        rules: [{
+                          required: true,
+                          message: <div
+                            style={{marginLeft: -170}}>{this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.timeOfFinishing']})}</div>
+                        }],
+                        initialValue: this.dataInstance.item && this.dataInstance.item.timeOfFinishing ? moment(this.dataInstance.item.timeOfFinishing) : undefined,
+                        getValueFromEvent: time => {
+                          if (time) {
+                            const timeOfStarting = this.props.form.getFieldValue('timeOfFinishing') as moment.Moment;
+                            this.timeFinishing = time;
+
+                            this.setTime(time, timeOfStarting);
+
+                            this.calcHours(null, null, null);
+
+                            this.props.form.validateFields(['timeOfFinishing'], {force: true});
+                          }
+                          return time;
+                        }
+                      })(
+                        <TimePicker
+                          disabled={isNotDraft}/>
+                      )}
+                    </Form.Item>
+                  </div>
+                </div>
+              </div>
 
               <ReadonlyField
                 entityName={AbsenceRvdRequest.NAME}
@@ -524,11 +600,12 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     dateFrom = dateFrom || this.props.form.getFieldValue(`timeOfStarting`);
     dateTo = dateTo || this.props.form.getFieldValue(`timeOfFinishing`);
     const personGroupId = this.personGroupId;
+    console.log(type, dateTo, dateFrom, personGroupId);
 
     if (type && dateTo && dateFrom && personGroupId) {
       restServices.absenceRvdService.countTotalHours({
-        dateFrom: dateFrom,
-        dateTo: dateTo,
+        dateFrom: dateFrom.format(JSON_DATE_TIME_FORMAT),
+        dateTo: dateTo.format(JSON_DATE_TIME_FORMAT),
         absenceTypeId: type,
         personGroupId: personGroupId
       }).then(value => {

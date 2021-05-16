@@ -108,7 +108,6 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
     if (this.isNotDraft())
       return json
 
-    json['employee'] = this.absence!.personGroup!.id;
     json['vacation'] = this.absence;
     json['absenceType'] = this.absence!.type;
     json['employee'] = this.absence!.personGroup!.id;
