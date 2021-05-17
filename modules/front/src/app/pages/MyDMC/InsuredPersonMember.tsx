@@ -591,17 +591,17 @@ export default injectIntl(
           }
         });
 
-        // const bithDate = props.form.getFieldsValue(["birthdate"]);
-        // const relative = props.form.getFieldsValue(["relative"]);
-        // if (bithDate && relative && (fieldName == 'birthdate' || fieldName == 'relative'))
-        //   restServices.documentService.calcAmount({
-        //     personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
-        //     insuranceContractId: props.insuranceContract(),
-        //     bith: bithDate["birthdate"],
-        //     relativeTypeId: relative["relative"],
-        //   }).then(val => {
-        //     props.form.setFieldsValue({amount: val});
-        //   });
+        const bithDate = props.form.getFieldsValue(["birthdate"]);
+        const relative = props.form.getFieldsValue(["relative"]);
+        if (bithDate && relative && (fieldName == 'birthdate' || fieldName == 'relative'))
+          restServices.documentService.calcAmount({
+            personGroupExtId: props.form.getFieldsValue(["employee"])["employee"],
+            insuranceContractId: props.insuranceContract(),
+            bith: bithDate["birthdate"],
+            relativeTypeId: relative["relative"],
+          }).then(val => {
+            props.form.setFieldsValue({amount: val});
+          });
 
       });
     }

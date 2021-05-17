@@ -158,7 +158,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
   };
 
   componentDidMount(): void {
-    restServices.documentService.getMyInsuraces({}).then(val => {
+    restServices.documentService.getMyInsuraces().then(val => {
       this.items = val;
       this.setState(this.items = val);
     })

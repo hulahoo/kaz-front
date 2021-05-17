@@ -8,7 +8,7 @@ import {Link, Redirect, withRouter} from "react-router-dom";
 import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
-import {downloadFile} from "../../util/util";
+import {catchException, downloadFile} from "../../util/util";
 
 import {
   clearFieldErrors,
@@ -17,6 +17,7 @@ import {
   extractServerValidationErrors,
   FileUpload,
   injectMainStore,
+  instance,
   MainStoreInjected,
   MultilineText,
   withLocalizedForm
@@ -41,12 +42,12 @@ import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
-import {instanceStore} from "../../util/InstanceStore";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import {DicAddressType} from "../../../cuba/entities/base/tsadv$DicAddressType";
 import DataTableFormat from "../../components/DataTable/intex";
 import {collectionWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
 import InsuredPersonMemberComponent from "./InsuredPersonMember";
+import Notification from "../../util/Notification/Notification";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -63,11 +64,10 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
   @observable
   visible: boolean = false;
 
-  dataInstance = instanceStore<InsuredPerson>(InsuredPerson.NAME, {
-      view: "insuredPerson-editView",
-      loadImmediately: false
-    },
-    restServices.documentService.commitFromPortal);
+  dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
+    view: "insuredPerson-editView",
+    loadImmediately: false
+  });
 
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
@@ -309,6 +309,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
           this.props.form.setFieldsValue({insuranceProgram: insuranceContract.insuranceProgram})
         });
     }
+
+    this.initPersonMembers(insuranceContractId);
   }
 
   render() {
@@ -594,14 +596,14 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  }}
                   />
 
-                  <Form.Item style={field_style}>
-                    <FormattedMessage id={'withholding.statement'}/>
+                  <Form.Item style={field_style}
+                             label={<FormattedMessage id={'withholding.statement'}/>}>
                     {this.props.form.getFieldDecorator("statementFile", {
                       initialValue: this.dataInstance.item && this.dataInstance.item.statementFile ? {
                         id: this.dataInstance.item.statementFile.id,
                         name: this.dataInstance.item.statementFile.name
                       } : undefined
-                    })(<FileUpload disabled={isMemberAttach}/>)}
+                    })(<FileUpload/>)}
                   </Form.Item>
 
                   <ReadonlyField disabled={isMemberAttach}
@@ -683,21 +685,40 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     );
   }
 
-  refreshDs = () => {
+  calcTotalAmount = () => {
     restServices.documentService.calcTotalAmount({
       insuredPersonId: this.props.entityId
     }).then(value => {
       if (this.dataInstance.item!)
         this.props.form.setFieldsValue({totalAmount: value});
     })
+  }
 
-    restServices.documentService.getInsuredPersonMembers({
-      insuredPersonId: this.props!.entityId!
-    }).then(value => {
-      this.familyDataCollection.clear();
-      // @ts-ignore
-      this.familyDataCollection.items = Array.from(value);
-    })
+  initPersonMembers = (insuranceContractId?: string) => {
+    const contractId = insuranceContractId || this.props.form.getFieldValue('insuranceContract')
+      || (this.dataInstance.item && this.dataInstance.item.insuranceContract ? this.dataInstance.item!.insuranceContract.id : undefined);
+    if (contractId)
+      restServices.documentService.getInsuredPersonMembersWithNewContract({
+        insuredPersonId: this.props!.entityId!,
+        contractId: contractId
+      }).then(value => {
+        this.familyDataCollection.clear();
+
+        // @ts-ignore
+        this.familyDataCollection.items = Array.from(value);
+
+        const totalAmount = this.familyDataCollection.items.map(item => item.amount)
+          .filter(item => item)
+          .map(item => parseFloat(item))
+          .reduce((i1, i2) => i1 + i2, 0);
+
+        this.props.form.setFieldsValue({totalAmount: totalAmount})
+      })
+  }
+
+  refreshDs = () => {
+    // this.calcTotalAmount();
+    this.initPersonMembers();
   }
 
   subscribeMemberToMIC = () => {
@@ -737,11 +758,16 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       this.dataInstance.load(this.props.entityId);
       this.refreshDs();
     } else {
-      restServices.documentService.getInsuredPerson({
+      catchException(restServices.documentService.getInsuredPerson({
         type: "Employee",
       }).then(value => {
         value.id = undefined;
         this.dataInstance.setItem(value);
+      })).catch(value => {
+        Notification.error({
+          message: value.message
+        });
+        this.props.history!.goBack();
       });
     }
     this.reactionDisposer = reaction(
@@ -749,6 +775,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         return this.dataInstance.item;
       },
       (item) => {
+
+        this.initPersonMembers();
 
         const afterInsuranceContract = () => {
           if (item && item.insuranceContract) this.onChangeInsuranceContract(item.insuranceContract.id)
@@ -759,18 +787,32 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
         restServices.portalHelperService.companiesForLoadDictionary({personGroupId: personGroupId as string})
           .then(value => {
-            this.insuranceContractsDc = collectionWithAfterLoad<InsuranceContract>(InsuranceContract.NAME,
-              afterInsuranceContract,
-              {
-                view: "insuranceContract-editView",
-                filter: {
-                  conditions: [{
-                    property: "company.id",
-                    operator: "in",
-                    value: value
-                  }]
-                }
-              });
+            restServices.documentService.getMyInsuraces()
+              .then(items => {
+                const usedInsuranceContracts = items ? items
+                  .filter(item => item.id !== this.props.entityId)
+                  .map(item => item.insuranceContract)
+                  .filter(item => item)
+                  .map(item => item!.id) : [];
+
+                this.insuranceContractsDc = collectionWithAfterLoad<InsuranceContract>(InsuranceContract.NAME,
+                  afterInsuranceContract,
+                  {
+                    view: "insuranceContract-editView",
+                    filter: {
+                      conditions: [{
+                        property: "company.id",
+                        operator: "in",
+                        value: value
+                      }, {
+                        property: 'id',
+                        operator: 'notIn',
+                        value: usedInsuranceContracts
+                      }]
+                    }
+                  });
+
+              })
           })
 
         this.props.form.setFieldsValue(

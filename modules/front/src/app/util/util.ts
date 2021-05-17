@@ -105,7 +105,6 @@ export const catchException = (promise: Promise<any>): Promise<any> => {
 
     let result = new TextDecoder("utf-8").decode(chunksAll);
     const parse = JSON.parse(result);
-    console.log(parse);
     throw new Error(parse.message);
   })
 };

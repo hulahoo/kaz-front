@@ -478,6 +478,14 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
+    getInsuredPersonMembersWithNewContract: (params: { insuredPersonId: string, contractId: string }, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "getInsuredPersonMembersWithNewContract",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
     checkPersonInsure: (params: { personGroupId: any, contractId: any }, fetchOpts?: FetchOptions): Promise<Boolean> => {
       return getCubaREST()!.invokeService(
         "tsadv_DocumentService",
@@ -494,11 +502,10 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
-    getMyInsuraces: (params: {}, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+    getMyInsuraces: (fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
       return getCubaREST()!.invokeService(
         "tsadv_DocumentService",
         "getMyInsuraces",
-        {...params},
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
