@@ -192,7 +192,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["requestNumber", "requestDate", "company", "department", "status", "author", "modifyDate", "comment", "comment", "file"];
+  fields = ["requestNumber", "requestDate", "company", "department", "status", "author", "modifyDate", "comment", "comment"];
 
   locale = this.props.mainStore!.locale!;
 
@@ -876,6 +876,10 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
 
   isNewEntity = () => {
     return this.props.entityId === OrgStructureRequestManagement.NEW_SUBPATH;
+  }
+
+  getUpdateEntityData = () => {
+    return this.props.form.getFieldsValue(this.fields)
   }
 }
 
