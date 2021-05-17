@@ -28,6 +28,7 @@ export default class {
   positionId?: string;
   positionGroupId?: string;
   companyCode?: string;
+  @observable firstLastName?: string;
   @observable initialized: boolean = false;
 
   myTeamInfo: MyTeamInfo;
@@ -44,6 +45,7 @@ export default class {
         this.positionId = personProfile.positionId;
         this.positionGroupId = personProfile.positionGroupId;
         this.companyCode = personProfile.companyCode;
+        this.firstLastName = personProfile.firstLastName;
       }
       this.initialized = true;
     }).catch(() => {
