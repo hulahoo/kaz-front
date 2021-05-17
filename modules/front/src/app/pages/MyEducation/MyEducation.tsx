@@ -41,7 +41,7 @@ class MyEducation extends Component<WrappedComponentProps> {
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.my-education"})}>
-        <Section size="large" padding="none">
+        <Section size="large" padding="none" visible={false}>
           <ImageCarousel code={MyEducationManagement.PATH}/>
         </Section>
         <List className="section-list-container"
