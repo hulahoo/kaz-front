@@ -362,8 +362,14 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newStartDate']}),
                     }, {
                       validator: (rule, value, callback) => {
+                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
                         this.props.form.validateFields(['newEndDate', 'periodStartDate'], {force: true});
-                        if (!this.validatedBalanceSuccess)
+                        if (value && scheduleStartDate && scheduleStartDate.clone().startOf('day') > value.clone().startOf('day'))
+                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                            startDate: messages[this.dataInstance.entityName + '.newStartDate'],
+                            endDate: messages[this.dataInstance.entityName + '.scheduleStartDate']
+                          }));
+                        else if (!this.validatedBalanceSuccess)
                           return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                         else if (!this.validatedDatesSuccess)
                           return callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
@@ -403,6 +409,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                           return callback();
                       }
                     }],
+                    getValueFromEvent: args => {
+                      this.validatedDates({'newEndDate': args});
+                      return args;
+                    }
                   }}
                 />
 

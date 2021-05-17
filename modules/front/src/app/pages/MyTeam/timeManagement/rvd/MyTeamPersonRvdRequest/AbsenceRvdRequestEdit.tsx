@@ -193,17 +193,18 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     );
   };
 
-  initPurposeTempDcItems = (typeId: string) => {
-    getCubaREST()!.searchEntities<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-      conditions: [{
-        property: 'absenceType.id',
-        operator: '=',
-        value: typeId
-      }]
-    }, {
-      view: 'absPurposeSetting-absence'
-    })
-      .then(items => this.purposeTempDc.items = items.map(item => item.absencePurpose) as Array<SerializedEntity<DicPurposeAbsence>>);
+  initPurposeTempDcItems = (typeId?: string) => {
+    if (typeId)
+      getCubaREST()!.searchEntities<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+        conditions: [{
+          property: 'absenceType.id',
+          operator: '=',
+          value: typeId
+        }]
+      }, {
+        view: 'absPurposeSetting-absence'
+      })
+        .then(items => this.purposeTempDc.items = items.map(item => item.absencePurpose) as Array<SerializedEntity<DicPurposeAbsence>>);
   }
 
   getUpdateEntityData = (): any => {
@@ -494,11 +495,11 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               />
 
               <ReadonlyField
-                disabled={isNotDraft}
+                disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="compensation"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{style: isNotDraft ? {marginBottom: "12px"} : {display: 'none'}}}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked",
                   getValueFromEvent: args => {
@@ -513,11 +514,11 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               />
 
               <ReadonlyField
-                disabled={isNotDraft}
+                disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="vacationDay"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{style: isNotDraft ? {marginBottom: "12px"} : {display: 'none'}}}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked",
                   getValueFromEvent: args => {
