@@ -415,5 +415,5 @@
   "withholding.statement": "Заявление на удержание",
   "comment.required": "Необходимо заполнить комментарий",
   "endDate": "Дата окончания",
-  "startDate": "Дата создания"
+  "createDate": "Дата создания"
 }
