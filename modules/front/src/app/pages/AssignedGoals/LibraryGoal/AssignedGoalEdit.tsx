@@ -275,7 +275,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
               <Form.Item label={this.props.intl.formatMessage({id: "goal.weight"})}
                          key='weight'
-                         style={{marginBottom: '12px'}} className={"button-actions-group"}>{
+                         style={{marginBottom: '12px'}}>{
                 this.props.form.getFieldDecorator('weight', {
                   rules: [{
                     required: true,
