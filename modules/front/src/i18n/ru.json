@@ -216,7 +216,7 @@
   "course.info.approve": "Подтверждение",
   "back": "Назад",
   "test.time": "Оставшееся время",
-  "goal.individual.create": "Создание индивидуальной цели",
+  "goal.individual.create": "Создание нового KPI",
   "goal.library.create": "Создание цели из библиотеки",
   "course.rate.notification": "Спасибо за оценку",
   "kpiTeam.list.filter.performancePlan": "Назначенные планы",
