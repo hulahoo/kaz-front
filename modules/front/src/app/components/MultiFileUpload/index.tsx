@@ -145,7 +145,7 @@ export class MultiFileUpload<E extends FileInfo | FileInfo[]> extends React.Comp
     };
     const uploadProps = Object.assign({}, defaultUploadProps, this.props.uploadProps);
     return (createElement(Upload, Object.assign({}, uploadProps), this.props.render ? this.props.render(this.props.value) :
-      <CustomFileUploadDropArea fileInfo={this.props.value}/>));
+      <CustomFileUploadDropArea fileInfo={this.props.value} disabled={this.props.disabled}/>));
   }
 }
 
@@ -153,10 +153,10 @@ function isImageFile(fileName: string) {
   return !!fileName.match('.*(jpg|jpeg|gif|png)$');
 }
 
-class CustomFileUploadDropArea<E extends FileInfo | FileInfo[]> extends React.Component<{ fileInfo?: E }> {
+class CustomFileUploadDropArea<E extends FileInfo | FileInfo[]> extends React.Component<{ fileInfo?: E, disabled?: boolean }> {
   render() {
+    // if (this.props.disabled) return <></>;
     return (
-      // createElement("div", {className: '_cuba-file-upload-full-width-enabled'},
       (Array.isArray(this.props.fileInfo) && this.props.fileInfo.length === 0 || !this.props.fileInfo)
         ? (createElement("div", {className: 'cuba-file-drop-area'},
         createElement(Icon, {className: 'replaceicon', type: 'upload'}),

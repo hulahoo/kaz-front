@@ -3,6 +3,7 @@ import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicAbsenceType } from "./tsadv$DicAbsenceType";
 import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
 import {AbsPurposeSetting} from "./tsadv_AbsPurposeSetting";
+import {FileDescriptor} from "./sys$FileDescriptor";
 export class AbsenceRvdRequest extends AbstractBprocRequest {
   static NAME = "tsadv_AbsenceRvdRequest";
   personGroup?: PersonGroupExt | null;
@@ -16,6 +17,7 @@ export class AbsenceRvdRequest extends AbstractBprocRequest {
   vacationDay?: boolean | null;
   acquainted?: boolean | null;
   agree?: boolean | null;
+  files?: FileDescriptor[] | null;
 }
 export type AbsenceRvdRequestViewName =
   | "_base"
@@ -110,5 +112,6 @@ export type AbsenceRvdRequestView<
       | "personGroup"
       | "purpose"
       | "status"
+      | "files"
     >
   : never;

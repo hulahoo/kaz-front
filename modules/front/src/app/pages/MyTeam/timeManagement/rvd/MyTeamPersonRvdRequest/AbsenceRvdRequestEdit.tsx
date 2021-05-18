@@ -26,7 +26,11 @@ import Section from "../../../../../hoc/Section";
 import {DicRequestStatus} from "../../../../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {DicAbsenceType} from "../../../../../../cuba/entities/base/tsadv$DicAbsenceType";
 import AbstractBprocEdit from "../../../../Bproc/abstract/AbstractBprocEdit";
-import {ReadonlyField} from "../../../../../components/ReadonlyField";
+import {
+  parseToFieldValueFromDataInstanceValue,
+  parseToJsonFromFieldValue,
+  ReadonlyField
+} from "../../../../../components/ReadonlyField";
 import {rootStore} from "../../../../../store";
 import {restServices} from "../../../../../../cuba/services";
 import {DicPurposeAbsence} from "../../../../../../cuba/entities/base/tsadv_DicPurposeAbsence";
@@ -96,6 +100,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     "acquainted",
 
     "agree",
+
+    "files",
   ];
 
   @observable
@@ -181,7 +187,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
         this.onReactionDisposerEffect(item);
         const obj = {
-          ...this.dataInstance.getFieldValues(this.fields)
+          ...this.dataInstance.getFieldValues(this.fields),
+          files:this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.files) : undefined,
         };
         if (this.isCalledProcessInstanceData && !this.processInstanceData) {
           const now = moment();
@@ -212,6 +219,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       ...this.props.form.getFieldsValue(this.fields),
       timeOfStarting: (this.props.form.getFieldValue('timeOfStarting') as moment.Moment).format(JSON_DATE_TIME_FORMAT),
       timeOfFinishing: (this.props.form.getFieldValue('timeOfFinishing') as moment.Moment).format(JSON_DATE_TIME_FORMAT),
+      files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
     };
     return {
       personGroup: {
@@ -220,6 +228,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       ...this.props.form.getFieldsValue(this.fields),
       timeOfStarting: (this.props.form.getFieldValue('timeOfStarting') as moment.Moment).format(JSON_DATE_TIME_FORMAT),
       timeOfFinishing: (this.props.form.getFieldValue('timeOfFinishing') as moment.Moment).format(JSON_DATE_TIME_FORMAT),
+      files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
     }
   };
 
@@ -553,6 +562,13 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                   valuePropName: "checked"
                 }}
               />
+
+              <ReadonlyField
+                entityName={this.dataInstance.entityName}
+                propertyName="files"
+                form={this.props.form}
+                disabled={isNotDraft}
+                formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               {this.takCard()}
 

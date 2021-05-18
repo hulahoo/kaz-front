@@ -46,6 +46,8 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
     const isToManyRelation = propertyInfo && this.isToManyRelation(propertyInfo.cardinality);
 
+    console.log(propertyInfo);
+
     const format = this.props.format || (isDate ? DEFAULT_DATE_PATTERN : undefined);
 
     const props = {
