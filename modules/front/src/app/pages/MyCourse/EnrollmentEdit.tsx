@@ -103,7 +103,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
               <Col span={16}>
                 <div className="course-logo">
                   <div style={{width: '100%', marginBottom: '30px'}}>
-                    <img src={require('../../../resources/img/tdc_logo.png')} alt="tdc logo" style={{width: '30%'}}/>
+                    <img src={require('../../../resources/img/tdc_logo.png')} alt="tdc logo" style={{width: '20%'}}/>
                   </div>
                   {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
                     <div className="play-block">
