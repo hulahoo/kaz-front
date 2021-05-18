@@ -36,6 +36,8 @@ import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/Di
 import {EntitiesWithCount} from "@cuba-platform/rest";
 import DefaultDatePicker from "../../components/Datepicker";
 import {isNumber} from "../../util/util";
+import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 
 type EditorProps = {
   entityId: string;
@@ -56,6 +58,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   @observable
   absenceTypesDc: DictionaryDataCollectionStore<DicRequestStatus>;
+
+  @observable
+  vacationScheduleCollection: DataCollectionStore<VacationScheduleRequest>;
 
   personGroupId: string;
 
@@ -265,9 +270,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   disabled={true}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
                 />
 
                 <ReadonlyField
@@ -277,9 +279,6 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.statusesDc}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}],
-                  }}
                 />
 
                 <ReadonlyField
@@ -325,44 +324,60 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   }}
                 />
 
-                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "dateFrom"})}
-                  <div style={{display: 'flex'}}>
-                    <Form.Item>
-                      {getFieldDecorator("dateFrom", {
-                        rules: [{
-                          required: true,
-                          validator: this.dateFromValidator
-                        }],
-                        getValueFromEvent: args => {
-                          this.calcAbsenceDays(null, args, null);
-                          this.checkMinDayAbsence(null, args);
-                          this.checkDaysCalendarYear(null, args);
-                          this.getAbsenceBalance(null, args);
-                          return args
-                        }
-                      })(
-                        <DefaultDatePicker
-                          disabled={isNotDraft}/>
-                      )}
-                    </Form.Item>
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="vacationScheduleRequest"
+                  disabled={isNotDraft}
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  optionsContainer={this.vacationScheduleCollection}
+                  getFieldDecoratorOpts={{
+                    getValueFromEvent: args => {
+                      const vacationSchedule = this.vacationScheduleCollection.items.find(value => value.id === args);
+                      if (vacationSchedule)
+                        this.props.form.setFieldsValue({
+                          dateFrom: vacationSchedule.startDate,
+                          dateTo: vacationSchedule.endDate
+                        })
+                    }
+                  }}
+                />
 
-                    <Form.Item
-                      style={{position: 'absolute', paddingLeft: 170}}>
+                <div style={{display: 'flex'}}>
+                  <Form.Item
+                    label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "dateFrom"})}>
+                    {getFieldDecorator("dateFrom", {
+                      rules: [{
+                        required: true,
+                        validator: this.dateFromValidator
+                      }],
+                      getValueFromEvent: args => {
+                        this.calcAbsenceDays(null, args, null);
+                        this.checkMinDayAbsence(null, args);
+                        this.checkDaysCalendarYear(null, args);
+                        this.getAbsenceBalance(null, args);
+                        return args
+                      }
+                    })(
+                      <DefaultDatePicker
+                        disabled={isNotDraft}/>
+                    )}
+                  </Form.Item>
+
+                  <Form.Item
+                    style={{position: 'absolute', paddingLeft: 170,paddingTop: 17}}>
                       {getFieldDecorator("startTime")(
                         <TimePicker
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
-                  </div>
                 </div>
 
                 {warningMessage}
 
-                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-                  {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "dateTo"})}
                   <div style={{display: 'flex'}}>
-                    <Form.Item>
+                    <Form.Item
+                      label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "dateTo"})}>
                       {getFieldDecorator("dateTo", {
                         rules: [{
                           required: true,
@@ -379,13 +394,12 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                       )}
                     </Form.Item>
 
-                    <Form.Item style={{position: 'absolute', paddingLeft: 170}}>
+                    <Form.Item style={{position: 'absolute', paddingLeft: 170, paddingTop: 17}}>
                       {getFieldDecorator("endTime")(
                         <TimePicker
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
-                  </div>
                 </div>
 
                 <ReadonlyField
@@ -401,24 +415,26 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                           if (type.isEcologicalAbsence && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
                             callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           }
-                          if (this.isLaborLeave && (this.absenceBalance + (type.daysAdvance || 0) < value)) {
+                          if (this.isLaborLeave && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
                             callback(this.props.intl.formatMessage({id: 'validation.balance'}));
-                          } else if (this.isCheckWork && this.remainingDaysWeekendWork < value) {
-                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.weekendWork'}, {
+                          } else if (this.isCheckWork && this.remainingDaysWeekendWork <= 0) {
+                            callback(this.props.intl.formatMessage({id: 'validation.no.weekendWork'}));
+                          } else if (this.isCheckWork && this.remainingDaysWeekendWork < parseInt(value)) {
+                            callback(this.props.intl.formatMessage({id: 'validation.weekendWork'}, {
                               weekendWork: this.remainingDaysWeekendWork
                             }));
-                          } else if (isNumber(type.numDaysCalendarYear) && (this.numDaysCalendarYear + value) >= type.numDaysCalendarYear!) {
+                          } else if (isNumber(type.numDaysCalendarYear) && (this.numDaysCalendarYear + parseInt(value)) >= type.numDaysCalendarYear!) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.numDaysCalendarYear'}));
-                          } else if (isNumber(type.maxDay) && type.maxDay! < value) {
+                          } else if (isNumber(type.maxDay) && type.maxDay! < parseInt(value)) {
                             callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.maxDay'}, {
                               maxDay: type.maxDay
                             }));
                           } else if (isNumber(type.minDay)) {
-                            if (type.minDay! > value && !this.hasMinDayAbsence && this.isLaborLeave)
+                            if (type.minDay! > parseInt(value) && !this.hasMinDayAbsence && this.isLaborLeave)
                               callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.minDay'}, {
                                 minDay: type.minDay
                               }));
-                            else if (type.minDay! < value && (!this.isLaborLeave || this.hasMinDayAbsence))
+                            else if (type.minDay! < parseInt(value) && (!this.isLaborLeave || this.hasMinDayAbsence))
                               callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.has.minDay'}, {
                                 minDay: type.minDay
                               }));
@@ -727,6 +743,21 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           now.locale(this.props.rootStore!.userInfo.locale!);
           obj["requestDate"] = now;
         }
+
+        this.vacationScheduleCollection = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
+            view: "_local",
+            sort: "-startDate",
+            filter: {
+              conditions: [{
+                property: "personGroup.id",
+                operator: "=",
+                value: this.props.rootStore!.userInfo.personGroupId!
+              },
+                {property: "startDate", operator: ">=", value: obj["requestDate"]}]
+            }
+          }
+        );
+
         this.props.form.setFieldsValue(obj);
 
         this.setDaysBeforeAbsenceWaring(item!.type);

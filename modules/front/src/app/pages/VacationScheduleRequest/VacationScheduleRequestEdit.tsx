@@ -10,7 +10,6 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   clearFieldErrors,
-  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
   getCubaREST,
@@ -25,7 +24,6 @@ import {
 import "../../../app/App.css";
 
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
-import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {rootStore, RootStoreProp} from "../../store";
 import {restServices} from "../../../cuba/services";
 import {ReadonlyField} from "../../components/ReadonlyField";
@@ -52,10 +50,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     VacationScheduleRequest.NAME,
     {view: "vacationScheduleRequest-edit"}
   );
-
-  statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "_minimal"
-  });
 
   @observable
   updated = false;
@@ -102,9 +96,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
         .update({
           personGroup: {
             id: this.props.rootStore!.userInfo.personGroupId
-          },
-          status: {
-            id: this.dataInstance.item!.status!.id
           },
           ...this.props.form.getFieldsValue(this.fields)
         })
@@ -258,9 +249,9 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                           const balance = this.props.form.getFieldValue('balance');
                           if (!isNumber(value) || !isNumber(balance)) return callback();
                           if (balance < parseInt(value)) {
-                            callback(this.props.intl.formatMessage({id: 'validation.balance'}));
+                            return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           }
-                          callback();
+                          return callback();
                         }
                       }
                     ]
