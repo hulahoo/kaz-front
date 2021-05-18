@@ -26,6 +26,7 @@ import {RootStoreProp} from "../../store";
 import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
 import {CourseFeedbackPersonAnswer} from "../../../cuba/entities/base/tsadv$CourseFeedbackPersonAnswer";
+import {dicValue} from "../../util/util";
 
 type Props = {
   entityId: string;
@@ -99,11 +100,17 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
         <Spin spinning={this.status === 'LOADING'}>
           <Section size={"large"} sectionName={this.dataInstance ? this.dataInstance!.course!.name! : null}>
             <Row>
-              <Col span={16} style={{height: '350px'}}>
+              <Col span={16}>
                 <div className="course-logo">
+                  <div style={{width: '100%', marginBottom: '30px'}}>
+                    <img src={require('../../../resources/img/tdc_logo.png')} alt="tdc logo" style={{width: '30%'}}/>
+                  </div>
                   {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
-                    <>
-                      <Icon type="caret-right" className="play-icon" onClick={this.playIconClick}/>
+                    <div className="play-block">
+                      <div className="play-icon" onClick={this.playIconClick}>
+                        <div className="triangle-icon"/>
+                      </div>
+                      {/*<Icon type="caret-right" className="play-icon"/>*/}
                       <h1
                         className="play-text">{this.selectedSection
                         ? this.selectedSection.type === "course-section"
@@ -111,7 +118,10 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
                           : this.feedbacks!.find(s => s.id === this.selectedSection!.id)!.name
                         : null}
                       </h1>
-                    </>}
+                    </div>}
+                  <div style={{width: '100%'}}>
+                    <img src={require('../../../resources/img/lines.png')} alt="tdc logo" style={{width: '100%'}}/>
+                  </div>
                 </div>
               </Col>
               <Col span={8} style={{paddingLeft: "30px"}}>

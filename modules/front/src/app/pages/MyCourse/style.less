@@ -11,25 +11,55 @@
   position: relative;
   flex-direction: column;
 
-  .play-icon {
-    color: @primary-4;
-    height: 130px;
-    font-size: 100px;
-    cursor: pointer;
-  }
+  .play-block {
 
-  .play-icon:hover {
-    font-size: 130px;
-  }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 
-  .play-icon:active {
-    color: @primary-1;
-  }
+    .play-icon {
+      background: #2293e1;
+      width: 100px;
+      height: 100px;
 
-  .play-text {
-    display: block;
-    height: 2em;
-    font-size: 2em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      cursor: pointer;
+
+      .triangle-icon {
+        width: 0;
+        height: 0;
+        border-top: 15px solid transparent;
+        border-bottom: 15px solid transparent;
+        border-right: 0;
+        border-left: 30px solid white;
+        margin-left: 5px;
+      }
+    }
+
+    .play-icon:hover {
+      .triangle-icon {
+        border-top: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 40px solid white;
+        margin-left: 10px;
+      }
+    }
+
+    .play-icon:active {
+      .triangle-icon {
+        border-left-color: @follow-button-color;
+      }
+    }
+
+    .play-text {
+      display: block;
+      height: 2em;
+      font-size: 2em;
+    }
   }
 }
 
