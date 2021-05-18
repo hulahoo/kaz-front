@@ -24,7 +24,7 @@ class MyEducation extends Component<WrappedComponentProps> {
       url: "/" + CourseManagement.PATH
     },
       {
-        id: "course-catalog",
+        id: "my-courses",
         name: this.props.intl.formatMessage({id: "menu.my-courses"}),
         url: "/" + EnrollmentManagement.PATH
       },
