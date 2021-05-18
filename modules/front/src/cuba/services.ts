@@ -429,11 +429,11 @@ export const restServices = {
       );
     },
     getRemainingDaysWeekendWork: (personGroupId: string): Promise<number> => {
-      return getCubaREST()!.invokeService<number>(
+      return getCubaREST()!.invokeService<string>(
         "tsadv_AbsenceService",
         "getRemainingDaysWeekendWork",
         {personGroupId: personGroupId}
-      );
+      ).then(value => parseInt(value));
     },
     countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
       return getCubaREST()!.invokeService<string>(
