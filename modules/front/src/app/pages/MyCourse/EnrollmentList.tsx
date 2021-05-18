@@ -20,6 +20,7 @@ import Notification from "../../util/Notification/Notification";
 import Rate from "../../components/Rate/Rate";
 import {getBlobUrl} from "../../util/util";
 import CardIconFactory from "../CourseCatalog/CardIconFactory";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 @inject("rootStore")
 @observer
@@ -59,9 +60,9 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
       <Page pageName={this.props.intl.formatMessage({id: "menu.my-courses"})}>
         <Section size="large" visible={false}>
           <Spin spinning={this.status === 'LOADING'}>
-            <SearchInput onSearch={this.onSearch} />
+            <SearchInput onSearch={this.onSearch}/>
             <Tabs>
-              {this.status === 'DONE' ? this.dataCollection.map(category => <TabPane tab={category.langValue1}
+              {this.status === 'DONE' ? this.dataCollection.map((category: SerializedEntity<DicCategory>) => <TabPane tab={category._instanceName}
                                                                                      key={category.id}>
                 <div className={"courses-cards-wrapper"}>
                   <div className={"courses-cards"}>
@@ -83,7 +84,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                                       null}
                                                                                                     <ImageLogo
                                                                                                       type="promise"
-                                                                                                      imgSrcProp={getBlobUrl(course.logo ? course.logo.id : null)}
+                                                                                                      imgSrcProp={course.logo ? getBlobUrl(course.logo.id) : undefined}
                                                                                                       name={course.name!}/>
                                                                                                   </>)}>
 

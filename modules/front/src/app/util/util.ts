@@ -6,7 +6,7 @@ import {AssignedPerformancePlan} from "../../cuba/entities/base/tsadv$AssignedPe
 import {PersonExt} from "../../cuba/entities/base/base$PersonExt";
 
 export const getBlobUrl = (fileId: string): Promise<string> => {
-  return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob))
+  return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob));
 };
 
 export const downloadFile = (fileId: string, fileName: string, extension: string, fileNotFoundMessage: string) => {
