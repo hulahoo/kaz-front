@@ -1,7 +1,7 @@
 import React from 'react';
 import PanelCard from "../../components/CourseCard";
 import {Spin, Tabs} from "antd";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
@@ -14,13 +14,13 @@ import {serviceCollection} from "../../util/ServiceDataCollectionStore";
 import Notification from "../../util/Notification/Notification";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Rate from "../../components/Rate/Rate";
-import {Course} from "../../../cuba/entities/base/tsadv$Course";
-import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
 import {getBlobUrl} from "../../util/util";
 import CardIconFactory from "../CourseCatalog/CardIconFactory";
+import {RootStoreProp} from "../../store";
 
+@inject("rootStore")
 @observer
-class CourseList<T> extends React.Component<WrappedComponentProps> {
+class CourseList<T> extends React.Component<WrappedComponentProps & RootStoreProp> {
 
   dataCollection = serviceCollection(restServices.courseService.allCourses);
 
@@ -47,12 +47,15 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
     const {status, items} = this.dataCollection;
     const {TabPane} = Tabs;
 
+    const defaultTabKey = this.props.rootStore!.courseCatalogStore ? this.props.rootStore!.courseCatalogStore.selectedCategoryId : undefined;
+
     return (
       <>
         <Spin spinning={status === 'LOADING'}>
           <SearchInput onSearch={this.onSearch}/>
-          <Tabs>
-            {status === 'DONE' ? items.map((category:SerializedEntity<DicCategory>) => <TabPane tab={category._instanceName} key={category.id}>
+          {status === 'DONE' ? <Tabs defaultActiveKey={defaultTabKey} onChange={this.tabOnChange}>
+            {items.map((category: SerializedEntity<DicCategory>) => <TabPane
+              tab={category._instanceName} key={category.id}>
               <div className={"courses-cards-wrapper"}>
                 <div className={"courses-cards"}>
                   {category.courses!.map((course: any) => <Link to={"/course/" + course.id}><PanelCard key={course.id}
@@ -83,8 +86,8 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                   </PanelCard></Link>)}
                 </div>
               </div>
-            </TabPane>) : <></>}
-          </Tabs>
+            </TabPane>)}
+          </Tabs> : <></>}
         </Spin>
       </>
     );
@@ -92,6 +95,14 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
 
   componentDidMount(): void {
     this.dataCollection.load();
+    const {courseCatalogStore} = this.props.rootStore!;
+    if (!courseCatalogStore) {
+      this.props.rootStore!.createCourseCatalogStore();
+    }
+  }
+
+  tabOnChange = (activeKey: string) => {
+    this.props.rootStore!.courseCatalogStore.setSelectedCategoryId(activeKey);
   }
 }
 

@@ -56,37 +56,40 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
   render() {
     const {TabPane} = Tabs;
 
+    const defaultTabKey = this.props.rootStore!.courseCatalogStore ? this.props.rootStore!.courseCatalogStore.selectedEnrollmentId : undefined;
+
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.my-courses"})}>
         <Section size="large" visible={false}>
           <Spin spinning={this.status === 'LOADING'}>
             <SearchInput onSearch={this.onSearch}/>
-            <Tabs>
-              {this.status === 'DONE' ? this.dataCollection.map((category: SerializedEntity<DicCategory>) => <TabPane tab={category._instanceName}
-                                                                                     key={category.id}>
+            {this.status === 'DONE' ? <Tabs onChange={this.tabOnChange} defaultActiveKey={defaultTabKey}>
+              {this.dataCollection.map((category: SerializedEntity<DicCategory>) => <TabPane
+                tab={category._instanceName}
+                key={category.id}>
                 <div className={"courses-cards-wrapper"}>
                   <div className={"courses-cards"}>
                     {category.courses!.map(course => <Link
                       to={"/" + CourseManagement.PATH + "/" + course.id}><PanelCard key={course.id}
-                                                                                                  loading={false} {...course}
-                                                                                                  name={course.name!}
-                                                                                                  header={(<>
-                                                                                                    {
-                                                                                                      course.enrollments!.length > 0 && (CardIconFactory.getIcon(course.enrollments![0].status) != null)
-                                                                                                        ? React.createElement(CardIconFactory.getIcon(course.enrollments![0].status)!, {className: "course-icon left-icon"})
-                                                                                                        : null
-                                                                                                    }
-                                                                                                    {course.isOnline ?
-                                                                                                      <img
-                                                                                                        src={require("../../../resources/icons/online.png")}
-                                                                                                        alt="online"
-                                                                                                        className="course-icon right-icon"/> :
-                                                                                                      null}
-                                                                                                    <ImageLogo
-                                                                                                      type="promise"
-                                                                                                      imgSrcProp={course.logo ? getBlobUrl(course.logo.id) : undefined}
-                                                                                                      name={course.name!}/>
-                                                                                                  </>)}>
+                                                                                    loading={false} {...course}
+                                                                                    name={course.name!}
+                                                                                    header={(<>
+                                                                                      {
+                                                                                        course.enrollments!.length > 0 && (CardIconFactory.getIcon(course.enrollments![0].status) != null)
+                                                                                          ? React.createElement(CardIconFactory.getIcon(course.enrollments![0].status)!, {className: "course-icon left-icon"})
+                                                                                          : null
+                                                                                      }
+                                                                                      {course.isOnline ?
+                                                                                        <img
+                                                                                          src={require("../../../resources/icons/online.png")}
+                                                                                          alt="online"
+                                                                                          className="course-icon right-icon"/> :
+                                                                                        null}
+                                                                                      <ImageLogo
+                                                                                        type="promise"
+                                                                                        imgSrcProp={course.logo ? getBlobUrl(course.logo.id) : undefined}
+                                                                                        name={course.name!}/>
+                                                                                    </>)}>
 
                       <Meta title={course.name}
                             description={<><Rate disabled defaultValue={course.rating || 0}
@@ -94,8 +97,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                     </PanelCard></Link>)}
                   </div>
                 </div>
-              </TabPane>) : <></>}
-            </Tabs>
+              </TabPane>)}
+            </Tabs> : <></>}
           </Spin>
         </Section>
       </Page>
@@ -104,6 +107,10 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
 
   componentDidMount(): void {
     this.loadData();
+    const {courseCatalogStore} = this.props.rootStore!;
+    if (!courseCatalogStore) {
+      this.props.rootStore!.createCourseCatalogStore();
+    }
   }
 
   loadData = () => {
@@ -115,6 +122,10 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
     }).catch(() => {
       this.status = "DONE";
     })
+  }
+
+  tabOnChange = (activeKey: string) => {
+    this.props.rootStore!.courseCatalogStore.setSelectedEnrollmentId(activeKey);
   }
 }
 

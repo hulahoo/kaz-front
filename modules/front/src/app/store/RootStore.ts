@@ -8,6 +8,7 @@ import ChangePasswordStore from "./ChangePasswordStore";
 import KpiStore from "./KpiStore";
 import {observable} from "mobx";
 import DefaultGoalStore from "./DefaultGoalStore";
+import CourseCatalogStore from "./CourseCatalogStore";
 
 export default class RootStore {
   cubaRest: CubaApp;
@@ -17,6 +18,7 @@ export default class RootStore {
   userInfo: UserInfoStore;
   bellNotification: BellNotificationStore;
   changePassword: ChangePasswordStore;
+  courseCatalogStore: CourseCatalogStore;
   @observable kpiEditStore: KpiStore;
   @observable goalStore: DefaultGoalStore;
 
@@ -40,5 +42,9 @@ export default class RootStore {
 
   createDefaultGoalStore = () => {
     this.goalStore = new DefaultGoalStore(this);
+  }
+
+  createCourseCatalogStore = () => {
+    this.courseCatalogStore = new CourseCatalogStore(this);
   }
 }
