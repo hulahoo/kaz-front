@@ -122,10 +122,10 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
     }).catch(() => {
       this.status = "DONE";
     })
-  }
+  };
 
   tabOnChange = (activeKey: string) => {
-    this.props.rootStore!.courseCatalogStore.setSelectedEnrollmentId(activeKey);
+    this.props.rootStore!.courseCatalogStore!.setSelectedEnrollmentId(activeKey);
   }
 }
 

@@ -102,7 +102,7 @@ class CourseList<T> extends React.Component<WrappedComponentProps & RootStorePro
   }
 
   tabOnChange = (activeKey: string) => {
-    this.props.rootStore!.courseCatalogStore.setSelectedCategoryId(activeKey);
+    this.props.rootStore!.courseCatalogStore!.setSelectedCategoryId(activeKey);
   }
 }
 

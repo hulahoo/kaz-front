@@ -59,6 +59,7 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
           .then(() => {
             rootStore.userInfo.clearUserInfo();
             rootStore.login.clearCredentials();
+            rootStore.clearStores();
           });
       }
     });

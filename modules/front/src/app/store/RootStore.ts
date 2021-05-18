@@ -18,7 +18,7 @@ export default class RootStore {
   userInfo: UserInfoStore;
   bellNotification: BellNotificationStore;
   changePassword: ChangePasswordStore;
-  courseCatalogStore: CourseCatalogStore;
+  courseCatalogStore?: CourseCatalogStore;
   @observable kpiEditStore: KpiStore;
   @observable goalStore: DefaultGoalStore;
 
@@ -42,9 +42,13 @@ export default class RootStore {
 
   createDefaultGoalStore = () => {
     this.goalStore = new DefaultGoalStore(this);
-  }
+  };
 
   createCourseCatalogStore = () => {
     this.courseCatalogStore = new CourseCatalogStore(this);
+  };
+
+  clearStores = () => {
+    this.courseCatalogStore = undefined;
   }
 }
