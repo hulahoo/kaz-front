@@ -52,7 +52,7 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
         <Spin spinning={status === 'LOADING'}>
           <SearchInput onSearch={this.onSearch}/>
           <Tabs>
-            {status === 'DONE' ? items.map(category => <TabPane tab={category.langValue1} key={category.id}>
+            {status === 'DONE' ? items.map((category:SerializedEntity<DicCategory>) => <TabPane tab={category._instanceName} key={category.id}>
               <div className={"courses-cards-wrapper"}>
                 <div className={"courses-cards"}>
                   {category.courses!.map((course: any) => <Link to={"/course/" + course.id}><PanelCard key={course.id}
@@ -73,7 +73,7 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                                null}
                                                                                                            <ImageLogo
                                                                                                              type="promise"
-                                                                                                             imgSrcProp={getBlobUrl(course.logo ? course.logo.id : null)}
+                                                                                                             imgSrcProp={course.logo ? getBlobUrl(course.logo.id) : undefined}
                                                                                                              name={course.name!}/>
                                                                                                          </>
                                                                                                        )}>

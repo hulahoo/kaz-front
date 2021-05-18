@@ -5,16 +5,16 @@ import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {Link, NavLink, RouteComponentProps, withRouter} from "react-router-dom";
 import Notification from "./Notification/Notification";
-import {rootStore} from "../../store";
+import {rootStore, RootStoreProp} from "../../store";
 import {PortalFeedbackQuestionManagement} from "../../pages/PortalFeedbackQuestions/PortalFeedbackQuestionManagement";
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps & RouteComponentProps> {
+class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProps & RouteComponentProps & RootStoreProp> {
 
   render() {
-    const appState = this.props.mainStore!;
+    const userInfo = this.props.rootStore!.userInfo;
 
     const menu = (
       <Menu className={"header-user-dropdown"}>
@@ -41,7 +41,7 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
       <img src={require('../../../resources/img/default-avatar.svg')} className="panel-element user-img"/>
       <Dropdown overlay={menu} trigger={['click']}>
         <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-          <span className="panelelement">{appState.userName}</span>
+          <span className="panelelement">{userInfo.firstLastName}</span>
           <Icon type="down"/>
         </a>
       </Dropdown>
