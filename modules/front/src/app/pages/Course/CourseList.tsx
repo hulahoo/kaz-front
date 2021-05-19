@@ -14,7 +14,7 @@ import {serviceCollection} from "../../util/ServiceDataCollectionStore";
 import Notification from "../../util/Notification/Notification";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Rate from "../../components/Rate/Rate";
-import {getBlobUrl} from "../../util/util";
+import {getFileUrl} from "../../util/util";
 import CardIconFactory from "../CourseCatalog/CardIconFactory";
 import {RootStoreProp} from "../../store";
 
@@ -75,8 +75,8 @@ class CourseList<T> extends React.Component<WrappedComponentProps & RootStorePro
                                                                                                                  className="course-icon right-icon"/> :
                                                                                                                null}
                                                                                                            <ImageLogo
-                                                                                                             type="promise"
-                                                                                                             imgSrcProp={course.logo ? getBlobUrl(course.logo.id) : undefined}
+                                                                                                             type="src"
+                                                                                                             imgSrc={course.logo ? getFileUrl(course.logo.id) : undefined}
                                                                                                              name={course.name!}/>
                                                                                                          </>
                                                                                                        )}>

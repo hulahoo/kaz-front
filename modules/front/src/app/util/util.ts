@@ -9,6 +9,10 @@ export const getBlobUrl = (fileId: string): Promise<string> => {
   return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob));
 };
 
+export const getFileUrl = (fileId: string): string => {
+  return `${getCubaREST()!.apiUrl}v2/files/${fileId}?access_token=${getCubaREST()!.restApiToken}`;
+};
+
 export const downloadFile = (fileId: string, fileName: string, extension: string, fileNotFoundMessage: string) => {
   return getCubaREST()!.getFile(fileId)
     .then((value: Blob) => {

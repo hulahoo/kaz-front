@@ -4,13 +4,11 @@ import {inject, observer} from "mobx-react";
 import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
-import {restQueries} from "../../../cuba/queries";
 import {observable, runInAction} from "mobx";
 import {RootStoreProp} from "../../store";
 import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import {restServices} from "../../../cuba/services";
-import {EnrollmentManagement} from "./EnrollmentManagement";
 import PanelCard from "../../components/CourseCard";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
@@ -18,7 +16,7 @@ import Section from "../../hoc/Section";
 import {CourseManagement} from "../Course/CourseManagement";
 import Notification from "../../util/Notification/Notification";
 import Rate from "../../components/Rate/Rate";
-import {getBlobUrl} from "../../util/util";
+import {getFileUrl} from "../../util/util";
 import CardIconFactory from "../CourseCatalog/CardIconFactory";
 import {SerializedEntity} from "@cuba-platform/rest";
 
@@ -86,8 +84,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                           className="course-icon right-icon"/> :
                                                                                         null}
                                                                                       <ImageLogo
-                                                                                        type="promise"
-                                                                                        imgSrcProp={course.logo ? getBlobUrl(course.logo.id) : undefined}
+                                                                                        type="src"
+                                                                                        imgSrc={course.logo ? getFileUrl(course.logo.id) : undefined}
                                                                                         name={course.name!}/>
                                                                                     </>)}>
 
