@@ -428,5 +428,7 @@
   "withholding.statement": "Withholding statement",
   "comment.required": "Fill in comments",
   "endDate": "End date",
-  "createDate": "Start date"
+  "createDate": "Start date",
+  "diary": "Diary",
+  "course.Recordings": "Recordings from the course"
 }

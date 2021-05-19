@@ -416,5 +416,7 @@
   "withholding.statement": "Заявление на удержание",
   "comment.required": "Необходимо заполнить комментарий",
   "endDate": "Дата окончания",
-  "createDate": "Дата создания"
+  "createDate": "Дата создания",
+  "diary": "Дневник",
+  "course.Recordings": "Записи из курса"
 }
