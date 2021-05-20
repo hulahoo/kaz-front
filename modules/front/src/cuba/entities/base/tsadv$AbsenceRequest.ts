@@ -9,7 +9,6 @@ export class AbsenceRequest extends AbstractBprocRequest {
   static NAME = "tsadv$AbsenceRequest";
   assignmentGroup?: AssignmentGroupExt | null;
   reason?: string | null;
-  attachment?: FileDescriptor | null;
   dateFrom?: any | null;
   dateTo?: any | null;
   absenceDays?: number | null;
@@ -264,7 +263,6 @@ export type AbsenceRequestView<
       | "comment"
       | "assignmentGroup"
       | "type"
-      | "attachment"
       | "status"
       | "purpose"
       | "personGroup"
@@ -307,12 +305,12 @@ export type AbsenceRequestView<
       | "comment"
       | "assignmentGroup"
       | "type"
-      | "attachment"
       | "status"
       | "personGroup"
       | "purpose"
       | "vacationScheduleRequest"
       | "startTime"
       | "endTime"
+      | "files"
     >
   : never;

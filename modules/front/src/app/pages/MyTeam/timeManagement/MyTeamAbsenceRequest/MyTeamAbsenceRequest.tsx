@@ -26,15 +26,15 @@ class MyTeamAbsenceRequest extends React.Component<MyTeamCardProps & MainStoreIn
 
     "requestNumber",
 
+    "requestDate",
+
     "type",
 
     "startDate",
 
     "endDate",
 
-    "status",
-
-    "requestDate"
+    "status"
   ];
 
   render() {

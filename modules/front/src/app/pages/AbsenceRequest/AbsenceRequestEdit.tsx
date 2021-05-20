@@ -38,6 +38,7 @@ import DefaultDatePicker from "../../components/Datepicker";
 import {isNumber} from "../../util/util";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../components/MultiFileUpload";
 
 type EditorProps = {
   entityId: string;
@@ -129,7 +130,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
     "periodDateTo",
 
-    "attachment"
+    "files"
   ];
 
   assignmentGroupId: string;
@@ -140,7 +141,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
       personGroup: {
         id: this.personGroupId
       },
-      ...this.props.form.getFieldsValue(this.fields)
+      ...this.props.form.getFieldsValue(this.fields),
+      files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
     }
   };
 
@@ -329,15 +331,15 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   propertyName="vacationScheduleRequest"
                   disabled={isNotDraft}
                   form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  formItemOpts={{style: this.isLaborLeave ? {marginBottom: "12px"} : {display: 'none'}}}
                   optionsContainer={this.vacationScheduleCollection}
                   getFieldDecoratorOpts={{
                     getValueFromEvent: args => {
                       const vacationSchedule = this.vacationScheduleCollection.items.find(value => value.id === args);
                       if (vacationSchedule)
                         this.props.form.setFieldsValue({
-                          dateFrom: vacationSchedule.startDate,
-                          dateTo: vacationSchedule.endDate
+                          dateFrom: moment(vacationSchedule.startDate),
+                          dateTo: moment(vacationSchedule.endDate)
                         })
                     }
                   }}
@@ -464,7 +466,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
-                  propertyName="attachment"
+                  propertyName="files"
                   form={this.props.form}
                   disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
@@ -474,7 +476,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                         const absenceType = this.getSelectedAbsenceType();
                         if (!absenceType) return;
                         if (absenceType.isFileRequired && !value) {
-                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.attachment']}));
+                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.files']}));
                         } else callback();
                       }
                     }]
@@ -736,6 +738,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           ...this.dataInstance.getFieldValues(this.fields),
           endTime: (item && item.endTime) ? moment(item.endTime, "hh:mm:ss") : null,
           startTime: (item && item.startTime) ? moment(item.startTime, "hh:mm:ss") : null,
+          files: this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.files) : undefined,
         };
 
         if (this.isCalledProcessInstanceData && !this.processInstanceData) {
@@ -747,11 +750,12 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         this.vacationScheduleCollection = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
             view: "_local",
             sort: "-startDate",
+            loadImmediately: true,
             filter: {
               conditions: [{
                 property: "personGroup.id",
                 operator: "=",
-                value: this.props.rootStore!.userInfo.personGroupId!
+                value: this.personGroupId
               },
                 {property: "startDate", operator: ">=", value: obj["requestDate"]}]
             }
