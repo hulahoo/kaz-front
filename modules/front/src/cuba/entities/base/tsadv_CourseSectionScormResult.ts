@@ -11,6 +11,7 @@ export class CourseSectionScormResult extends StandardEntity {
   score?: any | null;
   maxScore?: any | null;
   minScore?: any | null;
+  comment?: string | null;
 }
 export type CourseSectionScormResultViewName = "_base" | "_local" | "_minimal";
 export type CourseSectionScormResultView<

@@ -5,6 +5,7 @@ import {observer} from "mobx-react";
 import {Card, Form, Tabs} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {CourseSectionScormResult} from "../../../../cuba/entities/base/tsadv_CourseSectionScormResult";
+import {observable} from "mobx";
 
 const {TabPane} = Tabs;
 
@@ -16,10 +17,12 @@ export type LearningHistoryScormResultProps = {
 @observer
 class LearningHistoryScormResult extends React.Component<LearningHistoryScormResultProps & MainStoreInjected & WrappedComponentProps> {
 
+  @observable
   scormResult: CourseSectionScormResult[] = [];
 
-  render() {
+  @observable messages = this.props.mainStore!.messages!;
 
+  render() {
     return (
       <div>
         <Card className="narrow-layout card-actions-container">
@@ -27,7 +30,7 @@ class LearningHistoryScormResult extends React.Component<LearningHistoryScormRes
             {
               this.scormResult.map((scormResult, index) => {
                 return <TabPane
-                  tab={this.props.intl.messages[CourseSectionScormResult.NAME + '.question'] + " " + (1 + index)}
+                  tab={this.messages[CourseSectionScormResult.NAME + '.' + 'question'] + " " + (1 + index)}
                   key={"" + index}>
                   <div>
                     <Card className="narrow-layout">
@@ -46,6 +49,14 @@ class LearningHistoryScormResult extends React.Component<LearningHistoryScormRes
                           <TextArea
                             disabled={true}
                             value={scormResult!.answer!}
+                            rows={4}/>
+                        </div>
+
+                        <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                          {createElement(Msg, {entityName: CourseSectionScormResult.NAME, propertyName: "comment"})}
+                          <TextArea
+                            disabled={true}
+                            value={scormResult!.comment!}
                             rows={4}/>
                         </div>
                       </Form>

@@ -30,7 +30,7 @@ class LearningHistoryDiary extends React.Component<LearningHistoryDiaryProps & M
   @observable hasHomework: boolean = false;
   @observable hasCourseRecording: boolean = false;
   @observable isModalVisible: boolean = false;
-  @observable noteValue: string;
+  @observable noteValue: string = this.props.record.note || '';
   @observable type: 'note' | 'homework' | 'Course recordings';
 
   render() {
@@ -104,7 +104,7 @@ class LearningHistoryDiary extends React.Component<LearningHistoryDiaryProps & M
                     padding: '20px',
                   }}
                 />
-                <div style={{textAlign: 'center'}}>
+                <div style={{display: 'flex'}}>
                   <FormattedMessage id={"course.Recordings"}/>
                 </div>
               </div>)
@@ -128,6 +128,7 @@ class LearningHistoryDiary extends React.Component<LearningHistoryDiaryProps & M
                    this.isModalVisible = false
                  }
                }}
+               closable={false}
                onCancel={() => this.isModalVisible = false}>
           {this.renderDiary(this.type)}
         </Modal>
