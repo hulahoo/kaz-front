@@ -113,7 +113,30 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
     })
   };
 
+  validateActors = (): boolean => {
+
+    let isValidateSuccess = true;
+
+    this.bprocRolesDefiner!.links!
+      .filter(value => value.required)
+      .filter(value => value.isAddableApprover)
+      .forEach(value => {
+        const find = this.items.find(actor => actor.bprocUserTaskCode === value.bprocUserTaskCode);
+        if (!find) {
+          isValidateSuccess = false;
+          Notification.error({
+            message: this.props.intl.formatMessage({id: 'add.required.actor'}, {actor: value.hrRole!['_instanceName']})
+          });
+        }
+      })
+
+
+    return isValidateSuccess;
+  }
+
   handleOk = (e: any) => {
+
+    if (!this.validateActors()) return;
 
     const handleOk = () => Modal.confirm({
       title: this.props.intl.formatMessage(
@@ -172,7 +195,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
     if (this.props.isStartCommentVisible)
       this.props.form.validateFields(['bproc-comment'],
         {force: true},
-        (err, values) => {
+        (err) => {
           if (err) {
             message.error(
               this.props.intl.formatMessage({
@@ -257,8 +280,6 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   render() {
-    // if (!this.bprocRolesDefiner) return <LoadingPage/>;
-    // if (!this.items) return <div/>;
 
     return (
       <>
