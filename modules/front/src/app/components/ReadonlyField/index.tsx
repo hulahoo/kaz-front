@@ -7,7 +7,6 @@ import {FormComponentProps, FormItemProps} from "antd/lib/form";
 import {GetFieldDecoratorOptions} from "antd/lib/form/Form";
 import {MetaPropertyInfo} from "@cuba-platform/rest/dist-node/model";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
-import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {MultiFileUpload} from "../MultiFileUpload";
 
 @observer
@@ -46,8 +45,6 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
     const isToManyRelation = propertyInfo && this.isToManyRelation(propertyInfo.cardinality);
 
-    console.log(propertyInfo);
-
     const format = this.props.format || (isDate ? DEFAULT_DATE_PATTERN : undefined);
 
     const props = {
@@ -78,14 +75,4 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
   isToManyRelation = (cardinality: string) => {
     return cardinality === "ONE_TO_MANY" || cardinality === "MANY_TO_MANY";
   }
-}
-
-export const parseToJsonFromFieldValue = (fieldValue?: any[]) => {
-  return fieldValue ? fieldValue.map(value => value.id) : undefined;
-}
-
-export const parseToFieldValueFromDataInstanceValue = (dataInstanceValue?: any[] | null) => {
-  return dataInstanceValue ? dataInstanceValue.map((file: FileDescriptor) => {
-    return {id: file.id, name: file.name}
-  }) : undefined;
 }

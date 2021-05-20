@@ -79,6 +79,8 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
   absenceRequestFields = [
     "requestNumber",
 
+    "requestDate",
+
     "type",
 
     "startDate",
@@ -86,8 +88,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
     "endDate",
 
     "status",
-
-    "requestDate"
   ];
 
   @observable selectedRowKey: string | undefined;

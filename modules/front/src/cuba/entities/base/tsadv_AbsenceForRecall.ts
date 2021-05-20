@@ -6,7 +6,6 @@ import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
 import { FileDescriptor } from "./sys$FileDescriptor";
 export class AbsenceForRecall extends AbstractBprocRequest {
   static NAME = "tsadv_AbsenceForRecall";
-  absenceType?: DicAbsenceType | null;
   employee?: PersonGroupExt | null;
   vacation?: Absence | null;
   recallDateFrom?: any | null;
@@ -19,7 +18,7 @@ export class AbsenceForRecall extends AbstractBprocRequest {
   isFamiliarization?: boolean | null;
   leaveOtherTime?: boolean | null;
   compensationPayment?: boolean | null;
-  file?: FileDescriptor[] | null;
+  files?: FileDescriptor[] | null;
 }
 export type AbsenceForRecallViewName =
   | "_base"
@@ -89,11 +88,10 @@ export type AbsenceForRecallView<
       | "requestNumber"
       | "requestDate"
       | "comment"
-      | "absenceType"
       | "employee"
       | "vacation"
       | "purpose"
-      | "file"
+      | "files"
       | "status"
     >
   : never;

@@ -428,5 +428,6 @@
   "withholding.statement": "Withholding statement",
   "comment.required": "Fill in comments",
   "endDate": "End date",
-  "createDate": "Start date"
+  "createDate": "Start date",
+  "absenceForRecall.leaveOtherTime.info": "<p>The unused part of the paid annual leave due to the recall is granted:</p><ol><li>During the current working year</li><li>In the next working year at any time</li><li>Either joins the paid annual leave for the next working year.</li></ol>"
 }

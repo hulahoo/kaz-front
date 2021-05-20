@@ -9,6 +9,7 @@ import {IReactionDisposer, reaction} from "mobx";
 
 import "./style.less";
 import {observer} from "mobx-react";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 
 export type CustomFileUploadProps<E extends FileInfo | FileInfo[]> = {
   value?: E,
@@ -53,8 +54,6 @@ export class MultiFileUpload<E extends FileInfo | FileInfo[]> extends React.Comp
         .forEach(newFile => this.fileList.push(newFile));
     };
     this.handlePreview = (_file) => {
-
-      // console.log(_file);
 
       // const file = this.fileList.find(value => value.uid === _file.id) || this.fileList[0];
       getCubaREST()!.getFile(_file.uid).then((blob) => {
@@ -169,4 +168,14 @@ class CustomFileUploadDropArea<E extends FileInfo | FileInfo[]> extends React.Co
       // )
     );
   }
+}
+
+export const parseToJsonFromFieldValue = (fieldValue?: any[]) => {
+  return fieldValue ? fieldValue.map(value => value.id) : undefined;
+}
+
+export const parseToFieldValueFromDataInstanceValue = (dataInstanceValue?: any[] | null): any[] | undefined => {
+  return dataInstanceValue ? dataInstanceValue.map((file: FileDescriptor) => {
+    return {id: file.id, name: file.name}
+  }) : undefined;
 }

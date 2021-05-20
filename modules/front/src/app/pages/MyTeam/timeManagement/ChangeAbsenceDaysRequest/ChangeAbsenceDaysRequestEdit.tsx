@@ -23,11 +23,7 @@ import LoadingPage from "../../../LoadingPage";
 import Page from "../../../../hoc/PageContentHoc";
 import Section from "../../../../hoc/Section";
 import Button, {ButtonType} from "../../../../components/Button/Button";
-import {
-  parseToFieldValueFromDataInstanceValue,
-  parseToJsonFromFieldValue,
-  ReadonlyField
-} from "../../../../components/ReadonlyField";
+import {ReadonlyField} from "../../../../components/ReadonlyField";
 import {RootStoreProp} from "../../../../store";
 import {PersonExt} from "../../../../../cuba/entities/base/base$PersonExt";
 import {ChangeAbsenceDaysRequest} from "../../../../../cuba/entities/base/tsadv_ChangeAbsenceDaysRequest";
@@ -41,6 +37,10 @@ import {restServices} from "../../../../../cuba/services";
 import Notification from "../../../../util/Notification/Notification";
 import TextArea from "antd/es/input/TextArea";
 import {DicAbsenceType} from "../../../../../cuba/entities/base/tsadv$DicAbsenceType";
+import {
+  parseToFieldValueFromDataInstanceValue,
+  parseToJsonFromFieldValue
+} from "../../../../components/MultiFileUpload";
 
 type EditorProps = {
   entityId: string;
@@ -93,7 +93,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
     "familiarization",
 
-    "file"
+    "files"
   ];
 
   @observable
@@ -183,14 +183,14 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     if (this.isNotDraft())
       return {
         ...this.props.form.getFieldsValue(this.fields),
-        file: parseToJsonFromFieldValue(this.props.form.getFieldValue('file')),
+        files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
       }
 
     return {
       employee: this.absence!.personGroup!.id,
       vacation: this.absence,
       ...this.props.form.getFieldsValue(this.fields),
-      file: parseToJsonFromFieldValue(this.props.form.getFieldValue('file')),
+      files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
     }
   };
 
@@ -466,13 +466,13 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
-                  propertyName="file"
+                  propertyName="files"
                   form={this.props.form}
                   disabled={isNotDraft}
                   getFieldDecoratorOpts={{
                     rules: [{
                       required: !!(this.absence && this.absence.type && this.absence.type.isFileRequired && !isNotDraft),
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.file']})
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.files']})
                     }]
                   }}
                   formItemOpts={{style: {marginBottom: "12px"}}}/>
@@ -559,7 +559,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
         const obj = {
           ...this.dataInstance.getFieldValues(this.fields),
-          file: this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.file) : undefined,
+          files: this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.files) : undefined,
         };
         if (this.isCalledProcessInstanceData && !this.processInstanceData) {
           const now = moment();

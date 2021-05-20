@@ -26,11 +26,7 @@ import Section from "../../../../../hoc/Section";
 import {DicRequestStatus} from "../../../../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {DicAbsenceType} from "../../../../../../cuba/entities/base/tsadv$DicAbsenceType";
 import AbstractBprocEdit from "../../../../Bproc/abstract/AbstractBprocEdit";
-import {
-  parseToFieldValueFromDataInstanceValue,
-  parseToJsonFromFieldValue,
-  ReadonlyField
-} from "../../../../../components/ReadonlyField";
+import {ReadonlyField} from "../../../../../components/ReadonlyField";
 import {rootStore} from "../../../../../store";
 import {restServices} from "../../../../../../cuba/services";
 import {DicPurposeAbsence} from "../../../../../../cuba/entities/base/tsadv_DicPurposeAbsence";
@@ -45,6 +41,10 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import {PersonExt} from "../../../../../../cuba/entities/base/base$PersonExt";
 import DefaultDatePicker from "../../../../../components/Datepicker";
 import Notification from "../../../../../util/Notification/Notification";
+import {
+  parseToFieldValueFromDataInstanceValue,
+  parseToJsonFromFieldValue
+} from "../../../../../components/MultiFileUpload";
 
 
 type Props = FormComponentProps & EditorProps;
