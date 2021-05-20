@@ -336,11 +336,21 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   getFieldDecoratorOpts={{
                     getValueFromEvent: args => {
                       const vacationSchedule = this.vacationScheduleCollection.items.find(value => value.id === args);
-                      if (vacationSchedule)
+                      if (vacationSchedule) {
+                        const dateFrom = moment(vacationSchedule.startDate);
+                        const dateTo = moment(vacationSchedule.endDate);
                         this.props.form.setFieldsValue({
-                          dateFrom: moment(vacationSchedule.startDate),
-                          dateTo: moment(vacationSchedule.endDate)
-                        })
+                          dateFrom: dateFrom,
+                          dateTo: dateTo
+                        });
+
+                        this.calcAbsenceDays(null, dateFrom, dateTo);
+                        this.checkMinDayAbsence(null, dateFrom);
+                        this.checkDaysCalendarYear(null, dateFrom);
+                        this.getAbsenceBalance(null, dateFrom);
+
+                      }
+                      return args;
                     }
                   }}
                 />
@@ -757,7 +767,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                 operator: "=",
                 value: this.personGroupId
               },
-                {property: "startDate", operator: ">=", value: obj["requestDate"]}]
+                {property: "startDate", operator: ">=", value: obj["requestDate"]},
+                {property: "sentToOracle", operator: "=", value: 'SENT_TO_ORACLE'}]
             }
           }
         );
