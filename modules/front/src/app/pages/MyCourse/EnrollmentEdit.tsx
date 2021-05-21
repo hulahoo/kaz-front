@@ -102,23 +102,23 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
             <Row>
               <Col span={16}>
                 <div className="course-logo">
-                  <div style={{width: '100%', marginBottom: '30px'}}>
+                  <div style={{width: '100%'}}>
                     <img src={require('../../../resources/img/tdc_logo.png')} alt="tdc logo" style={{width: '20%'}}/>
+                    {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
+                      <div className="play-block">
+                        <div className="play-icon" onClick={this.playIconClick}>
+                          <div className="triangle-icon"/>
+                        </div>
+                        {/*<Icon type="caret-right" className="play-icon"/>*/}
+                        <h1
+                          className="play-text">{this.selectedSection
+                          ? this.selectedSection.type === "course-section"
+                            ? this.dataInstance.course!.sections!.find(s => s.id === this.selectedSection!.id)!.sectionName
+                            : this.feedbacks!.find(s => s.id === this.selectedSection!.id)!.name
+                          : null}
+                        </h1>
+                      </div>}
                   </div>
-                  {this.status === 'LOADING' || this.status === 'CLEAN' ? <NoImage/> :
-                    <div className="play-block">
-                      <div className="play-icon" onClick={this.playIconClick}>
-                        <div className="triangle-icon"/>
-                      </div>
-                      {/*<Icon type="caret-right" className="play-icon"/>*/}
-                      <h1
-                        className="play-text">{this.selectedSection
-                        ? this.selectedSection.type === "course-section"
-                          ? this.dataInstance.course!.sections!.find(s => s.id === this.selectedSection!.id)!.sectionName
-                          : this.feedbacks!.find(s => s.id === this.selectedSection!.id)!.name
-                        : null}
-                      </h1>
-                    </div>}
                   <div style={{width: '100%'}}>
                     <img src={require('../../../resources/img/lines.png')} alt="tdc logo" style={{width: '100%'}}/>
                   </div>
