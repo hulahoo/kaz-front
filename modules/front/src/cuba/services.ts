@@ -53,6 +53,8 @@ export type CourseTrainerInfo = {
   courseCount?: number,
   image?: any,
   comments?: any[],
+  information?: string,
+  greeting?: string
 }
 
 export type PairModel<K, V> = {

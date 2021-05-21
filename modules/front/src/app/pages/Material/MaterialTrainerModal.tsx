@@ -32,7 +32,7 @@ class MaterialTrainerModal extends Component<MaterialTrainerModalProps & Materia
             <Col sm={7} xs={24} style={{'display': 'flex', 'align-items': 'center'}}>
               <div className="course-trainer-modal-image">
                 {trainer.image ? <img alt={trainer.fullName}
-                                              src={trainer.image.blob}/> :
+                                      src={trainer.image.blob}/> :
                   <img alt={trainer.fullName}
                        src={require("../../../resources/img/default-user.svg")}/>}
               </div>
@@ -68,14 +68,14 @@ class MaterialTrainerModal extends Component<MaterialTrainerModalProps & Materia
                   <Form.Item label={this.props.intl.formatMessage({id: "course.greetingTrainer"})}
                              className={"form-item"}
                              key='finished'>
-                    {"Тут должно быть приветствие от тренера с наилучшими пожеланиями"}
+                    {trainer.greeting}
                   </Form.Item>
                 </Row>
                 <Row>
                   <Form.Item label={this.props.intl.formatMessage({id: "course.trainerInformation"})}
                              className={"form-item"}
                              key='trainerInfo'>
-                    {"Тут должна быть информация о тренере с наилучшими пожеланиями"}
+                    {trainer.information}
                   </Form.Item>
                 </Row>
               </div>
