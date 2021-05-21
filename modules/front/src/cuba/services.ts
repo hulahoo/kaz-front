@@ -73,6 +73,13 @@ export type OrgStructureFilterParams = {
   requestId: string
 } & ({ changeTypeFilter: "ALL" | "NEW" | "EDIT" | "CLOSE" } | { displayFilter: "ALL" | "CHANGES" })
 
+type ReportExtension = "xls" | "doc" | "docx" | "xlsx" | "html" | "pdf" | "csv" | "custom";
+
+type ReportResponse = {
+  extension: ReportExtension,
+  content: string
+}
+
 export const restServices = {
   userMenuService: {
     getTimeZones: (params?: {}, fetchOpts?: FetchOptions) => {
@@ -560,13 +567,6 @@ export const restServices = {
         "findManagerListByPositionGroupReturnListPosition",
         {...param}
       ).then(r => JSON.parse(r));
-    },
-    availableSalary: (param?: {}): Promise<boolean> => {
-      return getCubaREST()!.invokeService<string>(
-        "tsadv_EmployeeService",
-        "availableSalary",
-        {...param}
-      ).then(r => JSON.parse(r));
     }
   },
   orgStructureService: {
@@ -622,6 +622,20 @@ export const restServices = {
       return getCubaREST()!.invokeService<string>(
         "tsadv_OrgStructureRequestService",
         "getMergedOrgStructure",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    availableSalary: (param?: {}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "availableSalary",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    hasPermitToCreate: (param?: {}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "hasPermitToCreate",
         {...param}
       ).then(r => JSON.parse(r));
     }
@@ -684,6 +698,14 @@ export const restServices = {
         }
       ).then(value => JSON.parse(value));
     },
+  },
+  commonReportsService: {
+    downloadReportByCode: (params: { reportCode: string, entityId: string, entityParamName: string }): Promise<ReportResponse> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_CommonReportsService",
+        "downloadReportByCode",
+        params).then(response => JSON.parse(response));
+    }
   }
 };
 

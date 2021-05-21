@@ -115,7 +115,7 @@
   "menu.job-offers": "Job Offers",
   "menu.certificateRequest": "Справка с места работы",
   "menu.absenceRequest": "Отсутствие",
-  "menu.org-structure-request": "Заявка на изменение орг.структуры",
+  "menu.orgStructureRequest": "Заявка на изменение орг.структуры",
   "menu.dmc-my": "Добровольное медицинское страхование",
   "menu.absence": "Отсутствие",
   "menu.schedule-offsets": "Графики сменности",
@@ -399,5 +399,7 @@
   "general.information": "Общие сведения",
   "family.member.information": "Сведения по членам семьи",
   "password.error.empty": "Пароль не может быть пустым!",
-  "book.view": "Читать"
+  "book.view": "Читать",
+  "orgStructureRequest.report": "Отчет",
+  "orgStructureRequest.order": "Приказ"
 }

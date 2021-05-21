@@ -134,10 +134,10 @@ export default class MenuStore {
       //   component: null,
       // },
       {
-        id: "org-structure-request",
+        id: "orgStructureRequest",
         caption: "Заявка по Орг.структуре",
-        menuLink: "/org-structure-request",
-        pathPattern: "/org-structure-request",
+        menuLink: "/orgStructureRequest",
+        pathPattern: "/orgStructureRequest",
         component: null,
       }
     ]

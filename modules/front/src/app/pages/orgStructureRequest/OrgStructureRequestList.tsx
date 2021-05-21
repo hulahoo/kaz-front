@@ -19,6 +19,7 @@ import {OrganizationGroupExt} from "../../../cuba/entities/base/base$Organizatio
 import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {RootStoreProp} from "../../store";
+import {restServices} from "../../../cuba/services";
 
 @injectMainStore
 @inject("rootStore")
@@ -26,6 +27,8 @@ import {RootStoreProp} from "../../store";
 class OrgStructureRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   @observable selectedRowKey: string | undefined;
+
+  @observable hasPermitToCreate: boolean = false;
 
   dataCollection = collection<OrgStructureRequest>(
     OrgStructureRequest.NAME, {
@@ -45,17 +48,18 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
 
   render() {
     const buttons = [
-      <Link
-        to={OrgStructureRequestManagement.PATH + "/" + OrgStructureRequestManagement.NEW_SUBPATH}
-        key="create">
-        <Button
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          type="primary">
-          <Icon type="plus"/>
-          <FormattedMessage id="management.browser.create"/>
-        </Button>
-      </Link>
+      this.hasPermitToCreate
+        ? <Link
+          to={OrgStructureRequestManagement.PATH + "/" + OrgStructureRequestManagement.NEW_SUBPATH}
+          key="create">
+          <Button
+            htmlType="button"
+            style={{margin: "0 12px 12px 0"}}
+            type="primary">
+            <Icon type="plus"/>
+            <FormattedMessage id="management.browser.create"/>
+          </Button>
+        </Link> : null
     ];
 
     return (
@@ -149,6 +153,13 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
     }
 
     return record;
+  }
+
+  componentDidMount(): void {
+    restServices.orgStructureService.hasPermitToCreate()
+      .then((hasPermitToCreate: boolean) => {
+        this.hasPermitToCreate = hasPermitToCreate;
+      });
   }
 }
 

@@ -153,7 +153,7 @@
   "menu.assignments": "Assignments",
   "menu.working-time-management": "Working time management",
   "menu.hr-request-manager": "HR requests by Manager",
-  "menu.org-structure-request": "Org.structure change request",
+  "menu.orgStructureRequest": "Org.structure change request",
   "menu.vacation-recall-request": "Vacation recall request",
   "menu.vacation-change-request": "Vacation change request",
   "menu.working-schedule": "Working schedule / regime change",
@@ -411,5 +411,7 @@
   "family.member.information": "Family member information",
   "comment.rate.error.required": "Rate is not selected",
   "password.error.empty": "Password can not be empty!",
-  "book.view": "View"
+  "book.view": "View",
+  "orgStructureRequest.report": "Report",
+  "orgStructureRequest.order": "Order"
 }

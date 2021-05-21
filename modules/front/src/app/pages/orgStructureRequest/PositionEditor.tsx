@@ -21,6 +21,9 @@ export class PositionSaveModel {
   parentOrganizationGroupId: string | null;
   gradeGroupId: string | null;
   headCount: number | 0;
+  baseSalary?: number;
+  maxSalary?: number;
+  minSalary?: number;
   parentRdId: string | null
 }
 
@@ -53,7 +56,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["id", "rId", "gradeGroupId", "positionGroupId", "parentId", "nameRu", "nameEn", "headCount"];
+  fields = ["id", "rId", "gradeGroupId", "positionGroupId", "parentId", "nameRu", "nameEn", "headCount", "minSalary", "maxSalary"];
 
   locale = this.props.mainStore!.locale!;
 
@@ -80,6 +83,8 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       posSaveModel.positionGroupId = formData.positionGroupId;
       posSaveModel.gradeGroupId = formData.gradeGroupId;
       posSaveModel.headCount = formData.headCount;
+      posSaveModel.maxSalary = formData.maxSalary;
+      posSaveModel.minSalary = formData.minSalary;
 
       let pId = formData.parentId;
       if (pId !== undefined && pId !== null) {
@@ -224,6 +229,28 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
               rules: [{
                 required: true,
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'headCount']})
+              }]
+            })(
+              <InputNumber/>
+            )}
+          </Form.Item>
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='minSalary'/>}
+                     key="minSalary">
+            {getFieldDecorator('minSalary', {
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'minSalary']})
+              }]
+            })(
+              <InputNumber/>
+            )}
+          </Form.Item>
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='maxSalary'/>}
+                     key="maxSalary">
+            {getFieldDecorator('maxSalary', {
+              rules: [{
+                required: true,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'maxSalary']})
               }]
             })(
               <InputNumber/>

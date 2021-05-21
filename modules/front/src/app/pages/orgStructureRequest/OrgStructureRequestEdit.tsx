@@ -41,6 +41,7 @@ import moment from "moment";
 import DefaultDatePicker from "../../components/Datepicker";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
+import {downloadReport} from "../../util/reportUtil";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -487,7 +488,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
         return this.columnsOptions[c.group];
       });
 
-    const bprocButtons = this.getOutcomeBtns();
+    const bprocButtons = this.isNewEntity() ? null : this.getOutcomeBtns();
 
     const isDisabledFields = this.isNotDraft();
 
@@ -742,13 +743,17 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     );
   };
 
+  afterSendOnApprove = () => {
+    this.props.history!.push(OrgStructureRequestManagement.PATH);
+  };
+
   componentWillUnmount() {
     this.reactionDisposer();
   }
 
   componentDidMount() {
     super.componentDidMount();
-    restServices.employeeService.availableSalary()
+    restServices.orgStructureService.availableSalary()
       .then((availableSalary: boolean) => {
         this.availableSalary = availableSalary;
       });
@@ -756,10 +761,6 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
       this.usersHrRoles = usersHrRoles.map(v => v.code!);
     });
   }
-
-  processInstanceBusinessKey = (): string => {
-    return this.processDefinitionKey;
-  };
 
   hasRole = (roleCode: string): boolean => {
     return this.usersHrRoles.findIndex(v => v === roleCode) != -1;
@@ -827,6 +828,29 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
         buttons.push(editButton);
       }
     }
+    if (this.isNotDraft) {
+      const printReportButton = <Button
+        htmlType="button"
+        style={{margin: "0 12px 12px 0"}}
+        onClick={this.onClickDownloadReport}
+        className={"b-btn"}
+        key="refresh"
+        type="default">
+        <Icon type="file-excel"/>
+        {this.props.intl.formatMessage({id: 'orgStructureRequest.report'})}
+      </Button>;
+      const printOrderButton = <Button
+        htmlType="button"
+        style={{margin: "0 12px 12px 0"}}
+        onClick={this.onClickDownloadOrder}
+        className={"b-btn"}
+        key="refresh"
+        type="default">
+        <Icon type="file-excel"/>
+        {this.props.intl.formatMessage({id: 'orgStructureRequest.order'})}
+      </Button>;
+      buttons.push(printReportButton, printOrderButton);
+    }
     buttons.push(refreshButton);
     return buttons;
   };
@@ -880,6 +904,14 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
 
   getUpdateEntityData = () => {
     return this.props.form.getFieldsValue(this.fields)
+  }
+
+  onClickDownloadReport = () => {
+    downloadReport("ORG_SRTUCTURE", this.props.entityId, this.props.intl.formatMessage({id: 'orgStructureRequest.report'}), "req");
+  }
+
+  onClickDownloadOrder = () => {
+    downloadReport("ORDER", this.props.entityId, this.props.intl.formatMessage({id: 'orgStructureRequest.order'}), "req");
   }
 }
 
