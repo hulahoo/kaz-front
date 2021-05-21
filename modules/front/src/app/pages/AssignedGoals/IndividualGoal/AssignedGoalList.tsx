@@ -315,6 +315,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
     return (
       <Table
+        style={{overflowX: 'auto'}}
         dataSource={this.dataCollection.length > 0 ? this.dataCollection.slice() : []} pagination={false}
         size="default" bordered={false} rowKey="id">
         <Column key="category_icon"
