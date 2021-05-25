@@ -821,6 +821,26 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
       <Icon type="sync"/>
       <FormattedMessage id="management.browser.refresh"/>
     </Button>;
+    const printReportButton = <Button
+      htmlType="button"
+      style={{margin: "0 12px 12px 0"}}
+      onClick={this.onClickDownloadReport}
+      className={"b-btn"}
+      key="report-button"
+      type="default">
+      <Icon type="file-excel"/>
+      {this.props.intl.formatMessage({id: 'orgStructureRequest.report'})}
+    </Button>;
+    const printOrderButton = <Button
+      htmlType="button"
+      style={{margin: "0 12px 12px 0"}}
+      onClick={this.onClickDownloadOrder}
+      className={"b-btn"}
+      key="order-button"
+      type="default">
+      <Icon type="file-excel"/>
+      {this.props.intl.formatMessage({id: 'orgStructureRequest.order'})}
+    </Button>;
     if (!this.isNotDraft()) {
       buttons.push(createButton, editButton, deleteButton);
     } else {
@@ -828,30 +848,8 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
         buttons.push(editButton);
       }
     }
-    if (this.isNotDraft) {
-      const printReportButton = <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        onClick={this.onClickDownloadReport}
-        className={"b-btn"}
-        key="refresh"
-        type="default">
-        <Icon type="file-excel"/>
-        {this.props.intl.formatMessage({id: 'orgStructureRequest.report'})}
-      </Button>;
-      const printOrderButton = <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        onClick={this.onClickDownloadOrder}
-        className={"b-btn"}
-        key="refresh"
-        type="default">
-        <Icon type="file-excel"/>
-        {this.props.intl.formatMessage({id: 'orgStructureRequest.order'})}
-      </Button>;
-      buttons.push(printReportButton, printOrderButton);
-    }
     buttons.push(refreshButton);
+    buttons.push(printReportButton, printOrderButton);
     return buttons;
   };
 

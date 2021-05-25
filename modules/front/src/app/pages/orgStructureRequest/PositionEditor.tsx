@@ -60,6 +60,9 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
 
   locale = this.props.mainStore!.locale!;
 
+  @observable
+  isCbCompany: boolean = false;
+
   save = (e: React.MouseEvent) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -83,8 +86,11 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       posSaveModel.positionGroupId = formData.positionGroupId;
       posSaveModel.gradeGroupId = formData.gradeGroupId;
       posSaveModel.headCount = formData.headCount;
-      posSaveModel.maxSalary = formData.maxSalary;
-      posSaveModel.minSalary = formData.minSalary;
+
+      if (this.isCbCompany) {
+        posSaveModel.maxSalary = formData.maxSalary;
+        posSaveModel.minSalary = formData.minSalary;
+      }
 
       let pId = formData.parentId;
       if (pId !== undefined && pId !== null) {
@@ -234,28 +240,30 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
               <InputNumber/>
             )}
           </Form.Item>
-          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='minSalary'/>}
-                     key="minSalary">
-            {getFieldDecorator('minSalary', {
-              rules: [{
-                required: true,
-                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'minSalary']})
-              }]
-            })(
-              <InputNumber/>
-            )}
-          </Form.Item>
-          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='maxSalary'/>}
-                     key="maxSalary">
-            {getFieldDecorator('maxSalary', {
-              rules: [{
-                required: true,
-                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'maxSalary']})
-              }]
-            })(
-              <InputNumber/>
-            )}
-          </Form.Item>
+          {this.isCbCompany ? <>
+            <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='minSalary'/>}
+                       key="minSalary">
+              {getFieldDecorator('minSalary', {
+                rules: [{
+                  required: true,
+                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'minSalary']})
+                }]
+              })(
+                <InputNumber/>
+              )}
+            </Form.Item>
+            <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='maxSalary'/>}
+                       key="maxSalary">
+              {getFieldDecorator('maxSalary', {
+                rules: [{
+                  required: true,
+                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'maxSalary']})
+                }]
+              })(
+                <InputNumber/>
+              )}
+            </Form.Item>
+          </> : null}
 
           {this.globalErrors.length > 0 && (
             <Alert
@@ -298,6 +306,10 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       }
     }
     this.props.form.setFieldsValue(model);
+    restServices.employeeService.hasHrRole({dicHrCode: "C&B_COMPANY"})
+      .then(response => {
+        this.isCbCompany = response
+      })
   }
 }
 

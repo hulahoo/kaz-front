@@ -567,6 +567,13 @@ export const restServices = {
         "findManagerListByPositionGroupReturnListPosition",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+    hasHrRole: (param: {dicHrCode: string}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "hasHrRole",
+        {...param}
+      ).then(r => JSON.parse(r));
     }
   },
   orgStructureService: {
