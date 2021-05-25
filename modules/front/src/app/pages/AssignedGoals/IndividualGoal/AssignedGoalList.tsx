@@ -339,7 +339,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                   return a.goalString.localeCompare(b.goalString);
                 }}
                 render={((text, record, index) => {
-                  return this.props.readonly
+                  return this.props.readonly || !record.cantDelete
                     ? text
                     : <Link to={this.getGoalUrl(record)}>{text}</Link>
                 })}/>
@@ -386,8 +386,8 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
         <Column
           title=""
           key="action"
-          render={ag => {
-            return this.props.readonly
+          render={(ag, record) => {
+            return this.props.readonly || !(record as any).cantDelete
               ? <></>
               : <Button type="link"
                         style={{padding: 0}}
