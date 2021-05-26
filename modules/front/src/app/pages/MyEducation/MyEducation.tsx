@@ -29,7 +29,7 @@ class MyEducation extends Component<WrappedComponentProps> {
         url: "/" + EnrollmentManagement.PATH
       },
       {
-        id: "learn-history",
+        id: "learning-history",
         name: this.props.intl.formatMessage({id: "menu.learn-history"}),
         url: "/" + LearningHistoryManagement.PATH
       },
