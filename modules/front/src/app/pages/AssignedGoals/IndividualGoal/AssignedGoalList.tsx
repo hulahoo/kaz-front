@@ -25,6 +25,7 @@ import {ReactComponent as CascadeSvg} from "../../../../resources/icons/goal/cas
 import {ReactComponent as IndividualSvg} from "../../../../resources/icons/goal/individual-goal.svg";
 import {ReactComponent as LibrarySvg} from "../../../../resources/icons/goal/library-goal.svg";
 import TextArea from "antd/es/input/TextArea";
+import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
 
 type Props = {
   assignedPerformancePlanId: string;
@@ -338,20 +339,27 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                   }
                   return a.goalString.localeCompare(b.goalString);
                 }}
-                render={((text, record, index) => {
+                render={((text, record: AssignedGoal, index) => {
+                  console.log((record.goalString + ""));
+                  const renderedText = record.goalString && record.goalString.trim().length > 0
+                    ? record.goalString
+                    : record.goal
+                      ? (record.goal as SerializedEntity<Goal>)._instanceName
+                      : null;
+
                   return this.props.readonly
-                    ? text
-                    : <Link to={this.getGoalUrl(record)}>{text}</Link>
+                    ? renderedText
+                    : <Link to={this.getGoalUrl(record)}>{renderedText}</Link>
                 })}/>
         <Column title={<FormattedMessage id="goalForm.column.kpiDetails"/>}
-                dataIndex="successCriteria"
+                dataIndex="successCriteriaLang"
                 key="successCriteria"
                 sorter={(a: any, b: any) => {
                   if (a.key) {
                     return a;
                   }
-                  const aSuccessCriteria = a.successCriteria || (a.goal ? a.goal.successCriteria : undefined);
-                  const bSuccessCriteria = b.successCriteria || (b.goal ? b.goal.successCriteria : undefined);
+                  const aSuccessCriteria = a.successCriteriaLang || (a.goal ? a.goal.successCriteriaLang : undefined);
+                  const bSuccessCriteria = b.successCriteriaLang || (b.goal ? b.goal.successCriteriaLang : undefined);
 
                   if (aSuccessCriteria && bSuccessCriteria) {
                     return aSuccessCriteria.localeCompare(bSuccessCriteria);
@@ -362,7 +370,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 }}
                 render={(text, record) => {
                   const assignedGoal = record as AssignedGoal;
-                  return text || (assignedGoal.goal ? assignedGoal.goal.successCriteria : '');
+                  return text || (assignedGoal.goal ? (assignedGoal.goal as any).successCriteriaLang : '');
                 }}
         />
         <Column title={<FormattedMessage id="kpi.goals.weight"/>}
