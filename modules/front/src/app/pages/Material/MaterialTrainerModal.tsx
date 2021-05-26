@@ -49,7 +49,7 @@ class MaterialTrainerModal extends Component<MaterialTrainerModalProps & Materia
                 <Row>
                   <Col className={"form-item-container"} style={{marginTop: '32px'}}>
                     <Form.Item
-                      label={this.props.intl.formatMessage({id: "course.students"})[0].toUpperCase() + "" + this.props.intl.formatMessage({id: "course.students"}).slice(1, this.props.intl.formatMessage({id: "course.students"}).length - 1)}
+                      label={this.props.intl.formatMessage({id: "course.students"})}
                       className={"form-item"}
                       key='finished'>{
                       <span>{trainer.finished}</span>
