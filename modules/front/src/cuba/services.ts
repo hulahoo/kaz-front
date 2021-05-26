@@ -33,6 +33,7 @@ import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
+import {EnrollmentStatus} from "./enums/enums";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -68,6 +69,45 @@ export type ScormInputData = {
   score: number;
   maxScore: number;
   minScore: number;
+}
+
+export type CourseCatalogModel = {
+  id: string,
+  langValue: string,
+  courses: Array<{
+    id: string,
+    name: string,
+    enrollmentId?: string,
+    enrollmentStatus?: EnrollmentStatus,
+    logo: string,
+    isOnline: boolean
+  }>
+}
+
+export type EnrollmentCatalogModel = {
+  id: string,
+  langValue: string,
+  courses: Array<{
+    id: string,
+    name: string,
+    enrollmentId?: string,
+    enrollmentStatus?: EnrollmentStatus,
+    logo?: string,
+    isOnline?: boolean,
+    rating?: number,
+    commentCount?: number
+  }>
+}
+
+export type OrgStructureFilterParams = {
+  requestId: string
+} & ({ changeTypeFilter: "ALL" | "NEW" | "EDIT" | "CLOSE" } | { displayFilter: "ALL" | "CHANGES" })
+
+type ReportExtension = "xls" | "doc" | "docx" | "xlsx" | "html" | "pdf" | "csv" | "custom";
+
+type ReportResponse = {
+  extension: ReportExtension,
+  content: string
 }
 
 export const restServices = {
@@ -141,7 +181,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    searchCourses: (params: { courseName: string }): Promise<DicCategory[]> => {
+    searchCourses: (params: { courseName: string }): Promise<Array<CourseCatalogModel>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "searchCourses",
@@ -159,7 +199,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    allCourses: (): Promise<any> => {
+    allCourses: (): Promise<Array<CourseCatalogModel>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "allCourses",
@@ -211,7 +251,7 @@ export const restServices = {
     }
   },
   enrollmentService: {
-    searchEnrollments: (params: { courseName?: string, userId: string }): Promise<SerializedEntity<DicCategory>[]> => {
+    searchEnrollments: (params: { courseName?: string}): Promise<SerializedEntity<EnrollmentCatalogModel>[]> => {
       return getCubaREST()!.invokeService(
         "tsadv_EnrollmentService",
         "searchEnrollment",

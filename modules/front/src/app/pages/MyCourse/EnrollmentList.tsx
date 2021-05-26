@@ -1,14 +1,13 @@
 import React from 'react';
 import {Spin, Tabs} from "antd";
 import {inject, observer} from "mobx-react";
-import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
 import {Link} from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import {observable, runInAction} from "mobx";
 import {RootStoreProp} from "../../store";
 import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {restServices} from "../../../cuba/services";
+import {EnrollmentCatalogModel, restServices} from "../../../cuba/services";
 import PanelCard from "../../components/CourseCard";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
@@ -28,13 +27,12 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
   status = "LOADING";
 
   @observable
-  dataCollection: DicCategory[] = [];
+  dataCollection: EnrollmentCatalogModel[] = [];
 
   onSearch = (value: string) => {
     if (value) {
       restServices.enrollmentService.searchEnrollments({
-        courseName: value,
-        userId: this.props.rootStore!.userInfo.personGroupId!
+        courseName: value
       }).then(response => {
         if (response.length === 0) {
           Notification.info({
@@ -62,8 +60,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
           <Spin spinning={this.status === 'LOADING'}>
             <SearchInput onSearch={this.onSearch}/>
             {this.status === 'DONE' ? <Tabs onChange={this.tabOnChange} defaultActiveKey={defaultTabKey}>
-              {this.dataCollection.map((category: SerializedEntity<DicCategory>) => <TabPane
-                tab={category._instanceName}
+              {this.dataCollection.map((category: SerializedEntity<EnrollmentCatalogModel>) => <TabPane
+                tab={category.langValue}
                 key={category.id}>
                 <div className={"courses-cards-wrapper"}>
                   <div className={"courses-cards"}>
@@ -73,8 +71,8 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                     name={course.name!}
                                                                                     header={(<>
                                                                                       {
-                                                                                        course.enrollments!.length > 0 && (CardIconFactory.getIcon(course.enrollments![0].status) != null)
-                                                                                          ? React.createElement(CardIconFactory.getIcon(course.enrollments![0].status)!, {className: "course-icon left-icon"})
+                                                                                        course.enrollmentStatus && CardIconFactory.getIcon(course.enrollmentStatus) != null
+                                                                                          ? React.createElement(CardIconFactory.getIcon(course.enrollmentStatus)!, {className: "course-icon left-icon"})
                                                                                           : null
                                                                                       }
                                                                                       {course.isOnline ?
@@ -85,7 +83,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
                                                                                         null}
                                                                                       <ImageLogo
                                                                                         type="src"
-                                                                                        imgSrc={course.logo ? getFileUrl(course.logo.id) : undefined}
+                                                                                        imgSrc={course.logo ? getFileUrl(course.logo) : undefined}
                                                                                         name={course.name!}/>
                                                                                     </>)}>
 
@@ -112,7 +110,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
   }
 
   loadData = () => {
-    restServices.enrollmentService.searchEnrollments({userId: this.props.rootStore!.userInfo.personGroupId!}).then(response => {
+    restServices.enrollmentService.searchEnrollments({}).then(response => {
       runInAction(() => {
         this.dataCollection = response;
         this.status = "DONE";
