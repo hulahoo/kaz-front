@@ -435,6 +435,18 @@ export const restServices = {
         {...param}
       );
     },
+    scheduleOffsetDaysBeforeAbsence: (): Promise<number | undefined> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "scheduleOffsetDaysBeforeAbsence",
+        {}
+      ).then(response => {
+        if (!response) {
+          return undefined
+        }
+        return response;
+      });
+    },
   },
   absenceRvdService: {
     countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {

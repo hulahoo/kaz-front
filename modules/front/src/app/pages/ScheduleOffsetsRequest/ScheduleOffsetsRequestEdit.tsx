@@ -9,7 +9,6 @@ import {withRouter} from "react-router-dom";
 import {
   collection,
   DataCollectionStore,
-  Field,
   getCubaREST,
   injectMainStore,
   Msg,
@@ -40,6 +39,7 @@ import TextArea from "antd/es/input/TextArea";
 import MsgEntity from '../../components/MsgEntity';
 import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
 import {DicEarningPolicy} from "../../../cuba/entities/base/tsadv_DicEarningPolicy";
+import {Moment} from "moment";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -87,6 +87,9 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
   @observable
   isDisabledFields = true;
+
+  @observable
+  daysBeforeAbsence: number;
 
   reactionDisposer: IReactionDisposer;
 
@@ -415,15 +418,37 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     this.isVisiblePurposeText = purposeCode == undefined ? false : purposeCode.toLowerCase() === 'other';
   };
 
-  getUpdateEntityData = (): any => {
-    if (this.isNotDraft())
-      return {
-        ...this.props.form.getFieldsValue(this.fields)
-      };
+  validate = (): Promise<boolean> => {
+    let isValidatedSuccess = true;
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
+      isValidatedSuccess = !err;
+      if (err) {
+        Notification.error({
+          message: this.props.intl.formatMessage({id: "management.editor.validationError"})
+        });
+      }
+    });
+    if (isValidatedSuccess) {
+      if (this.daysBeforeAbsence) {
+        const {dateOfStartNewSchedule, requestDate} = this.props.form.getFieldsValue(["dateOfStartNewSchedule", "requestDate"]);
+        const numberOfDays = (dateOfStartNewSchedule as Moment).diff(requestDate, 'days');
+        console.log(this.daysBeforeAbsence);
+        console.log(numberOfDays);
+        if (numberOfDays < this.daysBeforeAbsence) {
+          isValidatedSuccess = false;
+          Notification.error({
+            message: this.props.intl.formatMessage({id: 'scheduleOffsetRequest.validate.daysBeforeAbsence'}, {numberOfDays: this.daysBeforeAbsence})
+          });
+        }
+      }
+    }
+    return new Promise(resolve => resolve(isValidatedSuccess));
+  };
 
+  getUpdateEntityData = (): any => {
     return {
       ...this.props.form.getFieldsValue(this.fields)
-    }
+    };
   };
 
   loadData = async () => {
@@ -475,6 +500,12 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       if (!this.isNew()) {
         this.loaded = true;
       }
+
+      restServices.absenceService.scheduleOffsetDaysBeforeAbsence().then(response => {
+        if (response) {
+          this.daysBeforeAbsence = Number(response);
+        }
+      });
     })()
   }
 
@@ -494,7 +525,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   };
 
   loadPersonGroupDc = (personGroupId: string) => {
-    console.log(1);
     this.personGroupDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
       view: "_minimal",
       filter: {

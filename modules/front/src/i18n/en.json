@@ -414,5 +414,6 @@
   "book.view": "View",
   "scheduleOffsetsRequest": "Schedule change request",
   "scheduleStandard": "Schedule offset",
-  "scheduleOffsetRequest": "Schedule offset request"
+  "scheduleOffsetRequest": "Schedule offset request",
+  "scheduleOffsetRequest.validate.daysBeforeAbsence": "Дата некорректна. Между Датой заявки и Датой начала работы по новому графику должно быть не менее {numberOfDays} дней"
 }
