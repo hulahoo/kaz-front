@@ -1,4 +1,4 @@
-import {Button, Icon} from "antd";
+import {Icon} from "antd";
 import * as React from "react";
 import {inject, observer} from "mobx-react";
 import "./AppHeader.css";
@@ -19,11 +19,11 @@ import {RootStoreProp} from "../store";
 class AppHeader extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   render() {
-    const SearchComponent = CommonComponentHoc(
-      <Input className={"search-input"}
-             placeholder={this.props.intl.formatMessage({id: "search"}) + " ..."}
-             prefix={<Icon type="search"/>}
-             autoComplete={'off'}/>, {wrapperStyles: {style: {"margin": "16px 0"}}});
+    // const SearchComponent = CommonComponentHoc(
+    //   <Input className={"search-input"}
+    //          placeholder={this.props.intl.formatMessage({id: "search"}) + " ..."}
+    //          prefix={<Icon type="search"/>}
+    //          autoComplete={'off'}/>, {wrapperStyles: {style: {"margin": "16px 0"}}});
 
     return (
       <div className="app-header">

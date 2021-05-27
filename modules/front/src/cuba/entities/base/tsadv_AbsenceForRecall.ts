@@ -1,5 +1,4 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
-import { DicAbsenceType } from "./tsadv$DicAbsenceType";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { Absence } from "./tsadv$Absence";
 import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";

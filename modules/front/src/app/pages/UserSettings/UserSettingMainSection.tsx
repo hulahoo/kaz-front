@@ -7,7 +7,7 @@ import CommonComponentHoc from "../../hoc/CommonComponent/CommonComponentHoc";
 import UserSettingsStore from "../../store/UserSettingsStore";
 import DefaultDropdown, {MenuRaw} from "../../components/Dropdown/DefaultDropdown";
 import Notification from "../../util/Notification/Notification";
-import {Icon, Modal} from "antd";
+import {Modal} from "antd";
 import ChangePassword from "./ChangePassword/ChangePassword";
 import {action, observable} from "mobx";
 import {ReactComponent as KeySvg} from '../../../resources/icons/key.svg';
@@ -79,11 +79,13 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
       {name: this.props.intl.formatMessage({id: 'time-zone'})});
 
     const ChangePasswordBtnComponent = CommonComponentHoc(
-      <Button children={<><i className={"icon"}><KeySvg /></i><span><FormattedMessage id="password.change"/></span></>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+      <Button children={<><i className={"icon"}><KeySvg/></i><span><FormattedMessage id="password.change"/></span></>}
+              buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
               onClick={this.changeVisibleModalChangePassword}/>, {});
 
     const SubmitBtnPasswordComponent = CommonComponentHoc(
-      <Button children={<span><FormattedMessage id="save"/></span>} buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+      <Button children={<span><FormattedMessage id="save"/></span>} buttonType={ButtonType.PRIMARY}
+              style={{"width": "244px"}}
               onClick={this.handleSubmitSaveButton}/>, {});
 
     return <form autoComplete={"off"}>

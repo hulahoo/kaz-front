@@ -9,8 +9,6 @@ import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {SerializedEntity} from "@cuba-platform/rest";
 
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import Page from "../../hoc/PageContentHoc";
-import Section from "../../hoc/Section";
 import {RootStoreProp} from "../../store";
 import {PerformancePlan} from "../../../cuba/entities/base/tsadv$PerformancePlan";
 import KpiCard from "./KpiCard";

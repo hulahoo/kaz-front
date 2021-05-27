@@ -26,7 +26,6 @@ import LearningHistory from "./pages/LearningHistory";
 import {CourseManagement} from "./pages/Course/CourseManagement";
 import {EnrollmentManagement} from "./pages/MyCourse/EnrollmentManagement";
 import {KpiTeamManagement} from "./pages/KpiTeam/KpiTeamManagement";
-import PersonalDataRequestEditPage from "./pages/PersonalDataRequest/PersonalDataRequestEditPage";
 import {BooksManagement} from "./pages/Books/BooksManagement";
 import {OrgStructureRequestManagement} from "./pages/orgStructureRequest/OrgStructureRequestManagement";
 import {InsuredPersonManagement} from "./pages/MyDMC/InsuredPersonManagement";
@@ -46,6 +45,11 @@ import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/
 import {AbsenceForRecallManagement} from "./pages/MyTeam/timeManagement/AbsenceForRecall/AbsenceForRecallManagement";
 import {AbsenceRvdRequestManagement} from "./pages/MyTeam/timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
+import {MyProfileManagement} from "./pages/MyProfile/MyProfileManagement";
+import {PersonEducationManagement} from "./pages/PersonEducation/PersonEducationManagement";
+import {PersonalDataRequestManagement} from "./pages/PersonalDataRequest/PersonalDataRequestManagement";
+import {PersonDocumentRequestManagement} from "./pages/PersonDocumentRequest/PersonDocumentRequestManagement";
+import {AddressRequestManagement} from "./pages/AddressRequest/AddressRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -97,8 +101,14 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
-                <Route exact={true} path="/my-profile" component={PersonalDataRequestEditPage}/>
+                <Route exact={true} path={MyProfileManagement.PATH} component={MyProfileManagement}/>
+                <Route exact={true} path={AddressRequestManagement.PATH + '/:entityId/:addressId?'}
+                       component={AddressRequestManagement}/>
+                <Route path="/personalDataRequest/:entityId" component={PersonalDataRequestManagement}/>
+                <Route path="/personDocumentRequest/:entityId/:documentId?"
+                       component={PersonDocumentRequestManagement}/>
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
+                <Route path="/personEducationManagement/:entityId?" component={PersonEducationManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
                 <Route exact={true}
                        path={CertificateRequestManagement.PATH + "/:entityId?"}

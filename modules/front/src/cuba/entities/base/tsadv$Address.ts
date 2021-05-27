@@ -5,6 +5,8 @@ import { DicCountry } from "./base$DicCountry";
 import { DicCity } from "./base$DicCity";
 import { DicLanguage } from "./base$DicLanguage";
 import { FileDescriptor } from "./sys$FileDescriptor";
+import { DicKato } from "./tsadv_DicKato";
+import { DicStreetType } from "./tsadv_DicStreetType";
 export class Address extends AbstractParentEntity {
   static NAME = "tsadv$Address";
   personGroup?: PersonGroupExt | null;
@@ -22,6 +24,16 @@ export class Address extends AbstractParentEntity {
   startDate?: any | null;
   endDate?: any | null;
   attachments?: FileDescriptor[] | null;
+  kato?: DicKato | null;
+  streetType?: DicStreetType | null;
+  streetName?: string | null;
+  building?: string | null;
+  block?: string | null;
+  flat?: string | null;
+  addressForExpats?: string | null;
+  notes?: string | null;
+  addressKazakh?: string | null;
+  addressEnglish?: string | null;
 }
 export type AddressViewName = "_base" | "_local" | "_minimal" | "address.view";
 export type AddressView<V extends AddressViewName> = V extends "_base"
@@ -37,6 +49,14 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "registrationAddressKATOCode"
       | "startDate"
       | "endDate"
+      | "streetName"
+      | "building"
+      | "block"
+      | "flat"
+      | "addressForExpats"
+      | "notes"
+      | "addressKazakh"
+      | "addressEnglish"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -54,6 +74,14 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "registrationAddressKATOCode"
       | "startDate"
       | "endDate"
+      | "streetName"
+      | "building"
+      | "block"
+      | "flat"
+      | "addressForExpats"
+      | "notes"
+      | "addressKazakh"
+      | "addressEnglish"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -73,6 +101,14 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "registrationAddressKATOCode"
       | "startDate"
       | "endDate"
+      | "streetName"
+      | "building"
+      | "block"
+      | "flat"
+      | "addressForExpats"
+      | "notes"
+      | "addressKazakh"
+      | "addressEnglish"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -80,5 +116,7 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "addressType"
       | "country"
       | "city"
+      | "kato"
+      | "streetType"
     >
   : never;

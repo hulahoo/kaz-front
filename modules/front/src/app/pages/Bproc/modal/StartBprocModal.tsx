@@ -236,7 +236,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   addBprocUser = () => {
-    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) != undefined)) {
+    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) !== undefined)) {
       Notification.error({
         message: this.props.intl.formatMessage({id: "bproc.startBproc.modal.error"})
       });

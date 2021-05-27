@@ -1,4 +1,4 @@
-import React, {CSSProperties, HTMLAttributes} from "react";
+import React, {HTMLAttributes} from "react";
 import {observer} from "mobx-react";
 
 export interface ContentProps {
