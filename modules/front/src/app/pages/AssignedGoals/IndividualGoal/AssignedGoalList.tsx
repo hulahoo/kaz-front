@@ -351,7 +351,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                     : <Link to={this.getGoalUrl(record)}>{renderedText}</Link>
                 })}/>
         <Column title={<FormattedMessage id="goalForm.column.kpiDetails"/>}
-                dataIndex="successCriteriaLang"
+                dataIndex="successCriteria"
                 key="successCriteria"
                 sorter={(a: any, b: any) => {
                   if (a.key) {
@@ -364,7 +364,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                     return aSuccessCriteria.localeCompare(bSuccessCriteria);
                   }
                   if (aSuccessCriteria) return 1;
-                  if (bSuccessCriteria) return 1;
+                  if (bSuccessCriteria) return -1;
                   return 0;
                 }}
                 render={(text, record) => {
@@ -446,7 +446,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   };
 
   getGoalUrl = (assignedGoal: AssignedGoal): string => {
-    return `${this.props.match.url}${this.props.match.url[this.props.match.url.length - 1] === '/' ? '' : '/'}goal/${assignedGoal.goalLibrary ? "library" : assignedGoal.assignedByPersonGroup ? "cascade" : "individual"}/${assignedGoal.id}`;
+    return `${this.props.match.url}${this.props.match.url[this.props.match.url.length - 1] === '/' ? '' : '/'}goal/${(assignedGoal.goalType as string).toLowerCase()}/${assignedGoal.id}`;
   };
 
   getGoalTypeIcon = (goalType: AssignedGoalTypeEnum | undefined) => {
