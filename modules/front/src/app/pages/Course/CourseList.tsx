@@ -20,11 +20,16 @@ import {RootStoreProp} from "../../store";
 @observer
 class CourseList<T> extends React.Component<WrappedComponentProps & RootStoreProp> {
 
-  dataCollection = serviceCollection(restServices.courseService.allCourses);
+  dataCollection = serviceCollection(restServices.courseService.allCourses.bind(null, {
+    personGroupId: this.props.rootStore!.userInfo.personGroupId!
+  }));
 
   onSearch = (value: string) => {
     if (value) {
-      restServices.courseService.searchCourses({courseName: value})
+      restServices.courseService.searchCourses({
+        personGroupId: this.props.rootStore!.userInfo.personGroupId!,
+        courseName: value
+      })
         .then((foundCategoryWithCourses) => {
           if (foundCategoryWithCourses.length === 0) {
             Notification.info({
