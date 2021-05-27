@@ -321,7 +321,21 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'dateOfNewSchedule']})
+                        validator: (rule, value, callback) => {
+                          if (!value) {
+                            callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'dateOfNewSchedule']}));
+                          } else {
+                            if (this.daysBeforeAbsence) {
+                              const {dateOfStartNewSchedule, requestDate} = this.props.form.getFieldsValue(["dateOfStartNewSchedule", "requestDate"]);
+                              const numberOfDays = (dateOfStartNewSchedule as Moment).diff((requestDate as Moment).clone().add(1, 'days'), 'days');
+                              if (numberOfDays < this.daysBeforeAbsence) {
+                                callback(this.props.intl.formatMessage({id: 'scheduleOffsetRequest.validate.daysBeforeAbsence'}, {numberOfDays: this.daysBeforeAbsence}))
+                              } else {
+                                callback();
+                              }
+                            }
+                          }
+                        }
                       }]
                     }}
                   />
@@ -429,18 +443,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       }
     });
     if (isValidatedSuccess) {
-      if (this.daysBeforeAbsence) {
-        const {dateOfStartNewSchedule, requestDate} = this.props.form.getFieldsValue(["dateOfStartNewSchedule", "requestDate"]);
-        const numberOfDays = (dateOfStartNewSchedule as Moment).diff(requestDate, 'days');
-        console.log(this.daysBeforeAbsence);
-        console.log(numberOfDays);
-        if (numberOfDays < this.daysBeforeAbsence) {
-          isValidatedSuccess = false;
-          Notification.error({
-            message: this.props.intl.formatMessage({id: 'scheduleOffsetRequest.validate.daysBeforeAbsence'}, {numberOfDays: this.daysBeforeAbsence})
-          });
-        }
-      }
     }
     return new Promise(resolve => resolve(isValidatedSuccess));
   };
