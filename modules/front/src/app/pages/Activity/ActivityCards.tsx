@@ -44,7 +44,7 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
 
   fields = [
     "createTs",
-    "name",
+    "notificationHeader",
     "status"
   ];
 
