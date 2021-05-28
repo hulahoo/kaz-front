@@ -38,7 +38,7 @@ import DefaultDatePicker from "../../components/Datepicker";
 import {isNumber} from "../../util/util";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
-import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../components/MultiFileUpload";
+import {parseToFieldValueFromDataInstanceValue} from "../../components/MultiFileUpload";
 
 type EditorProps = {
   entityId: string;
@@ -135,15 +135,15 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   assignmentGroupId: string;
 
-  getUpdateEntityData = (): any => {
-    if (this.isNotDraft()) return {...this.props.form.getFieldsValue(this.fields)};
-    return {
+  update = () => {
+    if (this.isNotDraft())
+      return this.dataInstance.update(this.getUpdateEntityData());
+    return this.dataInstance.update({
       personGroup: {
         id: this.personGroupId
       },
-      ...this.props.form.getFieldsValue(this.fields),
-      files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
-    }
+      ...this.getUpdateEntityData()
+    });
   };
 
   processDefinitionKey = "absenceRequest";
@@ -743,19 +743,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         this.isOriginalSheet = !!(item && item.type && item.type.isOriginalSheet);
         this.isVacationDate = !!(item && item.type && item.type.isVacationDate);
 
-        const obj = {
-          originalSheet: (item && item.originalSheet) === true,
-          ...this.dataInstance.getFieldValues(this.fields),
-          endTime: (item && item.endTime) ? moment(item.endTime, "hh:mm:ss") : null,
-          startTime: (item && item.startTime) ? moment(item.startTime, "hh:mm:ss") : null,
-          files: this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.files) : undefined,
-        };
-
-        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
-          const now = moment();
-          now.locale(this.props.rootStore!.userInfo.locale!);
-          obj["requestDate"] = now;
-        }
+        const obj = this.onReactionFieldsValue(item);
 
         this.vacationScheduleCollection = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
             view: "_local",
