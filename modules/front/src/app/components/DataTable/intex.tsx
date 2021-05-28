@@ -19,6 +19,7 @@ interface DataTableFormatProps<E> extends DataTableProps<E> {
 @injectMainStore
 export default class DataTableFormat<E> extends Component<DataTableFormatProps<E>> {
   render() {
+    console.log('render');
     return (
       <DataTable
         columnProps={{render: this.renderColumn}}
@@ -36,7 +37,7 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
     }
     this.colIndex++;
 
-    const field = this.props.fields[this.colIndex];
+    const field = this.props.fields[this.colIndex % this.props.fields.length];
 
     if (this.props.render) {
       const render = this.props.render.find(value => value.column == field);
@@ -48,6 +49,8 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
     const isDate = propertyInfo && (propertyInfo.type === 'date' || propertyInfo.type === 'dateTime');
     const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
     const isBoolean = propertyInfo && (propertyInfo.type === 'boolean');
+
+    console.log(propertyInfo, isDate);
 
     if (isBoolean)
       return this.renderBoolean(record[field])
