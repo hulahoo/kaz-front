@@ -167,14 +167,22 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
   };
 
   selectGoal = (value: string, option: React.ReactElement<HTMLLIElement>) => {
-    const goalId = option!.props["value"] as any;
-    const goal = this.findGoal(goalId);
+    if (option) {
+      const goalId = option!.props["value"] as any;
+      const goal = this.findGoal(goalId);
 
-    this.props.form.setFieldsValue({
-      goalString: option.props["children"],
-      goalSuccessCriteria: (goal as any).successCriteriaLang,
-      successCriteria: (goal as any).successCriteriaLang,
-    });
+      this.props.form.setFieldsValue({
+        goalString: option.props["children"],
+        goalSuccessCriteria: (goal as any).successCriteriaLang,
+        successCriteria: (goal as any).successCriteriaLang,
+      });
+    } else {
+      this.props.form.setFieldsValue({
+        goalString: undefined,
+        goalSuccessCriteria: undefined,
+        successCriteria: undefined,
+      });
+    }
   };
 
   checkWeightRange = (rule: any, value: any, callback: any) => {
@@ -216,7 +224,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Button>]
           } bordered={false}>
             <Section size={"large"}>
-              <Form.Item label={this.props.intl.formatMessage({ id: "goalLibrary" })}
+              <Form.Item label={this.props.intl.formatMessage({id: "goalLibrary"})}
                          key='goalLibrary'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goalLibrary', {
@@ -238,7 +246,10 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                 {this.props.form.getFieldDecorator('goal', {
                   validateTrigger: ["onChange", "onBlur"]
                 })(
-                  <Select onChange={this.selectGoal}>{this.goalsDc ? this.goalsDc.items.map(gl => <Option
+                  <Select onChange={this.selectGoal} showSearch allowClear
+                          filterOption={(input, option) =>
+                            (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          }>{this.goalsDc ? this.goalsDc.items.map(gl => <Option
                     value={gl.id}>{gl._instanceName}</Option>) : null}</Select>
                 )}
               </Form.Item>

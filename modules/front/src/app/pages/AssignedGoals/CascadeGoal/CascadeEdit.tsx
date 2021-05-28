@@ -199,7 +199,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                 })(
                   <Select onChange={this.onChangeGoal}>{this.goalsDs ? this.goalsDs.items.map(g => {
                     // @ts-ignore
-                    return <Select.Option category={g.library ? g.library.category!.id : "maxim"}
+                    return <Select.Option category={g.library ? g.library.category!.id : ""}
                                           value={g.id}>{(g as SerializedEntity<Goal>)._instanceName}</Select.Option>
                   }) : null}</Select>
                 )}
@@ -282,7 +282,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
     const goalId = option!.props["value"] as any;
     const goal = this.findSelectedGoal(goalId);
 
-    const successCriteria = goal ? goal.successCriteria : null;
+    const successCriteria = goal ? (goal as any).successCriteriaLang : null;
 
     this.goalSelectUpdateProperties(option.props['children'], option.props['category'], successCriteria, successCriteria);
   };
