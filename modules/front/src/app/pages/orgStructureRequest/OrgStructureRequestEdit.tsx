@@ -596,20 +596,17 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                       </Select>
                     </Form.Item>
                     <Form.Item>
-                      <Checkbox onChange={this.onChangeColumnFilter} id={"current"} defaultChecked={true}
-                                disabled={isDisabledFields}>
+                      <Checkbox onChange={this.onChangeColumnFilter} id={"current"} defaultChecked={true}>
                         {this.props.intl.formatMessage({id: "org.request.filter.3"})}
                       </Checkbox>
                     </Form.Item>
                     <Form.Item>
-                      <Checkbox onChange={this.onChangeColumnFilter} id={"changes"} defaultChecked={true}
-                                disabled={isDisabledFields}>
+                      <Checkbox onChange={this.onChangeColumnFilter} id={"changes"} defaultChecked={true}>
                         {this.props.intl.formatMessage({id: "org.request.filter.4"})}
                       </Checkbox>
                     </Form.Item>
                     <Form.Item>
-                      <Checkbox onChange={this.onChangeColumnFilter} id={"difference"} defaultChecked={true}
-                                disabled={isDisabledFields}>
+                      <Checkbox onChange={this.onChangeColumnFilter} id={"difference"} defaultChecked={true}>
                         {this.props.intl.formatMessage({id: "org.request.filter.5"})}
                       </Checkbox>
                     </Form.Item>

@@ -2,11 +2,18 @@ import * as React from "react";
 import {inject, observer} from "mobx-react";
 import {Link} from "react-router-dom";
 
-import {observable} from "mobx";
+import {action, observable} from "mobx";
 
 import {Button, Col, Icon, Modal, Row, Spin, Table} from "antd";
 
-import {collection, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {
+  collection,
+  ComparisonType,
+  generateDataColumn, handleTableChange,
+  injectMainStore,
+  MainStoreInjected,
+  Msg
+} from "@cuba-platform/react";
 import {OrgStructureRequest} from "../../../cuba/entities/base/tsadv_OrgStructureRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
@@ -20,6 +27,8 @@ import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {RootStoreProp} from "../../store";
 import {restServices} from "../../../cuba/services";
+import {PaginationConfig} from "antd/es/pagination";
+import {SorterResult} from "antd/es/table";
 
 @injectMainStore
 @inject("rootStore")
@@ -29,6 +38,34 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
   @observable selectedRowKey: string | undefined;
 
   @observable hasPermitToCreate: boolean = false;
+
+  @observable.ref filters: Record<string, string[]> | undefined;
+
+  @observable
+  operator: ComparisonType | undefined;
+
+  @observable
+  value: any;
+
+  @action
+  handleOperatorChange = (operator: ComparisonType) => this.operator = operator;
+
+  @action
+  handleValueChange = (value: any) => this.value = value;
+
+  @action
+  handleChange = (pagination: PaginationConfig, tableFilters: Record<string, string[]>, sorter: SorterResult<OrgStructureRequest>): void => {
+    this.filters = tableFilters;
+    handleTableChange({
+      pagination: pagination,
+      filters: tableFilters,
+      sorter: sorter,
+      defaultSort: '-updateTs',
+      fields: this.fields,
+      mainStore: this.props.mainStore!,
+      dataCollection: this.dataCollection
+    });
+  };
 
   dataCollection = collection<OrgStructureRequest>(
     OrgStructureRequest.NAME, {
@@ -73,50 +110,90 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
             </Row>
             <Table dataSource={Array.from(this.dataCollection.items || '')}
                    pagination={false}
-                   size="default" bordered={false} rowKey="id"
-                   onRow={(record) => {
-                     return {
-                       onClick: () => {
-                         this.setState({
-                           rowId: record.id,
-                         });
-                       }
-                     };
-                   }}>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestNumber"}/>}
-                      dataIndex={"requestNumber"}
-                      key={"requestNumber"}
-                      render={(text, record: OrgStructureRequest) => {
-                        return <Link
-                          to={OrgStructureRequestManagement.PATH + "/" + record.id}
-                          key="edit">
-                          {text}
-                        </Link>
-                      }}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestDate"}/>}
-                      dataIndex={"requestDate"}
-                      key={"requestDate"}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"status"}/>}
-                      dataIndex={"status"}
-                      key={"status"} render={(text, record: SerializedEntity<any>) => {
-                return <span>{(record.status! as SerializedEntity<DicRequestStatus>)._instanceName}</span>
-              }}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"company"}/>}
-                      dataIndex={"company"}
-                      key={"company"} render={(text, record: SerializedEntity<OrgStructureRequest>) => {
-                return <span>{(record.company! as SerializedEntity<DicCompany>)._instanceName}</span>
-              }}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"department"}/>}
-                      dataIndex={"department"}
-                      key={"department"} render={(text, record: SerializedEntity<OrgStructureRequest>) => {
-                return <span>{(record.department! as SerializedEntity<OrganizationGroupExt>)._instanceName}</span>
-              }}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"author"}/>}
-                      dataIndex={"author"}
-                      key={"author"} render={(text, record: SerializedEntity<OrgStructureRequest>) => {
-                return <span>{(record.author! as SerializedEntity<PersonGroupExt>)._instanceName}</span>
-              }}/>
-            </Table>
+                   onChange={this.handleChange}
+                   size="default" bordered={false} rowKey="id" columns={[
+              {
+                //TODO: фильтр не работает, поскольку у кубы не возможности фильтровать long
+                ...generateDataColumn({
+                  enableFilter: true,
+                  propertyName: 'requestNumber',
+                  entityName: this.dataCollection.entityName,
+                  filters: this.filters,
+                  operator: this.operator,
+                  onOperatorChange: this.handleOperatorChange,
+                  value: this.value,
+                  onValueChange: this.handleValueChange,
+                  enableSorter: true,
+                  mainStore: this.props.mainStore!
+                }),
+                render: (text, record: OrgStructureRequest): JSX.Element => {
+                  return <Link to={OrgStructureRequestManagement.PATH + "/" + record.id}
+                               key="edit">
+                    {text}
+                  </Link>
+                }
+              },
+              generateDataColumn({
+                propertyName: 'requestDate',
+                entityName: this.dataCollection.entityName,
+                filters: this.filters,
+                operator: this.operator,
+                onOperatorChange: this.handleOperatorChange,
+                value: this.value,
+                onValueChange: this.handleValueChange,
+                enableSorter: true,
+                mainStore: this.props.mainStore!,
+                enableFilter: true
+              }),
+              generateDataColumn({
+                propertyName: 'status',
+                entityName: this.dataCollection.entityName,
+                filters: this.filters,
+                operator: this.operator,
+                onOperatorChange: this.handleOperatorChange,
+                value: this.value,
+                onValueChange: this.handleValueChange,
+                enableSorter: true,
+                mainStore: this.props.mainStore!,
+                enableFilter: true
+              }),
+              generateDataColumn({
+                propertyName: 'company',
+                entityName: this.dataCollection.entityName,
+                filters: this.filters,
+                operator: this.operator,
+                onOperatorChange: this.handleOperatorChange,
+                value: this.value,
+                onValueChange: this.handleValueChange,
+                enableSorter: true,
+                mainStore: this.props.mainStore!,
+                enableFilter: true
+              }),
+              generateDataColumn({
+                propertyName: 'department',
+                entityName: this.dataCollection.entityName,
+                filters: this.filters,
+                operator: this.operator,
+                onOperatorChange: this.handleOperatorChange,
+                value: this.value,
+                onValueChange: this.handleValueChange,
+                enableSorter: true,
+                mainStore: this.props.mainStore!,
+                enableFilter: true
+              }),
+              generateDataColumn({
+                propertyName: 'author',
+                entityName: this.dataCollection.entityName,
+                filters: this.filters,
+                operator: this.operator,
+                onOperatorChange: this.handleOperatorChange,
+                value: this.value,
+                onValueChange: this.handleValueChange,
+                enableSorter: true,
+                mainStore: this.props.mainStore!,
+                enableFilter: true
+              })
+            ]}/>
           </Spin>
         </Section>
       </Page>
