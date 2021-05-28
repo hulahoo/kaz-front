@@ -104,7 +104,7 @@ class LearningHistoryDiary extends React.Component<LearningHistoryDiaryProps & M
                     padding: '20px',
                   }}
                 />
-                <div style={{display: 'flex'}}>
+                <div style={{display: 'flex', placeContent: 'center'}}>
                   <FormattedMessage id={"course.Recordings"}/>
                 </div>
               </div>)
