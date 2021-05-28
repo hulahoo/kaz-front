@@ -743,19 +743,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         this.isOriginalSheet = !!(item && item.type && item.type.isOriginalSheet);
         this.isVacationDate = !!(item && item.type && item.type.isVacationDate);
 
-        const obj = {
-          originalSheet: (item && item.originalSheet) === true,
-          ...this.dataInstance.getFieldValues(this.fields),
-          endTime: (item && item.endTime) ? moment(item.endTime, "hh:mm:ss") : null,
-          startTime: (item && item.startTime) ? moment(item.startTime, "hh:mm:ss") : null,
-          files: this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.files) : undefined,
-        };
-
-        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
-          const now = moment();
-          now.locale(this.props.rootStore!.userInfo.locale!);
-          obj["requestDate"] = now;
-        }
+        const obj = this.onReactionFieldsValue(item);
 
         this.vacationScheduleCollection = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
             view: "_local",

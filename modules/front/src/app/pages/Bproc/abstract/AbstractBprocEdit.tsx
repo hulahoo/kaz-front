@@ -17,7 +17,7 @@ import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBproc
 import Notification from "../../../util/Notification/Notification";
 import moment from "moment/moment";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
-import {parseToJsonFromFieldValue} from "../../../components/MultiFileUpload";
+import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../../components/MultiFileUpload";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -270,18 +270,39 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       },
       (item) => {
         this.onReactionDisposerEffect(item);
-        const obj = {
-          ...this.dataInstance.getFieldValues(this.fields)
-        };
-        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
-          const now = moment();
-          now.locale(this.props.rootStore!.userInfo.locale!);
-          obj["requestDate"] = now;
-        }
-        this.props.form.setFieldsValue(obj);
+
+        this.props.form.setFieldsValue(this.onReactionFieldsValue(item));
       }
     );
   };
+
+  onReactionFieldsValue = (item: T | undefined) => {
+    const obj = {
+      ...this.dataInstance.getFieldValues(this.fields)
+    };
+    if (this.isCalledProcessInstanceData && !this.processInstanceData) {
+      const now = moment();
+      now.locale(this.props.rootStore!.userInfo.locale!);
+      obj["requestDate"] = now;
+    }
+
+    if (item) {
+      const metaClass = this.props.mainStore!.metadata!.find(mci => mci.entityName === this.dataInstance.entityName);
+      if (metaClass) {
+        metaClass.properties
+          .filter(value => value.type === 'sys$FileDescriptor')
+          .filter(value => value.cardinality === "ONE_TO_MANY" || value.cardinality === "MANY_TO_MANY")
+          .filter(value => this.fields.find(field => field === value.name))
+          .forEach(value => {
+            const files = item[value.name];
+            if (files)
+              obj[value.name] = parseToFieldValueFromDataInstanceValue(files);
+          })
+      }
+    }
+
+    return obj;
+  }
 
   onReactionDisposerEffect = (item: T | undefined) => {
 
