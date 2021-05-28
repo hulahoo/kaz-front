@@ -41,7 +41,7 @@ class PersonDocumentListComponent extends React.Component<MainStoreInjected & Wr
 
     "issueDate",
 
-    "issuedBy"
+    "issuingAuthority"
   ];
 
   @observable selectedRowKey: string | undefined;
