@@ -38,7 +38,7 @@ import DefaultDatePicker from "../../components/Datepicker";
 import {isNumber} from "../../util/util";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
-import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../components/MultiFileUpload";
+import {parseToFieldValueFromDataInstanceValue} from "../../components/MultiFileUpload";
 
 type EditorProps = {
   entityId: string;
@@ -135,15 +135,15 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   assignmentGroupId: string;
 
-  getUpdateEntityData = (): any => {
-    if (this.isNotDraft()) return {...this.props.form.getFieldsValue(this.fields)};
-    return {
+  update = () => {
+    if (this.isNotDraft())
+      return this.dataInstance.update(this.getUpdateEntityData());
+    return this.dataInstance.update({
       personGroup: {
         id: this.personGroupId
       },
-      ...this.props.form.getFieldsValue(this.fields),
-      files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
-    }
+      ...this.getUpdateEntityData()
+    });
   };
 
   processDefinitionKey = "absenceRequest";

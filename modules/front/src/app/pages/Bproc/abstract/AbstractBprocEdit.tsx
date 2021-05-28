@@ -17,6 +17,7 @@ import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBproc
 import Notification from "../../../util/Notification/Notification";
 import moment from "moment/moment";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {parseToJsonFromFieldValue} from "../../../components/MultiFileUpload";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -63,7 +64,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   @observable
   isValidatedSuccess = false;
 
-  fields: any;
+  fields: string[];
 
   processDefinitionKey: string;
 
@@ -81,6 +82,24 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   };
 
   getUpdateEntityData = (): any => {
+    const obj = {
+      ...this.props.form.getFieldsValue(this.fields),
+    };
+
+    const metaClass = this.props.mainStore!.metadata!.find(mci => mci.entityName === this.dataInstance.entityName);
+    if (metaClass) {
+      metaClass.properties
+        .filter(value => value.type === 'sys$FileDescriptor')
+        .filter(value => value.cardinality === "ONE_TO_MANY" || value.cardinality === "MANY_TO_MANY")
+        .filter(value => this.fields.find(field => field === value.name))
+        .forEach(value => {
+          const files = obj[value.name];
+          if (files)
+            obj[value.name] = parseToJsonFromFieldValue(files);
+        })
+    }
+
+    return obj;
   };
 
   update = () => {
