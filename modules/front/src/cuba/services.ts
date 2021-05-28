@@ -181,7 +181,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    searchCourses: (params: { courseName: string }): Promise<Array<CourseCatalogModel>> => {
+    searchCourses: (params: { personGroupId: string, courseName: string }): Promise<Array<CourseCatalogModel>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "searchCourses",
@@ -199,11 +199,11 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    allCourses: (): Promise<Array<CourseCatalogModel>> => {
+    allCourses: (params: { personGroupId: string }): Promise<Array<CourseCatalogModel>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "allCourses",
-        {}
+        {...params}
       ).then((response: string) => {
         return JSON.parse(response);
       });
@@ -251,7 +251,7 @@ export const restServices = {
     }
   },
   enrollmentService: {
-    searchEnrollments: (params: { courseName?: string}): Promise<SerializedEntity<EnrollmentCatalogModel>[]> => {
+    searchEnrollments: (params: { personGroupId: string, courseName?: string }): Promise<SerializedEntity<EnrollmentCatalogModel>[]> => {
       return getCubaREST()!.invokeService(
         "tsadv_EnrollmentService",
         "searchEnrollment",

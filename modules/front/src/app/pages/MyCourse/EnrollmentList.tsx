@@ -32,6 +32,7 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
   onSearch = (value: string) => {
     if (value) {
       restServices.enrollmentService.searchEnrollments({
+        personGroupId: this.props.rootStore!.userInfo.personGroupId!,
         courseName: value
       }).then(response => {
         if (response.length === 0) {
@@ -110,7 +111,9 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
   }
 
   loadData = () => {
-    restServices.enrollmentService.searchEnrollments({}).then(response => {
+    restServices.enrollmentService.searchEnrollments({
+      personGroupId: this.props.rootStore!.userInfo.personGroupId!
+    }).then(response => {
       runInAction(() => {
         this.dataCollection = response;
         this.status = "DONE";
