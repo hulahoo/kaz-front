@@ -7,8 +7,8 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 import DataTableFormat from "../../components/DataTable/intex";
 import {withRouter} from "react-router";
 import {BaseUuidEntity} from "../../../cuba/entities/base/sys$BaseUuidEntity";
-import {PersonDocumentManagement} from "../PersonDocument/PersonDocumentManagement";
 import {PersonDocumentRequest} from "../../../cuba/entities/base/tsadv_PersonDocumentRequest";
+import {PersonDocumentRequestManagement} from "./PersonDocumentRequestManagement";
 
 export type RequiredPersonGroupProps = {
   personGroupId: string
@@ -56,7 +56,7 @@ class PersonDocumentRequestListComponent extends React.Component<RequiredPersonG
         render={[{
           column: this.fields[0],
           render: (text, record) => <Link
-            to={PersonDocumentManagement.PATH + "/" + (record as BaseUuidEntity).id}
+            to={PersonDocumentRequestManagement.PATH + "/" + (record as BaseUuidEntity).id}
           >{text}</Link>
         }]}
         hideSelectionColumn={true}
