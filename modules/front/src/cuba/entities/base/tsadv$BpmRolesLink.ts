@@ -9,6 +9,7 @@ export class BpmRolesLink extends StandardEntity {
   order?: number | null;
   required?: boolean | null;
   isAddableApprover?: boolean | null;
+  priority?: number | null;
   findByCounter?: boolean | null;
 }
 export type BpmRolesLinkViewName =
