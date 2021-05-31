@@ -242,10 +242,12 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
       });
       return;
     }
+    const rolesLink = this.bprocRolesDefiner!.links!.find(rd => rd.hrRole!.id === this.selectedHrRole!.id)!;
     this.items.unshift(({
       hrRole: this.selectedHrRole,
       users: [this.selectedUser],
-      bprocUserTaskCode: this.bprocRolesDefiner!.links!.find(rd => rd.hrRole!.id === this.selectedHrRole!.id)!.bprocUserTaskCode
+      bprocUserTaskCode: rolesLink.bprocUserTaskCode,
+      rolesLink: rolesLink
     } as any));
   };
 
