@@ -32,7 +32,7 @@ import {RootStoreProp} from "../../../store";
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {Goal} from "../../../../cuba/entities/base/tsadv$Goal";
-import {queryCollection} from "../../../util/QueryDataCollectionStore";
+import {queryCollection, QueryDataCollectionStore} from "../../../util/QueryDataCollectionStore";
 import {queryInstance} from "../../../util/QueryDataInstanceStore";
 import Button, {ButtonType} from "../../../components/Button/Button";
 import Section from "../../../hoc/Section";
@@ -42,6 +42,7 @@ import {PositionGroupExt} from "../../../../cuba/entities/base/base$PositionGrou
 import TextArea from "antd/es/input/TextArea";
 import Input from "../../../components/Input/Input";
 import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
+import {instanceStore} from "../../../util/InstanceStore";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -60,9 +61,9 @@ type SelectLabelValue = {
 @observer
 class CascadeEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
 
-  fields = ["performancePlan", "assignedByPersonGroup", "goalString", "weight", "category", "goal", "goalSuccessCriteria", "successCriteria", "positionGroup"];
+  fields = ["performancePlan", "goalString", "weight", "category", "goal", "goalSuccessCriteria", "successCriteria", "positionGroup"];
 
-  dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
+  dataInstance = instanceStore<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-portal-kpi-create-default",
     loadImmediately: false
   });
@@ -80,7 +81,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
   managers: ServiceDataCollectionStore<PersonGroupExt>;
 
   @observable
-  goalsDs: DataCollectionStore<Goal>;
+  goalsDs: QueryDataCollectionStore<Goal>;
 
   @observable
   updated = false;
@@ -198,7 +199,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                 })(
                   <Select onChange={this.onChangeGoal}>{this.goalsDs ? this.goalsDs.items.map(g => {
                     // @ts-ignore
-                    return <Select.Option category={g.library ? g.library.category!.id : "maxim"}
+                    return <Select.Option category={g.library ? g.library.category!.id : ""}
                                           value={g.id}>{(g as SerializedEntity<Goal>)._instanceName}</Select.Option>
                   }) : null}</Select>
                 )}
@@ -245,7 +246,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
                 form={this.props.form}
                 formItemOpts={{
                   style: {marginBottom: "12px"},
-                  label: this.props.intl.formatMessage({ id: "goal.weight" })
+                  label: this.props.intl.formatMessage({id: "goal.weight"})
                 }}
                 getFieldDecoratorOpts={{
                   rules: [{
@@ -270,28 +271,48 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
   }
 
   onChangeManager = (value: string, option: React.ReactElement<HTMLLIElement>) => {
-    this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: value});
+    this.loadGoals(value);
+  };
+
+  loadGoals = (positionGroupId: string) => {
+    this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: positionGroupId});
   };
 
   onChangeGoal = (value: string, option: React.ReactElement<HTMLLIElement>) => {
+    const goalId = option!.props["value"] as any;
+    const goal = this.findSelectedGoal(goalId);
 
-    const goalId = option!.props["value"];
-    const goal = this.goalsDs.items.find(goal => goal.id === goalId);
+    const successCriteria = goal ? (goal as any).successCriteriaLang : null;
 
-    const successCriteria = goal ? goal.successCriteria : null;
+    this.goalSelectUpdateProperties(option.props['children'], option.props['category'], successCriteria, successCriteria);
+  };
 
+  findSelectedGoal = (goalId: string) => {
+    return this.goalsDs.items.find(goal => goal.id === goalId);
+  };
+
+  goalSelectUpdateProperties = (goalString: any, category: any, successCriteria?: string | null, goalSuccessCriteria?: string | null) => {
     this.props.form.setFieldsValue({
       successCriteria: successCriteria,
-      goalSuccessCriteria: successCriteria,
-      goalString: option.props['children'],
-      category: option!.props["category"],
-      // successCriteria: successCriteria
+      goalSuccessCriteria: goalSuccessCriteria,
+      goalString: goalString,
+      category: category
     });
   };
 
   componentDidMount() {
     if (this.props.entityId && this.props.entityId !== CascadeGoalManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
+      this.dataInstance.load(this.props.entityId).then(() => {
+        const thisGoal = this.dataInstance.item;
+        this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: thisGoal!.positionGroup!.id}, {loadImmediately: true});
+        this.goalsDs.afterLoad = () => {
+          const goal = this.findSelectedGoal(thisGoal!.goal!.id);
+          const successCriteria = goal ? (goal as any).successCriteriaLang : null;
+          this.props.form.setFieldsValue({
+            goalSuccessCriteria: successCriteria
+          });
+        }
+      });
     } else {
       const assignedPerformancePlan = new AssignedPerformancePlan();
       assignedPerformancePlan.id = this.props.appId;
@@ -311,10 +332,6 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
       }));
 
       this.positionGroups.load();
-
-      this.goalsDs = queryCollection<Goal>(Goal.NAME, "positionGroupGoals", {positionGroupId: '90c364bd-7c4d-7bc5-4491-80c5af271c4d'});
-      this.goalsDs.load();
-
     };
 
     this.assignedPerformancePlan.load();

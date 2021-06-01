@@ -37,6 +37,11 @@ import TextArea from "antd/es/input/TextArea";
 import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
 import {DicGoalCategory} from "../../../../cuba/entities/base/tsadv$DicGoalCategory";
 import {SerializedEntity} from "@cuba-platform/rest";
+import {instanceStore} from "../../../util/InstanceStore";
+import {
+  collectionWithAfterLoad,
+  DataCollectionStoreWithAfterLoad
+} from "../../../util/DataCollectionStoreWithAfterLoad";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -48,15 +53,15 @@ type EditorProps = {
 @injectMainStore
 @observer
 class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & WrappedComponentProps & MainStoreInjected> {
-  dataInstance = instance<AssignedGoal>(AssignedGoal.NAME, {
+  dataInstance = instanceStore<AssignedGoal>(AssignedGoal.NAME, {
     view: "assignedGoal-library",
     loadImmediately: false
   });
 
   @observable
-  goalsDc: DataCollectionStore<Goal>;
+  goalsDc: DataCollectionStoreWithAfterLoad<Goal>;
 
-  goalLibrarysDc = collection<GoalLibrary>(GoalLibrary.NAME, {
+  goalLibraryDc = collection<GoalLibrary>(GoalLibrary.NAME, {
     view: "goal-library-category"
   });
 
@@ -68,7 +73,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "successCriteria"];
+  fields = ["goal", "weight", "goalLibrary", "goalString", "category", "successCriteria", "goalSuccessCriteria"];
 
   @observable
   globalErrors: string[] = [];
@@ -145,36 +150,39 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
       goalString: undefined,
       goalSuccessCriteria: undefined,
     });
-    this.goalsDc = collection<Goal>(Goal.NAME, {
+    this.goalsDc = collectionWithAfterLoad<Goal>(Goal.NAME, () => {
+    }, {
       filter: {
         conditions: [{
           property: "library",
           operator: "=",
           value: value
         }]
-      }, view: "_local"
+      }, view: "goal.with.successCriteriaLang"
     });
   };
 
+  findGoal = (goalId: string): Goal | undefined => {
+    return this.goalsDc && this.goalsDc.items ? this.goalsDc.items.find(goal => goal.id === goalId) : undefined
+  };
+
   selectGoal = (value: string, option: React.ReactElement<HTMLLIElement>) => {
+    if (option) {
+      const goalId = option!.props["value"] as any;
+      const goal = this.findGoal(goalId);
 
-    const goalId = option!.props["value"];
-    const goal = this.goalsDc && this.goalsDc.items ? this.goalsDc.items.find(goal => goal.id === goalId) : undefined;
-
-    const successCriteria = goal
-      ? this.props.mainStore!.locale === 'ru'
-        ? goal.successCriteria
-        : goal.successCriteriaLang3
-          ?
-          goal.successCriteriaLang3
-          : goal.successCriteria
-      : null;
-
-    this.props.form.setFieldsValue({
-      goalString: option.props["children"],
-      goalSuccessCriteria: successCriteria,
-      successCriteria: successCriteria,
-    });
+      this.props.form.setFieldsValue({
+        goalString: option.props["children"],
+        goalSuccessCriteria: (goal as any).successCriteriaLang,
+        successCriteria: (goal as any).successCriteriaLang,
+      });
+    } else {
+      this.props.form.setFieldsValue({
+        goalString: undefined,
+        goalSuccessCriteria: undefined,
+        successCriteria: undefined,
+      });
+    }
   };
 
   checkWeightRange = (rule: any, value: any, callback: any) => {
@@ -216,14 +224,14 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Button>]
           } bordered={false}>
             <Section size={"large"}>
-              <Form.Item label={this.props.intl.formatMessage({ id: "goalLibrary" })}
+              <Form.Item label={this.props.intl.formatMessage({id: "goalLibrary"})}
                          key='goalLibrary'
                          style={{marginBottom: '12px'}}>
                 {this.props.form.getFieldDecorator('goalLibrary', {
                   validateTrigger: ["onChange", "onBlur"]
                 })(
                   <Select onChange={this.changeGoalLibrary}>
-                    {this.goalLibrarysDc.items.map(gl => {
+                    {this.goalLibraryDc.items.map(gl => {
                       //@ts-ignore
                       return <Option value={gl.id}
                                      category={gl.category!.id}>{(gl.category! as SerializedEntity<DicGoalCategory>)._instanceName}</Option>
@@ -238,7 +246,10 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
                 {this.props.form.getFieldDecorator('goal', {
                   validateTrigger: ["onChange", "onBlur"]
                 })(
-                  <Select onChange={this.selectGoal}>{this.goalsDc ? this.goalsDc.items.map(gl => <Option
+                  <Select onChange={this.selectGoal} showSearch allowClear
+                          filterOption={(input, option) =>
+                            (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          }>{this.goalsDc ? this.goalsDc.items.map(gl => <Option
                     value={gl.id}>{gl._instanceName}</Option>) : null}</Select>
                 )}
               </Form.Item>
@@ -266,7 +277,7 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
               </Form.Item>
 
               <Form.Item label={<FormattedMessage id="my.goal.description"/>}
-                         key='goalSuccessCriteria'
+                         key='successCriteria'
                          style={{marginBottom: '12px'}}>{
                 this.props.form.getFieldDecorator('successCriteria')(
                   <TextArea/>
@@ -334,7 +345,8 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
 
   componentDidMount() {
     if (this.props.entityId !== "new") {
-      this.dataInstance.load(this.props.entityId);
+      this.dataInstance.load(this.props.entityId).then(() => {
+      });
     } else {
       const assignedGoal = new AssignedGoal();
       assignedGoal.goalType = AssignedGoalTypeEnum.LIBRARY;
@@ -348,14 +360,21 @@ class AssignedGoalEditComponent extends SecurityStateAssignedGoal<Props & Wrappe
       () => {
         const goalLibrary = this.dataInstance.getFieldValues(["goalLibrary"]).goalLibrary;
         if (goalLibrary) {
-          this.goalsDc = collection<Goal>(Goal.NAME, {
+          this.goalsDc = collectionWithAfterLoad<Goal>(Goal.NAME, () => {
+            const selectedGoal = this.findGoal(this.dataInstance.item!.goal!.id);
+            if (selectedGoal) {
+              this.props.form.setFieldsValue({
+                goalSuccessCriteria: (selectedGoal as any).successCriteriaLang
+              })
+            }
+          }, {
             filter: {
               conditions: [{
                 property: "library",
                 operator: "=",
                 value: goalLibrary
               }]
-            }, view: "_local"
+            }, view: "goal.with.successCriteriaLang"
           });
         }
         this.props.form.setFieldsValue(
