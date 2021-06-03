@@ -114,6 +114,7 @@
   "menu.main": "Main",
   "menu.my-profile": "My Profile",
   "menu.my-team": "My Team",
+  "menu.assistant-team": "Assistant team",
   "menu.help": "Job Confirmation Letter",
   "menu.vacation": "Vacation",
   "menu.my-education": "Training",
@@ -432,5 +433,6 @@
   "absenceForRecall.leaveOtherTime.info": "<p>The unused part of the paid annual leave due to the recall is granted:</p><ol><li>During the current working year</li><li>In the next working year at any time</li><li>Either joins the paid annual leave for the next working year.</li></ol>",
   "add.required.actor": "You need to add \"{actor}\"",
   "diary": "Diary",
-  "course.Recordings": "Recordings from the course"
+  "course.Recordings": "Recordings from the course",
+  "select.manager": "select a manager"
 }

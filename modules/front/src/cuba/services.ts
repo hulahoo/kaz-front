@@ -10,7 +10,6 @@ import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
 import {TsadvUser} from "./entities/base/tsadv$UserExt";
-import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
@@ -380,7 +379,7 @@ export const restServices = {
     }
   },
   startBprocService: {
-    getBpmRolesDefiner: (param: { processDefinitionKey: string, initiatorPersonGroupId: string }): Promise<BpmRolesDefiner> => {
+    getBpmRolesDefiner: (param: { processDefinitionKey: string, employeePersonGroupId: string, isAssistant: boolean }): Promise<BpmRolesDefiner> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
         "getBpmRolesDefiner",
@@ -388,9 +387,9 @@ export const restServices = {
       ).then((value: string) => JSON.parse(value));
     },
     getNotPersisitBprocActors: (param: {
-      employee: TsadvUser | null,
-      initiatorPersonGroupId: string,
-      bpmRolesDefiner: BpmRolesDefiner
+      employeePersonGroupId: string,
+      bpmRolesDefiner: BpmRolesDefiner,
+      isAssistant: boolean,
     }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
@@ -707,6 +706,17 @@ export const restServices = {
         {
           clientType: 'P',
           name: name
+        }
+      ).then(value => JSON.parse(value));
+    },
+  },
+  executiveAssistantService: {
+    getManagerList: (positionGroupId: string): Promise<PersonProfile[]> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_ExecutiveAssistantService",
+        "getManagerList",
+        {
+          positionGroupId: positionGroupId
         }
       ).then(value => JSON.parse(value));
     },

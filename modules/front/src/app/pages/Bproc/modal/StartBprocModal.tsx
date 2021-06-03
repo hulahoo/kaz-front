@@ -24,7 +24,7 @@ import TextArea from "antd/es/input/TextArea";
 
 type StartBproc = {
   processDefinitionKey: string;
-  employee?: () => TsadvUser | null;
+  employeePersonGroupId: () => string;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void;
@@ -69,15 +69,16 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
     const loadBpmRolesDefiner = () => catchException(restServices.startBprocService.getBpmRolesDefiner({
         processDefinitionKey: this.props.processDefinitionKey,
-        initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
+        employeePersonGroupId: this.props.employeePersonGroupId(),
+        isAssistant: this.props.rootStore!.assistantTeamInfo.active
       })
         .then(value => {
           this.bprocRolesDefiner = value;
 
           catchException(restServices.startBprocService.getNotPersisitBprocActors({
-            employee: this.props.employee ? this.props.employee() || null : null,
-            initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
-            bpmRolesDefiner: value
+            employeePersonGroupId: this.props.employeePersonGroupId(),
+            bpmRolesDefiner: value,
+            isAssistant: this.props.rootStore!.assistantTeamInfo.active
           }).then(notPersisitBprocActors => {
             this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
           })).catch((reason: Error) => {
@@ -236,7 +237,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   addBprocUser = () => {
-    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) != undefined)) {
+    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) !== undefined)) {
       Notification.error({
         message: this.props.intl.formatMessage({id: "bproc.startBproc.modal.error"})
       });
@@ -381,4 +382,5 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   }
 }
 
-export default withRouter(injectIntl(StartBprocModal));
+const startBprocModal = withRouter(injectIntl(StartBprocModal));
+export default startBprocModal;

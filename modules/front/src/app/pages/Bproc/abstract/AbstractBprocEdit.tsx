@@ -133,6 +133,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         operator: '=',
         value: 'TRUE'
       }]
+    }, {
+      view: 'portal-bproc-users'
     }).then(value => this.employee = value[0]);
   }
 
@@ -149,7 +151,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         formData={this.formData}
                         validate={this.validate}
                         beforeCompletePredicate={this.beforeCompletePredicate}
-                        employee={() => this.employee}
+                        employeePersonGroupId={() => this.employee ? this.employee.personGroup!.id : this.props.rootStore!.userInfo.personGroupId}
                         update={this.update}
                         processInstanceData={this.processInstanceData}
                         afterSendOnApprove={this.afterSendOnApprove}

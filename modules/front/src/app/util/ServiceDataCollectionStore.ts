@@ -1,13 +1,5 @@
-import {
-  DataCollectionStore,
-  DataContainerStatus,
-  DataInstanceStore,
-  getCubaREST,
-  getMainStore,
-  MainStore
-} from "@cuba-platform/react";
-import {PredefinedView} from "@cuba-platform/rest";
-import {observable, runInAction, toJS} from "mobx";
+import {DataCollectionStore} from "@cuba-platform/react";
+import {runInAction} from "mobx";
 
 type ServiceFunction<T> = () => Promise<T>
 
