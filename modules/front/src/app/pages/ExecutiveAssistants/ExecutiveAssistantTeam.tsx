@@ -25,7 +25,7 @@ export class AssistantTeam extends React.Component<RootStoreProp> {
                 showSearch
                 allowClear
                 autoFocus={true}
-                defaultValue={this.props.rootStore!.assistantTeamInfo.selectedManager
+                value={this.props.rootStore!.assistantTeamInfo.selectedManager
                   ? this.props.rootStore!.assistantTeamInfo.selectedManager.id
                   : undefined}
                 placeholder={<FormattedMessage id={'select.manager'}/>}
@@ -65,6 +65,13 @@ export class AssistantTeam extends React.Component<RootStoreProp> {
   componentDidMount() {
     this.props.rootStore!.assistantTeamInfo.active = true;
     restServices.executiveAssistantService.getManagerList(this.props.rootStore!.userInfo!.positionGroupId!)
+      .then(value => {
+        const selectedManager = this.props.rootStore!.assistantTeamInfo.selectedManager;
+        if (value && value.length === 1) this.props.rootStore!.assistantTeamInfo.selectedManager = value[0];
+        else if (!value || value.length === 0
+          || (selectedManager && !value.find(item => item.id === selectedManager.id))) this.props.rootStore!.assistantTeamInfo.selectedManager = undefined;
+        return value;
+      })
       .then(value => this.managers = value)
       .then(value => {
         if (this.props.rootStore!.assistantTeamInfo.selectedManager)
