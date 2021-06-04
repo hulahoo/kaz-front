@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement, FormEvent} from "react";
-import {Alert, Card, Col, DatePicker, Form, InputNumber, message, Row, Tree} from "antd";
+import {Alert, Card, Col, Form, InputNumber, message, Row, Tree} from "antd";
 import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {Redirect} from "react-router-dom";
@@ -48,6 +48,7 @@ import TaskDataTable from "../Bproc/TaskData/TaskDataTable";
 import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
 import {ScoreSetting} from "../../../cuba/entities/base/tsadv_ScoreSetting";
 import {collectionWithAfterLoad, DataCollectionStoreWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
+import DefaultDatePicker from "../../components/Datepicker";
 
 const {TreeNode} = Tree;
 
@@ -391,7 +392,11 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         pageName={this.props.intl.formatMessage({id: 'page.kpi'}, {"name": status === 'DONE' ? (this.dataInstance.item!.performancePlan as SerializedEntity<PerformancePlan>)._instanceName : ""})}>
         <Card className="narrow-layout card-actions-container" actions={[
           <Button buttonType={ButtonType.FOLLOW}
-                  onClick={() => this.props.history!.goBack()}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                  onClick={() => {
+                    if (this.approverHrRoleCode !== 'INITIATOR')
+                      return this.props.history!.goBack();
+                    else return this.props.history!.push(AssignedPerformancePlanManagement.PATH);
+                  }}>{this.props.intl.formatMessage({id: "close"})}</Button>,
           ...this.pageActions()]}
               bordered={false}>
           <Form key={'form1'} onSubmit={this.handleSubmit} layout="vertical">
@@ -480,7 +485,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                                key='hireDate'
                                style={{marginBottom: '12px'}}>{
                       getFieldDecorator('hireDate')(
-                        <DatePicker disabled/>
+                        <DefaultDatePicker disabled/>
                       )}
                     </Form.Item>
                   </Col>

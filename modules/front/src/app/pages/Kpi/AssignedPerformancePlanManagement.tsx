@@ -1,6 +1,6 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { observer } from "mobx-react";
+import {RouteComponentProps} from "react-router";
+import {observer} from "mobx-react";
 import AssignedPerformancePlanEdit from "./AssignedPerformancePlanEdit";
 import AssignedPerformancePlanList from "./AssignedPerformancePlanList";
 
@@ -12,13 +12,13 @@ export class AssignedPerformancePlanManagement extends React.Component<Props> {
   static NEW_SUBPATH = "new";
 
   render() {
-    const { entityId } = this.props.match.params;
+    const {entityId} = this.props.match.params;
     return (
       <>
         {entityId ? (
-          <AssignedPerformancePlanEdit entityId={entityId} />
+          <AssignedPerformancePlanEdit entityId={entityId}/>
         ) : (
-          <AssignedPerformancePlanList />
+          <AssignedPerformancePlanList/>
         )}
       </>
     );

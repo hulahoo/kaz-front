@@ -10,7 +10,6 @@ import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
 import {TsadvUser} from "./entities/base/tsadv$UserExt";
-import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
@@ -25,7 +24,6 @@ import {OrganizationSaveModel} from "../app/pages/orgStructureRequest/Organizati
 import {PositionSaveModel} from "../app/pages/orgStructureRequest/PositionEditor";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
 import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsRequest";
-import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 import {AnsweredFeedback} from "../app/pages/MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent";
 import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQuestion";
 import {DicCompany} from "./entities/base/base_DicCompany";
@@ -34,6 +32,7 @@ import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 import {EnrollmentStatus} from "./enums/enums";
+import {PositionGroupExt} from "./entities/base/base$PositionGroupExt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -591,13 +590,6 @@ export const restServices = {
         {userId: userId}
       ).then(r => JSON.parse(r));
     },
-    findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean, viewName: string }): Promise<PersonGroupExt[]> => {
-      return getCubaREST()!.invokeService<string>(
-        "tsadv_EmployeeService",
-        "findManagerListByPositionGroup",
-        {...param}
-      ).then(r => JSON.parse(r));
-    },
     getCompanyByPersonGroupId: (param: { personGroupId: string }): Promise<DicCompany> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_EmployeeService",
@@ -605,13 +597,6 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     },
-    findManagerListByPositionGroupReturnListPosition: (param: { personGroupId: string }): Promise<DicCompany> => {
-      return getCubaREST()!.invokeService<string>(
-        "tsadv_EmployeeService",
-        "findManagerListByPositionGroupReturnListPosition",
-        {...param}
-      ).then(r => JSON.parse(r));
-    }
   },
   orgStructureService: {
     initialCreate: (): Promise<OrgStructureRequest> => {
@@ -708,6 +693,15 @@ export const restServices = {
           clientType: 'P',
           name: name
         }
+      ).then(value => JSON.parse(value));
+    },
+  },
+  positionService: {
+    getManager: (positionGroupId: string): Promise<PositionGroupExt> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PositionService",
+        "getManager",
+        {positionGroupId: positionGroupId}
       ).then(value => JSON.parse(value));
     },
   }

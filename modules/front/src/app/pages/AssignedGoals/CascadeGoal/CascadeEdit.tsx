@@ -10,12 +10,11 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   clearFieldErrors,
+  collection,
   constructFieldsWithErrors,
-  DataCollectionStore,
   extractServerValidationErrors,
   Field,
   injectMainStore,
-  instance,
   MainStoreInjected,
   Msg,
   MultilineText,
@@ -26,7 +25,7 @@ import "../../../../app/App.css";
 
 import {AssignedPerformancePlan} from "../../../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {PersonGroupExt} from "../../../../cuba/entities/base/base$PersonGroupExt";
-import {serviceCollection, ServiceDataCollectionStore} from "../../../util/ServiceDataCollectionStore";
+import {ServiceDataCollectionStore} from "../../../util/ServiceDataCollectionStore";
 import {restServices} from "../../../../cuba/services";
 import {RootStoreProp} from "../../../store";
 import {AssignedGoal} from "../../../../cuba/entities/base/tsadv$AssignedGoal";
@@ -43,6 +42,7 @@ import TextArea from "antd/es/input/TextArea";
 import Input from "../../../components/Input/Input";
 import {AssignedGoalTypeEnum} from "../../../../cuba/enums/enums";
 import {instanceStore} from "../../../util/InstanceStore";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -75,7 +75,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
   );
 
   @observable
-  positionGroups: ServiceDataCollectionStore<PositionGroupExt>;
+  positionGroups: DataCollectionStore<PositionGroupExt>;
 
   @observable
   managers: ServiceDataCollectionStore<PersonGroupExt>;
@@ -301,6 +301,27 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
   };
 
   componentDidMount() {
+    this.assignedPerformancePlan.afterLoad = () => {
+      const positionGroupId = this.assignedPerformancePlan.item!.assignedPerson!.currentAssignment!.positionGroup!.id;
+
+      restServices.positionService.getManager(positionGroupId)
+        .then(managerPosition => {
+          const managerId = this.dataInstance.item && this.dataInstance.item.positionGroup
+            ? this.dataInstance.item.positionGroup.id
+            : managerPosition.id;
+          this.positionGroups = collection<PositionGroupExt>(PositionGroupExt.NAME, {
+            filter: {
+              conditions: [{
+                property: 'id',
+                operator: '=',
+                value: managerId
+              }]
+            },
+            view: 'assigned-goal-cascade-positionGroupExt-view'
+          });
+        })
+    };
+
     if (this.props.entityId && this.props.entityId !== CascadeGoalManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId).then(() => {
         const thisGoal = this.dataInstance.item;
@@ -322,25 +343,17 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
       assignedGoal.goalType = AssignedGoalTypeEnum.CASCADE;
 
       this.dataInstance.setItem(assignedGoal);
+      this.assignedPerformancePlan.load();
     }
-    this.assignedPerformancePlan.afterLoad = () => {
-      const positionGroupId = this.assignedPerformancePlan.item!.assignedPerson!.currentAssignment!.positionGroup!.id;
-      this.positionGroups = serviceCollection<PersonGroupExt>(restServices.employeeService.findManagerListByPositionGroupReturnListPosition.bind(null, {
-        positionGroupId: positionGroupId,
-        showAll: false,
-        viewName: "assigned-goal-cascade-positionGroupExt-view"
-      }));
-
-      this.positionGroups.load();
-    };
-
-    this.assignedPerformancePlan.load();
 
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
-      () => {
+      (item) => {
+
+        this.assignedPerformancePlan.load();
+
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );

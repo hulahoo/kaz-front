@@ -322,7 +322,12 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
         <Column key="category_icon"
                 render={((text, record: AssignedGoal, index) => {
                   const GoalTypeIcon = this.getGoalTypeIcon(record.goalType);
-                  return GoalTypeIcon ? <GoalTypeIcon style={{width: '14px'}}/> : null
+                  return GoalTypeIcon ?
+                    <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
+                          title={record && record.positionGroup ? record.positionGroup['_instanceName'] || '' : ''}>
+                    <GoalTypeIcon style={{width: '14px'}}/>
+            </span>
+                    : null
                 })}/>
         <Column title={<Msg entityName={AssignedGoal.NAME} propertyName='category'/>}
                 dataIndex="category._instanceName"
