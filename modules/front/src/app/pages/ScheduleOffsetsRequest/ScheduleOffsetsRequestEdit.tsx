@@ -475,6 +475,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
         personGroupId: personGroupId
       });
 
+      this.purposesDc = dictionaryCollection(DicSchedulePurpose.NAME, personGroupId);
+
       if (this.isNew()) {
         this.standardScheduleDc.afterLoad = () => {
           this.dataInstance.item!.currentSchedule = this.standardScheduleDc.items![0];

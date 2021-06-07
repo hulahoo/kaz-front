@@ -9,8 +9,6 @@ import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {SerializedEntity} from "@cuba-platform/rest";
 
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import Page from "../../hoc/PageContentHoc";
-import Section from "../../hoc/Section";
 import {RootStoreProp} from "../../store";
 import {PerformancePlan} from "../../../cuba/entities/base/tsadv$PerformancePlan";
 import KpiCard from "./KpiCard";
@@ -52,7 +50,13 @@ class KpiTeamListComponent extends React.Component<MainStoreInjected & WrappedCo
             </Select>
           </Col>
         </Row>
-        <MyTeamComponent personCard={this.personCard}/>
+        <MyTeamComponent
+          selectedTab={() => this.props.rootStore!.myTeamInfo.selectedTab}
+          selectedLeftMenu={() => this.props.rootStore!.myTeamInfo.selectedMenu}
+          selectedData={this.props.rootStore!.myTeamInfo.selectedMyTeamData}
+          onChangeSelectedInfo={this.props.rootStore!.myTeamInfo.setMyTeamInfo}
+          positionGroupId={this.props.rootStore!.userInfo!.positionGroupId!}
+          personCard={this.personCard}/>
       </div>
     );
   }

@@ -4,7 +4,6 @@ import {ReactComponent as ClockSvg} from "../../../resources/icons/clock-regular
 
 export default class CardIconFactory {
   static getIcon = (status: EnrollmentStatus) => {
-    console.log(status);
     switch (status) {
       case EnrollmentStatus.COMPLETED: {
         return SvgFinishedCourse

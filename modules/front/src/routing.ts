@@ -1,4 +1,4 @@
-import { AbsenceRvdRequestManagement } from "./app/pages/MyTeam/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
+import { AbsenceRvdRequestManagement } from "./app/pages/MyTeam/timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
 import { rootStore } from "./app/store";
 import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";
@@ -29,10 +29,3 @@ function flattenRoutes(
 export function getRouteList() {
   return flattenRoutes(rootStore.menu.menuList);
 }
-
-menuItems.push({
-  pathPattern: "/absenceRvdRequestManagement/:entityId?",
-  menuLink: "/absenceRvdRequestManagement",
-  component: AbsenceRvdRequestManagement,
-  caption: "AbsenceRvdRequestManagement"
-});

@@ -10,7 +10,6 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   clearFieldErrors,
-  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
   getCubaREST,
@@ -25,7 +24,6 @@ import {
 import "../../../app/App.css";
 
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
-import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {rootStore, RootStoreProp} from "../../store";
 import {restServices} from "../../../cuba/services";
 import {ReadonlyField} from "../../components/ReadonlyField";
@@ -36,6 +34,7 @@ import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
 import Section from "../../hoc/Section";
 import Page from "../../hoc/PageContentHoc";
 import moment from "moment/moment";
+import {isNumber} from "../../util/util";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -49,12 +48,8 @@ type EditorProps = {
 class VacationScheduleRequestEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
   dataInstance = instance<VacationScheduleRequest>(
     VacationScheduleRequest.NAME,
-    {view: "vacationScheduleRequest-edit", loadImmediately: false}
+    {view: "vacationScheduleRequest-edit"}
   );
-
-  statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "_minimal"
-  });
 
   @observable
   updated = false;
@@ -101,9 +96,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
         .update({
           personGroup: {
             id: this.props.rootStore!.userInfo.personGroupId
-          },
-          status: {
-            id: this.dataInstance.item!.status!.id
           },
           ...this.props.form.getFieldsValue(this.fields)
         })
@@ -157,6 +149,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     }
 
     const {getFieldDecorator} = this.props.form;
+    const messages = this.props.mainStore!.messages!;
 
     const {status} = this.dataInstance;
 
@@ -186,9 +179,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="requestNumber"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true}]
-                  }}
                   disabled={true}
                 />
 
@@ -197,9 +187,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="requestDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true}]
-                  }}
                   disabled={true}
                 />
 
@@ -210,12 +197,26 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     getValueFromEvent: args => {
-                      this.getAbsenceBalance(null, args);
+                      this.getAbsenceBalance(args);
+                      this.getAbsenceDays(args);
                       return args
-                    }
+                    },
+                    rules: [{
+                      required: true,
+                      validator: (rule, value, callback) => {
+                        if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.startDate']}));
+
+                        const requestDate = this.props.form.getFieldValue('requestDate');
+
+                        if (requestDate && requestDate > value) {
+                          callback(this.props.intl.formatMessage({id: 'validation.vacationScheduleRequest.startDate.start'}));
+                        }
+
+                        return callback();
+                      }
+                    }]
                   }}
                   disabled={isNotDraft}
-
                 />
 
                 <ReadonlyField
@@ -223,8 +224,17 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="endDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                   disabled={isNotDraft}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.endDate']})
+                    }],
+                    getValueFromEvent: args => {
+                      this.getAbsenceDays(undefined, args);
+                      return args;
+                    }
+                  }}
                 />
 
                 <ReadonlyField
@@ -237,10 +247,11 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                       {
                         validator: (rule, value, callback) => {
                           const balance = this.props.form.getFieldValue('balance');
-                          if (!value || !balance) return callback();
+                          if (!isNumber(value) || !isNumber(balance)) return callback();
                           if (balance < parseInt(value)) {
-                            callback(this.props.intl.formatMessage({id: 'validation.absenceRequest.absenceDays.balance'}));
+                            return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           }
+                          return callback();
                         }
                       }
                     ]
@@ -253,7 +264,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="balance"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                   disabled={true}
                 />
 
@@ -273,7 +283,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="attachment"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                 />
 
                 <ReadonlyField
@@ -281,7 +290,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="sentToOracle"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  getFieldDecoratorOpts={{}}
                   disabled={true}
                 />
 
@@ -300,7 +308,39 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     );
   }
 
-  getAbsenceBalance = (absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
+  getAbsenceDays = (startDate?: any, endDate?: any) => {
+    if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
+
+      startDate = startDate || this.props.form.getFieldValue(`startDate`);
+      endDate = endDate || this.props.form.getFieldValue(`endDate`);
+
+      const personGroupId = rootStore.userInfo.personGroupId;
+
+      if (endDate && startDate && personGroupId) {
+        getCubaREST()!.searchEntities(DicAbsenceType.NAME, {
+          conditions: [{property: "isVacationDate", operator: "=", value: 'TRUE'},
+            {property: "availableForChangeDate", operator: "=", value: 'TRUE'},
+            {property: "availableForRecallAbsence", operator: "=", value: 'TRUE'},
+            {property: "useInSelfService", operator: "=", value: 'TRUE'}]
+        }, {
+          view: "_minimal",
+          limit: 1,
+        }).then((value) => {
+          if (value.length === 1)
+            restServices.absenceService.countDays({
+              dateFrom: startDate,
+              dateTo: endDate,
+              absenceTypeId: (value[0] as DicAbsenceType).id,
+              personGroupId: personGroupId
+            }).then(value => {
+              this.props.form.setFields({"absenceDays": {value: value}});
+            })
+        })
+      }
+    }
+  }
+
+  getAbsenceBalance = (dateFrom?: moment.Moment) => {
     dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
 
     if (dateFrom) {
@@ -355,38 +395,6 @@ const component = injectIntl(
             value: changedValues[fieldName]
           }
         });
-
-        if (fieldName === "startDate" || fieldName === "endDate") {
-          props.form.validateFields();
-        }
-
-        if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
-
-          const startDate = props.form.getFieldValue(`startDate`);
-          const endDate = props.form.getFieldValue(`endDate`);
-
-          const personGroupId = rootStore.userInfo.personGroupId;
-
-          if ((fieldName === "startDate" || fieldName === "endDate")
-            && endDate && startDate && personGroupId) {
-            getCubaREST()!.searchEntities(DicAbsenceType.NAME, {
-              conditions: [{property: "code", operator: "=", value: 'ANNUAL'}]
-            }, {
-              view: "_minimal"
-            }).then((value) => {
-              if (value.length === 1)
-                restServices.absenceService.countDays({
-                  dateFrom: startDate,
-                  dateTo: endDate,
-                  absenceTypeId: (value[0] as DicAbsenceType).id,
-                  personGroupId: personGroupId
-                }).then(value => {
-                  props.form.setFields({"absenceDays": {value: value}});
-                })
-            })
-          }
-        }
-
       });
     }
   })(VacationScheduleRequestEditComponent)

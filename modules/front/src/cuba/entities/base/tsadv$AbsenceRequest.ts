@@ -4,12 +4,11 @@ import { FileDescriptor } from "./sys$FileDescriptor";
 import { DicAbsenceType } from "./tsadv$DicAbsenceType";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
-import { VacationSchedule } from "./tsadv_VacationSchedule";
+import {VacationScheduleRequest} from "./tsadv_VacationScheduleRequest";
 export class AbsenceRequest extends AbstractBprocRequest {
   static NAME = "tsadv$AbsenceRequest";
   assignmentGroup?: AssignmentGroupExt | null;
   reason?: string | null;
-  attachment?: FileDescriptor | null;
   dateFrom?: any | null;
   dateTo?: any | null;
   absenceDays?: number | null;
@@ -29,13 +28,15 @@ export class AbsenceRequest extends AbstractBprocRequest {
   periodDateTo?: any | null;
   timeOfFinishing?: any | null;
   totalHours?: number | null;
-  compencation?: boolean | null;
+  compensation?: boolean | null;
   vacationDay?: boolean | null;
   acquainted?: boolean | null;
   agree?: boolean | null;
-  vacationSchedule?: VacationSchedule | null;
+  vacationScheduleRequest?: VacationScheduleRequest | null;
   vacationDurationType?: any | null;
   files?: FileDescriptor[] | null;
+  startTime?: any | null;
+  endTime?: any | null;
 }
 export type AbsenceRequestViewName =
   | "_base"
@@ -71,7 +72,7 @@ export type AbsenceRequestView<
       | "periodDateTo"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -79,6 +80,8 @@ export type AbsenceRequestView<
       | "organizationBin"
       | "integrationUserLogin"
       | "comment"
+      | "startTime"
+      | "endTime"
     >
   : V extends "_local"
   ? Pick<
@@ -101,7 +104,7 @@ export type AbsenceRequestView<
       | "periodDateTo"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -111,6 +114,8 @@ export type AbsenceRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
+      | "startTime"
+      | "endTime"
     >
   : V extends "_minimal"
   ? Pick<AbsenceRequest, "id" | "requestNumber" | "requestDate">
@@ -135,7 +140,7 @@ export type AbsenceRequestView<
       | "periodDateTo"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -150,6 +155,8 @@ export type AbsenceRequestView<
       | "purpose"
       | "status"
       | "files"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest-for-my-team"
   ? Pick<
@@ -172,7 +179,7 @@ export type AbsenceRequestView<
       | "periodDateTo"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -186,6 +193,8 @@ export type AbsenceRequestView<
       | "personGroup"
       | "purpose"
       | "status"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest-for-ss-my-team"
   ? Pick<
@@ -208,7 +217,7 @@ export type AbsenceRequestView<
       | "periodDateTo"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -218,6 +227,8 @@ export type AbsenceRequestView<
       | "requestNumber"
       | "requestDate"
       | "comment"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest.edit"
   ? Pick<
@@ -240,7 +251,7 @@ export type AbsenceRequestView<
       | "periodDateTo"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -252,13 +263,14 @@ export type AbsenceRequestView<
       | "comment"
       | "assignmentGroup"
       | "type"
-      | "attachment"
       | "status"
       | "purpose"
       | "personGroup"
-      | "vacationSchedule"
+      | "vacationScheduleRequest"
       | "vacationDurationType"
       | "files"
+      | "startTime"
+      | "endTime"
     >
   : V extends "absenceRequest.view"
   ? Pick<
@@ -281,7 +293,7 @@ export type AbsenceRequestView<
       | "periodDateTo"
       | "timeOfFinishing"
       | "totalHours"
-      | "compencation"
+      | "compensation"
       | "vacationDay"
       | "acquainted"
       | "agree"
@@ -293,10 +305,12 @@ export type AbsenceRequestView<
       | "comment"
       | "assignmentGroup"
       | "type"
-      | "attachment"
       | "status"
       | "personGroup"
       | "purpose"
-      | "vacationSchedule"
+      | "vacationScheduleRequest"
+      | "startTime"
+      | "endTime"
+      | "files"
     >
   : never;

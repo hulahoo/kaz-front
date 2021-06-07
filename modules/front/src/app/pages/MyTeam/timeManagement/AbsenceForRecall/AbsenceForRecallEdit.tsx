@@ -17,7 +17,6 @@ import {
 import "../../../../../app/App.css";
 
 import {RouteComponentProps, withRouter} from "react-router";
-import AbstractBprocEdit from "../../../Bproc/abstract/AbstractBprocEdit";
 import {DicRequestStatus} from "../../../../../cuba/entities/base/tsadv$DicRequestStatus";
 import LoadingPage from "../../../LoadingPage";
 import Page from "../../../../hoc/PageContentHoc";
@@ -31,12 +30,15 @@ import moment from "moment/moment";
 import {observable, reaction} from "mobx";
 import {getFullName} from "../../../../util/util";
 import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
-import {FileDescriptor} from "../../../../../cuba/entities/base/sys$FileDescriptor";
 import {restServices} from "../../../../../cuba/services";
 import {AbsenceForRecall} from "../../../../../cuba/entities/base/tsadv_AbsenceForRecall";
 import TextArea from "antd/es/input/TextArea";
 import Notification from "../../../../util/Notification/Notification";
 import AbstractAgreedBprocEdit from "../../../Bproc/abstract/AbstractAgreedBprocEdit";
+import {
+  parseToFieldValueFromDataInstanceValue,
+  parseToJsonFromFieldValue
+} from "../../../../components/MultiFileUpload";
 
 type EditorProps = {
   entityId: string;
@@ -56,10 +58,6 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
   });
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "_minimal"
-  });
-
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
   });
 
@@ -88,7 +86,7 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
 
     "isFamiliarization",
 
-    "file"
+    "files"
   ];
 
   @observable
@@ -100,15 +98,17 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
   @observable
   isDatesDisabled: boolean = false;
 
+  calledFrom?: string;
+
   getUpdateEntityData = (): any => {
     const json = {
-      ...this.props.form.getFieldsValue(this.fields)
+      ...this.props.form.getFieldsValue(this.fields),
+      files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
     };
 
     if (this.isNotDraft())
       return json
 
-    json['employee'] = this.absence!.personGroup!.id;
     json['vacation'] = this.absence;
     json['absenceType'] = this.absence!.type;
     json['employee'] = this.absence!.personGroup!.id;
@@ -141,9 +141,6 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   disabled={true}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
                 />
 
                 <ReadonlyField
@@ -153,9 +150,6 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   optionsContainer={this.statusesDc}
-                  getFieldDecoratorOpts={{
-                    rules: [{required: true,}]
-                  }}
                 />
 
                 <ReadonlyField
@@ -191,10 +185,8 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                         if (!value) {
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateFrom']}));
                         } else {
+                          this.props.form.validateFields(['recallDateTo'], {force: true});
                           const startOf = value.clone().startOf('day');
-                          console.log(moment(this.absence.dateFrom));
-                          console.log(startOf);
-                          console.log(moment(this.absence.dateFrom) <= startOf);
                           if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
                             return callback();
                           } else return callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
@@ -214,14 +206,23 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                     rules: [{
                       required: true,
                       validator: (rule, value, callback) => {
+                        const recallDateTo = value ? value.clone().startOf('day') : undefined;
+                        const recallDateFromFieldValue = this.props.form.getFieldValue('recallDateFrom');
+                        const recallDateFrom = recallDateFromFieldValue ? recallDateFromFieldValue.clone().startOf('day') : undefined;
                         if (!value) {
-                          callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateTo']}));
-                        } else {
-                          const startOf = value.clone().startOf('day');
-                          if (moment(this.absence.dateFrom) <= startOf && startOf <= moment(this.absence.dateTo)) {
-                            callback();
-                          } else callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                          return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.recallDateTo']}));
+                        } else if (!(moment(this.absence.dateFrom) <= recallDateTo && recallDateTo <= moment(this.absence.dateTo))) {
+                          return callback(this.props.intl.formatMessage({id: "absenceForRecall.recallDateNotCorrect"}));
+                        } else if (recallDateFrom && recallDateTo && recallDateFrom > recallDateTo) {
+                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                            startDate: messages[this.dataInstance.entityName + '.recallDateFrom'],
+                            endDate: messages[this.dataInstance.entityName + '.recallDateTo']
+                          }));
                         }
+
+                        this.props.form.validateFields(['dateFrom', 'dateTo'], {force: true});
+
+                        return callback();
                       }
                     }
                     ]
@@ -242,6 +243,13 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                       const compensationPayment = this.props.form.getFieldValue('compensationPayment') === true;
                       if (compensationPayment === leaveOtherTime) {
                         this.props.form.setFieldsValue({compensationPayment: !leaveOtherTime});
+                      }
+
+                      if (leaveOtherTime) {
+                        Notification.info({
+                          message: <div
+                            dangerouslySetInnerHTML={{__html: this.props.intl.formatMessage({id: "absenceForRecall.leaveOtherTime.info"})}}/>
+                        });
                       }
 
                       this.isDatesDisabled = !leaveOtherTime;
@@ -294,12 +302,26 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                       validator: (rule, value, callback) => {
                         if (!value && !(isNotDraft || this.isDatesDisabled))
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
+
+                        if (this.calledFrom !== 'dateTo') {
+                          this.calledFrom = 'dateFrom';
+                          this.props.form.validateFields(['dateTo'], {force: true});
+                        } else this.calledFrom = undefined;
+
                         const dateTo = this.props.form.getFieldValue('dateTo');
                         const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
                         const recallDateTo = this.props.form.getFieldValue('recallDateTo');
+
                         if (value && dateTo && recallDateFrom && recallDateTo && dateTo.clone().startOf('day') - value.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
-                          callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
-                        } else callback();
+                          return callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
+                        } else if (recallDateTo && value && recallDateTo.clone().startOf('day') > value.clone().startOf('day')) {
+                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                            startDate: messages[this.dataInstance.entityName + '.recallDateTo'],
+                            endDate: messages[this.dataInstance.entityName + '.dateFrom']
+                          }));
+                        }
+
+                        return callback();
                       }
                     }
                     ]
@@ -318,12 +340,24 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                       validator: (rule, value, callback) => {
                         if (!value && !(isNotDraft || this.isDatesDisabled))
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
+
+                        if (this.calledFrom !== 'dateFrom') {
+                          this.calledFrom = 'dateTo';
+                          this.props.form.validateFields(['dateFrom'], {force: true});
+                        } else this.calledFrom = undefined;
+
                         const dateFrom = this.props.form.getFieldValue('dateFrom');
                         const recallDateFrom = this.props.form.getFieldValue('recallDateFrom');
                         const recallDateTo = this.props.form.getFieldValue('recallDateTo');
                         if (value && dateFrom && recallDateFrom && recallDateTo && value.clone().startOf('day') - dateFrom.clone().startOf('day') > recallDateTo.clone().startOf('day') - recallDateFrom.clone().startOf('day')) {
-                          callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
-                        } else callback();
+                          return callback(this.props.intl.formatMessage({id: 'absenceForRecall.daysNotCorrect'}));
+                        } else if (dateFrom && value && dateFrom.clone().startOf('day') > value.clone().startOf('day')) {
+                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                            startDate: messages[this.dataInstance.entityName + '.dateFrom'],
+                            endDate: messages[this.dataInstance.entityName + '.dateTo']
+                          }));
+                        }
+                        return callback();
                       }
                     }]
                   }}
@@ -340,13 +374,12 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
 
                 {this.agreedFields()}
 
-                {/*<ReadonlyField
-                  entityName={'tsadv_AbsenceForRecall'}
-                  propertyName="file"
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="files"
                   form={this.props.form}
-                  disabled={false}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                  optionsContainer={this.filesDc}/>*/}
+                  disabled={isNotDraft}
+                  formItemOpts={{style: {marginBottom: "12px"}}}/>
 
                 {this.takCard()}
 
@@ -395,7 +428,8 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
             });
 
         const obj = {
-          ...this.dataInstance.getFieldValues(this.fields)
+          ...this.dataInstance.getFieldValues(this.fields),
+          files: this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.files) : undefined,
         };
         if (this.isCalledProcessInstanceData && !this.processInstanceData) {
           const now = moment();
@@ -441,11 +475,6 @@ const onValuesChange = (props: any, changedValues: any) => {
         value: changedValues[fieldName]
       }
     });
-
-    if (fieldName === 'recallDateFrom' || fieldName === 'recallDateTo') props.form.validateFields(['dateFrom', 'dateTo'], {force: true});
-    if (fieldName === 'dateFrom') props.form.validateFields(['dateTo'], {force: true});
-    if (fieldName === 'dateTo') props.form.validateFields(['dateFrom'], {force: true});
-
   });
 };
 

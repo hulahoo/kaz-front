@@ -10,12 +10,14 @@ import {restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
 import MyTeamPersonCard from "./personalData/MyTeamPersonCard/MyTeamPersonCard";
 import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
-import MyTeamPersonRvd from "./rvd/MyTeamPersonRvd/MyTeamPersonRvd";
+import MyTeamPersonRvd from "./timeManagement/rvd/MyTeamPersonRvd/MyTeamPersonRvd";
 // import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
-import AbsenceRvdRequestList from "./rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
+import AbsenceRvdRequestList from "./timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
 import {rootStore, RootStoreProp} from "../../store";
 import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
+import MyTeamAbsenceRequest from "./timeManagement/MyTeamAbsenceRequest/MyTeamAbsenceRequest";
+import {MyTeamData} from "./MyTeamComponent";
 
 const {TabPane} = Tabs;
 
@@ -36,14 +38,15 @@ export type PersonProfile = {
   positionName?: string,
   email?: string,
   phone?: string,
-  companyId?: string,
+  companyCode?: string,
 }
 
 export type MyTeamCardProps = {
   personGroupId: string,
+  selectedData?: MyTeamData,
   selectedTab?: string,
   selectedLeftMenu?: string,
-  setSelectedTabOrLeftMenu?: (selectedTab?: string, selectedLeftMenu?: string) => void,
+  onChangeSelectedInfo?: (selectedData?: MyTeamData, selectedTab?: string, selectedLeftMenu?: string) => void,
 };
 
 export type Menu = {
@@ -62,8 +65,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
   @observable selectedLeftMenu: string = this.props.selectedLeftMenu || 'personalData';
 
   callSetSelectedTabOrLeftMenu = () => {
-    if (this.props.setSelectedTabOrLeftMenu)
-      this.props.setSelectedTabOrLeftMenu(this.selectedTab, this.selectedLeftMenu);
+    if (this.props.onChangeSelectedInfo)
+      this.props.onChangeSelectedInfo(this.props.selectedData, this.selectedTab, this.selectedLeftMenu);
   }
 
   renderContent = (): React.ReactNode => {
@@ -73,6 +76,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <MyTeamPersonCard person={this.person}/>
       case 'absence':
         return <MyTeamAbsence personGroupId={this.person!.groupId}/>
+      case 'absenceRequest':
+        return <MyTeamAbsenceRequest personGroupId={this.person!.groupId}/>
       case 'workOnWeekend':
         return <MyTeamPersonRvd personGroupId={this.person!.groupId}/>
       case 'workOnWeekendRequest':

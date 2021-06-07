@@ -7,16 +7,18 @@ import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect, withRouter} from "react-router-dom";
 import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import InsuredPersonMemberComponent from "./InsuredPersonMember";
 
-import {downloadFile} from "../../util/util";
+import {catchException, downloadFile} from "../../util/util";
 
 import {
   clearFieldErrors,
   collection,
   constructFieldsWithErrors,
-  DataTable,
   extractServerValidationErrors,
+  FileUpload,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -35,15 +37,17 @@ import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType
 import {DicRegion} from "../../../cuba/entities/base/base$DicRegion";
 import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {ReadonlyField} from "../../components/ReadonlyField";
-import {DEFAULT_DATE_PARSE_FORMAT, restServices} from "../../../cuba/services";
+import {restServices} from "../../../cuba/services";
 import {RouteComponentProps} from "react-router";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {RootStoreProp} from "../../store";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
-import {instanceStore} from "../../util/InstanceStore";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
-import moment from "moment";
 import {DicAddressType} from "../../../cuba/entities/base/tsadv$DicAddressType";
+import DataTableFormat from "../../components/DataTable/intex";
+import {collectionWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
+import InsuredPersonMemberComponent from "./InsuredPersonMember";
+import Notification from "../../util/Notification/Notification";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -52,19 +56,19 @@ type EditorProps = {
 };
 
 
+@injectMainStore
 @inject("rootStore")
 @observer
-class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp & WrappedComponentProps & RouteComponentProps<any>> {
+class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp & WrappedComponentProps & MainStoreInjected & RouteComponentProps<any>> {
 
   @observable
   visible: boolean = false;
 
-  dataInstance = instanceStore<InsuredPerson>(InsuredPerson.NAME, {
-      view: "insuredPerson-editView",
-      loadImmediately: false
-    },
-    restServices.documentService.commitFromPortal);
-  /*  */
+  dataInstance = instance<InsuredPerson>(InsuredPerson.NAME, {
+    view: "insuredPerson-editView",
+    loadImmediately: false
+  });
+
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
     sort: "-updateTs",
@@ -82,6 +86,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     DicMICAttachmentStatus.NAME,
     {view: "_minimal"}
   );
+
+  @observable
+  annexes: FileDescriptor[];
 
   @observable
   insuranceContractsDc: DataCollectionStore<InsuranceContract>;
@@ -172,8 +179,8 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
   memberFields = [
     "relative",
-    "firstName",
     "secondName",
+    "firstName",
     "middleName",
     "birthdate",
     "iin",
@@ -184,7 +191,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     "amount",
     "region",
     "insuranceContract",
-    "file",
+    "statementFile",
   ];
 
   rowIndex = -1;
@@ -291,6 +298,21 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       this.visible = value;
   }
 
+  onChangeInsuranceContract = (insuranceContractId?: string) => {
+    if (!insuranceContractId) return;
+
+    if (this.insuranceContractsDc && this.insuranceContractsDc.status !== 'LOADING') {
+      this.insuranceContractsDc.items.filter(value => value.id === insuranceContractId)
+        .forEach(insuranceContract => {
+          if (insuranceContract.attachments)
+            this.annexes = insuranceContract.attachments.map(value => value.attachment).filter(value => value) as FileDescriptor[];
+          this.props.form.setFieldsValue({insuranceProgram: insuranceContract.insuranceProgram})
+        });
+    }
+
+    this.initPersonMembers(insuranceContractId);
+  }
+
   render() {
     if (this.updated) {
       return <Redirect to={InsuredPersonManagement.PATH}/>;
@@ -306,6 +328,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         style={{margin: "12px"}}
         type="primary"
         icon={"plus"}
+        key='create'
         onClick={() => {
           this.isCreateMember = true;
           this.showModal();
@@ -316,6 +339,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         style={{margin: "12px"}}
         type="primary"
         icon={"edit"}
+        key='edit'
         disabled={this.selectedRowKey === undefined}
         onClick={() => {
           this.isCreateMember = false;
@@ -327,6 +351,7 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
         style={{margin: "12px"}}
         type="primary"
         icon={"delete"}
+        key='delete'
         disabled={this.selectedRowKey === undefined}
         onClick={this.deleteSelectedRow}
       />
@@ -366,22 +391,21 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
-                                 propertyName="firstName"
-                                 form={this.props.form}
-                                 formItemOpts={{style: {display: "none"}}}
-                                 getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
-                                 }}
-                  />
-
-                  <ReadonlyField disabled={true}
-                                 entityName={InsuredPerson.NAME}
                                  propertyName="secondName"
                                  form={this.props.form}
                                  formItemOpts={{style: {display: "none"}}}
                                  getFieldDecoratorOpts={{
                                    rules: [{required: true}],
+                                 }}
+                  />
 
+                  <ReadonlyField disabled={true}
+                                 entityName={InsuredPerson.NAME}
+                                 propertyName="firstName"
+                                 form={this.props.form}
+                                 formItemOpts={{style: {display: "none"}}}
+                                 getFieldDecoratorOpts={{
+                                   rules: [{required: true}]
                                  }}
                   />
 
@@ -516,7 +540,14 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  formItemOpts={{style: field_style}}
                                  optionsContainer={this.insuranceContractsDc}
                                  getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
+                                   rules: [{
+                                     required: true,
+                                     message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.insuranceContract']})
+                                   }],
+                                   getValueFromEvent: args => {
+                                     this.onChangeInsuranceContract(args);
+                                     return args;
+                                   }
                                  }}
                   />
 
@@ -525,9 +556,6 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  propertyName="attachDate"
                                  form={this.props.form}
                                  formItemOpts={{style: field_style}}
-                                 getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
-                                 }}
                                  format={DEFAULT_DATE_PATTERN}
                   />
                   <ReadonlyField disabled={true}
@@ -546,29 +574,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  form={this.props.form}
                                  formItemOpts={{style: field_style}}
                                  optionsContainer={this.statusRequestsDc}
-                                 getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
-                                 }}
                   />
                   <ReadonlyField disabled={true}
                                  entityName={InsuredPerson.NAME}
                                  propertyName="insuranceProgram"
                                  form={this.props.form}
                                  formItemOpts={{style: field_style}}
-                                 getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
-                                 }}
                   />
-
-                  {/*   <ReadonlyField disabled={isMemberAttach}
-                  entityName={InsuredPerson.NAME}
-                  propertyName="amount"
-                  form={this.props.form}
-                  formItemOpts={{style: field_style}}
-                  getFieldDecoratorOpts={{}}
-                />
-*/}
-
 
                   <ReadonlyField disabled={isMemberAttach}
                                  entityName={InsuredPerson.NAME}
@@ -577,26 +589,22 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                                  formItemOpts={{style: field_style}}
                                  optionsContainer={this.regionsDc}
                                  getFieldDecoratorOpts={{
-                                   rules: [{required: true}]
+                                   rules: [{
+                                     required: true,
+                                     message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.region']})
+                                   }]
                                  }}
                   />
-                  {/* <ReadonlyField disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="file"
-                    form={this.props.form}
-                    formItemOpts={{ style: field_style }}
-                    optionsContainer={this.filesDc}
-                    getFieldDecoratorOpts={{}}
-                  />
-                   */}
-                  <ReadonlyField
-                    disabled={isMemberAttach}
-                    entityName={InsuredPerson.NAME}
-                    propertyName="statementFile"
-                    form={this.props.form}
-                    formItemOpts={{style: field_style}}
-                    getFieldDecoratorOpts={{}}
-                  />
+
+                  <Form.Item style={field_style}
+                             label={<FormattedMessage id={'withholding.statement'}/>}>
+                    {this.props.form.getFieldDecorator("statementFile", {
+                      initialValue: this.dataInstance.item && this.dataInstance.item.statementFile ? {
+                        id: this.dataInstance.item.statementFile.id,
+                        name: this.dataInstance.item.statementFile.name
+                      } : undefined
+                    })(<FileUpload/>)}
+                  </Form.Item>
 
                   <ReadonlyField disabled={isMemberAttach}
                                  entityName={InsuredPerson.NAME}
@@ -607,26 +615,23 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
                   />
 
                 </Card>
+
                 <Card size="small" title={<FormattedMessage id="annexes"/>} style={card_style}>
-                  {
-                    this.props.entityId === InsuredPersonManagement.NEW_SUBPATH
-                      ? <span style={{color: "red"}}><FormattedMessage id="see.documents"/></span>
-                      : null
-                  }
-                  {this.dataInstance.item && this.dataInstance.status === 'DONE'
-                  && this.dataInstance.item!.insuranceContract!.attachments!
-                    ? this.dataInstance.item!.insuranceContract!.attachments!
+                  <span style={{color: "red", paddingLeft: 10}}><FormattedMessage id="see.documents"/></span>
+                  <br/>
+                  {this.annexes
+                    ? this.annexes
                       .map(a =>
                         <Tag
                           style={{margin: "10px"}}
                           color={"blue"}
                           onClick={() => {
-                            downloadFile((a.attachment as FileDescriptor).id,
-                              (a.attachment as FileDescriptor).name as string,
-                              (a.attachment as FileDescriptor).extension as string,
+                            downloadFile((a as FileDescriptor).id,
+                              (a as FileDescriptor).name as string,
+                              (a as FileDescriptor).extension as string,
                               "");
                           }
-                          }> {(a.attachment as FileDescriptor).name}</Tag>)
+                          }> {(a as FileDescriptor).name}</Tag>)
                     : <></>}
                 </Card>
               </Col>
@@ -634,30 +639,13 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
 
             {isMemberAttach ?
               <Card title={this.props.intl.formatMessage({id: 'family.member.information'})} style={{margin: "10px"}}>
-                <DataTable
+                <DataTableFormat
                   dataCollection={this.familyDataCollection}
                   fields={this.memberFields}
+                  enableFiltersOnColumns={[]}
                   hideSelectionColumn={true}
                   onRowSelectionChange={this.handleRowSelectionChange}
                   buttons={buttons}
-                  columnProps={{
-                    render: (text, record, index) => {
-                      if (this.rowIndex != index) {
-                        this.rowIndex = index;
-                        this.colIndex = 0;
-                      }
-                      this.colIndex += 1;
-                      if (this.colIndex == 5 && record.birthdate) {
-                        return moment(record.birthdate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
-                      } else if (this.colIndex == 9 && record.attachDate) {
-                        return moment(record.attachDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN);
-                      }
-                      return text;
-                    }
-                  }}
-                  // render={(text, record: InsuredPerson) => (
-                  //   (React.createElement("div", null, moment(record.insuranceContract!.startDate!, DEFAULT_DATE_PARSE_FORMAT).format(DEFAULT_DATE_PATTERN)))
-                  // )}
                 />
               </Card>
               : <></>}
@@ -697,22 +685,40 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     );
   }
 
-  refreshDs = () => {
+  calcTotalAmount = () => {
     restServices.documentService.calcTotalAmount({
-      insuredPersonId: this.props!.entityId!
+      insuredPersonId: this.props.entityId
     }).then(value => {
       if (this.dataInstance.item!)
         this.props.form.setFieldsValue({totalAmount: value});
     })
+  }
 
-    restServices.documentService.getInsuredPersonMembers({
-      insuredPersonId: this.props!.entityId!
-    }).then(value => {
-      this.familyDataCollection.clear();
-      console.log('value', value.length);
-      // @ts-ignore
-      this.familyDataCollection.items = Array.from(value);
-    })
+  initPersonMembers = (insuranceContractId?: string) => {
+    const contractId = insuranceContractId || this.props.form.getFieldValue('insuranceContract')
+      || (this.dataInstance.item && this.dataInstance.item.insuranceContract ? this.dataInstance.item!.insuranceContract.id : undefined);
+    if (contractId)
+      restServices.documentService.getInsuredPersonMembersWithNewContract({
+        insuredPersonId: this.props!.entityId!,
+        contractId: contractId
+      }).then(value => {
+        this.familyDataCollection.clear();
+
+        // @ts-ignore
+        this.familyDataCollection.items = Array.from(value);
+
+        const totalAmount = this.familyDataCollection.items.map(item => item.amount)
+          .filter(item => item)
+          .map(item => parseFloat(item))
+          .reduce((i1, i2) => i1 + i2, 0);
+
+        this.props.form.setFieldsValue({totalAmount: totalAmount})
+      })
+  }
+
+  refreshDs = () => {
+    // this.calcTotalAmount();
+    this.initPersonMembers();
   }
 
   subscribeMemberToMIC = () => {
@@ -752,11 +758,16 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       this.dataInstance.load(this.props.entityId);
       this.refreshDs();
     } else {
-      restServices.documentService.getInsuredPerson({
+      catchException(restServices.documentService.getInsuredPerson({
         type: "Employee",
       }).then(value => {
         value.id = undefined;
         this.dataInstance.setItem(value);
+      })).catch(value => {
+        Notification.error({
+          message: value.message
+        });
+        this.props.history!.goBack();
       });
     }
     this.reactionDisposer = reaction(
@@ -765,20 +776,43 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
       },
       (item) => {
 
+        this.initPersonMembers();
+
+        const afterInsuranceContract = () => {
+          if (item && item.insuranceContract) this.onChangeInsuranceContract(item.insuranceContract.id)
+        };
+
+        afterInsuranceContract();
         const personGroupId = item!.employee ? item!.employee.id : this.props.rootStore!.userInfo!.personGroupId;
 
         restServices.portalHelperService.companiesForLoadDictionary({personGroupId: personGroupId as string})
           .then(value => {
-            this.insuranceContractsDc = collection<InsuranceContract>(InsuranceContract.NAME, {
-              view: "_minimal",
-              filter: {
-                conditions: [{
-                  property: "company.id",
-                  operator: "in",
-                  value: value
-                }]
-              }
-            });
+            restServices.documentService.getMyInsuraces()
+              .then(items => {
+                const usedInsuranceContracts = items ? items
+                  .filter(item => item.id !== this.props.entityId)
+                  .map(item => item.insuranceContract)
+                  .filter(item => item)
+                  .map(item => item!.id) : [];
+
+                this.insuranceContractsDc = collectionWithAfterLoad<InsuranceContract>(InsuranceContract.NAME,
+                  afterInsuranceContract,
+                  {
+                    view: "insuranceContract-editView",
+                    filter: {
+                      conditions: [{
+                        property: "company.id",
+                        operator: "in",
+                        value: value
+                      }, {
+                        property: 'id',
+                        operator: 'notIn',
+                        value: usedInsuranceContracts
+                      }]
+                    }
+                  });
+
+              })
           })
 
         this.props.form.setFieldsValue(

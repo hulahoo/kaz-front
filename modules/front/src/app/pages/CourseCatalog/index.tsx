@@ -4,8 +4,6 @@ import {observer} from "mobx-react";
 import CourseList from "../Course/CourseList";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Section from "../../hoc/Section";
-import ImageCarousel from "../ImageCarousel/ImageCarousel";
-import {CourseManagement} from "../Course/CourseManagement";
 
 @observer
 class CourseCatalog extends React.Component<WrappedComponentProps> {

@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
-import PageContentHoc from "../../hoc/PageContentHoc";
-import KpiPageContent from "../KpiEditPage/KpiPageContent";
-import {injectIntl, WrappedComponentProps} from "react-intl";
 import Page from "../../hoc/PageContentHoc";
+import {injectIntl, WrappedComponentProps} from "react-intl";
 
 class LoadingPage extends Component<WrappedComponentProps> {
   render() {

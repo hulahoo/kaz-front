@@ -119,7 +119,7 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
   commentValidator = (rule: any, value: any, callback: any) => {
     if (!value
       && this.props.commentRequiredOutcomes && this.props.commentRequiredOutcomes.find(o => o == this.props.openedOutcomeModal)) {
-      callback('Необходимо заполнить комментарий');
+      callback(this.props.intl.formatMessage({id: 'comment.required'}));
       return;
     }
     callback();

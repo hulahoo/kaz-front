@@ -8,7 +8,7 @@ export class VacationScheduleRequest extends AbstractBprocRequest {
   endDate?: any | null;
   absenceDays?: number | null;
   balance?: number | null;
-  sentToOracle?: boolean | null;
+  sentToOracle?: any | null;
   attachment?: FileDescriptor | null;
 }
 export type VacationScheduleRequestViewName =
