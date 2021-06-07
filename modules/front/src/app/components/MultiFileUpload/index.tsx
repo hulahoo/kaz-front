@@ -154,9 +154,8 @@ function isImageFile(fileName: string) {
 
 class CustomFileUploadDropArea<E extends FileInfo | FileInfo[]> extends React.Component<{ fileInfo?: E, disabled?: boolean }> {
   render() {
-    // if (this.props.disabled) return <></>;
     return (
-      (Array.isArray(this.props.fileInfo) && this.props.fileInfo.length === 0 || !this.props.fileInfo)
+      (!this.props.fileInfo || Array.isArray(this.props.fileInfo) && this.props.fileInfo.length === 0)
         ? (createElement("div", {className: 'cuba-file-drop-area'},
         createElement(Icon, {className: 'replaceicon', type: 'upload'}),
         createElement("span", {className: 'replacetext'},

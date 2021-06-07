@@ -31,7 +31,7 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
   colIndex = -1;
 
   renderColumn = (text: any, record: E, index: number): React.ReactNode => {
-    if (this.rowIndex != index) {
+    if (this.rowIndex !== index) {
       this.rowIndex = index;
       this.colIndex = -1;
     }
@@ -40,7 +40,7 @@ export default class DataTableFormat<E> extends Component<DataTableFormatProps<E
     const field = this.props.fields[this.colIndex % this.props.fields.length];
 
     if (this.props.render) {
-      const render = this.props.render.find(value => value.column == field);
+      const render = this.props.render.find(value => value.column === field);
       if (render)
         return render.render(text, record, index, this.colIndex);
     }

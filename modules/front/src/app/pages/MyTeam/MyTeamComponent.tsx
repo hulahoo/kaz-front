@@ -31,7 +31,12 @@ export type MyTeamData = {
 
 export type MyTeamStructureProps = {
   searchVisible?: boolean,
+  positionGroupId: string,
   personCard?: (personGroupId: string) => React.ReactElement;
+  onChangeSelectedInfo?: (selectedData?: MyTeamData, selectedTab?: string, selectedLeftMenu?: string) => void;
+  selectedData?: MyTeamData;
+  selectedTab?: () => string | undefined;
+  selectedLeftMenu?: () => string | undefined;
 };
 
 @injectMainStore
@@ -42,24 +47,8 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   @observable myTeamData: MyTeamData[] = [];
   @observable isSearch = false;
   @observable expandedKeys: string[] = [];
-  @observable selectedData?: MyTeamData = this.props.rootStore!.userInfo.myTeamInfo.selectedMyTeamData;
   @observable mainSplitPaneDefaultSizes?: number[];
-
-  selectedTapAndLeftMenu: {
-    selectedTab?: string,
-    selectedLeftMenu?: string,
-    setSelectedTabOrLeftMenu: (selectedTab?: string, selectedLeftMenu?: string) => void
-  } = {
-    setSelectedTabOrLeftMenu: (selectedTab, selectedLeftMenu) => {
-      this.selectedTapAndLeftMenu.selectedTab = selectedTab;
-      this.selectedTapAndLeftMenu.selectedLeftMenu = selectedLeftMenu;
-
-      this.props.rootStore!.userInfo.myTeamInfo.selectedTab = selectedTab;
-      this.props.rootStore!.userInfo.myTeamInfo.selectedMenu = selectedLeftMenu;
-    },
-    selectedTab: this.props.rootStore!.userInfo.myTeamInfo.selectedTab,
-    selectedLeftMenu: this.props.rootStore!.userInfo.myTeamInfo.selectedMenu,
-  };
+  @observable selectedData?: MyTeamData = this.props.selectedData;
 
   onSearch = (searchText: string): Promise<MyTeamData[]> => {
     this.selectedData = undefined;
@@ -204,9 +193,10 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
               this.props.personCard
                 ? this.props.personCard(this.selectedData.personGroupId!)
                 : <MyTeamCard personGroupId={this.selectedData.personGroupId!}
-                              selectedTab={this.selectedTapAndLeftMenu.selectedTab}
-                              selectedLeftMenu={this.selectedTapAndLeftMenu.selectedLeftMenu}
-                              setSelectedTabOrLeftMenu={this.selectedTapAndLeftMenu.setSelectedTabOrLeftMenu}
+                              selectedTab={this.props.selectedTab ? this.props.selectedTab() : undefined}
+                              selectedData={this.selectedData}
+                              selectedLeftMenu={this.props.selectedLeftMenu ? this.props.selectedLeftMenu() : undefined}
+                              onChangeSelectedInfo={this.props.onChangeSelectedInfo}
                               key={this.selectedData.personGroupId!}/>
               : <></>}
           </div>
@@ -220,7 +210,8 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   onSelect = (keys: string[]): void => {
     if (keys && keys.length > 0) {
       this.selectedData = this.getRecordByKey(keys[0]);
-      this.props.rootStore!.userInfo.myTeamInfo.selectedMyTeamData = this.selectedData;
+      if (this.props.onChangeSelectedInfo)
+        this.props.onChangeSelectedInfo(this.selectedData)
     }
   }
 
@@ -253,7 +244,7 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   }
 
   loadData = (): Promise<MyTeamData[]> => {
-    return restServices.myTeamService.getChildren({parentPositionGroupId: rootStore!.userInfo!.positionGroupId!})
+    return restServices.myTeamService.getChildren({parentPositionGroupId: this.props.positionGroupId})
       .then(value => value.map(this.parseToMyTeamData));
   }
 
@@ -277,4 +268,5 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   }
 }
 
-export default injectIntl(withRouter(MyTeamComponent));
+const myTeamComponent = injectIntl(withRouter(MyTeamComponent));
+export default myTeamComponent;

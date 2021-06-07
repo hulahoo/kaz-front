@@ -17,6 +17,7 @@ import {rootStore, RootStoreProp} from "../../store";
 import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 import MyTeamAbsenceRequest from "./timeManagement/MyTeamAbsenceRequest/MyTeamAbsenceRequest";
+import {MyTeamData} from "./MyTeamComponent";
 
 const {TabPane} = Tabs;
 
@@ -42,9 +43,10 @@ export type PersonProfile = {
 
 export type MyTeamCardProps = {
   personGroupId: string,
+  selectedData?: MyTeamData,
   selectedTab?: string,
   selectedLeftMenu?: string,
-  setSelectedTabOrLeftMenu?: (selectedTab?: string, selectedLeftMenu?: string) => void,
+  onChangeSelectedInfo?: (selectedData?: MyTeamData, selectedTab?: string, selectedLeftMenu?: string) => void,
 };
 
 export type Menu = {
@@ -63,8 +65,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
   @observable selectedLeftMenu: string = this.props.selectedLeftMenu || 'personalData';
 
   callSetSelectedTabOrLeftMenu = () => {
-    if (this.props.setSelectedTabOrLeftMenu)
-      this.props.setSelectedTabOrLeftMenu(this.selectedTab, this.selectedLeftMenu);
+    if (this.props.onChangeSelectedInfo)
+      this.props.onChangeSelectedInfo(this.props.selectedData, this.selectedTab, this.selectedLeftMenu);
   }
 
   renderContent = (): React.ReactNode => {

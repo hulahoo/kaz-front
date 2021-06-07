@@ -1,19 +1,27 @@
 import * as React from "react";
-import {observer} from "mobx-react";
-
-import {injectMainStore} from "@cuba-platform/react";
-import {injectIntl} from "react-intl";
+import {inject, observer} from "mobx-react";
 import MyTeamComponent from "./MyTeamComponent";
+import {RootStoreProp} from "../../store";
 
-@injectMainStore
+@inject("rootStore")
 @observer
-class MyTeamStructure extends React.Component {
+class MyTeamStructure extends React.Component<RootStoreProp> {
 
   render() {
     return (
-      <MyTeamComponent/>
+      <MyTeamComponent
+        selectedTab={() => this.props.rootStore!.myTeamInfo.selectedTab}
+        selectedLeftMenu={() => this.props.rootStore!.myTeamInfo.selectedMenu}
+        selectedData={this.props.rootStore!.myTeamInfo.selectedMyTeamData}
+        onChangeSelectedInfo={this.props.rootStore!.myTeamInfo.setMyTeamInfo}
+        positionGroupId={this.props.rootStore!.userInfo!.positionGroupId!}/>
     )
+  }
+
+  componentDidMount() {
+    this.props.rootStore!.assistantTeamInfo.active = false;
   }
 }
 
-export default injectIntl(MyTeamStructure);
+const myTeamStructure = MyTeamStructure;
+export default myTeamStructure;

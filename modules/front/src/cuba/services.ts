@@ -379,7 +379,7 @@ export const restServices = {
     }
   },
   startBprocService: {
-    getBpmRolesDefiner: (param: { processDefinitionKey: string, initiatorPersonGroupId: string }): Promise<BpmRolesDefiner> => {
+    getBpmRolesDefiner: (param: { processDefinitionKey: string, employeePersonGroupId: string, isAssistant: boolean }): Promise<BpmRolesDefiner> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
         "getBpmRolesDefiner",
@@ -387,9 +387,9 @@ export const restServices = {
       ).then((value: string) => JSON.parse(value));
     },
     getNotPersisitBprocActors: (param: {
-      employee: TsadvUser | null,
-      initiatorPersonGroupId: string,
-      bpmRolesDefiner: BpmRolesDefiner
+      employeePersonGroupId: string,
+      bpmRolesDefiner: BpmRolesDefiner,
+      isAssistant: boolean,
     }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
@@ -702,6 +702,17 @@ export const restServices = {
         "tsadv_PositionService",
         "getManager",
         {positionGroupId: positionGroupId}
+      ).then(value => JSON.parse(value));
+    },
+  },
+  executiveAssistantService: {
+    getManagerList: (positionGroupId: string): Promise<PersonProfile[]> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_ExecutiveAssistantService",
+        "getManagerList",
+        {
+          positionGroupId: positionGroupId
+        }
       ).then(value => JSON.parse(value));
     },
   }

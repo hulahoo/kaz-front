@@ -46,6 +46,7 @@ import {ChangeAbsenceDaysRequestManagement} from "./pages/MyTeam/timeManagement/
 import {AbsenceForRecallManagement} from "./pages/MyTeam/timeManagement/AbsenceForRecall/AbsenceForRecallManagement";
 import {AbsenceRvdRequestManagement} from "./pages/MyTeam/timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
+import {ExecutiveAssistantsManagement} from "./pages/ExecutiveAssistants/ExecutiveAssistantsManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -99,6 +100,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
                 <Route exact={true} path="/my-profile" component={PersonalDataRequestEditPage}/>
                 <Route path="/personDocumentManagement/:entityId?" component={PersonDocumentManagement}/>
+                <Route path={ExecutiveAssistantsManagement.PATH} component={ExecutiveAssistantsManagement}/>
                 <Route path="/personContactManagement/:entityId?" component={PersonContactManagement}/>
                 <Route exact={true}
                        path={CertificateRequestManagement.PATH + "/:entityId?"}
