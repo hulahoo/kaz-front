@@ -15,20 +15,22 @@ export const getFileUrl = (fileId: string): string => {
 
 export const downloadFile = (fileId: string, fileName: string, extension: string, fileNotFoundMessage: string) => {
   return getCubaREST()!.getFile(fileId)
-    .then((value: Blob) => {
-      const anchor = document.createElement('a');
-      anchor.href = URL.createObjectURL(value);
-      anchor.target = '_blank';
-      anchor.download = fileName + '.' + extension;
-
-      anchor.click();
-    }).catch(reason => {
+    .then(value => saveFile(value, `${fileName}.${extension}`))
+    .catch(reason => {
       Notification.error({
         message: fileNotFoundMessage,
       });
-
       throw reason;
     });
+};
+
+export const saveFile = (value: Blob, fileNameWithExtension: string) => {
+  const anchor = document.createElement('a');
+  anchor.href = URL.createObjectURL(value);
+  anchor.target = '_blank';
+  anchor.download = fileNameWithExtension;
+
+  anchor.click();
 };
 
 export const openPdfInNewTab = (fileId: string, fileName: string, fileNotFoundMessage: string) => {

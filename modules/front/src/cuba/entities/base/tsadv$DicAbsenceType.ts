@@ -36,6 +36,7 @@ export class DicAbsenceType extends AbstractDictionary {
   numDaysCalendarYear?: number | null;
   isEcologicalAbsence?: number | null;
   isFileRequired?: number | null;
+  isScheduleOffsetsRequest?: number | null;
 }
 export type DicAbsenceTypeViewName =
   | "_base"
@@ -103,6 +104,7 @@ export type DicAbsenceTypeView<
       | "numDaysCalendarYear"
       | "isEcologicalAbsence"
       | "isFileRequired"
+      | "isScheduleOffsetsRequest"
     >
   : V extends "_local"
   ? Pick<
@@ -161,6 +163,7 @@ export type DicAbsenceTypeView<
       | "numDaysCalendarYear"
       | "isEcologicalAbsence"
       | "isFileRequired"
+      | "isScheduleOffsetsRequest"
     >
   : V extends "_minimal"
   ? Pick<DicAbsenceType, "id" | "langValue" | "description">
@@ -223,5 +226,6 @@ export type DicAbsenceTypeView<
       | "numDaysCalendarYear"
       | "isEcologicalAbsence"
       | "isFileRequired"
+      | "isScheduleOffsetsRequest"
     >
   : never;

@@ -9,7 +9,6 @@ import {BprocFormData} from "./entities/bproc/bproc_FormData";
 import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData";
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
-import {TsadvUser} from "./entities/base/tsadv$UserExt";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
@@ -33,6 +32,8 @@ import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 import {EnrollmentStatus} from "./enums/enums";
 import {PositionGroupExt} from "./entities/base/base$PositionGroupExt";
+import {saveFile} from "../app/util/util";
+import {Report} from "./entities/base/report$Report";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -727,7 +728,48 @@ export const restServices = {
         }
       ).then(value => JSON.parse(value));
     },
-  }
+  },
+  reports: {
+    loadReportByCode: (reportCode: string): Promise<Report> => {
+      return getCubaREST()!.searchEntities<Report>(Report.NAME, {
+        conditions: [{
+          property: 'code',
+          operator: '=',
+          value: reportCode
+        }, {
+          property: 'restAccess',
+          operator: '=',
+          value: 'TRUE'
+        }]
+      }, {
+        limit: 1
+      })
+        .then(value => {
+          if (value && value.length === 1) return value[0];
+          throw new Error("report[" + reportCode + "] not found!");
+        });
+    },
+    run: (reportId: string, data: any, catchException?: (reason: any) => void) => {
+      fetch(getCubaREST()!.apiUrl + `reports/v1/run/${reportId}`,
+        {
+          headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer ' + getCubaREST()!.restApiToken
+          },
+          method: 'POST',
+          body: JSON.stringify(data)
+        }).then(value => {
+        if (value.ok) {
+          const contentDisposition = decodeURIComponent(value.headers.get('Content-Disposition') || "");
+          const fileName = contentDisposition.split("\"")[1];
+          value.blob().then(blobUrl => saveFile(blobUrl, fileName));
+        }
+        return value;
+      }).catch(reason => {
+        if (catchException) catchException(reason);
+      });
+    },
+  },
 };
 
 export type CourseInfo = {
