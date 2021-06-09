@@ -71,17 +71,6 @@ export type ScormInputData = {
   minScore: number;
 }
 
-export type OrgStructureFilterParams = {
-  requestId: string
-} & ({ changeTypeFilter: "ALL" | "NEW" | "EDIT" | "CLOSE" } | { displayFilter: "ALL" | "CHANGES" })
-
-type ReportExtension = "xls" | "doc" | "docx" | "xlsx" | "html" | "pdf" | "csv" | "custom";
-
-type ReportResponse = {
-  extension: ReportExtension,
-  content: string
-}
-
 export type CourseCatalogModel = {
   id: string,
   langValue: string,
