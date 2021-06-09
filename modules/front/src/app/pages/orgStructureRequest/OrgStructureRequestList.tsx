@@ -2,75 +2,34 @@ import * as React from "react";
 import {inject, observer} from "mobx-react";
 import {Link} from "react-router-dom";
 
-import {action, observable} from "mobx";
+import {observable} from "mobx";
 
-import {Button, Col, Icon, Modal, Row, Spin, Table} from "antd";
+import {Button, Icon, Modal, Spin} from "antd";
 
-import {
-  collection,
-  ComparisonType,
-  generateDataColumn, handleTableChange,
-  injectMainStore,
-  MainStoreInjected,
-  Msg
-} from "@cuba-platform/react";
+import {collection, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {OrgStructureRequest} from "../../../cuba/entities/base/tsadv_OrgStructureRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
-import Column from "antd/es/table/Column";
-import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
-import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
-import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
-import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {RootStoreProp} from "../../store";
 import {restServices} from "../../../cuba/services";
-import {PaginationConfig} from "antd/es/pagination";
-import {SorterResult} from "antd/es/table";
+import DataTableFormat from "../../components/DataTable/intex";
 
 @injectMainStore
 @inject("rootStore")
 @observer
 class OrgStructureRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
-  @observable selectedRowKey: string | undefined;
+  @observable selectedData?: SerializedEntity<OrgStructureRequest>;
 
   @observable hasPermitToCreate: boolean = false;
-
-  @observable.ref filters: Record<string, string[]> | undefined;
-
-  @observable
-  operator: ComparisonType | undefined;
-
-  @observable
-  value: any;
-
-  @action
-  handleOperatorChange = (operator: ComparisonType) => this.operator = operator;
-
-  @action
-  handleValueChange = (value: any) => this.value = value;
-
-  @action
-  handleChange = (pagination: PaginationConfig, tableFilters: Record<string, string[]>, sorter: SorterResult<OrgStructureRequest>): void => {
-    this.filters = tableFilters;
-    handleTableChange({
-      pagination: pagination,
-      filters: tableFilters,
-      sorter: sorter,
-      defaultSort: '-updateTs',
-      fields: this.fields,
-      mainStore: this.props.mainStore!,
-      dataCollection: this.dataCollection
-    });
-  };
 
   dataCollection = collection<OrgStructureRequest>(
     OrgStructureRequest.NAME, {
       view: "orgStructureRequest-edit",
-      sort: "requestNumber",
+      sort: "-requestNumber",
       filter: {
         conditions: [{
           property: "author.id",
@@ -81,119 +40,53 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
     }
   );
 
-  fields = ["requestNumber", "requestDate", "company", "department", "author"];
+  fields = ["requestNumber", "requestDate", "status", "company", "department", "author"];
 
   render() {
-    const buttons = [
-      this.hasPermitToCreate
-        ? <Link
-          to={OrgStructureRequestManagement.PATH + "/" + OrgStructureRequestManagement.NEW_SUBPATH}
-          key="create">
-          <Button
-            htmlType="button"
-            style={{margin: "0 12px 12px 0"}}
-            type="primary">
-            <Icon type="plus"/>
-            <FormattedMessage id="management.browser.create"/>
-          </Button>
-        </Link> : null
-    ];
+    const buttons = [];
+
+    if (this.hasPermitToCreate)
+      buttons.push(<Link
+        to={OrgStructureRequestManagement.PATH + "/" + OrgStructureRequestManagement.NEW_SUBPATH}
+        key="create">
+        <Button
+          htmlType="button"
+          style={{margin: "0 12px 12px 0"}}
+          type="primary">
+          <Icon type="plus"/>
+          <FormattedMessage id="management.browser.create"/>
+        </Button>
+      </Link>);
+
+    buttons.push(<Button
+      htmlType="button"
+      style={{margin: "0 12px 12px 0"}}
+      disabled={!this.selectedData || !this.selectedData.status || this.selectedData.status.code !== 'DRAFT'}
+      onClick={this.deleteSelectedRow}
+      key="remove"
+      type="default">
+      <Icon type="delete"/>
+      <FormattedMessage id="management.browser.remove"/>
+    </Button>);
 
     return (
       <Page>
         <Section size={"large"}>
           <Spin spinning={this.dataCollection.status === 'LOADING'}>
-            <Row style={{"margin": '10px 0'}}>
-              <Col span={24}>
-                {buttons}
-              </Col>
-            </Row>
-            <Table dataSource={Array.from(this.dataCollection.items || '')}
-                   pagination={false}
-                   onChange={this.handleChange}
-                   size="default" bordered={false} rowKey="id" columns={[
-              {
-                //TODO: фильтр не работает, поскольку у кубы не возможности фильтровать long
-                ...generateDataColumn({
-                  enableFilter: true,
-                  propertyName: 'requestNumber',
-                  entityName: this.dataCollection.entityName,
-                  filters: this.filters,
-                  operator: this.operator,
-                  onOperatorChange: this.handleOperatorChange,
-                  value: this.value,
-                  onValueChange: this.handleValueChange,
-                  enableSorter: true,
-                  mainStore: this.props.mainStore!
-                }),
-                render: (text, record: OrgStructureRequest): JSX.Element => {
-                  return <Link to={OrgStructureRequestManagement.PATH + "/" + record.id}
-                               key="edit">
-                    {text}
-                  </Link>
-                }
-              },
-              generateDataColumn({
-                propertyName: 'requestDate',
-                entityName: this.dataCollection.entityName,
-                filters: this.filters,
-                operator: this.operator,
-                onOperatorChange: this.handleOperatorChange,
-                value: this.value,
-                onValueChange: this.handleValueChange,
-                enableSorter: true,
-                mainStore: this.props.mainStore!,
-                enableFilter: true
-              }),
-              generateDataColumn({
-                propertyName: 'status',
-                entityName: this.dataCollection.entityName,
-                filters: this.filters,
-                operator: this.operator,
-                onOperatorChange: this.handleOperatorChange,
-                value: this.value,
-                onValueChange: this.handleValueChange,
-                enableSorter: true,
-                mainStore: this.props.mainStore!,
-                enableFilter: true
-              }),
-              generateDataColumn({
-                propertyName: 'company',
-                entityName: this.dataCollection.entityName,
-                filters: this.filters,
-                operator: this.operator,
-                onOperatorChange: this.handleOperatorChange,
-                value: this.value,
-                onValueChange: this.handleValueChange,
-                enableSorter: true,
-                mainStore: this.props.mainStore!,
-                enableFilter: true
-              }),
-              generateDataColumn({
-                propertyName: 'department',
-                entityName: this.dataCollection.entityName,
-                filters: this.filters,
-                operator: this.operator,
-                onOperatorChange: this.handleOperatorChange,
-                value: this.value,
-                onValueChange: this.handleValueChange,
-                enableSorter: true,
-                mainStore: this.props.mainStore!,
-                enableFilter: true
-              }),
-              generateDataColumn({
-                propertyName: 'author',
-                entityName: this.dataCollection.entityName,
-                filters: this.filters,
-                operator: this.operator,
-                onOperatorChange: this.handleOperatorChange,
-                value: this.value,
-                onValueChange: this.handleValueChange,
-                enableSorter: true,
-                mainStore: this.props.mainStore!,
-                enableFilter: true
-              })
-            ]}/>
+            <DataTableFormat dataCollection={this.dataCollection}
+                             fields={this.fields}
+                             hideSelectionColumn={true}
+                             onRowSelectionChange={selectedRowKeys => this.selectedData = this.getRecordById(selectedRowKeys[0])}
+                             buttons={buttons}
+                             render={[
+                               {
+                                 column: this.fields[0],
+                                 render: (text, record) =>
+                                   <Link to={OrgStructureRequestManagement.PATH + "/" + record.id}
+                                         key="edit">{text}</Link>
+                               }
+                             ]}
+            />
           </Spin>
         </Section>
       </Page>
@@ -213,7 +106,7 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
         id: "management.browser.delete.cancel"
       }),
       onOk: () => {
-        this.selectedRowKey = undefined;
+        this.selectedData = undefined;
 
         return this.dataCollection.delete(e);
       }
@@ -231,6 +124,10 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
 
     return record;
   }
+
+  deleteSelectedRow = () => {
+    this.showDeletionDialog(this.selectedData!);
+  };
 
   componentDidMount(): void {
     restServices.orgStructureService.hasPermitToCreate()

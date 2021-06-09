@@ -38,7 +38,6 @@ import DefaultDatePicker from "../../components/Datepicker";
 import {isNumber} from "../../util/util";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
-import {parseToFieldValueFromDataInstanceValue} from "../../components/MultiFileUpload";
 
 type EditorProps = {
   entityId: string;

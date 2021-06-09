@@ -116,6 +116,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
   };
 
+  isOnApproving = () => {
+    return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "APPROVING" : false;
+  };
+
   commentRequiredOutcomes = ['REJECT', 'REVISION'];
 
   isStartCommentVisible = false;

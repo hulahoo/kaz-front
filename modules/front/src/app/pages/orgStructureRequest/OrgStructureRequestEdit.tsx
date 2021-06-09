@@ -1,11 +1,11 @@
 import * as React from "react";
-import {Alert, Button, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Select, Table} from "antd";
+import {Alert, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Select, Table} from "antd";
 
 import {inject, observer} from "mobx-react";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
 import {Link, RouteComponentProps, withRouter} from "react-router-dom";
-import {IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {IReactionDisposer, observable, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
@@ -39,9 +39,9 @@ import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {RootStoreProp} from "../../store";
 import moment from "moment";
 import DefaultDatePicker from "../../components/Datepicker";
-import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import {downloadReport} from "../../util/reportUtil";
+import Button, {ButtonType} from "../../components/Button/Button";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -63,6 +63,9 @@ export type OrgRequestRow = {
   pOrgGroupId: string,
   gradeGroupId: string,
   headCount: number[],
+  baseSalary: number[],
+  mtPayrollPer: number[],
+  mtPayroll: number[],
   children: OrgRequestRow[]
 };
 
@@ -120,8 +123,6 @@ export class DisplayColumnValidatorFactory {
   }
 }
 
-const CBCOMPANY_CODE = 'C&BCOMPANY';
-
 @injectMainStore
 @inject("rootStore")
 @observer
@@ -144,10 +145,6 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
   });
 
   authorsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal"
-  });
-
-  filesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal"
   });
 
@@ -189,11 +186,11 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
   updated = false;
 
   @observable
-  usersHrRoles: string[] = [];
+  isCbCompany: boolean = false;
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["requestNumber", "requestDate", "company", "department", "status", "author", "modifyDate", "comment", "comment"];
+  fields = ["requestNumber", "requestDate", "company", "department", "status", "author", "modifyDate", "comment", "comment", "file"];
 
   locale = this.props.mainStore!.locale!;
 
@@ -488,14 +485,31 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
         return this.columnsOptions[c.group];
       });
 
-    const bprocButtons = this.isNewEntity() ? null : this.getOutcomeBtns();
-
     const isDisabledFields = this.isNotDraft();
+
+    const bprocButtons = [];
+    if (!isDisabledFields)
+      bprocButtons.push(<Button buttonType={ButtonType.PRIMARY}
+                                disabled={status !== "DONE" && status !== "ERROR"}
+                                loading={status === "LOADING"}
+                                onClick={this.saveRequest}>
+        <Icon type="check"/>
+        <FormattedMessage id="management.editor.submit"/>
+      </Button>);
+
+    bprocButtons.push(<Link to={OrgStructureRequestManagement.PATH}>
+      <Button buttonType={ButtonType.FOLLOW}>
+        <Icon type="close"/>
+        <FormattedMessage id="management.editor.cancel"/>
+      </Button>
+    </Link>);
+
+    if (!this.isNewEntity()) bprocButtons.push(this.getOutcomeBtns());
 
     return (
       <Page>
         <Card className="narrow-layout card-actions-container" bordered={false}
-              actions={bprocButtons ? [bprocButtons] : []}>
+              actions={bprocButtons}>
           <div className={"large-section section-container mb-0"}>
             <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.info"})}</h3>
             <Form layout="vertical" className="compact-form">
@@ -637,34 +651,15 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                       (<TextArea rows={4} disabled={isDisabledFields}/>)}
                     </Form.Item>
                   </Form>
-                  <div style={isDisabledFields ? {display: 'none'} : {display: 'block'}}>
-                    <Button type="primary"
-                            disabled={status !== "DONE" && status !== "ERROR"}
-                            loading={status === "LOADING"}
-                            style={{marginRight: "10px"}}
-                            className={"b-btn"}
-                            onClick={this.saveRequest}>
-                      <Icon type="check"/>
-                      <FormattedMessage id="management.editor.submit"/>
-                    </Button>
-                    <Link to={OrgStructureRequestManagement.PATH}>
-                      <Button htmlType="button" type="default">
-                        <Icon type="close"/>
-                        <FormattedMessage id="management.editor.cancel"/>
-                      </Button>
-                    </Link>
-                  </div>
                 </div>
               </Col>
               <Col md={24} lg={6}>
                 <div>
-                  {/*<ReadonlyField*/}
-                  {/*  entityName={this.dataInstance.entityName}*/}
-                  {/*  propertyName="file"*/}
-                  {/*  form={this.props.form}*/}
-                  {/*  optionsContainer={this.filesDc}*/}
-                  {/*  getFieldDecoratorOpts={{}}*/}
-                  {/*/>*/}
+                  <ReadonlyField
+                    entityName={this.dataInstance.entityName}
+                    propertyName="file"
+                    form={this.props.form}
+                  />
                 </div>
               </Col>
             </Row>
@@ -690,6 +685,9 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                        };
                      }}/>
             </div> : null}
+
+          {this.takCard()}
+
         </Card>
 
         {this.showOrgCreateModal ?
@@ -707,6 +705,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                           treeData={this.treeData}
                           isNew={this.isNew}
                           form={this.props.form}
+                          isDisabledFields={this.isOnApproving()}
                           closeModal={() => this.showPosCreateModal = false}
                           onSave={this.onSavePosition}/> : null}
       </Page>
@@ -727,19 +726,6 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     }
   };
 
-  setReactionDisposer = () => {
-    this.reactionDisposer = reaction(
-      () => {
-        return this.dataInstance.item;
-      },
-      () => {
-        this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
-        );
-      }
-    );
-  };
-
   afterSendOnApprove = () => {
     this.props.history!.push(OrgStructureRequestManagement.PATH);
   };
@@ -754,13 +740,9 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
       .then((availableSalary: boolean) => {
         this.availableSalary = availableSalary;
       });
-    restServices.organizationHrUserService.getDicHrRoles({userId: this.props.rootStore!.userInfo.id!}).then(usersHrRoles => {
-      this.usersHrRoles = usersHrRoles.map(v => v.code!);
-    });
-  }
 
-  hasRole = (roleCode: string): boolean => {
-    return this.usersHrRoles.findIndex(v => v === roleCode) != -1;
+    restServices.employeeService.hasHrRole({dicHrCode: "C&B_COMPANY"})
+      .then(response => this.isCbCompany = response);
   }
 
   tableButtons = () => {
@@ -790,7 +772,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
       htmlType="button"
       key="edit"
       style={{margin: "0 12px 12px 12px"}}
-      disabled={!this.selectedRow}
+      disabled={!this.selectedRow || this.isOnApproving() && this.isCbCompany && this.selectedRow.elementType === 1}
       onClick={this.preEdit}
       className={"b-btn"}
       type="default">
@@ -840,10 +822,8 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     </Button>;
     if (!this.isNotDraft()) {
       buttons.push(createButton, editButton, deleteButton);
-    } else {
-      if (this.hasRole(CBCOMPANY_CODE)) {
-        buttons.push(editButton);
-      }
+    } else if (this.isCbCompany && this.isOnApproving()) {
+      buttons.push(editButton);
     }
     buttons.push(refreshButton);
     buttons.push(printReportButton, printOrderButton);
@@ -895,10 +875,6 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
 
   isNewEntity = () => {
     return this.props.entityId === OrgStructureRequestManagement.NEW_SUBPATH;
-  }
-
-  getUpdateEntityData = () => {
-    return this.props.form.getFieldsValue(this.fields)
   }
 
   onClickDownloadReport = () => {

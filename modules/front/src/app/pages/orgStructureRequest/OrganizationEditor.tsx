@@ -215,8 +215,6 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
 
     this.fillOrganizations(this.props.treeData)
 
-    //console.log('organizations: ', this.organizations)
-
     if (row !== undefined && row !== null) {
       model['rId'] = this.props.requestId;
 
