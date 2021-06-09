@@ -62,6 +62,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
         htmlType="button"
         style={{margin: "12px"}}
         type="primary"
+        key={'insurance'}
         onClick={this.subscribeToMIC}
       >
         <FormattedMessage id="join.health.insurance"/>
@@ -70,6 +71,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
         htmlType="button"
         style={{margin: "12px"}}
         type="primary"
+        key={'members'}
         onClick={this.subscribeFamilyMemberToMIC}
       >
         <FormattedMessage id="attach.family.members"/>
@@ -156,8 +158,7 @@ class InsuredPersonListComponent extends React.Component<MainStoreInjected & Wra
   };
 
   componentDidMount(): void {
-    restServices.documentService.getMyInsuraces({}).then(val => {
-      console.log(val);
+    restServices.documentService.getMyInsuraces().then(val => {
       this.items = val;
       this.setState(this.items = val);
     })

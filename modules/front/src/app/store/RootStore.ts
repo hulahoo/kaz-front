@@ -8,6 +8,9 @@ import ChangePasswordStore from "./ChangePasswordStore";
 import KpiStore from "./KpiStore";
 import {observable} from "mobx";
 import DefaultGoalStore from "./DefaultGoalStore";
+import CourseCatalogStore from "./CourseCatalogStore";
+import MyTeamStore from "./MyTeamStore";
+import AssistantTeamStore from "./AssistantTeamStore";
 
 export default class RootStore {
   cubaRest: CubaApp;
@@ -16,10 +19,12 @@ export default class RootStore {
   userSettings: UserSettingsStore;
   userInfo: UserInfoStore;
   bellNotification: BellNotificationStore;
+  myTeamInfo: MyTeamStore;
+  assistantTeamInfo: AssistantTeamStore;
   changePassword: ChangePasswordStore;
+  courseCatalogStore?: CourseCatalogStore;
   @observable kpiEditStore: KpiStore;
   @observable goalStore: DefaultGoalStore;
-
 
   constructor(cubaRest: CubaApp) {
     this.cubaRest = cubaRest;
@@ -28,6 +33,8 @@ export default class RootStore {
     this.login = new LoginStore(this);
     this.userInfo = new UserInfoStore(this);
     this.bellNotification = new BellNotificationStore(this);
+    this.myTeamInfo = new MyTeamStore(this);
+    this.assistantTeamInfo = new AssistantTeamStore(this);
     this.createDefaultGoalStore();
   }
 
@@ -41,5 +48,15 @@ export default class RootStore {
 
   createDefaultGoalStore = () => {
     this.goalStore = new DefaultGoalStore(this);
+  };
+
+  createCourseCatalogStore = () => {
+    this.courseCatalogStore = new CourseCatalogStore(this);
+  };
+
+  clearStores = () => {
+    this.courseCatalogStore = undefined;
+    this.myTeamInfo.clearMyTeamInfo();
+    this.assistantTeamInfo.clearAssistantTeamInfo();
   }
 }

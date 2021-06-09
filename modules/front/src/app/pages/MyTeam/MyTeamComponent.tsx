@@ -1,5 +1,5 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 import {observable} from "mobx";
 
@@ -9,11 +9,13 @@ import {Icon, Tree} from "antd";
 import {AntTreeNode, AntTreeNodeExpandedEvent} from "antd/lib/tree/Tree";
 import {restServices} from "../../../cuba/services";
 import LoadingPage from "../LoadingPage";
-import {rootStore} from "../../store";
+import {rootStore, RootStoreProp} from "../../store";
 import Search from "antd/es/input/Search";
 import {MyTeamNew} from "../../../cuba/entities/base/tsadv$MyTeamNew";
 import MyTeamCard from "./MyTeamCard";
 import {SplitPane} from "react-multi-split-pane";
+import {withRouter} from "react-router";
+import {RouteComponentProps} from "react-router-dom";
 
 const {TreeNode} = Tree;
 
@@ -29,29 +31,24 @@ export type MyTeamData = {
 
 export type MyTeamStructureProps = {
   searchVisible?: boolean,
+  positionGroupId: string,
   personCard?: (personGroupId: string) => React.ReactElement;
+  onChangeSelectedInfo?: (selectedData?: MyTeamData, selectedTab?: string, selectedLeftMenu?: string) => void;
+  selectedData?: MyTeamData;
+  selectedTab?: () => string | undefined;
+  selectedLeftMenu?: () => string | undefined;
 };
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreInjected & WrappedComponentProps> {
+class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreInjected & RootStoreProp & WrappedComponentProps & RouteComponentProps<any>> {
 
   @observable myTeamData: MyTeamData[] = [];
   @observable isSearch = false;
   @observable expandedKeys: string[] = [];
-  @observable selectedData?: MyTeamData;
   @observable mainSplitPaneDefaultSizes?: number[];
-
-  selectedTapAndLeftMenu: {
-    selectedTab?: string,
-    selectedLeftMenu?: string,
-    setSelectedTabOrLeftMenu: (selectedTab?: string, selectedLeftMenu?: string) => void
-  } = {
-    setSelectedTabOrLeftMenu: (selectedTab, selectedLeftMenu) => {
-      this.selectedTapAndLeftMenu.selectedTab = selectedTab;
-      this.selectedTapAndLeftMenu.selectedLeftMenu = selectedLeftMenu;
-    }
-  };
+  @observable selectedData?: MyTeamData = this.props.selectedData;
 
   onSearch = (searchText: string): Promise<MyTeamData[]> => {
     this.selectedData = undefined;
@@ -196,9 +193,10 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
               this.props.personCard
                 ? this.props.personCard(this.selectedData.personGroupId!)
                 : <MyTeamCard personGroupId={this.selectedData.personGroupId!}
-                              selectedTab={this.selectedTapAndLeftMenu.selectedTab}
-                              selectedLeftMenu={this.selectedTapAndLeftMenu.selectedLeftMenu}
-                              setSelectedTabOrLeftMenu={this.selectedTapAndLeftMenu.setSelectedTabOrLeftMenu}
+                              selectedTab={this.props.selectedTab ? this.props.selectedTab() : undefined}
+                              selectedData={this.selectedData}
+                              selectedLeftMenu={this.props.selectedLeftMenu ? this.props.selectedLeftMenu() : undefined}
+                              onChangeSelectedInfo={this.props.onChangeSelectedInfo}
                               key={this.selectedData.personGroupId!}/>
               : <></>}
           </div>
@@ -210,8 +208,11 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   getKey = (data: MyTeamData): string => data.id + "/" + data.positionGroupId;
 
   onSelect = (keys: string[]): void => {
-    if (keys && keys.length > 0)
+    if (keys && keys.length > 0) {
       this.selectedData = this.getRecordByKey(keys[0]);
+      if (this.props.onChangeSelectedInfo)
+        this.props.onChangeSelectedInfo(this.selectedData)
+    }
   }
 
   getRecordByKey = (key: string): MyTeamData | undefined => {
@@ -243,7 +244,7 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   }
 
   loadData = (): Promise<MyTeamData[]> => {
-    return restServices.myTeamService.getChildren({parentPositionGroupId: rootStore!.userInfo!.positionGroupId!})
+    return restServices.myTeamService.getChildren({parentPositionGroupId: this.props.positionGroupId})
       .then(value => value.map(this.parseToMyTeamData));
   }
 
@@ -267,4 +268,5 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
   }
 }
 
-export default injectIntl(MyTeamComponent);
+const myTeamComponent = injectIntl(withRouter(MyTeamComponent));
+export default myTeamComponent;

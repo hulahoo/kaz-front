@@ -51,7 +51,7 @@ export default class extends Component<CarouselProps> {
         <Carousel
           className="main-menu-carousel"
           infinite
-          autoplay
+          // autoplay
           ref={prop => (this.imagesCarousel = prop)}
           dots={false}>
           {imagesCarouselElements}

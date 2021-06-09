@@ -20,6 +20,8 @@ export default class {
   personGroupId?: string;
   positionId?: string;
   positionGroupId?: string;
+  companyCode?: string;
+  @observable firstLastName?: string;
   @observable initialized: boolean = false;
 
   constructor(rootStore: RootStore) {
@@ -33,6 +35,8 @@ export default class {
         this.personGroupId = personProfile.groupId;
         this.positionId = personProfile.positionId;
         this.positionGroupId = personProfile.positionGroupId;
+        this.companyCode = personProfile.companyCode;
+        this.firstLastName = personProfile.firstLastName;
       }
       this.initialized = true;
     }).catch(() => {
@@ -56,6 +60,7 @@ export default class {
     this.timeZone = undefined;
     this.personGroupId = undefined;
     this.positionGroupId = undefined;
+    this.companyCode = undefined;
   };
 
   loadUserInfo = async () => {

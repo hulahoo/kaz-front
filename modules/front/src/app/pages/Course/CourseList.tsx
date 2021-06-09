@@ -1,42 +1,46 @@
 import React from 'react';
 import PanelCard from "../../components/CourseCard";
 import {Spin, Tabs} from "antd";
-import {observer} from "mobx-react";
-import {DicCategory} from "../../../cuba/entities/base/tsadv$DicCategory";
+import {inject, observer} from "mobx-react";
 import {Link} from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
 import {runInAction} from "mobx";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 import {restServices} from "../../../cuba/services";
-import {SerializedEntity} from "@cuba-platform/rest";
 import {serviceCollection} from "../../util/ServiceDataCollectionStore";
 import Notification from "../../util/Notification/Notification";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import Rate from "../../components/Rate/Rate";
-import {Course} from "../../../cuba/entities/base/tsadv$Course";
-import {ReactComponent as SvgFinishedCourse} from "../../../resources/icons/check-circle-regular.svg";
-import {getBlobUrl} from "../../util/util";
+import {getFileUrl} from "../../util/util";
 import CardIconFactory from "../CourseCatalog/CardIconFactory";
+import {RootStoreProp} from "../../store";
 
+@inject("rootStore")
 @observer
-class CourseList<T> extends React.Component<WrappedComponentProps> {
+class CourseList<T> extends React.Component<WrappedComponentProps & RootStoreProp> {
 
-  dataCollection = serviceCollection(restServices.courseService.allCourses);
+  dataCollection = serviceCollection(restServices.courseService.allCourses.bind(null, {
+    personGroupId: this.props.rootStore!.userInfo.personGroupId!
+  }));
 
   onSearch = (value: string) => {
     if (value) {
-      restServices.courseService.searchCourses({courseName: value}).then((foundCategoryWithCourses: Array<SerializedEntity<DicCategory>>) => {
-        if (foundCategoryWithCourses.length === 0) {
-          Notification.info({
-            message: this.props.intl.formatMessage({id: "courses.search.noFound"})
-          });
-          return;
-        }
-        runInAction(() => {
-          this.dataCollection.items = foundCategoryWithCourses;
-        })
-      });
+      restServices.courseService.searchCourses({
+        personGroupId: this.props.rootStore!.userInfo.personGroupId!,
+        courseName: value
+      })
+        .then((foundCategoryWithCourses) => {
+          if (foundCategoryWithCourses.length === 0) {
+            Notification.info({
+              message: this.props.intl.formatMessage({id: "courses.search.noFound"})
+            });
+            return;
+          }
+          runInAction(() => {
+            this.dataCollection.items = foundCategoryWithCourses as any;
+          })
+        });
     } else {
       this.dataCollection.clear();
       this.dataCollection.load();
@@ -47,12 +51,15 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
     const {status, items} = this.dataCollection;
     const {TabPane} = Tabs;
 
+    const defaultTabKey = this.props.rootStore!.courseCatalogStore ? this.props.rootStore!.courseCatalogStore.selectedCategoryId : undefined;
+
     return (
       <>
         <Spin spinning={status === 'LOADING'}>
           <SearchInput onSearch={this.onSearch}/>
-          <Tabs>
-            {status === 'DONE' ? items.map(category => <TabPane tab={category.langValue1} key={category.id}>
+          {status === 'DONE' ? <Tabs defaultActiveKey={defaultTabKey} onChange={this.tabOnChange}>
+            {items.map((category: any) => <TabPane
+              tab={category.langValue} key={category.id}>
               <div className={"courses-cards-wrapper"}>
                 <div className={"courses-cards"}>
                   {category.courses!.map((course: any) => <Link to={"/course/" + course.id}><PanelCard key={course.id}
@@ -60,8 +67,8 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                        name={course.name!}
                                                                                                        header={(<>
                                                                                                            {
-                                                                                                             course.enrollments.length > 0 && (CardIconFactory.getIcon(course.enrollments![0].status) != null)
-                                                                                                               ? React.createElement(CardIconFactory.getIcon(course.enrollments![0].status)!, {className: "course-icon left-icon"})
+                                                                                                             course.enrollmentId && (CardIconFactory.getIcon(course.enrollmentStatus) != null)
+                                                                                                               ? React.createElement(CardIconFactory.getIcon(course.enrollmentStatus)!, {className: "course-icon left-icon"})
                                                                                                                : null
                                                                                                            }
                                                                                                            {
@@ -72,8 +79,8 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                                                                                                                  className="course-icon right-icon"/> :
                                                                                                                null}
                                                                                                            <ImageLogo
-                                                                                                             type="promise"
-                                                                                                             imgSrcProp={getBlobUrl(course.logo ? course.logo.id : null)}
+                                                                                                             type="src"
+                                                                                                             imgSrc={course.logo ? getFileUrl(course.logo) : undefined}
                                                                                                              name={course.name!}/>
                                                                                                          </>
                                                                                                        )}>
@@ -83,8 +90,8 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
                   </PanelCard></Link>)}
                 </div>
               </div>
-            </TabPane>) : <></>}
-          </Tabs>
+            </TabPane>)}
+          </Tabs> : <></>}
         </Spin>
       </>
     );
@@ -92,6 +99,14 @@ class CourseList<T> extends React.Component<WrappedComponentProps> {
 
   componentDidMount(): void {
     this.dataCollection.load();
+    const {courseCatalogStore} = this.props.rootStore!;
+    if (!courseCatalogStore) {
+      this.props.rootStore!.createCourseCatalogStore();
+    }
+  }
+
+  tabOnChange = (activeKey: string) => {
+    this.props.rootStore!.courseCatalogStore!.setSelectedCategoryId(activeKey);
   }
 }
 

@@ -1,3 +1,4 @@
+export const JSON_DATE_TIME_FORMAT = "yyyy-MM-DD HH:mm:ss.SSS";
 export const DEFAULT_DATE_TIME_PATTERN = "DD.MM.YYYY hh:mm:ss";
 export const DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS = "DD.MM.YYYY hh:mm";
 export const DEFAULT_DATE_PATTERN = "DD.MM.YYYY";

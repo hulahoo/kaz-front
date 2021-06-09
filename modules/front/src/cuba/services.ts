@@ -10,7 +10,6 @@ import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
 import {TsadvUser} from "./entities/base/tsadv$UserExt";
-import {DicCategory} from "./entities/base/tsadv$DicCategory";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
@@ -25,7 +24,6 @@ import {OrganizationSaveModel} from "../app/pages/orgStructureRequest/Organizati
 import {PositionSaveModel} from "../app/pages/orgStructureRequest/PositionEditor";
 import {InsuredPerson} from "./entities/base/tsadv$InsuredPerson";
 import {ScheduleOffsetsRequest} from "./entities/base/tsadv_ScheduleOffsetsRequest";
-import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 import {AnsweredFeedback} from "../app/pages/MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent";
 import {LearningFeedbackQuestion} from "./entities/base/tsadv$LearningFeedbackQuestion";
 import {DicCompany} from "./entities/base/base_DicCompany";
@@ -34,6 +32,8 @@ import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 import {DicHrRole} from "./entities/base/tsadv$DicHrRole";
+import {EnrollmentStatus} from "./enums/enums";
+import {PositionGroupExt} from "./entities/base/base$PositionGroupExt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -54,6 +54,8 @@ export type CourseTrainerInfo = {
   courseCount?: number,
   image?: any,
   comments?: any[],
+  information?: string,
+  greeting?: string
 }
 
 export type PairModel<K, V> = {
@@ -67,6 +69,45 @@ export type ScormInputData = {
   score: number;
   maxScore: number;
   minScore: number;
+}
+
+export type OrgStructureFilterParams = {
+  requestId: string
+} & ({ changeTypeFilter: "ALL" | "NEW" | "EDIT" | "CLOSE" } | { displayFilter: "ALL" | "CHANGES" })
+
+type ReportExtension = "xls" | "doc" | "docx" | "xlsx" | "html" | "pdf" | "csv" | "custom";
+
+type ReportResponse = {
+  extension: ReportExtension,
+  content: string
+}
+
+export type CourseCatalogModel = {
+  id: string,
+  langValue: string,
+  courses: Array<{
+    id: string,
+    name: string,
+    enrollmentId?: string,
+    enrollmentStatus?: EnrollmentStatus,
+    logo: string,
+    isOnline: boolean
+  }>
+}
+
+export type EnrollmentCatalogModel = {
+  id: string,
+  langValue: string,
+  courses: Array<{
+    id: string,
+    name: string,
+    enrollmentId?: string,
+    enrollmentStatus?: EnrollmentStatus,
+    logo?: string,
+    isOnline?: boolean,
+    rating?: number,
+    commentCount?: number
+  }>
 }
 
 export type OrgStructureFilterParams = {
@@ -151,7 +192,7 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    searchCourses: (params: { courseName: string }): Promise<DicCategory[]> => {
+    searchCourses: (params: { personGroupId: string, courseName: string }): Promise<Array<CourseCatalogModel>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "searchCourses",
@@ -169,11 +210,11 @@ export const restServices = {
         return JSON.parse(response);
       });
     },
-    allCourses: (): Promise<any> => {
+    allCourses: (params: { personGroupId: string }): Promise<Array<CourseCatalogModel>> => {
       return getCubaREST()!.invokeService(
         "tsadv_CourseService",
         "allCourses",
-        {}
+        {...params}
       ).then((response: string) => {
         return JSON.parse(response);
       });
@@ -221,7 +262,7 @@ export const restServices = {
     }
   },
   enrollmentService: {
-    searchEnrollments: (params: { courseName?: string, userId: string }): Promise<SerializedEntity<DicCategory>[]> => {
+    searchEnrollments: (params: { personGroupId: string, courseName?: string }): Promise<SerializedEntity<EnrollmentCatalogModel>[]> => {
       return getCubaREST()!.invokeService(
         "tsadv_EnrollmentService",
         "searchEnrollment",
@@ -350,7 +391,7 @@ export const restServices = {
     }
   },
   startBprocService: {
-    getBpmRolesDefiner: (param: { processDefinitionKey: string, initiatorPersonGroupId: string }): Promise<BpmRolesDefiner> => {
+    getBpmRolesDefiner: (param: { processDefinitionKey: string, employeePersonGroupId: string, isAssistant: boolean }): Promise<BpmRolesDefiner> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
         "getBpmRolesDefiner",
@@ -358,9 +399,9 @@ export const restServices = {
       ).then((value: string) => JSON.parse(value));
     },
     getNotPersisitBprocActors: (param: {
-      employee: TsadvUser | null,
-      initiatorPersonGroupId: string,
-      bpmRolesDefiner: BpmRolesDefiner
+      employeePersonGroupId: string,
+      bpmRolesDefiner: BpmRolesDefiner,
+      isAssistant: boolean,
     }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
@@ -426,6 +467,13 @@ export const restServices = {
         {...param}
       );
     },
+    countAbsenceHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+      return getCubaREST()!.invokeService<number>(
+        "tsadv_AbsenceService",
+        "countAbsenceHours",
+        {...param}
+      );
+    },
     getReceivedVacationDaysOfYear: (param: { date: Date, absenceTypeId: string, personGroupId: string }): Promise<number> => {
       return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceService",
@@ -434,23 +482,23 @@ export const restServices = {
       );
     },
     getRemainingDaysWeekendWork: (personGroupId: string): Promise<number> => {
-      return getCubaREST()!.invokeService<number>(
+      return getCubaREST()!.invokeService<string>(
         "tsadv_AbsenceService",
         "getRemainingDaysWeekendWork",
         {personGroupId: personGroupId}
-      );
+      ).then(value => parseInt(value));
     },
     countDaysWithoutHolidays: (param: { dateFrom: Date, dateTo: Date, personGroupId: string }): Promise<number> => {
-      return getCubaREST()!.invokeService<number>(
+      return getCubaREST()!.invokeService<string>(
         "tsadv_AbsenceService",
         "countDaysWithoutHolidays",
         {...param}
-      );
+      ).then(value => parseInt(value));
     },
   },
   absenceRvdService: {
-    countTotalHours: (param: { dateFrom: Date, dateTo: Date, absenceTypeId: string, personGroupId: string }): Promise<any> => {
-      return getCubaREST()!.invokeService<string>(
+    countTotalHours: (param: { dateFrom: any, dateTo: any, absenceTypeId: string, personGroupId: string }): Promise<any> => {
+      return getCubaREST()!.invokeService<number>(
         "tsadv_AbsenceRvdService",
         "countTotalHours",
         {...param}
@@ -463,8 +511,8 @@ export const restServices = {
         "tsadv_AbsenceBalanceService",
         "getAbsenceBalance",
         {...param}
-      );
-    },
+      ).then(value => value ? (Math.round(value * 100) / 100) : value);
+    }
   },
   documentService: {
     getInsuredPerson: (params: { type: string }, fetchOpts?: FetchOptions): Promise<InsuredPerson> => {
@@ -479,6 +527,14 @@ export const restServices = {
       return getCubaREST()!.invokeService(
         "tsadv_DocumentService",
         "getInsuredPersonMembers",
+        {...params},
+        fetchOpts
+      ).then((response: string) => JSON.parse(response));
+    },
+    getInsuredPersonMembersWithNewContract: (params: { insuredPersonId: string, contractId: string }, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DocumentService",
+        "getInsuredPersonMembersWithNewContract",
         {...params},
         fetchOpts
       ).then((response: string) => JSON.parse(response));
@@ -499,11 +555,10 @@ export const restServices = {
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
-    getMyInsuraces: (params: {}, fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
+    getMyInsuraces: (fetchOpts?: FetchOptions): Promise<Array<InsuredPerson>> => {
       return getCubaREST()!.invokeService(
         "tsadv_DocumentService",
         "getMyInsuraces",
-        {...params},
         fetchOpts
       ).then((response: string) => JSON.parse(response));
     },
@@ -547,24 +602,10 @@ export const restServices = {
         {userId: userId}
       ).then(r => JSON.parse(r));
     },
-    findManagerListByPositionGroup: (param: { positionGroupId: string, showAll: boolean, viewName: string }): Promise<PersonGroupExt[]> => {
-      return getCubaREST()!.invokeService<string>(
-        "tsadv_EmployeeService",
-        "findManagerListByPositionGroup",
-        {...param}
-      ).then(r => JSON.parse(r));
-    },
     getCompanyByPersonGroupId: (param: { personGroupId: string }): Promise<DicCompany> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_EmployeeService",
         "getCompanyByPersonGroupId",
-        {...param}
-      ).then(r => JSON.parse(r));
-    },
-    findManagerListByPositionGroupReturnListPosition: (param: { personGroupId: string }): Promise<DicCompany> => {
-      return getCubaREST()!.invokeService<string>(
-        "tsadv_EmployeeService",
-        "findManagerListByPositionGroupReturnListPosition",
         {...param}
       ).then(r => JSON.parse(r));
     },
@@ -702,6 +743,26 @@ export const restServices = {
         {
           clientType: 'P',
           name: name
+        }
+      ).then(value => JSON.parse(value));
+    },
+  },
+  positionService: {
+    getManager: (positionGroupId: string): Promise<PositionGroupExt> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PositionService",
+        "getManager",
+        {positionGroupId: positionGroupId}
+      ).then(value => JSON.parse(value));
+    },
+  },
+  executiveAssistantService: {
+    getManagerList: (positionGroupId: string): Promise<PersonProfile[]> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_ExecutiveAssistantService",
+        "getManagerList",
+        {
+          positionGroupId: positionGroupId
         }
       ).then(value => JSON.parse(value));
     },

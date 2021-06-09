@@ -7,6 +7,7 @@ import {FormComponentProps, FormItemProps} from "antd/lib/form";
 import {GetFieldDecoratorOptions} from "antd/lib/form/Form";
 import {MetaPropertyInfo} from "@cuba-platform/rest/dist-node/model";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
+import {MultiFileUpload} from "../MultiFileUpload";
 
 @observer
 @injectMainStore
@@ -32,7 +33,7 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
       getFieldDecoratorOpts,
       formItemKey,
       disabled,
-      style,
+      style
     } = this.props;
     const formItemOpts = Object.assign({}, this.props.formItemOpts);
 
@@ -40,7 +41,9 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
       formItemOpts.label = createElement(Msg, {entityName: entityName, propertyName: propertyName});
 
     const propertyInfo = this.getPropertyInfo();
-    const isDate = propertyInfo && (propertyInfo.type == 'date' || propertyInfo.type == 'dateTime');
+    const isDate = propertyInfo && (propertyInfo.type === 'date' || propertyInfo.type === 'dateTime');
+    const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
+    const isToManyRelation = propertyInfo && this.isToManyRelation(propertyInfo.cardinality);
 
     const format = this.props.format || (isDate ? DEFAULT_DATE_PATTERN : undefined);
 
@@ -52,11 +55,11 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
       style: style,
       format: format,
     };
+
     return createElement(Form.Item,
       Object.assign({key: formItemKey ? formItemKey : propertyName}, formItemOpts),
       getFieldDecorator(fieldDecoratorId ? fieldDecoratorId : propertyName, getFieldDecoratorOpts)(
-        createElement(FormField, props)
-      )
+        createElement(isFile && isToManyRelation ? MultiFileUpload : FormField, props))
     );
   }
 
@@ -67,5 +70,9 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     }
     const propInfo = metaClass.properties.find(prop => prop.name === this.props.propertyName);
     return propInfo || null;
+  }
+
+  isToManyRelation = (cardinality: string) => {
+    return cardinality === "ONE_TO_MANY" || cardinality === "MANY_TO_MANY";
   }
 }

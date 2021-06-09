@@ -9,7 +9,7 @@ interface DefaultDatePickerProps extends DatePickerProps {
 class DefaultDatePicker extends Component<DefaultDatePickerProps> {
   render() {
     return (
-      <DatePicker format={DEFAULT_DATE_PATTERN} {...this.props}/>
+      <DatePicker format={this.props.showTime ? 'DD.MM.YYYY HH:mm:ss' : DEFAULT_DATE_PATTERN} {...this.props}/>
     );
   }
 }

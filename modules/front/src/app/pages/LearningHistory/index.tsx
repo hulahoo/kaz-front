@@ -1,7 +1,7 @@
 import React from 'react';
 import {getCubaREST, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {observable} from "mobx";
-import {Icon, Modal, Table} from "antd";
+import {Modal, Table} from "antd";
 import Column from "antd/es/table/Column";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {inject, observer} from "mobx-react";
@@ -13,11 +13,9 @@ import {CourseTrainer} from "../../../cuba/entities/base/tsadv$CourseTrainer";
 import {restServices} from "../../../cuba/services";
 import moment from "moment";
 import {RouteComponentProps, withRouter} from "react-router";
-import Button from "../../components/Button/Button";
 import {Link} from "react-router-dom";
 import {CourseManagement} from "../Course/CourseManagement";
-import {getMenuIcon} from "../../../resources/icons/menu";
-import {ReactComponent as SvgNode} from "../../../resources/icons/comment-alt-regular.svg";
+import LearningHistoryDiary from "./LearningHistoryDiary";
 
 @injectMainStore
 @inject("rootStore")
@@ -42,10 +40,6 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
 
     "certificate"
   ];
-
-  @observable selectedRowKey: string | undefined;
-  @observable isModalVisible: boolean = false;
-  @observable noteValue: string;
 
   previewCertificate = (fileId: string) => {
     getCubaREST()!.getFile(fileId).then(responseBlob => {
@@ -77,27 +71,11 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
                     key="course" render={(text, record: any) => {
               return <Link to={CourseManagement.PATH + '/' + record.courseId}>{record.course}</Link>
             }}/>
-            <Column title={<>{this.props.intl.formatMessage({ id: 'notes' })}</>}
+            <Column title={<>{this.props.intl.formatMessage({id: 'diary'})}</>}
                     dataIndex="note"
                     key="note"
                     width="100px"
-                    render={(text, record: any) => {
-                      return record.note ? (
-                          <SvgNode
-                            width="20px"
-                            onClick={() => {
-                              this.noteValue = record.note;
-                              this.isModalVisible = true;
-                            }}
-                            style={{
-                            color: '#005487',
-                            cursor: 'pointer',
-                            marginLeft: '10px'
-                            }}
-                          /> )
-                        : <></>;
-              // return record.note
-            }}/>
+                    render={(text, record: any) => <LearningHistoryDiary record={record}/>}/>
             <Column title={<Msg entityName={Enrollment.NAME} propertyName='status'/>}
                     dataIndex="enrollmentStatus"
                     key="enrollmentStatus"/>
@@ -125,23 +103,6 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
             />
           </Table>
         </Section>
-
-        <Modal visible={this.isModalVisible}
-               okText={<FormattedMessage id={'download'}/>}
-               bodyStyle={{height: '500px'}}
-               onOk={() => {
-
-                 const element = document.createElement("a");
-                 const file = new Blob([this.noteValue], {type: 'text/plain'});
-                 element.href = URL.createObjectURL(file);
-                 element.download = "note.txt";
-                 document.body.appendChild(element); // Required for this to work in FireFox
-                 element.click();
-
-               }}
-               onCancel={() => this.isModalVisible = false}>
-          <textarea value={this.noteValue} style={{width: '100%', height: '100%'}} disabled={true}/>
-        </Modal>
       </Page>
     );
   }
@@ -152,10 +113,6 @@ class LearningHistory extends React.Component<MainStoreInjected & WrappedCompone
         this.dataCollection = c
       })
   }
-
-  handleRowSelectionChange = (selectedRowKeys: string[]) => {
-    this.selectedRowKey = selectedRowKeys[0];
-  };
 }
 
 export default withRouter(injectIntl(LearningHistory));

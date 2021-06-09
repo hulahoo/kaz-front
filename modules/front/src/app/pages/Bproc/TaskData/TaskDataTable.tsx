@@ -7,8 +7,8 @@ import {DicHrRole} from "../../../../cuba/entities/base/tsadv$DicHrRole";
 import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import Candidate from "../component/Candidate";
-import {injectIntl, WrappedComponentProps} from "react-intl";
-import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, formatDate} from "../../../util/Date/Date";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {DEFAULT_DATE_PATTERN, formatDate} from "../../../util/Date/Date";
 
 type TaskProps = {
   tasks: ExtTaskData[];
@@ -42,21 +42,21 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 render={(text, record) =>
                   (<Candidate candidates={((record as ExtTaskData).assigneeOrCandidates as TsadvUser[] | null)}/>)
                 }/>
-        <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='createTime'/>}
+        <Column title={<FormattedMessage id="createDate"/>}
                 dataIndex="createTime"
                 key="createTime"
                 ellipsis
                 render={(text, record, index) => {
                   return <div
-                    className="break-words">{formatDate((record as ExtTaskData).createTime!, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>;
+                    className="break-words">{formatDate((record as ExtTaskData).createTime!, DEFAULT_DATE_PATTERN)}</div>;
                 }}/>
-        <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='endTime'/>}
+        <Column title={<FormattedMessage id="endDate"/>}
                 dataIndex="endTime"
                 ellipsis
                 key="endTime"
                 render={(text, record, index) => {
                   return <div
-                    className="break-words">{formatDate((record as ExtTaskData).endTime, DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS)}</div>;
+                    className="break-words">{formatDate((record as ExtTaskData).endTime, DEFAULT_DATE_PATTERN)}</div>;
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='outcome'/>}
                 dataIndex="outcome"

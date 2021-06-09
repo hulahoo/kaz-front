@@ -33,7 +33,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollection = collection<AllAbsenceRequest>(AllAbsenceRequest.NAME, {
     view: "allAbsenceRequest-view",
-    sort: "-updateTs",
+    sort: "-requestNumber",
     filter: {
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
@@ -41,7 +41,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
   dataCollectionVacationSchedule = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
       view: "_local",
-      sort: "-startDate",
+      sort: "-requestNumber",
       filter: {
         conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
       }
@@ -79,6 +79,8 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
   absenceRequestFields = [
     "requestNumber",
 
+    "requestDate",
+
     "type",
 
     "startDate",
@@ -86,8 +88,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
     "endDate",
 
     "status",
-
-    "requestDate"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -180,11 +180,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                   hideSelectionColumn={true}
                   render={[{
                     column: this.absenceRequestFields[0],
-                    render: (text, record) => {
-                      return <Link to={link(record.entityName!) + "/" + record.id}>
-                        {text}
-                      </Link>
-                    }
+                    render: (text, record) => <Link to={link(record.entityName!) + "/" + record.id}>{text}</Link>
                   }]}
                 />
               </div>

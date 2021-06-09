@@ -17,7 +17,7 @@ export class ChangeAbsenceDaysRequest extends AbstractBprocRequest {
   periodEndDate?: any | null;
   agree?: boolean | null;
   familiarization?: boolean | null;
-  file?: FileDescriptor[] | null;
+  files?: FileDescriptor[] | null;
   purposeText?: string | null;
   purpose?: DicPurposeAbsence | null;
 }
@@ -92,7 +92,7 @@ export type ChangeAbsenceDaysRequestView<
       | "requestType"
       | "employee"
       | "vacation"
-      | "file"
+      | "files"
       | "purpose"
       | "status"
     >

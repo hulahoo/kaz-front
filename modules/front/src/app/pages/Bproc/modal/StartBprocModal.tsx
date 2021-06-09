@@ -24,7 +24,7 @@ import TextArea from "antd/es/input/TextArea";
 
 type StartBproc = {
   processDefinitionKey: string;
-  employee?: () => TsadvUser | null;
+  employeePersonGroupId: () => string;
   validate(): Promise<boolean>;
   update(): Promise<any>;
   afterSendOnApprove?: () => void;
@@ -69,22 +69,33 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
     const loadBpmRolesDefiner = () => catchException(restServices.startBprocService.getBpmRolesDefiner({
         processDefinitionKey: this.props.processDefinitionKey,
-        initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!
+        employeePersonGroupId: this.props.employeePersonGroupId(),
+        isAssistant: this.props.rootStore!.assistantTeamInfo.active
       })
         .then(value => {
           this.bprocRolesDefiner = value;
-          restServices.startBprocService.getNotPersisitBprocActors({
-            employee: this.props.employee ? this.props.employee() || null : null,
-            initiatorPersonGroupId: this.props.rootStore!.userInfo.personGroupId!,
-            bpmRolesDefiner: value
+
+          catchException(restServices.startBprocService.getNotPersisitBprocActors({
+            employeePersonGroupId: this.props.employeePersonGroupId(),
+            bpmRolesDefiner: value,
+            isAssistant: this.props.rootStore!.assistantTeamInfo.active
           }).then(notPersisitBprocActors => {
             this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
+          })).catch((reason: Error) => {
+            this.handleCancel();
+            Notification.error({
+              message: reason.message
+            });
           })
+
         })
     )
-      .catch(reason => Notification.error({
-        message: reason
-      }));
+      .catch((reason: Error) => {
+        this.handleCancel();
+        Notification.error({
+          message: reason.message
+        });
+      });
 
     this.props.validate().then((isValid) => {
       if (isValid) {
@@ -101,22 +112,32 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
         }
       }
     })
-
-
-    /*if (this.bprocActorMessage) {
-      Notification.error({
-        message: this.bprocActorMessage
-      });
-      return;
-    }
-    this.props.validate().then((isValid) => {
-      if (isValid) {
-        this.modalVisible = true;
-      }
-    });*/
   };
 
+  validateActors = (): boolean => {
+
+    let isValidateSuccess = true;
+
+    this.bprocRolesDefiner!.links!
+      .filter(value => value.required)
+      .filter(value => value.isAddableApprover)
+      .forEach(value => {
+        const find = this.items.find(actor => actor.bprocUserTaskCode === value.bprocUserTaskCode);
+        if (!find) {
+          isValidateSuccess = false;
+          Notification.error({
+            message: this.props.intl.formatMessage({id: 'add.required.actor'}, {actor: value.hrRole!['_instanceName']})
+          });
+        }
+      })
+
+
+    return isValidateSuccess;
+  }
+
   handleOk = (e: any) => {
+
+    if (!this.validateActors()) return;
 
     const handleOk = () => Modal.confirm({
       title: this.props.intl.formatMessage(
@@ -175,7 +196,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
     if (this.props.isStartCommentVisible)
       this.props.form.validateFields(['bproc-comment'],
         {force: true},
-        (err, values) => {
+        (err) => {
           if (err) {
             message.error(
               this.props.intl.formatMessage({
@@ -188,7 +209,7 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
   };
 
-  handleCancel = (e: any) => {
+  handleCancel = (e?: any) => {
     this.modalVisible = false;
   };
 
@@ -216,16 +237,18 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   };
 
   addBprocUser = () => {
-    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) != undefined)) {
+    if (this.items.find(i => (i.users as TsadvUser[]).find(u => u.id === this.selectedUser!.id) !== undefined)) {
       Notification.error({
         message: this.props.intl.formatMessage({id: "bproc.startBproc.modal.error"})
       });
       return;
     }
+    const rolesLink = this.bprocRolesDefiner!.links!.find(rd => rd.hrRole!.id === this.selectedHrRole!.id)!;
     this.items.unshift(({
       hrRole: this.selectedHrRole,
       users: [this.selectedUser],
-      bprocUserTaskCode: this.bprocRolesDefiner!.links!.find(rd => rd.hrRole!.id === this.selectedHrRole!.id)!.bprocUserTaskCode
+      bprocUserTaskCode: rolesLink.bprocUserTaskCode,
+      rolesLink: rolesLink
     } as any));
   };
 
@@ -254,18 +277,16 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   commentValidator = (rule: any, value: any, callback: any) => {
     if (this.modalVisible && !value && this.props.isStartCommentVisible
       && this.props.commentRequiredOutcomes && this.props.commentRequiredOutcomes.find(outcome => outcome === 'START')) {
-      callback('Необходимо заполнить комментарий');
+      callback(this.props.intl.formatMessage({id: 'comment.required'}));
     }
     callback();
   };
 
   render() {
-    // if (!this.bprocRolesDefiner) return <LoadingPage/>;
-    // if (!this.items) return <div/>;
 
     return (
       <>
-        <CustomButton buttonType={ButtonType.FOLLOW}
+        <CustomButton buttonType={ButtonType.PRIMARY}
                       onClick={this.showModalOrMessage}
                       key="start">
           {this.props.intl.formatMessage({
@@ -361,4 +382,5 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
   }
 }
 
-export default withRouter(injectIntl(StartBprocModal));
+const startBprocModal = withRouter(injectIntl(StartBprocModal));
+export default startBprocModal;

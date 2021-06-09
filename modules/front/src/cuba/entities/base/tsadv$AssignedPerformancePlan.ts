@@ -26,6 +26,7 @@ export class AssignedPerformancePlan extends AbstractBprocRequest {
   maxBonusPercent?: any | null;
   purpose?: string | null;
   file?: FileDescriptor | null;
+  lineManager?: PersonGroupExt | null;
 }
 export type AssignedPerformancePlanViewName =
   | "_base"

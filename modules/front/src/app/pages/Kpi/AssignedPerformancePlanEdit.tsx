@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement, FormEvent} from "react";
-import {Alert, Card, Col, DatePicker, Form, InputNumber, message, Row, Tree} from "antd";
+import {Alert, Card, Col, Form, InputNumber, message, Row, Tree} from "antd";
 import {inject, observer} from "mobx-react";
 import {AssignedPerformancePlanManagement} from "./AssignedPerformancePlanManagement";
 import {Redirect} from "react-router-dom";
@@ -46,6 +46,9 @@ import TextArea from "antd/es/input/TextArea";
 import {ExtTaskData} from "../../../cuba/entities/base/tsadv_ExtTaskData";
 import TaskDataTable from "../Bproc/TaskData/TaskDataTable";
 import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocRequest";
+import {ScoreSetting} from "../../../cuba/entities/base/tsadv_ScoreSetting";
+import {collectionWithAfterLoad, DataCollectionStoreWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
+import DefaultDatePicker from "../../components/Datepicker";
 
 const {TreeNode} = Tree;
 
@@ -74,6 +77,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     view: "assignedPerformancePlan-myKpi-edit",
     loadImmediately: false
   });
+
+  @observable
+  scoreSettingsCollection: DataCollectionStoreWithAfterLoad<ScoreSetting>;
 
   @observable
   totalWeight: number;
@@ -125,10 +131,14 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         );
         return;
       }
+      const entityPatch = {
+        ...this.props.form.getFieldsValue(this.fields)
+      };
+      if (this.approverHrRoleCode === 'MANAGER') {
+        entityPatch['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
+      }
       this.dataInstance
-        .update({
-          ...this.props.form.getFieldsValue(this.fields)
-        })
+        .update(entityPatch)
         .then(() => {
           message.success(
             this.props.intl.formatMessage({id: "management.editor.success"})
@@ -179,14 +189,10 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   };
 
   getPoint = (value?: number): number => {
-    if (value === undefined) return 0;
-    if (value < 50) return 6;
-    if (value <= 66) return 7;
-    if (value <= 74) return 8;
-    if (value <= 82) return 9;
-    if (value <= 89) return 10;
-    if (value <= 94) return 11;
-    return 12;
+    if (value === undefined || !this.scoreSettingsCollection || this.scoreSettingsCollection.status !== 'DONE' || this.scoreSettingsCollection.items.length <= 0) return 0;
+    const scoreSetting = this.scoreSettingsCollection.items.find(scoreSetting => scoreSetting.minPercent <= value && value <= scoreSetting.maxPercent);
+    if (scoreSetting) return scoreSetting.finalScore || 0;
+    return 0;
   }
 
   @action
@@ -198,7 +204,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     }
   };
 
-  setKpiScore = () => {
+  setKpiScore = (): void => {
     if (this.kpiScoreRef)
       this.kpiScoreRef.innerHTML = this.props.intl.formatMessage({id: "kpiScore"}) + ': ' + this.getPoint(this.totalResult);
     this.setFinalScore();
@@ -289,7 +295,9 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const isForm2Visible = this.isNotDraft() && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR';
 
-    return (<div style={!isForm2Visible ? {visibility: "hidden", height: '0px', position: 'absolute'} : {}}>
+    const file = this.dataInstance.item && this.dataInstance.item.file ? this.dataInstance.item.file : undefined;
+
+    return (<div style={!isForm2Visible ? {display: 'none'} : {}}>
 
       <div className={"ant-row ant-form-item"} style={{marginBottom: "12px", marginTop: '40px'}}>
         {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "extraPoint"})}
@@ -326,16 +334,17 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         </Form.Item>
       </div>
 
-      {/*todo это не работает???????? animation exception*/}
-      {/*<ReadonlyField
+      <ReadonlyField
         formItemKey={"file"}
-        style={this.isUserManager ? {visibility: "hidden"} : {}}
         entityName={this.dataInstance.entityName}
         propertyName="file"
         form={this.props.form}
         disabled={!isExtraPointEnable}
+        getFieldDecoratorOpts={{
+          initialValue: file ? {id: file.id, name: file.name} : undefined
+        }}
         formItemOpts={{style: {marginBottom: "12px"}}}
-      />*/}
+      />
 
     </div>)
   }
@@ -383,7 +392,11 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         pageName={this.props.intl.formatMessage({id: 'page.kpi'}, {"name": status === 'DONE' ? (this.dataInstance.item!.performancePlan as SerializedEntity<PerformancePlan>)._instanceName : ""})}>
         <Card className="narrow-layout card-actions-container" actions={[
           <Button buttonType={ButtonType.FOLLOW}
-                  onClick={() => this.props.history!.goBack()}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                  onClick={() => {
+                    if (this.approverHrRoleCode !== 'INITIATOR')
+                      return this.props.history!.goBack();
+                    else return this.props.history!.push(AssignedPerformancePlanManagement.PATH);
+                  }}>{this.props.intl.formatMessage({id: "close"})}</Button>,
           ...this.pageActions()]}
               bordered={false}>
           <Form key={'form1'} onSubmit={this.handleSubmit} layout="vertical">
@@ -472,7 +485,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                                key='hireDate'
                                style={{marginBottom: '12px'}}>{
                       getFieldDecorator('hireDate')(
-                        <DatePicker disabled/>
+                        <DefaultDatePicker disabled/>
                       )}
                     </Form.Item>
                   </Col>
@@ -511,7 +524,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                   }}>
                   {this.props.intl.formatMessage({id: "result"})}: {Math.round(this.totalResult)}
                 </h1></div>
-                {stepIndex && stepIndex > 1 && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR'
+                {stepIndex && stepIndex > 1 && (this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR' || this.isUserManager)
                   ? (<div>
                     <h1
                       id={'kpiScore'}
@@ -618,6 +631,21 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
         this.setReadOnly();
 
+        if (item)
+          this.scoreSettingsCollection = collectionWithAfterLoad<ScoreSetting>(ScoreSetting.NAME,
+            this.setKpiScore,
+            {
+              view: "_local",
+              loadImmediately: true,
+              filter: {
+                conditions: [{
+                  property: 'performancePlan.id',
+                  operator: '=',
+                  value: item.performancePlan!.id
+                }]
+              }
+            });
+
         restServices.employeeService.personProfile(item!.assignedPerson!.id).then(value => {
           this.props.form.setFieldsValue({
             jobGroup: value.positionName,
@@ -640,7 +668,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
             status: (item!.status! as SerializedEntity<AbstractBprocRequest>)._instanceName,
             purpose: item!.purpose,
             extraPoint: item!.extraPoint,
-            file: {...item!.file},
+            file: item!.file,
           }
         };
         this.props.form.setFieldsValue(values);

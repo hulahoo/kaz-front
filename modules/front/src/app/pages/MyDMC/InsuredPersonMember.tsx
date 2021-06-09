@@ -57,7 +57,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     view: "insuredPerson-editView",
     loadImmediately: false
   });
-  /*  */
+
   familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
     view: "insuredPerson-browseView",
     sort: "-updateTs"
@@ -121,8 +121,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     "exclusionDate",
 
-    "comment",
-
     "statusRequest",
 
     "company",
@@ -141,11 +139,7 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
     "addressType",
 
-    "file",
-
     "statementFile",
-
-    "insuredPersonId"
   ];
 
   @observable
@@ -213,7 +207,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
         });
     });
   };
-
 
   showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
     Modal.confirm({
@@ -342,6 +335,19 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
 
                 <ReadonlyField
                   entityName={InsuredPerson.NAME}
+                  propertyName="secondName"
+                  form={this.props.form}
+                  formItemOpts={{style: field_style}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: true,
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.secondName']}),
+                    }]
+                  }}
+                />
+
+                <ReadonlyField
+                  entityName={InsuredPerson.NAME}
                   propertyName="firstName"
                   form={this.props.form}
                   formItemOpts={{style: field_style}}
@@ -353,18 +359,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
                   }}
                 />
 
-                <ReadonlyField
-                  entityName={InsuredPerson.NAME}
-                  propertyName="secondName"
-                  form={this.props.form}
-                  formItemOpts={{style: field_style}}
-                  getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.secondName']}),
-                    }]
-                  }}
-                />
                 <ReadonlyField
                   entityName={InsuredPerson.NAME}
                   propertyName="middleName"
@@ -543,12 +537,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
               entityName={InsuredPerson.NAME}
               propertyName="statementFile"
               form={this.props.form}
-              getFieldDecoratorOpts={{
-                rules: [{
-                  required: true,
-                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.props.mainStore!.messages![this.dataInstance.entityName + '.statementFile']}),
-                }]
-              }}
             />
 
             {this.globalErrors.length > 0 && (
@@ -579,8 +567,9 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
       () => {
         return this.dataInstance.item;
       },
-      () => {
-        this.props.form.setFieldsValue(this.dataInstance.getFieldValues(this.fields));
+      (item) => {
+        if (this.props.visible)
+          this.props.form.setFieldsValue(this.dataInstance.getFieldValues(this.fields));
       }
     );
   }
@@ -589,7 +578,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     this.reactionDisposer();
   }
 }
-
 
 export default injectIntl(
   withLocalizedForm<EditorProps & EditorHandlers>({

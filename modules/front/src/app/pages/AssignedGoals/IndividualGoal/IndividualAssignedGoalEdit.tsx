@@ -188,7 +188,7 @@ class IndividualAssignedGoalEdit extends SecurityStateAssignedGoal<Props & Wrapp
                 }}
                 getFieldDecoratorOpts={{}}
               />
-              <Form.Item label={<Msg entityName={AssignedGoal.NAME} propertyName='weight'/>}
+              <Form.Item label={this.props.intl.formatMessage({ id: "goal.weight" })}
                          key='weight'
                          style={{marginBottom: '12px'}}>{
                 this.props.form.getFieldDecorator('weight', {

@@ -6,10 +6,13 @@ import {observer} from "mobx-react";
 import {observable} from "mobx";
 import {cubaREST} from "../../store";
 import {AssignmentSchedule} from "../../../cuba/entities/base/tsadv$AssignmentSchedule";
-import {Button, Table} from "antd";
+import {Table} from "antd";
 import Column from "antd/es/table/Column";
 import {Link} from "react-router-dom";
 import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
+import Button, {ButtonType} from "../../components/Button/Button";
+import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
+import moment from "moment";
 
 @injectMainStore
 @observer
@@ -38,12 +41,7 @@ class AssignmentScheduleStandard extends React.Component<MyTeamCardProps & MainS
           }
           key="create"
         >
-          <Button
-            htmlType="button"
-            style={{margin: "0 12px 12px 0"}}
-            type="primary"
-            icon="plus"
-          >
+          <Button buttonType={ButtonType.PRIMARY}>
           <span>
             <FormattedMessage id="management.browser.create"/>
           </span>
@@ -58,9 +56,21 @@ class AssignmentScheduleStandard extends React.Component<MyTeamCardProps & MainS
                   key="schedule"/>
           <Column title={<Msg entityName={AssignmentSchedule.NAME} propertyName='startDate'/>}
                   dataIndex="startDate"
+                  render={text => {
+                    if (text) {
+                      return moment(text).format(DEFAULT_DATE_PATTERN);
+                    }
+                    return text;
+                  }}
                   key="startDate"/>
           <Column title={<Msg entityName={AssignmentSchedule.NAME} propertyName='endDate'/>}
                   dataIndex="endDate"
+                  render={text => {
+                    if (text) {
+                      return moment(text).format(DEFAULT_DATE_PATTERN);
+                    }
+                    return text;
+                  }}
                   key="endDate"/>
         </Table>
       </div>

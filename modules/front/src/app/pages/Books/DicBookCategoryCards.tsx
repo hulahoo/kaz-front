@@ -6,7 +6,7 @@ import Page from "../../hoc/PageContentHoc";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 import PanelCard from "../../components/CourseCard";
 import {Link} from "react-router-dom";
-import {downloadFile, getBlobUrl} from "../../util/util";
+import {downloadFile, getFileUrl} from "../../util/util";
 import {queryCollection, QueryDataCollectionStore} from "../../util/QueryDataCollectionStore";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {Book} from "../../../cuba/entities/base/tsadv$Book";
@@ -68,8 +68,8 @@ class DicBookCategoryCards extends React.Component<WrappedComponentProps> {
                                                               <Link to={"/book/" + book.id} key={book.id}>
                                                                 <ImageLogo
                                                                   className="panel-logo"
-                                                                  type="promise"
-                                                                  imgSrcProp={book.image ? getBlobUrl(book.image.id) : undefined}
+                                                                  type="src"
+                                                                  imgSrc={book.image ? getFileUrl(book.image.id) : undefined}
                                                                   name={book.bookNameLang1!}/>
                                                               </Link>}>
                       <Meta title={(book as SerializedEntity<Book>)._instanceName}

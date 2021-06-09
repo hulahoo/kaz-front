@@ -32,6 +32,7 @@ import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {Moment} from "moment";
 import {observable, reaction} from "mobx";
 import moment from "moment/moment";
+import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 
 type EditorProps = {
   entityId: string;
@@ -167,8 +168,8 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "vacation"})}
                   <Input disabled={true}
-                         value={needBpm && this.dataInstance.item!.vacation!.typeAndDate
-                           ? this.dataInstance.item!.vacation!.typeAndDate
+                         value={needBpm && (this.dataInstance.item!.vacation! as SerializedEntity<Absence>)._instanceName
+                           ? (this.dataInstance.item!.vacation! as SerializedEntity<Absence>)._instanceName
                            : ""}/>
                 </div>
 

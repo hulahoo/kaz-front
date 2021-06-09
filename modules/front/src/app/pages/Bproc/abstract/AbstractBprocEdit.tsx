@@ -8,7 +8,6 @@ import {IReactionDisposer, observable, reaction} from "mobx";
 import {ProcessInstanceData} from "../../../../cuba/entities/base/bproc_ProcessInstanceData";
 import {ExtTaskData} from "../../../../cuba/entities/base/tsadv_ExtTaskData";
 import {BprocFormData} from "../../../../cuba/entities/bproc/bproc_FormData";
-import {message} from "antd";
 import {restServices} from "../../../../cuba/services";
 import ExtTaskDataCards from "../TaskData/ExtTaskDataCards";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
@@ -18,6 +17,7 @@ import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBproc
 import Notification from "../../../util/Notification/Notification";
 import moment from "moment/moment";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
+import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../../components/MultiFileUpload";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -64,7 +64,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   @observable
   isValidatedSuccess = false;
 
-  fields: any;
+  fields: string[];
 
   processDefinitionKey: string;
 
@@ -74,9 +74,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       isValidatedSuccess = !err;
       if (err) {
         Notification.error({
-          message: this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
+          message: this.props.intl.formatMessage({id: "management.editor.validationError"})
         });
       }
     });
@@ -84,6 +82,24 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   };
 
   getUpdateEntityData = (): any => {
+    const obj = {
+      ...this.props.form.getFieldsValue(this.fields),
+    };
+
+    const metaClass = this.props.mainStore!.metadata!.find(mci => mci.entityName === this.dataInstance.entityName);
+    if (metaClass) {
+      metaClass.properties
+        .filter(value => value.type === 'sys$FileDescriptor')
+        .filter(value => value.cardinality === "ONE_TO_MANY" || value.cardinality === "MANY_TO_MANY")
+        .filter(value => this.fields.find(field => field === value.name))
+        .forEach(value => {
+          const files = obj[value.name];
+          if (files)
+            obj[value.name] = parseToJsonFromFieldValue(files);
+        })
+    }
+
+    return obj;
   };
 
   update = () => {
@@ -117,6 +133,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         operator: '=',
         value: 'TRUE'
       }]
+    }, {
+      view: 'portal-bproc-users'
     }).then(value => this.employee = value[0]);
   }
 
@@ -133,7 +151,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         formData={this.formData}
                         validate={this.validate}
                         beforeCompletePredicate={this.beforeCompletePredicate}
-                        employee={() => this.employee}
+                        employeePersonGroupId={() => this.employee ? this.employee.personGroup!.id : this.props.rootStore!.userInfo.personGroupId}
                         update={this.update}
                         processInstanceData={this.processInstanceData}
                         afterSendOnApprove={this.afterSendOnApprove}
@@ -252,19 +270,45 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       () => {
         return this.dataInstance.item;
       },
-      () => {
-        const obj = {
-          ...this.dataInstance.getFieldValues(this.fields)
-        };
-        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
-          const now = moment();
-          now.locale(this.props.rootStore!.userInfo.locale!);
-          obj["requestDate"] = now;
-        }
-        this.props.form.setFieldsValue(obj);
+      (item) => {
+        this.onReactionDisposerEffect(item);
+
+        this.props.form.setFieldsValue(this.onReactionFieldsValue(item));
       }
     );
   };
+
+  onReactionFieldsValue = (item: T | undefined) => {
+    const obj = {
+      ...this.dataInstance.getFieldValues(this.fields)
+    };
+    if (this.isCalledProcessInstanceData && !this.processInstanceData) {
+      const now = moment();
+      now.locale(this.props.rootStore!.userInfo.locale!);
+      obj["requestDate"] = now;
+    }
+
+    if (item) {
+      const metaClass = this.props.mainStore!.metadata!.find(mci => mci.entityName === this.dataInstance.entityName);
+      if (metaClass) {
+        metaClass.properties
+          .filter(value => value.type === 'sys$FileDescriptor')
+          .filter(value => value.cardinality === "ONE_TO_MANY" || value.cardinality === "MANY_TO_MANY")
+          .filter(value => this.fields.find(field => field === value.name))
+          .forEach(value => {
+            const files = item[value.name];
+            if (files)
+              obj[value.name] = parseToFieldValueFromDataInstanceValue(files);
+          })
+      }
+    }
+
+    return obj;
+  }
+
+  onReactionDisposerEffect = (item: T | undefined) => {
+
+  }
 
   afterSendOnApprove = () => {
     this.props.history!.goBack();
