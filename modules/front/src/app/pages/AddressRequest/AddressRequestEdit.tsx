@@ -116,6 +116,8 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
     'addressEnglish',
 
+    'streetName',
+
     "attachments",
   ];
 
@@ -266,6 +268,13 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           label={createElement(Msg, {entityName: entityName, propertyName: "streetType"})}>
           <Input
             value={this.editAddress && this.editAddress.streetType ? this.editAddress.streetType['_instanceName'] || '' : ''}
+            disabled/>
+        </Form.Item>
+
+        <Form.Item
+          label={createElement(Msg, {entityName: entityName, propertyName: "streetName"})}>
+          <Input
+            value={this.editAddress ? this.editAddress.streetName || '' : ''}
             disabled/>
         </Form.Item>
 
@@ -436,10 +445,27 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
         <ReadonlyField
           entityName={entityName}
+          propertyName="streetName"
+          disabled={isNotDraft}
+          form={this.props.form}
+          getFieldDecoratorOpts={{
+            getValueFromEvent: args => {
+              if (this.editAddress)
+                this.changedMap.set('streetName', args !== this.editAddress.streetName);
+              return args;
+            }
+          }}
+          formItemOpts={{
+            hasFeedback: this.changedMap.get('streetName'),
+            validateStatus: "success",
+          }}
+        />
+
+        <ReadonlyField
+          entityName={entityName}
           propertyName='building'
           disabled={isNotDraft}
           form={this.props.form}
-          optionsContainer={this.streetTypesDc}
           getFieldDecoratorOpts={{
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
@@ -459,7 +485,6 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           propertyName='block'
           disabled={isNotDraft}
           form={this.props.form}
-          optionsContainer={this.streetTypesDc}
           getFieldDecoratorOpts={{
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
@@ -479,7 +504,6 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           propertyName='flat'
           disabled={isNotDraft}
           form={this.props.form}
-          optionsContainer={this.streetTypesDc}
           getFieldDecoratorOpts={{
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
@@ -499,7 +523,6 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           disabled={isNotDraft}
           propertyName='addressForExpats'
           form={this.props.form}
-          optionsContainer={this.streetTypesDc}
           getFieldDecoratorOpts={{
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
@@ -519,7 +542,6 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           disabled={isNotDraft}
           propertyName='addressKazakh'
           form={this.props.form}
-          optionsContainer={this.streetTypesDc}
           getFieldDecoratorOpts={{
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
@@ -545,7 +567,6 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
             hasFeedback: this.changedMap.get('addressEnglish'),
             validateStatus: "success",
           }}
-          optionsContainer={this.streetTypesDc}
           getFieldDecoratorOpts={{
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
@@ -590,7 +611,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
         .then(value => this.editAddress = value as PersonDocument)
         .then(value => {
           this.instanceEditAddress.setItem(value);
-          const properties = ["addressType", "postalCode", "country", "kato", "streetType", "building", "block", "flat", 'addressForExpats', 'addressKazakh', 'addressEnglish',];
+          const properties = ["addressType", "postalCode", "country", "kato", "streetType", "building", "block", "flat", 'addressForExpats', 'addressKazakh', 'addressEnglish', 'streetName'];
           if (this.props.entityId === PersonDocumentRequestManagement.NEW_SUBPATH) {
             this.props.form.setFieldsValue(this.instanceEditAddress.getFieldValues(properties));
           } else if (item) {
