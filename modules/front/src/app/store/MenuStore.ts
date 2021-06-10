@@ -35,20 +35,20 @@ export default class MenuStore {
       //   pathPattern: "/my-profile",
       //   component: null
       // },
-      {
-        id: "my-team",
-        caption: "Моя команда",
-        menuLink: "/my-team",
-        pathPattern: "/my-team",
-        component: null
-      },
-      {
-        id: "assistant-team",
-        caption: "Assistant team",
-        menuLink: "/assistant-team",
-        pathPattern: "/assistant-team",
-        component: null
-      },
+      // {
+      //   id: "my-team",
+      //   caption: "Моя команда",
+      //   menuLink: "/my-team",
+      //   pathPattern: "/my-team",
+      //   component: null
+      // },
+      // {
+      //   id: "assistant-team",
+      //   caption: "Assistant team",
+      //   menuLink: "/assistant-team",
+      //   pathPattern: "/assistant-team",
+      //   component: null
+      // },
       // {
       //   id: "absence",
       //   caption: "Absence",
