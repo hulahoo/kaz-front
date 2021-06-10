@@ -18,6 +18,7 @@ import Notification from "../../../util/Notification/Notification";
 import moment from "moment/moment";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../../components/MultiFileUpload";
+import {OrgStructureRequestManagement} from "../../orgStructureRequest/OrgStructureRequestManagement";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -304,6 +305,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     }
 
     return obj;
+  }
+
+  isNewEntity = () => {
+    return this.props.entityId === OrgStructureRequestManagement.NEW_SUBPATH;
   }
 
   onReactionDisposerEffect = (item: T | undefined) => {

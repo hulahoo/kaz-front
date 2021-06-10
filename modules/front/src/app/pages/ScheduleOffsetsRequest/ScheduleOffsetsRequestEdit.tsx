@@ -2,7 +2,7 @@ import * as React from "react";
 import {Card, Form, Input, Select, Spin} from "antd";
 import {inject, observer} from "mobx-react";
 import {action, IReactionDisposer, observable} from "mobx";
-import {injectIntl} from "react-intl";
+import {FormattedMessage, injectIntl} from "react-intl";
 import {withRouter} from "react-router-dom";
 
 import {
@@ -160,14 +160,48 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   };
 
   actions = () => {
+    const {status} = this.dataInstance;
+
     const actions = [];
+
+    if (this.isNewEntity())
+      actions.push(<Button buttonType={ButtonType.PRIMARY}
+                           disabled={status !== "DONE" && status !== "ERROR"}
+                           loading={status === "LOADING"}
+                           onClick={this.saveRequest}>
+        <FormattedMessage id="management.editor.submit"/>
+      </Button>);
+
     actions.push(<Button buttonType={ButtonType.FOLLOW}
                          onClick={this.props.history!.goBack.bind(null)}>{this.props.intl.formatMessage({id: "close"})}</Button>);
-    if (this.props.entityId !== ScheduleOffsetsRequestManagement.NEW_SUBPATH)
+
+    if (!this.isNewEntity()) {
       actions.push(<Button buttonType={ButtonType.FOLLOW}
                            onClick={this.report}>{this.props.intl.formatMessage({id: "report"})}</Button>);
-    actions.push(this.getOutcomeBtns());
+
+      actions.push(this.getOutcomeBtns());
+    }
+
     return actions;
+  }
+
+  saveRequest = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
+      if (err) {
+        Notification.error({
+          message:
+            this.props.intl.formatMessage({
+              id: "management.editor.validationError"
+            })
+        });
+        return;
+      }
+
+      this.update().then(value => this.props.history.push(ScheduleOffsetsRequestManagement.PATH + "/" + this.dataInstance.item!.id));
+
+    });
   }
 
   render() {
@@ -480,7 +514,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   };
 
   loadData = async () => {
-    if (!this.isNew()) {
+    if (!this.isNewEntity()) {
       await this.dataInstance.load(this.props.entityId);
     } else {
       const entityName = this.dataInstance.entityName;
@@ -501,7 +535,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
         personGroupId: personGroupId
       });
 
-      if (this.isNew()) {
+      if (this.isNewEntity()) {
         this.standardScheduleDc.afterLoad = () => {
           this.dataInstance.item!.currentSchedule = this.standardScheduleDc.items![0];
           this.updateFields();
@@ -525,7 +559,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
       this.updateFields();
 
-      if (!this.isNew()) {
+      if (!this.isNewEntity()) {
         this.loaded = true;
       }
 
@@ -570,7 +604,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   }
 
   afterSendOnApprove = () => {
-    this.props.history!.goBack();
+    if (this.isNotDraft()) this.props.history!.goBack();
+    else this.props.history!.push(ScheduleOffsetsRequestManagement.PATH);
   };
 
   loadPerson = async (personGroupId: string): Promise<void> => {
@@ -585,10 +620,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     });
     this.dataInstance.item!.personGroup = response[0];
   };
-
-  isNew = () => {
-    return this.props.entityId === "new";
-  }
 
   @action
   setIsDisabledFields = (value: boolean): void => {
