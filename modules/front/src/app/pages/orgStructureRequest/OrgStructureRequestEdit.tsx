@@ -762,61 +762,42 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     const buttons = [];
 
     const createButton = <Dropdown overlay={createLinks} key="create" disabled={!this.selectedRow}>
-      <Button type="primary" className={"b-btn"}>
+      <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto'}}>
         <Icon type="plus"/>
         <FormattedMessage id="management.browser.create"/>
         <Icon type="down"/>
       </Button>
     </Dropdown>;
-    const editButton = <Button
-      htmlType="button"
-      key="edit"
-      style={{margin: "0 12px 12px 12px"}}
-      disabled={!this.selectedRow || this.isOnApproving() && this.isCbCompany && this.selectedRow.elementType === 1}
-      onClick={this.preEdit}
-      className={"b-btn"}
-      type="default">
+    const editButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 12px"}}
+                               htmlType="button"
+                               key="edit"
+                               disabled={!this.selectedRow || this.isOnApproving() && this.isCbCompany && this.selectedRow.elementType === 1}
+                               onClick={this.preEdit}>
       <Icon type="edit"/>
       <FormattedMessage id="management.browser.edit"/>
     </Button>;
-    const deleteButton = <Button
-      htmlType="button"
-      style={{margin: "0 12px 12px 0"}}
-      disabled={!this.selectedRow}
-      onClick={this.excludeSelectedRow}
-      className={"b-btn"}
-      key="exclude"
-      type="default">
+    const deleteButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                 disabled={!this.selectedRow}
+                                 onClick={this.excludeSelectedRow}
+                                 key="exclude">
       <Icon type="delete"/>
       <FormattedMessage id="management.browser.exclude.ok"/>
     </Button>;
-    const refreshButton = <Button
-      htmlType="button"
-      style={{margin: "0 12px 12px 0"}}
-      onClick={this.reloadTreeData}
-      className={"b-btn"}
-      key="refresh"
-      type="default">
+    const refreshButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                  onClick={this.reloadTreeData}
+                                  key="refresh">
       <Icon type="sync"/>
       <FormattedMessage id="management.browser.refresh"/>
     </Button>;
-    const printReportButton = <Button
-      htmlType="button"
-      style={{margin: "0 12px 12px 0"}}
-      onClick={this.onClickDownloadReport}
-      className={"b-btn"}
-      key="report-button"
-      type="default">
+    const printReportButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                      onClick={this.onClickDownloadReport}
+                                      key="report-button">
       <Icon type="file-excel"/>
       {this.props.intl.formatMessage({id: 'orgStructureRequest.report'})}
     </Button>;
-    const printOrderButton = <Button
-      htmlType="button"
-      style={{margin: "0 12px 12px 0"}}
-      onClick={this.onClickDownloadOrder}
-      className={"b-btn"}
-      key="order-button"
-      type="default">
+    const printOrderButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                     onClick={this.onClickDownloadOrder}
+                                     key="order-button">
       <Icon type="file-excel"/>
       {this.props.intl.formatMessage({id: 'orgStructureRequest.order'})}
     </Button>;
