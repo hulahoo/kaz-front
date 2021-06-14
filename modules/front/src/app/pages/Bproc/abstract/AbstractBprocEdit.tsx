@@ -310,6 +310,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return obj;
   }
 
+  isNewEntity = () => {
+    return this.props.entityId === "new";
+  }
+
   onReactionDisposerEffect = (item: T | undefined) => {
 
   }

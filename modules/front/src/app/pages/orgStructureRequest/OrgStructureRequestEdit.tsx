@@ -4,19 +4,11 @@ import {Alert, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Sele
 import {inject, observer} from "mobx-react";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Link, RouteComponentProps, withRouter} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import {IReactionDisposer, observable, toJS} from "mobx";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl} from "react-intl";
 
-import {
-  collection,
-  injectMainStore,
-  instance,
-  MainStoreInjected,
-  Msg,
-  MultilineText,
-  withLocalizedForm
-} from "@cuba-platform/react";
+import {collection, injectMainStore, instance, Msg, MultilineText, withLocalizedForm} from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
@@ -36,7 +28,6 @@ import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
-import {RootStoreProp} from "../../store";
 import moment from "moment";
 import DefaultDatePicker from "../../components/Datepicker";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
@@ -126,7 +117,7 @@ export class DisplayColumnValidatorFactory {
 @injectMainStore
 @inject("rootStore")
 @observer
-class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureRequest, Props & WrappedComponentProps & RootStoreProp & RouteComponentProps<any> & MainStoreInjected> {
+class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureRequest, Props> {
   dataInstance = instance<OrgStructureRequest>(OrgStructureRequest.NAME, {
     view: "orgStructureRequest-edit",
     loadImmediately: false
@@ -852,10 +843,6 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
         this.treeLoading = false;
         this.selectedRow = null;
       })
-  }
-
-  isNewEntity = () => {
-    return this.props.entityId === OrgStructureRequestManagement.NEW_SUBPATH;
   }
 
   onClickDownloadReport = () => {
