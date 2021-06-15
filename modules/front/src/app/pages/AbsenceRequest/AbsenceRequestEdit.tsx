@@ -35,7 +35,7 @@ import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
 import {EntitiesWithCount} from "@cuba-platform/rest";
 import DefaultDatePicker from "../../components/Datepicker";
-import {isNumber} from "../../util/util";
+import {goBackOrHomePage, isNumber} from "../../util/util";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {parseToFieldValueFromDataInstanceValue} from "../../components/MultiFileUpload";
@@ -253,7 +253,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           <div>
             <Card className="narrow-layout card-actions-container" actions={[
               <Button buttonType={ButtonType.FOLLOW}
-                      onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                      onClick={event => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
               this.getOutcomeBtns()]}
                   bordered={false}>
               <Form onSubmit={this.validate} layout="vertical">

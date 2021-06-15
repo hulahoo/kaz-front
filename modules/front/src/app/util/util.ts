@@ -4,6 +4,7 @@ import {AbstractDictionary} from "../../cuba/entities/base/AbstractDictionary";
 import {AbstractBprocRequest} from "../../cuba/entities/base/AbstractBprocRequest";
 import {AssignedPerformancePlan} from "../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {PersonExt} from "../../cuba/entities/base/base$PersonExt";
+import {History} from "history";
 
 export const getBlobUrl = (fileId: string): Promise<string> => {
   return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob));
@@ -115,4 +116,10 @@ export const catchException = (promise: Promise<any>): Promise<any> => {
 
 export const isNumber = (number: any): boolean => {
   return number !== undefined && number !== null && !isNaN(number);
+}
+
+export const goBackOrHomePage = (history: History) => {
+  if (history.action === 'POP')
+    history.push("/");
+  else history.goBack();
 }
