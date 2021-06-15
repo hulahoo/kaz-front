@@ -450,9 +450,10 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           form={this.props.form}
           getFieldDecoratorOpts={{
             getValueFromEvent: args => {
+              const value = args.currentTarget.value;
               if (this.editAddress)
-                this.changedMap.set('streetName', args !== this.editAddress.streetName);
-              return args;
+                this.changedMap.set('streetName', value !== this.editAddress.streetName);
+              return value;
             }
           }}
           formItemOpts={{
