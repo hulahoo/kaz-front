@@ -47,6 +47,7 @@ import {AbsenceForRecallManagement} from "./pages/MyTeam/timeManagement/AbsenceF
 import {AbsenceRvdRequestManagement} from "./pages/MyTeam/timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
 import {ScheduleOffsetsRequestManagement} from "./pages/ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 import {ExecutiveAssistantsManagement} from "./pages/ExecutiveAssistants/ExecutiveAssistantsManagement";
+import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationScheduleManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -131,14 +132,14 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        path={LeavingVacationRequestManagement.PATH + "/:entityId"}
                        component={LeavingVacationRequestManagement}/>
                 <Route exact={true}
-                       path={VacationScheduleRequestManagement.PATH + "/:entityId"}
+                       path={VacationScheduleRequestManagement.PATH + "/:entityId/:chartType?"}
                        component={VacationScheduleRequestManagement}/>
                 <Route exact={true}
                        path={PortalFeedbackQuestionManagement.PATH}
                        component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
-
+                <Route exact={true} path={VacationScheduleManagement.PATH} component={VacationScheduleManagement}/>
                 <Route exact={true}
                        path={AbsenceRvdRequestManagement.PATH_WITH_PARAMS}
                        component={AbsenceRvdRequestManagement}/>

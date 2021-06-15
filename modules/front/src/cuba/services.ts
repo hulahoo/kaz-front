@@ -9,7 +9,6 @@ import {BprocFormData} from "./entities/bproc/bproc_FormData";
 import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData";
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
-import {TsadvUser} from "./entities/base/tsadv$UserExt";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
 import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
@@ -33,6 +32,8 @@ import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
 import {EnrollmentStatus} from "./enums/enums";
 import {PositionGroupExt} from "./entities/base/base$PositionGroupExt";
+import {GanttChartVacationScheduleData} from "../app/components/VacationGanttChart";
+import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleRequest";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -715,6 +716,24 @@ export const restServices = {
         }
       ).then(value => JSON.parse(value));
     },
+  },
+  vacationScheduleRequestService: {
+    ganttChart: (startDate: string, endDate: string): Promise<Array<GanttChartVacationScheduleData>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "ganttChart",
+        {
+          startDate: startDate,
+          endDate: endDate,
+        }
+      ).then(value => JSON.parse(value));
+    },
+    getChildVacationSchedule: (): Promise<Array<SerializedEntity<VacationScheduleRequest>>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "getChildVacationSchedule", {})
+        .then(value => JSON.parse(value));
+    }
   }
 };
 

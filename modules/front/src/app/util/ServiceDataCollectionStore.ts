@@ -1,7 +1,7 @@
 import {DataCollectionStore} from "@cuba-platform/react";
 import {runInAction} from "mobx";
 
-type ServiceFunction<T> = () => Promise<T>
+type ServiceFunction<T> = () => Promise<T | Array<T>>
 
 export class ServiceDataCollectionStore<T> extends DataCollectionStore<T> {
 
@@ -14,7 +14,7 @@ export class ServiceDataCollectionStore<T> extends DataCollectionStore<T> {
     };
   }
 
-  loading = (promise: any) => {
+  loading = (promise: Promise<T | Array<T>>) => {
     promise
       .then((resp: any) => {
         runInAction(() => {
