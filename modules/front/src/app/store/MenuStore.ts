@@ -28,13 +28,13 @@ export default class MenuStore {
   loadUserMenuList = () => {
     this.menuList = [
       // {id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null},
-      {
-        id: "my-profile",
-        caption: "Мой профиль",
-        menuLink: "/my-profile",
-        pathPattern: "/my-profile",
-        component: null
-      },
+      // {
+      //   id: "my-profile",
+      //   caption: "Мой профиль",
+      //   menuLink: "/my-profile",
+      //   pathPattern: "/my-profile",
+      //   component: null
+      // },
       // {
       //   id: "my-team",
       //   caption: "Моя команда",
