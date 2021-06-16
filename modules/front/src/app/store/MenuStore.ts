@@ -150,7 +150,6 @@ export default class MenuStore {
     ]
     // restServices.userMenuService.userMenuList().then((response: string) => {
     //   const menuIdList: string[] = JSON.parse(response);
-    //   console.log(menuIdList);
     // });
   }
 }

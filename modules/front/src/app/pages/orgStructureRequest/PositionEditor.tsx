@@ -70,7 +70,6 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       }
 
       let formData = this.props.form.getFieldsValue(this.fields);
-      //console.log(formData);
 
       let posSaveModel = new PositionSaveModel();
       posSaveModel.rId = formData.rId;
@@ -84,15 +83,12 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       let pId = formData.parentId;
       if (pId !== undefined && pId !== null) {
         let foundOrg = this.organizations.find(o => o.id === pId);
-        //console.log('foundOrg: ', foundOrg)
 
         if (foundOrg !== undefined) {
           posSaveModel.parentOrganizationGroupId = foundOrg.orgGroupId;
           posSaveModel.parentRdId = foundOrg.rdId;
         }
       }
-
-      //console.log('posSaveModel: ', posSaveModel)
 
       restServices.orgStructureService.savePosition({
         positionRequestSaveModel: posSaveModel
@@ -247,10 +243,6 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
 
     this.fillOrganizations(this.props.treeData)
     this.fillGrades();
-
-    //console.log(row);
-    //console.log('organizations: ', this.organizations)
-    //console.log('grades: ', this.grades)
 
     if (row !== undefined && row !== null) {
       model['rId'] = this.props.requestId;

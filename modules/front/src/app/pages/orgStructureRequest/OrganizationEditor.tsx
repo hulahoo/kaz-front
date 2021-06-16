@@ -72,7 +72,6 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
       }
 
       let formData = this.props.form.getFieldsValue(this.fields);
-      console.log(formData);
 
       let orgSaveModel = new OrganizationSaveModel();
       orgSaveModel.rId = formData.rId;
@@ -84,14 +83,11 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
       let pId = formData.parentId;
       if (pId !== undefined && pId !== null) {
         let foundOrg = this.organizations.find(o => o.id === pId);
-        //console.log('foundOrg: ', foundOrg)
         if (foundOrg !== undefined) {
           orgSaveModel.parentOrganizationGroupId = foundOrg.orgGroupId;
           orgSaveModel.parentRdId = foundOrg.rdId;
         }
       }
-
-      //console.log('orgSaveModel: ', orgSaveModel)
 
       restServices.orgStructureService.saveOrganization({
         organizationRequestSaveModel: orgSaveModel
@@ -214,8 +210,6 @@ class OrganizationEditor extends React.Component<Props & MainStoreInjected & Roo
     let row = this.props.row, isNew = this.props.isNew, model = {};
 
     this.fillOrganizations(this.props.treeData)
-
-    //console.log('organizations: ', this.organizations)
 
     if (row !== undefined && row !== null) {
       model['rId'] = this.props.requestId;

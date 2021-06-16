@@ -248,7 +248,6 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
 
   selectNextSection = () => {
     const selectedSectionIndex = this.dataInstance.course!.sections!.findIndex(s => s.id === this.selectedSection!.id);
-    console.log((this.dataInstance.course!.sections!.length - 1));
     if (selectedSectionIndex != this.dataInstance.course!.sections!.length - 1) {
       const nextSelectedSectionIndex = selectedSectionIndex + 1;
       const nextSection = this.dataInstance.course!.sections!.find((s, index) => index === nextSelectedSectionIndex);

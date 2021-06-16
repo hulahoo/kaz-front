@@ -38,7 +38,6 @@ import DefaultDatePicker from "../../components/Datepicker";
 import {goBackOrHomePage, isNumber} from "../../util/util";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
-import {parseToFieldValueFromDataInstanceValue} from "../../components/MultiFileUpload";
 
 type EditorProps = {
   entityId: string;
@@ -744,16 +743,18 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         this.isVacationDate = !!(item && item.type && item.type.isVacationDate);
 
         const obj = this.onReactionFieldsValue(item);
+        if (item && item.startTime) obj['startTime'] = moment(item.dateFrom + " " + item.startTime);
+        if (item && item.endTime) obj['endTime'] = moment(item.dateTo + " " + item.endTime);
 
         this.vacationScheduleCollection = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
-            view: "_local",
-            sort: "-startDate",
-            loadImmediately: true,
-            filter: {
-              conditions: [{
-                property: "personGroup.id",
-                operator: "=",
-                value: this.personGroupId
+          view: "_local",
+          sort: "-startDate",
+          loadImmediately: true,
+          filter: {
+            conditions: [{
+              property: "personGroup.id",
+              operator: "=",
+              value: this.personGroupId
               },
                 {property: "startDate", operator: ">=", value: obj["requestDate"]},
                 {property: "sentToOracle", operator: "=", value: 'SENT_TO_ORACLE'}]

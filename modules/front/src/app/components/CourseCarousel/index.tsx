@@ -48,7 +48,6 @@ class CourseCarousel<T> extends React.Component<Props<T>> {
       behavior: 'smooth'
     });
     setTimeout(() => {
-      console.log(carouselContainer!.scrollLeft);
       if (carouselContainer!.scrollLeft === 0) {
         this.prevButtonRef!.current.buttonNode.style.display = 'none';
         return;

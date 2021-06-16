@@ -617,7 +617,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     dateFrom = dateFrom || this.props.form.getFieldValue(`timeOfStarting`);
     dateTo = dateTo || this.props.form.getFieldValue(`timeOfFinishing`);
     const personGroupId = this.personGroupId;
-    console.log(type, dateTo, dateFrom, personGroupId);
 
     if (type && dateTo && dateFrom && personGroupId) {
       restServices.absenceRvdService.countTotalHours({

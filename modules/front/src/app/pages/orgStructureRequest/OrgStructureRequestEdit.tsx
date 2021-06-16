@@ -145,7 +145,6 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     this.treeLoading = true;
     restServices.orgStructureService.getMergedOrgStructure({requestId: this.props.entityId})
       .then(loadedData => {
-        //console.log('loadedData: ', loadedData)
         this.treeData = loadedData;
       })
       .catch(async (response: any) => {
@@ -211,8 +210,6 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
       let formData = this.props.form.getFieldsValue(this.fields);
       formData.requestDate = moment(formData.requstDate).format('YYYY-MM-DD HH:mm:ss.SSS');
       formData.modifyDate = moment(formData.modifyDate).format('YYYY-MM-DD HH:mm:ss.SSS');
-
-      //console.log(formData)
 
       restServices.orgStructureService.saveRequest({
         orgRequestSaveModel: formData as OrgRequestSaveModel

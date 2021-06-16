@@ -197,8 +197,6 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   employeeCommentRender = (text: string, record: any) => {
     const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
     const disabled = !this.isInitiator() || !isThirdStep;
-    // console.log(record);
-    console.log(record.employeeComment);
     return (
       <div>
         <Form.Item>
