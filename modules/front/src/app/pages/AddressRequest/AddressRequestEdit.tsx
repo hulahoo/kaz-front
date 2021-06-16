@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement} from "react";
-import {Card, Col, Form, Input, Row} from "antd";
+import {Card, Col, Form, Input, Row, Select} from "antd";
 import {inject, observer} from "mobx-react";
 import {observable} from "mobx";
 import {FormattedMessage, injectIntl} from "react-intl";
@@ -30,6 +30,8 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import Page from "../../hoc/PageContentHoc";
 import {withRouter} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
+import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
+import {SearchSelect} from "../../components/SearchSelect";
 
 type EditorProps = {
   entityId: string;
@@ -57,7 +59,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
     view: "_minimal"
   });
 
-  katosDc = collection<DicKato>(DicKato.NAME, {view: "_minimal"});
+  katosDc = collection<DicKato>(DicKato.NAME, {view: "_minimal", loadImmediately: false});
 
   streetTypesDc = collection<DicStreetType>(DicStreetType.NAME, {
     view: "_minimal"
@@ -399,13 +401,10 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           }}
         />
 
-        <ReadonlyField
-          entityName={entityName}
-          propertyName="kato"
-          disabled={isNotDraft}
-          form={this.props.form}
-          optionsContainer={this.katosDc}
-          getFieldDecoratorOpts={{
+        <Form.Item
+          hasFeedback={this.changedMap.get('kato')}
+          label={<Msg entityName={entityName} propertyName={"kato"}/>}>
+          {this.props.form.getFieldDecorator("kato", {
             rules: [{
               required: true,
               message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.kato']})
@@ -415,11 +414,12 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
                 this.changedMap.set('kato', args !== (this.editAddress.kato ? this.editAddress.kato.id : undefined));
               return args;
             }
-          }}
-          formItemOpts={{
-            hasFeedback: this.changedMap.get('kato'),
-          }}
-        />
+          })(<SearchSelect onSearch={this.onSearchKato}
+                           loading={this.katosDc.status === 'LOADING'}
+                           options={this.katosDc && this.katosDc.items.map(d => <Select.Option
+                             key={d.id!}>{d._instanceName}</Select.Option>)}/>)
+          }
+        </Form.Item>
 
         <ReadonlyField
           entityName={entityName}
@@ -581,10 +581,31 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
     );
   }
 
+  onSearchKato = (value: string) => {
+    if (value && value.length >= 4) {
+      this.katosDc.filter = {
+        conditions: [
+          {
+            property: this.props.rootStore!.userInfo.locale === 'en' ? 'langValue3' : 'langValue1',
+            operator: 'contains',
+            value: value
+          }
+        ]
+      }
+
+      this.katosDc.load();
+    }
+  };
+
   onReactionDisposerEffect = (item: AddressRequest | undefined) => {
     this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;
 
     const requestDate = item && item.requestDate ? item.requestDate : moment().toISOString();
+
+    if (item && item.kato) {
+      this.katosDc.items = [item.kato as SerializedEntity<DicKato>];
+      this.katosDc.status = 'DONE';
+    }
 
     getCubaREST()!.searchEntities<PersonExt>(PersonExt.NAME, {
       conditions: [{
