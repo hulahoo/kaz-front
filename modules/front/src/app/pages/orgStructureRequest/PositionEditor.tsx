@@ -67,7 +67,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
 
   save = (e: React.MouseEvent) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
       if (err) {
         message.error(
           this.props.intl.formatMessage({
@@ -248,7 +248,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                      key="baseSalary">
             {getFieldDecorator('baseSalary', {
               rules: [{
-                required: true,
+                required: this.isCbCompany,
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'minSalary']})
               }]
             })(
@@ -261,7 +261,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                      key="mtPayrollPer">
             {getFieldDecorator('mtPayrollPer', {
               rules: [{
-                required: true,
+                required: this.isCbCompany,
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'maxSalary']})
               }]
             })(
@@ -303,8 +303,8 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
         model['parentOrganizationGroupId'] = row.pOrgGroupId;
         model['gradeGroupId'] = row.gradeGroupId;
         model['headCount'] = row.headCount[1];
-        model['baseSalary'] = row.baseSalary[1];
-        model['mtPayrollPer'] = row.mtPayrollPer[1];
+        model['baseSalary'] = row.baseSalary && row.baseSalary[1];
+        model['mtPayrollPer'] = row.mtPayrollPer && row.mtPayrollPer[1];
       }
     }
     this.props.form.setFieldsValue(model);
