@@ -434,5 +434,6 @@
   "add.required.actor": "You need to add \"{actor}\"",
   "diary": "Diary",
   "course.Recordings": "Recordings from the course",
-  "select.manager": "select a manager"
+  "select.manager": "select a manager",
+  "exceeded.max.test.attempts": "You have exceeded the maximum number of attempts to pass the test"
 }

@@ -423,5 +423,6 @@
   "add.required.actor": "Необходимо добавить \"{actor}\"",
   "diary": "Дневник",
   "course.Recordings": "Записи из курса",
-  "select.manager": "выберите менеджера"
+  "select.manager": "выберите менеджера",
+  "exceeded.max.test.attempts": "Вы превысили максимальное количество попыток прохождения теста"
 }

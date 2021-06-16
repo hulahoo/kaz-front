@@ -26,7 +26,6 @@ import {RootStoreProp} from "../../store";
 import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
 import {CourseFeedbackPersonAnswer} from "../../../cuba/entities/base/tsadv$CourseFeedbackPersonAnswer";
-import {dicValue} from "../../util/util";
 
 type Props = {
   entityId: string;
@@ -221,6 +220,16 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     if (notFinishedRequiredSections.length > 0) {
       Notification.info({
         message: this.props.intl.formatMessage({id: 'enrollment.section.start.error.required'}) + (": " + notFinishedRequiredSections.map(cs => cs.sectionName).join(", "))
+      });
+      return;
+    }
+    const selectedSection = this.dataInstance.course!.sections!.find(s => s.id === this.selectedSection!.id)!;
+    if (selectedSection.sectionObject!.objectType
+      && selectedSection.sectionObject!.objectType.code === 'TEST'
+      && selectedSection.sectionObject!.test!.maxAttempt
+      && (selectedSection.courseSectionAttempts || []).length >= selectedSection.sectionObject!.test!.maxAttempt) {
+      Notification.info({
+        message: this.props.intl.formatMessage({id: 'exceeded.max.test.attempts'})
       });
       return;
     }
