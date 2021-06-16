@@ -33,6 +33,7 @@ export type PersonProfile = {
   sex?: string,
   cityOfResidence?: string,
   citizenship?: string,
+  nationality?: string,
   imageId?: string,
   organizationName?: string,
   positionName?: string,
@@ -50,7 +51,8 @@ export type MyTeamCardProps = {
 };
 
 export type Menu = {
-  id: string
+  id: string,
+  caption?: string,
 };
 
 @injectMainStore

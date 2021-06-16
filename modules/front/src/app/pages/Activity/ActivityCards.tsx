@@ -16,7 +16,6 @@ import {NavLink, RouteComponentProps} from "react-router-dom";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {withRouter} from "react-router";
-import Button from "../../components/Button/Button";
 import {link} from "../../util/util";
 import {DEFAULT_DATE_TIME_PATTERN_WITHOUT_SECONDS, format} from "../../util/Date/Date";
 
@@ -67,8 +66,8 @@ class ActivityCards extends React.Component<Prop & WrappedComponentProps & RootS
                            if (columnIndex === 1) {
                              columnIndex = -1;
                              if (record.type!.code !== 'NOTIFICATION')
-                             return <NavLink
-                               to={`..${link(record!.type!.windowProperty!.entityName!)}/${record!.referenceId}`}>{text}</NavLink>;
+                               return <NavLink
+                                 to={`..${link(record!.type!.windowProperty!.entityName!)}/${record!.referenceId}`}>{text}</NavLink>;
                              else {
                                return <NavLink
                                  to={`${record!.id}`}>{text}</NavLink>;

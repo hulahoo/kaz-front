@@ -118,6 +118,13 @@ export const isNumber = (number: any): boolean => {
   return number !== undefined && number !== null && !isNaN(number);
 }
 
+export const isEquals = (a: any, b: any): boolean => {
+  if (a === b) return true;
+  if (a === undefined) return false;
+  if (b === undefined) return false;
+  return (a['id'] || b['id']) !== undefined && a['id'] === b['id'];
+}
+
 export const goBackOrHomePage = (history: History) => {
   if (history.action === 'POP')
     history.push("/");

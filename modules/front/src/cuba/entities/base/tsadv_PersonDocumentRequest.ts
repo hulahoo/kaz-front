@@ -1,12 +1,12 @@
-import { AbstractParentEntity } from "./AbstractParentEntity";
-import { DicIssuingAuthority } from "./tsadv_DicIssuingAuthority";
-import { DicDocumentType } from "./tsadv$DicDocumentType";
-import { PersonGroupExt } from "./base$PersonGroupExt";
-import { DicApprovalStatus } from "./tsadv$DicApprovalStatus";
-import { FileDescriptor } from "./sys$FileDescriptor";
-import { DicRequestStatus } from "./tsadv$DicRequestStatus";
-import { PersonDocument } from "./tsadv$PersonDocument";
-export class PersonDocumentRequest extends AbstractParentEntity {
+import {DicIssuingAuthority} from "./tsadv_DicIssuingAuthority";
+import {DicDocumentType} from "./tsadv$DicDocumentType";
+import {PersonGroupExt} from "./base$PersonGroupExt";
+import {DicApprovalStatus} from "./tsadv$DicApprovalStatus";
+import {FileDescriptor} from "./sys$FileDescriptor";
+import {PersonDocument} from "./tsadv$PersonDocument";
+import {AbstractBprocRequest} from "./AbstractBprocRequest";
+
+export class PersonDocumentRequest extends AbstractBprocRequest {
   static NAME = "tsadv_PersonDocumentRequest";
   issueDate?: any | null;
   expiredDate?: any | null;
@@ -17,9 +17,7 @@ export class PersonDocumentRequest extends AbstractParentEntity {
   personGroup?: PersonGroupExt | null;
   documentNumber?: string | null;
   series?: string | null;
-  status?: DicApprovalStatus | null;
-  file?: FileDescriptor | null;
-  requestStatus?: DicRequestStatus | null;
+  approvalStatus?: DicApprovalStatus | null;
   editedPersonDocument?: PersonDocument | null;
   attachments?: FileDescriptor[] | null;
 }

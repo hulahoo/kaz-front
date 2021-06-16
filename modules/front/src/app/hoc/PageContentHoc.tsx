@@ -11,10 +11,10 @@ export interface ContentProps {
 @observer
 export default class Page extends React.Component<ContentProps> {
   render() {
-    return <div className={"content-container"}>
+    return <div className={"content-container"} style={{height: "100%"}}>
       {this.props.pageName ? <h1 className={"content-header"}>{this.props.pageName}</h1> : <></>}
       <div className={"page-body"}>
-      {this.props.children}
+        {this.props.children}
       </div>
     </div>
   }

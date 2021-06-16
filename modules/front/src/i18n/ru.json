@@ -424,5 +424,8 @@
   "diary": "Дневник",
   "course.Recordings": "Записи из курса",
   "select.manager": "выберите менеджера",
-  "exceeded.max.test.attempts": "Вы превысили максимальное количество попыток прохождения теста"
+  "exceeded.max.test.attempts": "Вы превысили максимальное количество попыток прохождения теста",
+  "currentValue": "Текущее значение",
+  "newValue": "Новое значение",
+  "additionalInformation": "Дополнительная информация"
 }

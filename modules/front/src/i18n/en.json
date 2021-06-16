@@ -435,5 +435,8 @@
   "diary": "Diary",
   "course.Recordings": "Recordings from the course",
   "select.manager": "select a manager",
-  "exceeded.max.test.attempts": "You have exceeded the maximum number of attempts to pass the test"
+  "exceeded.max.test.attempts": "You have exceeded the maximum number of attempts to pass the test",
+  "currentValue": "Current value",
+  "newValue": "New value",
+  "additionalInformation": "Additional information"
 }

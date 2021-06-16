@@ -4,8 +4,8 @@ import {Alert, Card, Form, message} from "antd";
 import {inject, observer} from "mobx-react";
 import {PersonDocumentManagement} from "./PersonDocumentManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Link, RouteComponentProps, withRouter} from "react-router-dom";
-import {autorun, IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {RouteComponentProps, withRouter} from "react-router-dom";
+import {IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
@@ -13,8 +13,10 @@ import {
   collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
-  Field, injectMainStore,
-  instance, MainStore, MainStoreInjected,
+  Field,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
   MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
@@ -29,7 +31,6 @@ import {DicIssuingAuthority} from "../../../cuba/entities/base/tsadv_DicIssuingA
 import {RootStoreProp} from "../../store";
 import Notification from "../../util/Notification/Notification";
 import Button, {ButtonType} from "../../components/Button/Button";
-import PageContentHoc from "../../hoc/PageContentHoc";
 import Page from "../../hoc/PageContentHoc";
 import LoadingPage from "../LoadingPage";
 

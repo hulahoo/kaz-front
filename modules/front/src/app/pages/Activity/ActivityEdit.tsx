@@ -1,4 +1,4 @@
-import {createElement, default as React} from "react";
+import {default as React} from "react";
 import {injectMainStore, instance, MainStoreInjected, Msg, withLocalizedForm} from "@cuba-platform/react";
 import Page from "../../hoc/PageContentHoc";
 import {RootStoreProp} from "../../store";

@@ -69,6 +69,12 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   processDefinitionKey: string;
 
+  commentRequiredOutcomes = ['REJECT', 'REVISION'];
+
+  isStartCommentVisible = false;
+
+  isUpdateBeforeOutcome = false;
+
   validate = (): Promise<boolean> => {
     let isValidatedSuccess = true;
     this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
@@ -116,12 +122,6 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   isNotDraft = () => {
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
   };
-
-  commentRequiredOutcomes = ['REJECT', 'REVISION'];
-
-  isStartCommentVisible = false;
-
-  isUpdateBeforeOutcome = false;
 
   setEmployee = (personGroupId: string): Promise<TsadvUser> => {
     return getCubaREST()!.searchEntities<TsadvUser>(TsadvUser.NAME, {

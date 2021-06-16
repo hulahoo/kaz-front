@@ -1,7 +1,6 @@
-import { AbsenceRvdRequestManagement } from "./app/pages/MyTeam/timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestManagement";
-import { getMenuItems, RouteItem, SubMenu } from "@cuba-platform/react";
-import { rootStore } from "./app/store";
-import { MenuSubMenu, MenuRouteItem } from "./app/store/MenuStore";
+import {getMenuItems} from "@cuba-platform/react";
+import {rootStore} from "./app/store";
+import {MenuRouteItem, MenuSubMenu} from "./app/store/MenuStore";
 
 export const menuItems = getMenuItems();
 

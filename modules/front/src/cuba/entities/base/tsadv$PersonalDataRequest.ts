@@ -1,14 +1,12 @@
-import { AbstractParentEntity } from "./AbstractParentEntity";
+import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { DicMaritalStatus } from "./tsadv$DicMaritalStatus";
-import { FileDescriptor } from "./sys$FileDescriptor";
-import { DicRequestStatus } from "./tsadv$DicRequestStatus";
 import { PersonGroupExt } from "./base$PersonGroupExt";
+import { FileDescriptor } from "./sys$FileDescriptor";
 import { DicNationality } from "./tsadv$DicNationality";
 import { DicCitizenship } from "./tsadv$DicCitizenship";
-export class PersonalDataRequest extends AbstractParentEntity {
+export class PersonalDataRequest extends AbstractBprocRequest {
   static NAME = "tsadv$PersonalDataRequest";
   lastName?: string | null;
-  requestNumber?: any | null;
   firstName?: string | null;
   middleName?: string | null;
   lastNameLatin?: string | null;
@@ -16,8 +14,6 @@ export class PersonalDataRequest extends AbstractParentEntity {
   middleNameLatin?: string | null;
   maritalStatus?: DicMaritalStatus | null;
   dateOfBirth?: any | null;
-  attachment?: FileDescriptor | null;
-  status?: DicRequestStatus | null;
   personGroup?: PersonGroupExt | null;
   attachments?: FileDescriptor[] | null;
   nationality?: DicNationality | null;
@@ -29,7 +25,6 @@ export type PersonalDataRequestViewName =
   | "_local"
   | "_minimal"
   | "personalDataRequest-edit"
-  | "personalDataRequest-edit"
   | "personalDataRequest-view";
 export type PersonalDataRequestView<
   V extends PersonalDataRequestViewName
@@ -37,8 +32,8 @@ export type PersonalDataRequestView<
   ? Pick<
       PersonalDataRequest,
       | "id"
+      | "personGroup"
       | "lastName"
-      | "requestNumber"
       | "firstName"
       | "middleName"
       | "lastNameLatin"
@@ -49,13 +44,15 @@ export type PersonalDataRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
     >
   : V extends "_local"
   ? Pick<
       PersonalDataRequest,
       | "id"
       | "lastName"
-      | "requestNumber"
       | "firstName"
       | "middleName"
       | "lastNameLatin"
@@ -66,13 +63,17 @@ export type PersonalDataRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
     >
+  : V extends "_minimal"
+  ? Pick<PersonalDataRequest, "id" | "personGroup">
   : V extends "personalDataRequest-edit"
   ? Pick<
       PersonalDataRequest,
       | "id"
       | "lastName"
-      | "requestNumber"
       | "firstName"
       | "middleName"
       | "lastNameLatin"
@@ -83,28 +84,9 @@ export type PersonalDataRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "status"
-      | "personGroup"
-      | "nationality"
-      | "citizenship"
-      | "attachments"
-    >
-  : V extends "personalDataRequest-edit"
-  ? Pick<
-      PersonalDataRequest,
-      | "id"
-      | "lastName"
       | "requestNumber"
-      | "firstName"
-      | "middleName"
-      | "lastNameLatin"
-      | "firstNameLatin"
-      | "middleNameLatin"
-      | "dateOfBirth"
-      | "nationalIdentifier"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
+      | "requestDate"
+      | "comment"
       | "status"
       | "personGroup"
       | "nationality"
@@ -123,7 +105,6 @@ export type PersonalDataRequestView<
       | "deleteTs"
       | "deletedBy"
       | "lastName"
-      | "requestNumber"
       | "firstName"
       | "middleName"
       | "lastNameLatin"
@@ -134,8 +115,10 @@ export type PersonalDataRequestView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
       | "maritalStatus"
-      | "attachment"
       | "status"
       | "personGroup"
       | "attachments"

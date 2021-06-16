@@ -1,4 +1,4 @@
-import React, {MouseEvent} from 'react';
+import React from 'react';
 import {inject, observer} from "mobx-react";
 import {ReactComponent as NotificationIcon} from "../../../../resources/img/bell.svg";
 import {Dropdown} from "antd";

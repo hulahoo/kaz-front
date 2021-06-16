@@ -1,4 +1,4 @@
-import React, {Component, createElement, Fragment} from 'react';
+import React, {createElement, Fragment} from 'react';
 import {injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {observer} from "mobx-react";
 
