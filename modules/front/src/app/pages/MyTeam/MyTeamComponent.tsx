@@ -9,13 +9,15 @@ import {Icon, Tree} from "antd";
 import {AntTreeNode, AntTreeNodeExpandedEvent} from "antd/lib/tree/Tree";
 import {restServices} from "../../../cuba/services";
 import LoadingPage from "../LoadingPage";
-import {rootStore, RootStoreProp} from "../../store";
+import {RootStoreProp} from "../../store";
 import Search from "antd/es/input/Search";
 import {MyTeamNew} from "../../../cuba/entities/base/tsadv$MyTeamNew";
 import MyTeamCard from "./MyTeamCard";
 import {SplitPane} from "react-multi-split-pane";
 import {withRouter} from "react-router";
 import {RouteComponentProps} from "react-router-dom";
+import {catchException} from "../../util/util";
+import Notification from "../../util/Notification/Notification";
 
 const {TreeNode} = Tree;
 
@@ -59,8 +61,8 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
         .then(value => this.myTeamData = [...value,]);
     }
 
-    return restServices.myTeamService.searchMyTeam({
-      parentPositionGroupId: rootStore!.userInfo!.positionGroupId!,
+    return catchException(restServices.myTeamService.searchMyTeam({
+      parentPositionGroupId: this.props.positionGroupId,
       searchFio: searchText,
     }).then(value => {
       const allTeamData = value.map(this.parseToMyTeamData);
@@ -72,7 +74,12 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
       this.myTeamData = teamData;
       this.expandedKeys = this.getDefaultExpandedKeys();
       return teamData;
+    })).catch((reason: Error) => {
+      Notification.error({
+        message: reason.message
+      });
     });
+
   }
 
   onLoadData = (treeNode: AntTreeNode): PromiseLike<void> => {
