@@ -85,5 +85,6 @@ export type ScheduleOffsetsRequestView<
       | "currentSchedule"
       | "newSchedule"
       | "status"
+      | "files"
     >
   : never;

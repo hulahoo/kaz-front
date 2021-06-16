@@ -538,7 +538,9 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       if (this.isNewEntity()) {
         this.standardScheduleDc.afterLoad = () => {
           this.dataInstance.item!.currentSchedule = this.standardScheduleDc.items![0];
-          this.updateFields();
+
+          if (this.dataInstance.item!.currentSchedule)
+            this.props.form.setFieldsValue({'currentSchedule': this.dataInstance.item!.currentSchedule.id});
 
           this.loaded = true;
         }
@@ -556,8 +558,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       this.loadPurposesDc(personGroupId);
 
       this.setEmployee(personGroupId);
-
-      this.updateFields();
 
       if (!this.isNewEntity()) {
         this.loaded = true;
@@ -577,11 +577,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
   loadPurposesDc = (personGroupId: string) => {
     this.purposesDc = dictionaryCollection<DicSchedulePurpose>(DicSchedulePurpose.NAME, personGroupId, {});
-  };
-
-  updateFields = () => {
-    const fieldValues = this.dataInstance.getFieldValues(this.fields);
-    this.props.form.setFieldsValue(fieldValues);
   };
 
   loadPersonGroupDc = (personGroupId: string) => {
