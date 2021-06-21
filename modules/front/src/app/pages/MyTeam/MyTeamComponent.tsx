@@ -67,7 +67,7 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
     }).then(value => {
       const allTeamData = value.map(this.parseToMyTeamData);
       const teamData = allTeamData.filter(team => team.parentId === undefined)
-      teamData.forEach(myTeam => {
+      allTeamData.forEach(myTeam => {
         myTeam.children = allTeamData.filter(data => data.parentId === myTeam.id);
       })
       this.isSearch = true;
