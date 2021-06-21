@@ -614,6 +614,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       view: 'personGroupExt-absenceEdit'
     });
     this.dataInstance.item!.personGroup = response[0];
+    this.props.form.setFieldsValue({'personGroup': personGroupId});
   };
 
   @action
