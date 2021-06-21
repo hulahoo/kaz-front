@@ -728,14 +728,32 @@ export const restServices = {
         }
       ).then(value => JSON.parse(value));
     },
-    getChildVacationSchedule: (): Promise<Array<SerializedEntity<VacationScheduleRequest>>> => {
+    getChildVacationSchedule: (pagination: ServicePagination): Promise<EntitiesPaginationResult<VacationScheduleRequest>> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_VacationScheduleRequestService",
-        "getChildVacationSchedule", {})
-        .then(value => JSON.parse(value));
+        "getChildVacationSchedule", {
+          paginationPojo: pagination
+        })
+        .then(value => {
+          const parse = JSON.parse(value);
+          return {
+            entities: JSON.parse(parse.entities),
+            count: parse.count
+          }
+        });
     }
   }
 };
+
+export type EntitiesPaginationResult<T> = {
+  entities: Array<SerializedEntity<T>>
+  count: number
+}
+
+export type ServicePagination = {
+  limit: number;
+  offset: number
+}
 
 export type CourseInfo = {
   name: string

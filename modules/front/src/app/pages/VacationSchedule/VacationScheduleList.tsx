@@ -12,7 +12,10 @@ export class VacationScheduleList extends React.Component {
   static PATH = "/vacationSchedule";
 
   dataCollectionVacationSchedule = serviceCollection<VacationScheduleRequest>(
-    restServices.vacationScheduleRequestService.getChildVacationSchedule.bind(null, {}),
+    (pagination) => restServices.vacationScheduleRequestService.getChildVacationSchedule({
+      limit: pagination.limit,
+      offset: pagination.offset
+    }),
     VacationScheduleRequest.NAME);
 
   vacationScheduleFields = [
@@ -24,7 +27,9 @@ export class VacationScheduleList extends React.Component {
 
     "endDate",
 
-    "absenceDays"
+    "absenceDays",
+
+    "sentToOracle"
   ];
 
   render() {

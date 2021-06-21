@@ -4,7 +4,7 @@ import {Spin, Tabs} from "antd";
 import {inject, observer} from "mobx-react";
 import {Link} from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
-import {runInAction} from "mobx";
+import {observable, runInAction} from "mobx";
 import Meta from "antd/es/card/Meta";
 import ImageLogo from "../../components/ImageLogo";
 import {restServices} from "../../../cuba/services";
@@ -20,9 +20,10 @@ import {RootStoreProp} from "../../store";
 @observer
 class CourseList<T> extends React.Component<WrappedComponentProps & RootStoreProp> {
 
-  dataCollection = serviceCollection(restServices.courseService.allCourses.bind(null, {
-    personGroupId: this.props.rootStore!.userInfo.personGroupId!
-  }));
+  dataCollection = serviceCollection(
+    (pagination) => restServices.courseService.allCourses({
+      personGroupId: this.props.rootStore!.userInfo.personGroupId!
+    }));
 
   onSearch = (value: string) => {
     if (value) {
