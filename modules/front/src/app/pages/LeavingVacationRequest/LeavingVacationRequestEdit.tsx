@@ -33,6 +33,9 @@ import {Moment} from "moment";
 import {observable, reaction} from "mobx";
 import moment from "moment/moment";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
+import {getFullName} from "../../util/util";
+import {ChangeAbsenceDaysRequest} from "../../../cuba/entities/base/tsadv_ChangeAbsenceDaysRequest";
+import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 
 type EditorProps = {
   entityId: string;
@@ -51,6 +54,9 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
+
+  @observable
+  person: PersonExt;
 
   fields = [
     "requestNumber",
@@ -166,6 +172,12 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                 />
 
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  {createElement(Msg, {entityName: ChangeAbsenceDaysRequest.NAME, propertyName: "employee"})}
+                  <Input disabled={true}
+                         value={this.person ? getFullName(this.person, this.props.rootStore!.userInfo!.locale!) || '' : ''}/>
+                </div>
+
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "vacation"})}
                   <Input disabled={true}
                          value={needBpm && (this.dataInstance.item!.vacation! as SerializedEntity<Absence>)._instanceName
@@ -240,20 +252,52 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
       () => {
         return this.dataInstance.item;
       },
-      () => {
-        const obj = {
-          ...this.dataInstance.getFieldValues(this.fields)
-        };
-        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
-          const now = moment();
-          now.locale(this.props.rootStore!.userInfo.locale!);
-          obj["requestDate"] = now;
-        }
-        this.props.form.setFieldsValue(obj);
+      (item) => {
+
+        this.onReactionDisposerEffect(item);
+
+        this.props.form.setFieldsValue(this.onReactionFieldsValue(item));
+
         this.dateValidator();
       }
     );
   };
+
+  loadVacation = (absenceId: string): Promise<Absence> => {
+    return getCubaREST()!.loadEntity<Absence>(Absence.NAME, absenceId, {view: 'absence-for-my-team'});
+  }
+
+  loadPerson = (personGroupId: string): Promise<PersonExt> => {
+    return getCubaREST()!.searchEntities(PersonExt.NAME, {
+      conditions: [{
+        property: 'group.id',
+        operator: '=',
+        value: personGroupId,
+      }, {
+        property: 'startDate',
+        operator: '<',
+        value: moment().format('YYYY-MM-DD'),
+      }, {
+        property: 'endDate',
+        operator: '>',
+        value: moment().format('YYYY-MM-DD'),
+
+      }]
+    }, {
+      view: '_local'
+    }).then(value => value[0] as PersonExt);
+  }
+
+  onReactionDisposerEffect = (item: LeavingVacationRequest | undefined) => {
+    if (item) {
+      if (item.vacation)
+        this.loadVacation(item.vacation.id)
+          .then(value => {
+            this.loadPerson(value.personGroup!.id)
+              .then(value => this.person = value);
+          });
+    }
+  }
 
   protected initItem(request: LeavingVacationRequest): void {
     if (this.props.absenceId) {
