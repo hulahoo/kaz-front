@@ -1,9 +1,8 @@
 import * as React from "react";
-import {Alert, Card, Form, Input, Select, Spin} from "antd";
+import {Card, Form, Input, Select, Spin} from "antd";
 import {inject, observer} from "mobx-react";
-import {FormComponentProps} from "antd/lib/form";
-import {action, IReactionDisposer, observable, toJS} from "mobx";
-import {injectIntl} from "react-intl";
+import {action, IReactionDisposer, observable} from "mobx";
+import {FormattedMessage, injectIntl} from "react-intl";
 import {withRouter} from "react-router-dom";
 
 import {
@@ -12,7 +11,6 @@ import {
   getCubaREST,
   injectMainStore,
   Msg,
-  MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
 
@@ -21,7 +19,6 @@ import "../../../app/App.css";
 import {ScheduleOffsetsRequest} from "../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {StandardSchedule} from "../../../cuba/entities/base/tsadv$StandardSchedule";
-import {rootStore} from "../../store";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
@@ -38,8 +35,9 @@ import {DicSchedulePurpose} from "../../../cuba/entities/base/tsadv_DicScheduleP
 import TextArea from "antd/es/input/TextArea";
 import MsgEntity from '../../components/MsgEntity';
 import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
-
-type Props = FormComponentProps & EditorProps;
+import {DicEarningPolicy} from "../../../cuba/entities/base/tsadv_DicEarningPolicy";
+import {Moment} from "moment";
+import {ScheduleOffsetsRequestManagement} from "./ScheduleOffsetsRequestManagement";
 
 type EditorProps = {
   entityId: string;
@@ -73,6 +71,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
   personGroupDc: DataCollectionStore<PersonGroupExt>;
 
+  earningPolicyDc: DictionaryDataCollectionStore<DicEarningPolicy>;
+
   processDefinitionKey = "scheduleOffsetsRequest";
 
   @observable
@@ -83,6 +83,9 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
   @observable
   isDisabledFields = true;
+
+  @observable
+  daysBeforeAbsence: number;
 
   reactionDisposer: IReactionDisposer;
 
@@ -119,7 +122,11 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
     "newSchedule",
 
-    "status"
+    "status",
+
+    "earningPolicy",
+
+    "files"
   ];
 
   @observable
@@ -152,6 +159,51 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     return new Promise(resolve => resolve(true));
   };
 
+  actions = () => {
+    const {status} = this.dataInstance;
+
+    const actions = [];
+
+    if (this.isNewEntity())
+      actions.push(<Button buttonType={ButtonType.PRIMARY}
+                           disabled={status !== "DONE" && status !== "ERROR"}
+                           loading={status === "LOADING"}
+                           onClick={this.saveRequest}>
+        <FormattedMessage id="management.editor.submit"/>
+      </Button>);
+
+    actions.push(<Button buttonType={ButtonType.FOLLOW}
+                         onClick={this.props.history!.goBack.bind(null)}>{this.props.intl.formatMessage({id: "close"})}</Button>);
+
+    if (!this.isNewEntity()) {
+      actions.push(<Button buttonType={ButtonType.FOLLOW}
+                           onClick={this.report}>{this.props.intl.formatMessage({id: "report"})}</Button>);
+
+      actions.push(this.getOutcomeBtns());
+    }
+
+    return actions;
+  }
+
+  saveRequest = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
+      if (err) {
+        Notification.error({
+          message:
+            this.props.intl.formatMessage({
+              id: "management.editor.validationError"
+            })
+        });
+        return;
+      }
+
+      this.update().then(value => this.props.history.push(ScheduleOffsetsRequestManagement.PATH + "/" + this.dataInstance.item!.id));
+
+    });
+  }
+
   render() {
 
     if (!this.dataInstance) {
@@ -161,15 +213,13 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     const messages = this.props.mainStore!.messages!;
 
     const {Option} = Select;
+
     return (
       <Page pageName={<MsgEntity entityName={ScheduleOffsetsRequest.NAME}/>}>
         <Spin spinning={!this.loaded}>
           <Section size="large">
             <div>
-              <Card className="narrow-layout card-actions-container" actions={[
-                <Button buttonType={ButtonType.FOLLOW}
-                        onClick={this.props.history!.goBack.bind(null)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
-                this.getOutcomeBtns()]}
+              <Card className="narrow-layout card-actions-container" actions={this.actions()}
                     bordered={false}>
                 <Form onSubmit={this.validate} layout="vertical">
 
@@ -225,7 +275,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     form={this.props.form}
                     formItemOpts={{style: {marginBottom: "12px"}}}
                     disabled
-                    getFieldDecoratorOpts={{}}
                   />
 
 
@@ -236,7 +285,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     form={this.props.form}
                     disabled
                     formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{}}
                   />
 
                   <ReadonlyField
@@ -265,11 +313,15 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                       }]
                     })(
                       <Select onChange={this.changePurpose} disabled={this.isDisabledFields}>
-                        {this.purposesDc.items.map(p => {
-                          //@ts-ignore
-                          return <Option value={p.id}
-                                         code={p.code}>{p._instanceName}</Option>
-                        })}
+                        {this.purposesDc && this.purposesDc.items
+                          ? this.purposesDc.items.map(p => {
+                            //@ts-ignore
+                            return <Option value={p.id}
+                                           key={p.id}
+                                           code={p.code}>{p._instanceName}</Option>
+                          })
+                          : null
+                        }
                       </Select>
                     )}
                   </Form.Item>
@@ -309,7 +361,22 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     getFieldDecoratorOpts={{
                       rules: [{
                         required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'dateOfNewSchedule']})
+                        validator: (rule, value, callback) => {
+                          if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'dateOfNewSchedule']}));
+
+                          if (this.daysBeforeAbsence) {
+                            const {
+                              dateOfStartNewSchedule,
+                              requestDate
+                            } = this.props.form.getFieldsValue(["dateOfStartNewSchedule", "requestDate"]);
+                            const numberOfDays = (dateOfStartNewSchedule as Moment).diff((requestDate as Moment).clone().add(1, 'days'), 'days');
+                            if (numberOfDays < this.daysBeforeAbsence) {
+                              return callback(this.props.intl.formatMessage({id: 'scheduleOffsetRequest.validate.daysBeforeAbsence'}, {numberOfDays: this.daysBeforeAbsence}))
+                            }
+                          }
+
+                          return callback();
+                        }
                       }]
                     }}
                   />
@@ -347,6 +414,20 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     }}
                   />
 
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="earningPolicy"
+                    form={this.props.form}
+                    disabled={this.isDisabledFields}
+                    optionsContainer={this.earningPolicyDc}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    getFieldDecoratorOpts={{
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'earningPolicy']})
+                      }]
+                    }}
+                  />
 
                   <ReadonlyField
                     entityName={ScheduleOffsetsRequest.NAME}
@@ -354,16 +435,15 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     form={this.props.form}
                     disabled={this.isDisabledFields}
                     formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{}}
                   />
 
-                  {this.globalErrors.length > 0 && (
-                    <Alert
-                      message={<MultilineText lines={toJS(this.globalErrors)}/>}
-                      type="error"
-                      style={{marginBottom: "24px"}}
-                    />
-                  )}
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="files"
+                    form={this.props.form}
+                    disabled={this.isDisabledFields}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                  />
 
                   {this.takCard()}
 
@@ -374,6 +454,34 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
         </Spin>
       </Page>
     );
+  }
+
+  report = () => {
+
+    const data = {
+      parameters: [{
+        name: "req",
+        value: this.props.entityId
+      }]
+    };
+
+    const reportCode = "REP_SHEDULE_REQUEST";
+
+    restServices.reports.loadReportByCode(reportCode)
+      .then(report => {
+        restServices.reports.run(report.id,
+          data,
+          reason => Notification.error({
+            message: this.props.intl.formatMessage({id: "management.editor.error"})
+          })
+        )
+      }).catch(reason => {
+      Notification.error({
+        message: this.props.intl.formatMessage({id: "report.not.found"}, {
+          reportCode: reportCode
+        })
+      })
+    })
   }
 
   changePurpose = (value: string, option: React.ReactElement<HTMLLIElement>) => {
@@ -390,19 +498,23 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     this.isVisiblePurposeText = purposeCode == undefined ? false : purposeCode.toLowerCase() === 'other';
   };
 
-  getUpdateEntityData = (): any => {
-    if (this.isNotDraft())
-      return {
-        ...this.props.form.getFieldsValue(this.fields)
-      };
-
-    return {
-      ...this.props.form.getFieldsValue(this.fields)
+  validate = (): Promise<boolean> => {
+    let isValidatedSuccess = true;
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
+      isValidatedSuccess = !err;
+      if (err) {
+        Notification.error({
+          message: this.props.intl.formatMessage({id: "management.editor.validationError"})
+        });
+      }
+    });
+    if (isValidatedSuccess) {
     }
+    return new Promise(resolve => resolve(isValidatedSuccess));
   };
 
   loadData = async () => {
-    if (!this.isNew()) {
+    if (!this.isNewEntity()) {
       await this.dataInstance.load(this.props.entityId);
     } else {
       const entityName = this.dataInstance.entityName;
@@ -423,12 +535,12 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
         personGroupId: personGroupId
       });
 
-      this.purposesDc = dictionaryCollection(DicSchedulePurpose.NAME, personGroupId);
-
-      if (this.isNew()) {
+      if (this.isNewEntity()) {
         this.standardScheduleDc.afterLoad = () => {
           this.dataInstance.item!.currentSchedule = this.standardScheduleDc.items![0];
-          this.updateFields();
+
+          if (this.dataInstance.item!.currentSchedule)
+            this.props.form.setFieldsValue({'currentSchedule': this.dataInstance.item!.currentSchedule.id});
 
           this.loaded = true;
         }
@@ -441,19 +553,30 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
       await this.loadPerson(personGroupId);
 
+      this.loadEarningPolicyDc(personGroupId);
+
+      this.loadPurposesDc(personGroupId);
+
       this.setEmployee(personGroupId);
 
-      this.updateFields();
-
-      if (!this.isNew()) {
+      if (!this.isNewEntity()) {
         this.loaded = true;
       }
+
+      restServices.absenceService.scheduleOffsetDaysBeforeAbsence().then(response => {
+        if (response) {
+          this.daysBeforeAbsence = Number(response);
+        }
+      });
     })()
   }
 
-  updateFields = () => {
-    const fieldValues = this.dataInstance.getFieldValues(this.fields);
-    this.props.form.setFieldsValue(fieldValues);
+  loadEarningPolicyDc = (personGroupId: string) => {
+    this.earningPolicyDc = dictionaryCollection<DicEarningPolicy>(DicEarningPolicy.NAME, personGroupId, {});
+  };
+
+  loadPurposesDc = (personGroupId: string) => {
+    this.purposesDc = dictionaryCollection<DicSchedulePurpose>(DicSchedulePurpose.NAME, personGroupId, {});
   };
 
   loadPersonGroupDc = (personGroupId: string) => {
@@ -476,7 +599,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   }
 
   afterSendOnApprove = () => {
-    this.props.history!.goBack();
+    if (this.isNotDraft()) this.props.history!.goBack();
+    else this.props.history!.push(ScheduleOffsetsRequestManagement.PATH);
   };
 
   loadPerson = async (personGroupId: string): Promise<void> => {
@@ -490,27 +614,13 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       view: 'personGroupExt-absenceEdit'
     });
     this.dataInstance.item!.personGroup = response[0];
+    this.props.form.setFieldsValue({'personGroup': personGroupId});
   };
-
-  isNew = () => {
-    return this.props.entityId === "new";
-  }
 
   @action
   setIsDisabledFields = (value: boolean): void => {
     this.isDisabledFields = value;
   }
-  // loadCurrentScheduleOffset(personGroupId: string) {
-  //   return restQueries.currentStandardSchedule(personGroupId)
-  //     .then(value => {
-  //       if (value.length > 0) {
-  //         this.currentStandardSchedule = value[0];
-  //         this.dataInstance.item!.currentSchedule = this.currentStandardSchedule;
-  //         const fieldValues = this.dataInstance.getFieldValues(this.fields);
-  //         this.props.form.setFieldsValue(fieldValues);
-  //       }
-  //     });
-  // }
 }
 
 export default injectIntl(

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {MyTeamCardProps} from "./MyTeamCard";
-import {injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {collection, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
@@ -11,26 +11,75 @@ import Column from "antd/es/table/Column";
 import {Link} from "react-router-dom";
 import {ScheduleOffsetsRequestManagement} from "../ScheduleOffsetsRequest/ScheduleOffsetsRequestManagement";
 import Button, {ButtonType} from "../../components/Button/Button";
-import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
+import {DEFAULT_DATE_PATTERN, JSON_DATE_TIME_FORMAT} from "../../util/Date/Date";
 import moment from "moment";
+import DataTableFormat from "../../components/DataTable/intex";
+import {ScheduleOffsetsRequest} from "../../../cuba/entities/base/tsadv_ScheduleOffsetsRequest";
+import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
+import {now} from "moment/moment";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import LoadingPage from "../LoadingPage";
 
 @injectMainStore
 @observer
 class AssignmentScheduleStandard extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps> {
 
   @observable
-  dataCollection: AssignmentSchedule[];
+  dataCollection: DataCollectionStore<AssignmentSchedule>;
 
+  assignment: AssignmentExt;
+
+  fields = [
+    "schedule",
+
+    "startDate",
+
+    "endDate",
+  ];
 
   componentDidMount() {
-    cubaREST.query(AssignmentSchedule.NAME, "getAssignmentSchedule", {
-      personGroupId: this.props.personGroupId
-    }).then(value => {
-      this.dataCollection = value as AssignmentSchedule[];
-    })
+    (async () => {
+      await cubaREST.searchEntities<AssignmentExt>(AssignmentExt.NAME, {
+        conditions: [{
+          property: 'personGroup',
+          operator: '=',
+          value: this.props.personGroupId
+        }, {
+          property: 'startDate',
+          operator: '<=',
+          value: moment().format(JSON_DATE_TIME_FORMAT)
+        }, {
+          property: 'endDate',
+          operator: '>=',
+          value: moment().format(JSON_DATE_TIME_FORMAT)
+        }]
+      }, {
+        limit: 1,
+        view: 'portal-assignment-group'
+      }).then(value => value[0])
+        .then(value => this.assignment = value);
+
+      this.dataCollection = collection<AssignmentSchedule>(
+        AssignmentSchedule.NAME,
+        {
+          filter: {
+            conditions: [{
+              property: 'assignmentGroup',
+              operator: '=',
+              value: this.assignment.group!.id
+            }]
+          },
+          view: "assignmentSchedule-for-my-team",
+          sort: "-startDate"
+        }
+      );
+
+    })();
   }
 
   render() {
+    if (!this.dataCollection)
+      return <LoadingPage/>
     return (
       <div>
         <Link
@@ -47,32 +96,8 @@ class AssignmentScheduleStandard extends React.Component<MyTeamCardProps & MainS
           </span>
           </Button>
         </Link>
-        <Table
-          dataSource={this.dataCollection != null && this.dataCollection.length > 0 ? this.dataCollection.slice() : []}
-          pagination={false}
-          size="default" bordered={false} rowKey="id">
-          <Column title={<Msg entityName={AssignmentSchedule.NAME} propertyName='schedule'/>}
-                  dataIndex="schedule._instanceName"
-                  key="schedule"/>
-          <Column title={<Msg entityName={AssignmentSchedule.NAME} propertyName='startDate'/>}
-                  dataIndex="startDate"
-                  render={text => {
-                    if (text) {
-                      return moment(text).format(DEFAULT_DATE_PATTERN);
-                    }
-                    return text;
-                  }}
-                  key="startDate"/>
-          <Column title={<Msg entityName={AssignmentSchedule.NAME} propertyName='endDate'/>}
-                  dataIndex="endDate"
-                  render={text => {
-                    if (text) {
-                      return moment(text).format(DEFAULT_DATE_PATTERN);
-                    }
-                    return text;
-                  }}
-                  key="endDate"/>
-        </Table>
+
+        <DataTableFormat hideSelectionColumn={true} dataCollection={this.dataCollection} fields={this.fields}/>
       </div>
     )
   }
