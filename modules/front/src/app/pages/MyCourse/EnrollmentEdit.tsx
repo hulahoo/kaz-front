@@ -229,7 +229,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       && selectedSection.sectionObject.objectType
       && selectedSection.sectionObject.objectType.code === 'TEST'
       && selectedSection.sectionObject.test!.maxAttempt
-      && (selectedSection.courseSectionAttempts || []).length >= selectedSection.sectionObject.test!.maxAttempt) {
+      && (selectedSection.courseSectionAttempts || []).filter(value => value.activeAttempt).length >= selectedSection.sectionObject.test!.maxAttempt) {
       Notification.info({
         message: this.props.intl.formatMessage({id: 'exceeded.max.test.attempts'})
       });
