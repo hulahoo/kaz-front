@@ -28,7 +28,6 @@ import {PersonExt} from "../../../../../cuba/entities/base/base$PersonExt";
 import {ChangeAbsenceDaysRequest} from "../../../../../cuba/entities/base/tsadv_ChangeAbsenceDaysRequest";
 import moment from "moment/moment";
 import {observable, reaction} from "mobx";
-import {getFullName} from "../../../../util/util";
 import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
 import {restServices} from "../../../../../cuba/services";
 import {AbsenceForRecall} from "../../../../../cuba/entities/base/tsadv_AbsenceForRecall";
@@ -39,6 +38,7 @@ import {
   parseToFieldValueFromDataInstanceValue,
   parseToJsonFromFieldValue
 } from "../../../../components/MultiFileUpload";
+import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 
 type EditorProps = {
   entityId: string;
@@ -163,7 +163,7 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "employee"})}
                   <Input disabled={true}
-                         value={this.person ? getFullName(this.person, this.props.rootStore!.userInfo!.locale!) || '' : ''}/>
+                         value={this.person ? (this.person as SerializedEntity<PersonExt>)._instanceName || '' : ''}/>
                 </div>
 
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>

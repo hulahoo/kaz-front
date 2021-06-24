@@ -24,7 +24,7 @@ import {ReadonlyField} from "../../components/ReadonlyField";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {Redirect} from "react-router-dom";
-import {rootStore, RootStoreProp} from "../../store";
+import {RootStoreProp} from "../../store";
 import TextArea from "antd/es/input/TextArea";
 import {LeavingVacationRequestManagement} from "./LeavingVacationRequestManagement";
 import {LeavingVacationRequest} from "../../../cuba/entities/base/tsadv$LeavingVacationRequest";
@@ -33,7 +33,6 @@ import {Moment} from "moment";
 import {observable, reaction} from "mobx";
 import moment from "moment/moment";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
-import {getFullName} from "../../util/util";
 import {ChangeAbsenceDaysRequest} from "../../../cuba/entities/base/tsadv_ChangeAbsenceDaysRequest";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 
@@ -174,7 +173,7 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: ChangeAbsenceDaysRequest.NAME, propertyName: "employee"})}
                   <Input disabled={true}
-                         value={this.person ? getFullName(this.person, this.props.rootStore!.userInfo!.locale!) || '' : ''}/>
+                         value={this.person ? (this.person as SerializedEntity<PersonExt>)._instanceName || '' : ''}/>
                 </div>
 
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
