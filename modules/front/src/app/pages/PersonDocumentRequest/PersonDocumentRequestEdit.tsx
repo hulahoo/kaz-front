@@ -84,6 +84,8 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
 
     "issueDate",
 
+    "issuedBy",
+
     "expiredDate",
 
     "issuingAuthority",
@@ -218,6 +220,13 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
         </Form.Item>
 
         <Form.Item
+          label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "issuedBy"})}>
+          <Input
+            value={this.editDocument ? this.editDocument.issuedBy || '' : ''}
+            disabled/>
+        </Form.Item>
+
+        <Form.Item
           label={createElement(Msg, {
             entityName: this.dataInstance.entityName,
             propertyName: "issueDate"
@@ -297,6 +306,24 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
           }}
           formItemOpts={{
             hasFeedback: this.changedMap.get('issuingAuthority'),
+          }}
+        />
+
+        <ReadonlyField
+          entityName={entityName}
+          propertyName="issuedBy"
+          disabled={isNotDraft}
+          form={this.props.form}
+          getFieldDecoratorOpts={{
+            getValueFromEvent: args => {
+              const value = args.currentTarget.value;
+              if (this.editDocument)
+                this.changedMap.set('issuedBy', value !== this.editDocument.issuedBy);
+              return value;
+            }
+          }}
+          formItemOpts={{
+            hasFeedback: this.changedMap.get('issuedBy'),
           }}
         />
 
@@ -422,7 +449,7 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
         .then(value => {
           this.instanceEditDocument.setItem(value);
           const properties = [
-            "documentType", "documentNumber", "issueDate", "expiredDate", "issuingAuthority",
+            "documentType", "documentNumber", "issueDate", "issuedBy", "expiredDate", "issuingAuthority",
           ];
           if (this.props.entityId === PersonDocumentRequestManagement.NEW_SUBPATH) {
             this.props.form.setFieldsValue(this.instanceEditDocument.getFieldValues(properties));
