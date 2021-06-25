@@ -4,6 +4,7 @@ import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
 import AbsenceList from "../pages/Absence/AbsenceList";
 import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
+import {PersonPayslipManagement} from "../pages/PersonPayslip/PersonPayslipManagement";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -64,18 +65,19 @@ export default class MenuStore {
         component: InsuredPersonManagement,
       },
       {
-        id: "help",
-        caption: "Справка",
-        items: [
-          {
-            id: "certificateRequest",
-            caption: "Справка с места работы",
-            menuLink: "/certificateRequest",
-            pathPattern: "/certificateRequest/:entityId?",
-            component: CertificateRequestManagement
-          }
-        ],
-      } as MenuSubMenu,
+        id: "certificateRequest",
+        caption: "Справка с места работы",
+        menuLink: "/certificateRequest",
+        pathPattern: "/certificateRequest/:entityId?",
+        component: CertificateRequestManagement
+      },
+      {
+        id: "personPayslip",
+        caption: "personPayslip",
+        menuLink: "/personPayslip",
+        pathPattern: "/personPayslip",
+        component: PersonPayslipManagement,
+      },
       // {
       //   id: "vacation",
       //   caption: "Отпуска",

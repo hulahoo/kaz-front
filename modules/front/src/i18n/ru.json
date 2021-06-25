@@ -115,6 +115,7 @@
   "menu.assigment-interview": "Назначенные интервью",
   "menu.job-offers": "Job Offers",
   "menu.certificateRequest": "Справка с места работы",
+  "menu.personPayslip": "Расчетный лист",
   "menu.absenceRequest": "Отсутствие",
   "menu.scheduleStandard": "Графики смен",
   "menu.orgStructureRequest": "Заявка на изменение орг.структуры",
@@ -432,5 +433,6 @@
   "newValue": "Новое значение",
   "additionalInformation": "Дополнительная информация",
   "orgStructureRequest.report": "Отчет",
-  "orgStructureRequest.order": "Приказ"
+  "orgStructureRequest.order": "Приказ",
+  "file.download.error": "Ошибка при загрузке файла"
 }

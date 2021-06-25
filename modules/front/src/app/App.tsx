@@ -51,6 +51,7 @@ import {PersonEducationManagement} from "./pages/PersonEducation/PersonEducation
 import {PersonalDataRequestManagement} from "./pages/PersonalDataRequest/PersonalDataRequestManagement";
 import {PersonDocumentRequestManagement} from "./pages/PersonDocumentRequest/PersonDocumentRequestManagement";
 import {AddressRequestManagement} from "./pages/AddressRequest/AddressRequestManagement";
+import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -148,11 +149,12 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/orgStructureRequest/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
-
                 <Route exact={true}
                        path={AbsenceRvdRequestManagement.PATH_WITH_PARAMS}
                        component={AbsenceRvdRequestManagement}/>
-
+                <Route exact={true}
+                       path={PersonPayslipManagement.PATH}
+                       component={PersonPayslipManagement}/>
 
                 {/*<Route exact={true}*/}
                 {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
