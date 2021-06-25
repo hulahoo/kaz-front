@@ -320,6 +320,7 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
     this.dataInstance.course!.sections!.filter(s => s.id === courseSectionId).forEach(s => {
       const courseSectionAttempt = new CourseSectionAttempt();
       courseSectionAttempt.success = success;
+      courseSectionAttempt.activeAttempt = true;
       if (s.courseSectionAttempts) {
         s.courseSectionAttempts.push(courseSectionAttempt);
       } else {
