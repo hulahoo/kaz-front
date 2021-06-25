@@ -38,6 +38,7 @@ import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/Di
 import {DicEarningPolicy} from "../../../cuba/entities/base/tsadv_DicEarningPolicy";
 import {Moment} from "moment";
 import {ScheduleOffsetsRequestManagement} from "./ScheduleOffsetsRequestManagement";
+import {runReport} from "../../util/reportUtil";
 
 type EditorProps = {
   entityId: string;
@@ -74,6 +75,8 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   earningPolicyDc: DictionaryDataCollectionStore<DicEarningPolicy>;
 
   processDefinitionKey = "scheduleOffsetsRequest";
+
+  path = ScheduleOffsetsRequestManagement.PATH;
 
   @observable
   updated = false;
@@ -183,25 +186,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
     }
 
     return actions;
-  }
-
-  saveRequest = (e: React.MouseEvent) => {
-    e.preventDefault();
-
-    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
-      if (err) {
-        Notification.error({
-          message:
-            this.props.intl.formatMessage({
-              id: "management.editor.validationError"
-            })
-        });
-        return;
-      }
-
-      this.update().then(value => this.props.history.push(ScheduleOffsetsRequestManagement.PATH + "/" + this.dataInstance.item!.id));
-
-    });
   }
 
   render() {
@@ -467,21 +451,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
     const reportCode = "REP_SHEDULE_REQUEST";
 
-    restServices.reports.loadReportByCode(reportCode)
-      .then(report => {
-        restServices.reports.run(report.id,
-          data,
-          reason => Notification.error({
-            message: this.props.intl.formatMessage({id: "management.editor.error"})
-          })
-        )
-      }).catch(reason => {
-      Notification.error({
-        message: this.props.intl.formatMessage({id: "report.not.found"}, {
-          reportCode: reportCode
-        })
-      })
-    })
+    runReport(reportCode, data, this.props.intl);
   }
 
   changePurpose = (value: string, option: React.ReactElement<HTMLLIElement>) => {

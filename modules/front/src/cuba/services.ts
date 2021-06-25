@@ -759,12 +759,12 @@ export const restServices = {
     },
   },
   executiveAssistantService: {
-    getManagerList: (positionGroupId: string): Promise<PersonProfile[]> => {
+    getManagerList: (assistantPositionGroupId: string): Promise<PersonProfile[]> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_ExecutiveAssistantService",
         "getManagerList",
         {
-          positionGroupId: positionGroupId
+          assistantPositionGroupId: assistantPositionGroupId
         }
       ).then(value => JSON.parse(value));
     },

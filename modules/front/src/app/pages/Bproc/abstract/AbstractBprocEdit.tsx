@@ -69,6 +69,8 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   processDefinitionKey: string;
 
+  path: string;
+
   commentRequiredOutcomes = ['REJECT', 'REVISION'];
 
   isStartCommentVisible = false;
@@ -112,6 +114,23 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   update = () => {
     return this.dataInstance.update(this.getUpdateEntityData());
   };
+
+  saveRequest = (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
+      if (err) {
+        Notification.error({
+          message:
+            this.props.intl.formatMessage({
+              id: "management.editor.validationError"
+            })
+        });
+        return;
+      }
+      this.update().then(value => this.props.history.push(this.path + "/" + this.dataInstance.item!.id));
+    });
+  }
 
   takCard = () => {
     if (!this.tasks) return <div/>;

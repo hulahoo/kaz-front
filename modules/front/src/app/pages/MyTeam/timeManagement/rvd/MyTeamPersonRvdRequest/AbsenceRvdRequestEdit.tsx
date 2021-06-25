@@ -1,12 +1,12 @@
 import * as React from "react";
 import {createElement} from "react";
-import {Card, Form, Input, TimePicker} from "antd";
+import {Card, Form, Input, Select, TimePicker} from "antd";
 import {inject, observer} from "mobx-react";
 import {AbsenceRvdRequestManagement} from "./AbsenceRvdRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
 import {Redirect} from "react-router-dom";
-import {observable, reaction} from "mobx";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {observable} from "mobx";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   collection,
@@ -27,7 +27,6 @@ import {DicRequestStatus} from "../../../../../../cuba/entities/base/tsadv$DicRe
 import {DicAbsenceType} from "../../../../../../cuba/entities/base/tsadv$DicAbsenceType";
 import AbstractBprocEdit from "../../../../Bproc/abstract/AbstractBprocEdit";
 import {ReadonlyField} from "../../../../../components/ReadonlyField";
-import {rootStore} from "../../../../../store";
 import {restServices} from "../../../../../../cuba/services";
 import {DicPurposeAbsence} from "../../../../../../cuba/entities/base/tsadv_DicPurposeAbsence";
 import Button, {ButtonType} from "../../../../../components/Button/Button";
@@ -41,10 +40,10 @@ import {SerializedEntity} from "@cuba-platform/rest";
 import {PersonExt} from "../../../../../../cuba/entities/base/base$PersonExt";
 import DefaultDatePicker from "../../../../../components/Datepicker";
 import Notification from "../../../../../util/Notification/Notification";
-import {
-  parseToFieldValueFromDataInstanceValue,
-  parseToJsonFromFieldValue
-} from "../../../../../components/MultiFileUpload";
+import {parseToJsonFromFieldValue} from "../../../../../components/MultiFileUpload";
+import {DicShift} from "../../../../../../cuba/entities/base/tsadv_DicShift";
+import {runReport} from "../../../../../util/reportUtil";
+import {goBackOrHomePage} from "../../../../../util/util";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -69,6 +68,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   purposeDc = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
     view: "_base"
   });
+
+  dicShiftDc: DataCollectionStore<DicShift>;
 
   @observable
   updated = false;
@@ -101,29 +102,32 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
     "agree",
 
+    "shiftCode",
+
+    "shift",
+
+    "overrideAllHoursByDay",
+
     "files",
   ];
 
   @observable
-  workOnWeekend = true;
+  workOnWeekend = false;
 
   @observable
-  temporaryTransfer = true;
+  temporaryTransfer = false;
+
+  // @observable
+  // overtimeWork = true;
 
   @observable
-  overtimeWork = true;
+  reportCode?: string = undefined;
 
   timeStarting?: moment.Moment; //only time
   timeFinishing?: moment.Moment; //only time
 
   purposeTempDc = collection<DicPurposeAbsence>(DicPurposeAbsence.NAME, {
-    filter: {
-      conditions: [{
-        property: 'id',
-        operator: '=',
-        value: null
-      }]
-    }
+    loadImmediately: false
   });
 
   @observable
@@ -135,6 +139,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   typesAbsenceDC: DataCollectionStore<DicAbsenceType>;
 
   processDefinitionKey = "absenceRvdRequest";
+
+  path = AbsenceRvdRequestManagement.PATH;
 
   isUpdateBeforeOutcome = true;
 
@@ -165,40 +171,36 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
           }]
         }
       });
-    })
+    });
+
+    this.dicShiftDc = dictionaryCollection<DicShift>(DicShift.NAME, this.personGroupId, {
+      view: '_local'
+    });
   }
 
-  setReactionDisposer = () => {
-    this.reactionDisposer = reaction(
-      () => {
-        return this.dataInstance.item;
-      },
-      (item) => {
+  onReactionDisposerEffect = (item: AbsenceRvdRequest | undefined) => {
+    this.personGroupId = (item && item.personGroup ? (item.personGroup.id || this.props.personGroupId) : this.props.personGroupId) as string;
 
-        this.personGroupId = (item && item.personGroup ? (item.personGroup.id || this.props.personGroupId) : this.props.personGroupId) as string;
+    if (item && item.type) this.initPurposeTempDcItems(item.type.id!);
 
-        if (item && item.type) this.initPurposeTempDcItems(item.type.id!);
+    if (item) this.initAbsenceTypeVariables(item.type);
 
-        this.loadPerson(this.personGroupId)
-          .then(value => this.person = value);
-        this.setEmployee(this.personGroupId);
+    this.loadPerson(this.personGroupId)
+      .then(value => this.person = value);
+    this.setEmployee(this.personGroupId);
 
-        this.initCollections();
+    this.initCollections();
+  }
 
-        this.onReactionDisposerEffect(item);
-        const obj = {
-          ...this.dataInstance.getFieldValues(this.fields),
-          files:this.dataInstance.item ? parseToFieldValueFromDataInstanceValue(this.dataInstance.item.files) : undefined,
-        };
-        if (this.isCalledProcessInstanceData && !this.processInstanceData) {
-          const now = moment();
-          now.locale(this.props.rootStore!.userInfo.locale!);
-          obj["requestDate"] = now;
-        }
-        this.props.form.setFieldsValue(obj);
-      }
-    );
-  };
+  initAbsenceTypeVariables = (absenceType?: DicAbsenceType | null) => {
+    this.temporaryTransfer = !!(absenceType && absenceType.temporaryTransfer);
+    this.workOnWeekend = !!(absenceType && absenceType.workOnWeekend);
+
+    if (this.temporaryTransfer) this.reportCode = 'TEMPORARY_REQUEST';
+    else if (this.workOnWeekend) this.reportCode = 'RVD_REQUEST';
+    else if (absenceType && absenceType.overtimeWork) this.reportCode = 'OVERTIME_REQUEST';
+    else this.reportCode = undefined;
+  }
 
   initPurposeTempDcItems = (typeId?: string) => {
     if (typeId)
@@ -269,6 +271,43 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       });
   }
 
+  report = () => {
+    const data = {
+      parameters: [{
+        name: "req",
+        value: this.props.entityId
+      }]
+    };
+
+    runReport(this.reportCode!, data, this.props.intl);
+  }
+
+  actions = () => {
+    const {status} = this.dataInstance;
+
+    const actions = [];
+
+    if (this.isNewEntity())
+      actions.push(<Button buttonType={ButtonType.PRIMARY}
+                           disabled={status !== "DONE" && status !== "ERROR"}
+                           loading={status === "LOADING"}
+                           onClick={this.saveRequest}>
+        <FormattedMessage id="management.editor.submit"/>
+      </Button>);
+
+    actions.push(<Button buttonType={ButtonType.FOLLOW}
+                         onClick={event => goBackOrHomePage(this.props.history)}>{this.props.intl.formatMessage({id: "close"})}</Button>);
+
+    if (!this.isNewEntity()) {
+      if (this.reportCode)
+        actions.push(<Button buttonType={ButtonType.FOLLOW}
+                             onClick={this.report}>{this.props.intl.formatMessage({id: "report"})}</Button>);
+
+      actions.push(this.getOutcomeBtns());
+    }
+    return actions;
+  }
+
   render() {
     if (this.updated) {
       return <Redirect to={AbsenceRvdRequestManagement.PATH}/>;
@@ -282,11 +321,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       <Page pageName={this.props.intl.formatMessage({id: "workOnWeekendRequest"})}>
         <Section size="large">
           <Card className="narrow-layout card-actions-container"
-                actions={[
-                  <Button buttonType={ButtonType.FOLLOW}
-                          onClick={this.props.history!.goBack}
-                  >{this.props.intl.formatMessage({id: "close"})}</Button>,
-                  this.getOutcomeBtns()]}
+                actions={this.actions()}
                 bordered={false}>
 
             <Form layout="vertical">
@@ -338,6 +373,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                   }],
                   getValueFromEvent: args => {
                     this.initPurposeTempDcItems(args);
+
+                    const absenceType = this.typesAbsenceDC.items.find(value => value.id === args);
+
+                    this.initAbsenceTypeVariables(absenceType);
 
                     this.props.form.setFieldsValue({purpose: null});
 
@@ -504,11 +543,11 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               />
 
               <ReadonlyField
-                disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
+                disabled={this.approverHrRoleCode !== 'MANAGER_ASSISTANT' && isNotDraft}
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="compensation"
                 form={this.props.form}
-                formItemOpts={{style: isNotDraft ? {marginBottom: "12px"} : {display: 'none'}}}
+                formItemOpts={{style: this.workOnWeekend ? {marginBottom: "12px"} : {display: 'none'}}}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked",
                   getValueFromEvent: args => {
@@ -523,11 +562,11 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
               />
 
               <ReadonlyField
-                disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
+                disabled={this.approverHrRoleCode !== 'MANAGER_ASSISTANT' && isNotDraft}
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="vacationDay"
                 form={this.props.form}
-                formItemOpts={{style: isNotDraft ? {marginBottom: "12px"} : {display: 'none'}}}
+                formItemOpts={{style: this.workOnWeekend ? {marginBottom: "12px"} : {display: 'none'}}}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked",
                   getValueFromEvent: args => {
@@ -545,7 +584,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="acquainted"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{style: this.approverHrRoleCode !== 'EMPLOYEE' ? {display: 'none'} : {marginBottom: "12px"}}}
                 disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked"
@@ -556,10 +595,58 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="agree"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{style: this.approverHrRoleCode !== 'EMPLOYEE' ? {display: 'none'} : {marginBottom: "12px"}}}
                 disabled={this.approverHrRoleCode !== 'EMPLOYEE'}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked"
+                }}
+              />
+
+              <Form.Item
+                style={this.temporaryTransfer ? {} : {display: 'none'}}
+                label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "shiftCode"})}>
+                {getFieldDecorator("shiftCode", {
+                  rules: [{
+                    required: this.approverHrRoleCode === 'MANAGER_ASSISTANT' && this.temporaryTransfer,
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.shiftCode']}),
+                  }],
+                })(
+                  <Select disabled={this.approverHrRoleCode !== 'MANAGER_ASSISTANT' && isNotDraft}>
+                    <Select.Option key="D">D</Select.Option>
+                    <Select.Option key="N">N</Select.Option>
+                  </Select>
+                )}
+              </Form.Item>
+
+              <Form.Item
+                style={this.temporaryTransfer || this.workOnWeekend ? {} : {display: 'none'}}
+                label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "shift"})}>
+                {getFieldDecorator("shift", {
+                  rules: [{
+                    required: this.approverHrRoleCode === 'MANAGER_ASSISTANT' && (this.temporaryTransfer || this.workOnWeekend),
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.shift']}),
+                  }],
+                })(
+                  <Select disabled={this.approverHrRoleCode !== 'MANAGER_ASSISTANT' && isNotDraft}>
+                    {this.dicShiftDc && this.dicShiftDc.items.map(value =>
+                      <Select.Option key={value.id}>
+                        <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
+                              title={value['description' + this.props.rootStore!.userInfo!.localeIndex] || ' '}>{value._instanceName}</span></Select.Option>)}
+                  </Select>
+                )}
+              </Form.Item>
+
+              <ReadonlyField
+                entityName={AbsenceRvdRequest.NAME}
+                propertyName="overrideAllHoursByDay"
+                form={this.props.form}
+                formItemOpts={{style: this.temporaryTransfer ? {marginBottom: "12px"} : {display: 'none'}}}
+                disabled={this.approverHrRoleCode !== 'MANAGER_ASSISTANT' && isNotDraft}
+                getFieldDecoratorOpts={{
+                  rules: [{
+                    required: this.approverHrRoleCode === 'MANAGER_ASSISTANT' && this.temporaryTransfer,
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.overrideAllHoursByDay']}),
+                  }],
                 }}
               />
 
@@ -567,7 +654,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                 entityName={this.dataInstance.entityName}
                 propertyName="files"
                 form={this.props.form}
-                disabled={isNotDraft}
+                disabled={this.approverHrRoleCode !== 'MANAGER_ASSISTANT' && isNotDraft}
                 formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               {this.takCard()}
