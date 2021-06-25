@@ -4,33 +4,32 @@ import {Link} from "react-router-dom";
 
 import {observable} from "mobx";
 
-import {Button, Col, Icon, Modal, Row, Spin, Table} from "antd";
+import {Button, Icon, Modal, Spin} from "antd";
 
-import {collection, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {collection, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {OrgStructureRequest} from "../../../cuba/entities/base/tsadv_OrgStructureRequest";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
-import Column from "antd/es/table/Column";
-import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
-import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
-import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
-import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {RootStoreProp} from "../../store";
+import {restServices} from "../../../cuba/services";
+import DataTableFormat from "../../components/DataTable/intex";
 
 @injectMainStore
 @inject("rootStore")
 @observer
 class OrgStructureRequestListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
-  @observable selectedRowKey: string | undefined;
+  @observable selectedData?: SerializedEntity<OrgStructureRequest>;
+
+  @observable hasPermitToCreate: boolean = false;
 
   dataCollection = collection<OrgStructureRequest>(
     OrgStructureRequest.NAME, {
       view: "orgStructureRequest-edit",
-      sort: "requestNumber",
+      sort: "-requestNumber",
       filter: {
         conditions: [{
           property: "author.id",
@@ -41,19 +40,13 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
     }
   );
 
-  fields = ["requestNumber", "requestDate", "company", "department", "author"];
-
-  state = {
-    rowId: null
-  }
-
-  setRowClassName = (record: OrgStructureRequest) => {
-    return record.id === this.state.rowId ? 'ant-table-row-selected' : '';
-  }
+  fields = ["requestNumber", "requestDate", "status", "company", "department", "author"];
 
   render() {
-    const buttons = [
-      <Link
+    const buttons = [];
+
+    if (this.hasPermitToCreate)
+      buttons.push(<Link
         to={OrgStructureRequestManagement.PATH + "/" + OrgStructureRequestManagement.NEW_SUBPATH}
         key="create">
         <Button
@@ -63,80 +56,37 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
           <Icon type="plus"/>
           <FormattedMessage id="management.browser.create"/>
         </Button>
-      </Link>,
-      <Link
-        to={OrgStructureRequestManagement.PATH + "/" + this.state.rowId}
-        key="edit">
-        <Button
-          htmlType="button"
-          style={{margin: "0 12px 12px 0"}}
-          disabled={!this.state.rowId}
-          type="default">
-          <Icon type="edit"/>
-          <FormattedMessage id="management.browser.edit"/>
-        </Button>
-      </Link>,
-      <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        disabled={!this.state.rowId}
-        onClick={this.deleteSelectedRow}
-        key="remove"
-        type="default">
-        <Icon type="delete"/>
-        <FormattedMessage id="management.browser.remove"/>
-      </Button>
-    ];
+      </Link>);
+
+    buttons.push(<Button
+      htmlType="button"
+      style={{margin: "0 12px 12px 0"}}
+      disabled={!this.selectedData || !this.selectedData.status || this.selectedData.status.code !== 'DRAFT'}
+      onClick={this.deleteSelectedRow}
+      key="remove"
+      type="default">
+      <Icon type="delete"/>
+      <FormattedMessage id="management.browser.remove"/>
+    </Button>);
 
     return (
       <Page>
         <Section size={"large"}>
           <Spin spinning={this.dataCollection.status === 'LOADING'}>
-            <Row style={{"margin": '10px 0'}}>
-              <Col span={24}>
-                {buttons}
-              </Col>
-            </Row>
-            <Table dataSource={Array.from(this.dataCollection.items || '')}
-                   pagination={false}
-                   size="default" bordered={false} rowKey="id"
-                   rowClassName={this.setRowClassName}
-                   onRow={(record) => {
-                     return {
-                       onClick: () => {
-                         this.setState({
-                           rowId: record.id,
-                         });
-                       }
-                     };
-                   }}>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestNumber"}/>}
-                      dataIndex={"requestNumber"}
-                      key={"requestNumber"}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestDate"}/>}
-                      dataIndex={"requestDate"}
-                      key={"requestDate"}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"requestStatus"}/>}
-                      dataIndex={"requestStatus"}
-                      key={"requestStatus"} render={(text, record: SerializedEntity<any>) => {
-                return <span>{(record.requestStatus! as SerializedEntity<DicRequestStatus>)._instanceName}</span>
-              }}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"company"}/>}
-                      dataIndex={"company"}
-                      key={"company"} render={(text, record: SerializedEntity<OrgStructureRequest>) => {
-                return <span>{(record.company! as SerializedEntity<DicCompany>)._instanceName}</span>
-              }}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"department"}/>}
-                      dataIndex={"department"}
-                      key={"department"} render={(text, record: SerializedEntity<OrgStructureRequest>) => {
-                return <span>{(record.department! as SerializedEntity<OrganizationGroupExt>)._instanceName}</span>
-              }}/>
-              <Column title={<Msg entityName={OrgStructureRequest.NAME} propertyName={"author"}/>}
-                      dataIndex={"author"}
-                      key={"author"} render={(text, record: SerializedEntity<OrgStructureRequest>) => {
-                return <span>{(record.author! as SerializedEntity<PersonGroupExt>)._instanceName}</span>
-              }}/>
-            </Table>
+            <DataTableFormat dataCollection={this.dataCollection}
+                             fields={this.fields}
+                             hideSelectionColumn={true}
+                             onRowSelectionChange={selectedRowKeys => this.selectedData = this.getRecordById(selectedRowKeys[0])}
+                             buttons={buttons}
+                             render={[
+                               {
+                                 column: this.fields[0],
+                                 render: (text, record) =>
+                                   <Link to={OrgStructureRequestManagement.PATH + "/" + record.id}
+                                         key="edit">{text}</Link>
+                               }
+                             ]}
+            />
           </Spin>
         </Section>
       </Page>
@@ -156,7 +106,7 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
         id: "management.browser.delete.cancel"
       }),
       onOk: () => {
-        this.selectedRowKey = undefined;
+        this.selectedData = undefined;
 
         return this.dataCollection.delete(e);
       }
@@ -176,8 +126,15 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
   }
 
   deleteSelectedRow = () => {
-    this.showDeletionDialog(this.getRecordById(this.state.rowId!));
+    this.showDeletionDialog(this.selectedData!);
   };
+
+  componentDidMount(): void {
+    restServices.orgStructureService.hasPermitToCreate()
+      .then((hasPermitToCreate: boolean) => {
+        this.hasPermitToCreate = hasPermitToCreate;
+      });
+  }
 }
 
 const OrgStructureRequestList = injectIntl(OrgStructureRequestListComponent);

@@ -8,7 +8,7 @@ type Props = RouteComponentProps<{ entityId?: string }>;
 
 @observer
 export class OrgStructureRequestManagement extends React.Component<Props> {
-  static PATH = "/org-structure-request";
+  static PATH = "/orgStructureRequest";
   static NEW_SUBPATH = "new";
 
   render() {

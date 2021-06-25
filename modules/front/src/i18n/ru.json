@@ -117,7 +117,7 @@
   "menu.certificateRequest": "Справка с места работы",
   "menu.absenceRequest": "Отсутствие",
   "menu.scheduleStandard": "Графики смен",
-  "menu.org-structure-request": "Заявка на изменение орг.структуры",
+  "menu.orgStructureRequest": "Заявка на изменение орг.структуры",
   "menu.dmc-my": "Добровольное медицинское страхование",
   "menu.absence": "Отсутствие",
   "menu.schedule-offsets": "Графики сменности",
@@ -430,5 +430,7 @@
   "exceeded.max.test.attempts": "Вы превысили максимальное количество попыток прохождения теста",
   "currentValue": "Текущее значение",
   "newValue": "Новое значение",
-  "additionalInformation": "Дополнительная информация"
+  "additionalInformation": "Дополнительная информация",
+  "orgStructureRequest.report": "Отчет",
+  "orgStructureRequest.order": "Приказ"
 }

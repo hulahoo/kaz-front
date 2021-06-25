@@ -156,7 +156,7 @@
   "menu.assignments": "Assignments",
   "menu.working-time-management": "Working time management",
   "menu.hr-request-manager": "HR requests by Manager",
-  "menu.org-structure-request": "Org.structure change request",
+  "menu.orgStructureRequest": "Org.structure change request",
   "menu.vacation-recall-request": "Vacation recall request",
   "menu.vacation-change-request": "Vacation change request",
   "menu.working-schedule": "Working schedule / regime change",
@@ -441,5 +441,7 @@
   "exceeded.max.test.attempts": "You have exceeded the maximum number of attempts to pass the test",
   "currentValue": "Current value",
   "newValue": "New value",
-  "additionalInformation": "Additional information"
+  "additionalInformation": "Additional information",
+  "orgStructureRequest.report": "Report",
+  "orgStructureRequest.order": "Order"
 }

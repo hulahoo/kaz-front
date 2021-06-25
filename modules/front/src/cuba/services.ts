@@ -30,6 +30,7 @@ import {Enrollment} from "./entities/base/tsadv$Enrollment";
 import {MyTeamNew} from "./entities/base/tsadv$MyTeamNew";
 import {PersonProfile} from "../app/pages/MyTeam/MyTeamCard";
 import {CourseSectionAttempt} from "./entities/base/tsadv$CourseSectionAttempt";
+import {DicHrRole} from "./entities/base/tsadv$DicHrRole";
 import {EnrollmentStatus} from "./enums/enums";
 import {PositionGroupExt} from "./entities/base/base$PositionGroupExt";
 import {saveFile} from "../app/util/util";
@@ -610,6 +611,13 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     },
+    hasHrRole: (param: {dicHrCode: string}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeService",
+        "hasHrRole",
+        {...param}
+      ).then(r => JSON.parse(r));
+    }
   },
   orgStructureService: {
     initialCreate: (): Promise<OrgStructureRequest> => {
@@ -660,6 +668,27 @@ export const restServices = {
         null
       ).then(r => JSON.parse(r));
     },
+    getMergedOrgStructureFilter: (param: OrgStructureFilterParams): Promise<Array<OrgRequestRow>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "getMergedOrgStructure",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    availableSalary: (param?: {}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "availableSalary",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    hasPermitToCreate: (param?: {}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "hasPermitToCreate",
+        {...param}
+      ).then(r => JSON.parse(r));
+    }
   },
   myTeamService: {
     getChildren: (param: { parentPositionGroupId: string, parent?: MyTeamNew }): Promise<Array<MyTeamNew>> => {
@@ -684,6 +713,17 @@ export const restServices = {
         "isManagerOrSupManager",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+    getDicHrRoles: (params: { userId: string }): Promise<DicHrRole[]> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_OrganizationHrUserService",
+        "getDicHrRoles",
+        {
+          ...params
+        }
+      ).then((response: string) => {
+        return JSON.parse(response);
+      });
     },
   },
   userSettingService: {
@@ -770,6 +810,14 @@ export const restServices = {
       });
     },
   },
+  commonReportsService: {
+    downloadReportByCode: (params: { reportCode: string, entityId: string, entityParamName: string }): Promise<ReportResponse> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_CommonReportsService",
+        "downloadReportByCode",
+        params).then(response => JSON.parse(response));
+    }
+  }
 };
 
 export type CourseInfo = {

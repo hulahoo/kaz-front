@@ -1,22 +1,14 @@
 import * as React from "react";
-import {Alert, Button, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Select, Table} from "antd";
+import {Alert, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Select, Table} from "antd";
 
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
-import {Link, RouteComponentProps, withRouter} from "react-router-dom";
-import {IReactionDisposer, observable, reaction, toJS} from "mobx";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
+import {Link, withRouter} from "react-router-dom";
+import {IReactionDisposer, observable, toJS} from "mobx";
+import {FormattedMessage, injectIntl} from "react-intl";
 
-import {
-  collection,
-  injectMainStore,
-  instance,
-  MainStoreInjected,
-  Msg,
-  MultilineText,
-  withLocalizedForm
-} from "@cuba-platform/react";
+import {collection, injectMainStore, instance, Msg, MultilineText, withLocalizedForm} from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
@@ -27,7 +19,7 @@ import FormContainer from "../../common/FormContainer";
 import TextArea from "antd/es/input/TextArea";
 import {ClickParam} from "antd/lib/menu";
 import OrganizationEditor from "./OrganizationEditor";
-import {restServices} from "../../../cuba/services";
+import {OrgStructureFilterParams, restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
 import {EnumValueInfo} from "@cuba-platform/rest/dist-browser/model";
 import PositionEditor from "./PositionEditor";
@@ -36,9 +28,11 @@ import {DicCompany} from "../../../cuba/entities/base/base_DicCompany";
 import {OrganizationGroupExt} from "../../../cuba/entities/base/base$OrganizationGroupExt";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
-import {RootStoreProp} from "../../store";
 import moment from "moment";
 import DefaultDatePicker from "../../components/Datepicker";
+import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
+import {downloadReport} from "../../util/reportUtil";
+import Button, {ButtonType} from "../../components/Button/Button";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -60,6 +54,9 @@ export type OrgRequestRow = {
   pOrgGroupId: string,
   gradeGroupId: string,
   headCount: number[],
+  baseSalary: number[],
+  mtPayrollPer: number[],
+  mtPayroll: number[],
   children: OrgRequestRow[]
 };
 
@@ -70,7 +67,7 @@ export type OrgRequestSaveModel = {
   author: string,
   modifyDate: any | null,
   requestDate: any,
-  requestStatus: string,
+  status: string,
   comment: string | null
 };
 
@@ -80,9 +77,47 @@ export type OrgRequestGrade = {
   name: string
 };
 
+type ColumnValidator = () => boolean
+
+export type DisplayColumn = {
+  validators?: Array<ColumnValidator>
+}
+
+export interface DisplayColumnValidator {
+  validate: (column: DisplayColumn) => boolean
+}
+
+export class DisplayColumnValidatorImpl implements DisplayColumnValidator {
+  validate = (column: DisplayColumn): boolean => {
+    if (column.validators == undefined) {
+      return true;
+    }
+    for (let validator of column.validators) {
+      const resultValidate = validator();
+      if (!resultValidate) {
+        return false;
+      }
+    }
+    return true;
+  };
+}
+
+export const gradeValidator = (availableSalary: boolean): boolean => {
+  return availableSalary;
+};
+
+export class DisplayColumnValidatorFactory {
+  private static instance = new DisplayColumnValidatorImpl;
+
+  static getDisplayColumnValidator = (): DisplayColumnValidator => {
+    return DisplayColumnValidatorFactory.instance;
+  }
+}
+
 @injectMainStore
+@inject("rootStore")
 @observer
-class OrgStructureRequestEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & RouteComponentProps<any> & MainStoreInjected> {
+class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureRequest, Props> {
   dataInstance = instance<OrgStructureRequest>(OrgStructureRequest.NAME, {
     view: "orgStructureRequest-edit",
     loadImmediately: false
@@ -96,13 +131,29 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     view: "_minimal"
   });
 
-  requestStatusDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
+  statusDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
 
   authorsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_minimal"
   });
+
+  availableSalary: boolean = false;
+
+  fetchDataService = restServices.orgStructureService.getMergedOrgStructure.bind(null, {requestId: this.props.entityId});
+
+  @observable
+  changeTypeSelectedValue: string = 'all';
+
+  @observable
+  displaySelectedValue: string = 'all';
+
+  @observable
+  disabledChangeTypeSelect: boolean = false;
+
+  @observable
+  disabledDisplaySelect: boolean = false;
 
   @observable
   treeData: OrgRequestRow[];
@@ -125,9 +176,12 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
   @observable
   updated = false;
 
+  @observable
+  isCbCompany: boolean = false;
+
   reactionDisposer: IReactionDisposer;
 
-  fields = ["requestNumber", "requestDate", "company", "department", "requestStatus", "author", "modifyDate", "comment"];
+  fields = ["requestNumber", "requestDate", "company", "department", "status", "author", "modifyDate", "comment", "comment", "file"];
 
   locale = this.props.mainStore!.locale!;
 
@@ -141,39 +195,12 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     'difference': true,
   };
 
+  processDefinitionKey: string = OrgStructureRequest.PROCESS_DEFINITION_KEY;
+
   reloadTreeData = () => {
     this.treeLoading = true;
-    restServices.orgStructureService.getMergedOrgStructure({requestId: this.props.entityId})
-      .then(loadedData => {
-        this.treeData = loadedData;
-      })
-      .catch(async (response: any) => {
-        const reader = response.response.body.getReader();
-        let receivedLength = 0;
-        let chunks = [];
-        while (true) {
-          const {done, value} = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          receivedLength += value.length;
-        }
-
-        let chunksAll = new Uint8Array(receivedLength);
-        let position = 0;
-        for (let chunk of chunks) {
-          chunksAll.set(chunk, position);
-          position += chunk.length;
-        }
-
-        let result = new TextDecoder("utf-8").decode(chunksAll);
-        const parse = JSON.parse(result);
-        Notification.error({message: parse.message});
-      })
-      .finally(() => {
-        this.treeLoading = false;
-        this.selectedRow = null;
-      });
-  }
+    this.fillTreeData(this.fetchDataService());
+  };
 
   getProperty = (propertyName: string, object: any) => {
     if (!object) return null;
@@ -186,7 +213,23 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     return property;
   }
 
-  onChangeFilter = (value: string, option: React.ReactElement<HTMLLIElement>) => {
+  onChangeTypeFilter = (propertyFilterName: string, value: string, option: React.ReactElement<HTMLLIElement>) => {
+    this.changeTypeSelectedValue = value;
+    if (value !== 'all') {
+      this.displaySelectedValue = this.props.intl.formatMessage({id: "org.request.filter.v1"});
+    }
+    this.disabledDisplaySelect = value !== 'all';
+
+    this.filterTable(propertyFilterName, value);
+  }
+
+  onChangeDisplayFilter = (propertyFilterName: string, value: string, option: React.ReactElement<HTMLLIElement>) => {
+    this.displaySelectedValue = value;
+    if (value !== 'all') {
+      this.changeTypeSelectedValue = this.props.intl.formatMessage({id: "org.request.filter.v1"})
+    }
+    this.disabledChangeTypeSelect = value !== 'all';
+    this.filterTable(propertyFilterName, value);
   }
 
   onChangeColumnFilter = (e: CheckboxChangeEvent) => {
@@ -210,6 +253,9 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
       let formData = this.props.form.getFieldsValue(this.fields);
       formData.requestDate = moment(formData.requstDate).format('YYYY-MM-DD HH:mm:ss.SSS');
       formData.modifyDate = moment(formData.modifyDate).format('YYYY-MM-DD HH:mm:ss.SSS');
+      if (!this.isNewEntity()) {
+        formData.id = this.props.entityId;
+      }
 
       restServices.orgStructureService.saveRequest({
         orgRequestSaveModel: formData as OrgRequestSaveModel
@@ -302,61 +348,6 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
     const {status} = this.dataInstance;
     const changeTypes: EnumValueInfo[] = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.personal.enums.OrgRequestChangeType")[0].values;
 
-    const createLinks = (
-      <Menu onClick={this.preCreate}>
-        <Menu.Item key="org">
-          <Icon type="bank"/>
-          {this.props.intl.formatMessage({id: "org.request.org.create"})}
-        </Menu.Item>
-        <Menu.Item key="pos">
-          <Icon type="container"/>
-          {this.props.intl.formatMessage({id: "org.request.pos.create"})}
-        </Menu.Item>
-      </Menu>
-    );
-
-    const buttons = [
-      <Dropdown overlay={createLinks} key="create" disabled={!this.selectedRow}>
-        <Button type="primary" className={"b-btn"}>
-          <Icon type="plus"/>
-          <FormattedMessage id="management.browser.create"/>
-          <Icon type="down"/>
-        </Button>
-      </Dropdown>,
-      <Button
-        htmlType="button"
-        key="edit"
-        style={{margin: "0 12px 12px 12px"}}
-        disabled={!this.selectedRow}
-        onClick={this.preEdit}
-        className={"b-btn"}
-        type="default">
-        <Icon type="edit"/>
-        <FormattedMessage id="management.browser.edit"/>
-      </Button>,
-      <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        disabled={!this.selectedRow}
-        onClick={this.excludeSelectedRow}
-        className={"b-btn"}
-        key="exclude"
-        type="default">
-        <Icon type="delete"/>
-        <FormattedMessage id="management.browser.exclude.ok"/>
-      </Button>,
-      <Button
-        htmlType="button"
-        style={{margin: "0 12px 12px 0"}}
-        onClick={this.reloadTreeData}
-        className={"b-btn"}
-        key="refresh"
-        type="default">
-        <Icon type="sync"/>
-        <FormattedMessage id="management.browser.refresh"/>
-      </Button>
-    ];
-
     let columns = [
       {
         title: this.props.intl.formatMessage({id: "org.request.filter.3"}),
@@ -383,17 +374,20 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.bs"}),
-            dataIndex: 'baseSalary[0]'
+            dataIndex: 'baseSalary[0]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.tp1"}),
-            dataIndex: 'mtPayrollPer[0]'
+            dataIndex: 'mtPayrollPer[0]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.tp"}),
-            dataIndex: 'mtPayroll[0]'
+            dataIndex: 'mtPayroll[0]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           }
-        ]
+        ],
       },
       {
         title: this.props.intl.formatMessage({id: "org.request.filter.4"}),
@@ -414,15 +408,18 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.bs"}),
-            dataIndex: 'baseSalary[1]'
+            dataIndex: 'baseSalary[1]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.tp1"}),
-            dataIndex: 'mtPayrollPer[1]'
+            dataIndex: 'mtPayrollPer[1]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.tp"}),
-            dataIndex: 'mtPayroll[1]'
+            dataIndex: 'mtPayroll[1]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           }
         ]
       },
@@ -445,27 +442,63 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.bs"}),
-            dataIndex: 'baseSalary[2]'
+            dataIndex: 'baseSalary[2]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.tp1"}),
-            dataIndex: 'mtPayrollPer[2]'
+            dataIndex: 'mtPayrollPer[2]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           },
           {
             title: this.props.intl.formatMessage({id: "org.request.detail.tp"}),
-            dataIndex: 'mtPayroll[2]'
+            dataIndex: 'mtPayroll[2]',
+            validators: [gradeValidator.bind(null, this.availableSalary)]
           }
         ]
       }
     ];
 
-    columns = columns.filter(c => {
-      return this.columnsOptions[c.group];
-    })
+    columns = columns
+      .map((c: any) => {
+        if (c.children) {
+          c.children = (c.children as Array<DisplayColumn>)
+            .filter(ch => {
+              const displayColumnValidator = DisplayColumnValidatorFactory.getDisplayColumnValidator();
+              return displayColumnValidator.validate((ch as DisplayColumn));
+            });
+        }
+        return c;
+      })
+      .filter(c => {
+        return this.columnsOptions[c.group];
+      });
+
+    const isDisabledFields = this.isNotDraft();
+
+    const bprocButtons = [];
+    if (!isDisabledFields)
+      bprocButtons.push(<Button buttonType={ButtonType.PRIMARY}
+                                disabled={status !== "DONE" && status !== "ERROR"}
+                                loading={status === "LOADING"}
+                                onClick={this.saveRequest}>
+        <Icon type="check"/>
+        <FormattedMessage id="management.editor.submit"/>
+      </Button>);
+
+    bprocButtons.push(<Link to={OrgStructureRequestManagement.PATH}>
+      <Button buttonType={ButtonType.FOLLOW}>
+        <Icon type="close"/>
+        <FormattedMessage id="management.editor.cancel"/>
+      </Button>
+    </Link>);
+
+    if (!this.isNewEntity()) bprocButtons.push(this.getOutcomeBtns());
 
     return (
       <Page>
-        <Card className="narrow-layout" bordered={false}>
+        <Card className="narrow-layout card-actions-container" bordered={false}
+              actions={bprocButtons}>
           <div className={"large-section section-container mb-0"}>
             <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.info"})}</h3>
             <Form layout="vertical" className="compact-form">
@@ -505,8 +538,8 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                   <Col md={24} lg={6}>
                     <ReadonlyField
                       entityName={this.dataInstance.entityName}
-                      propertyName="requestStatus"
-                      optionsContainer={this.requestStatusDc}
+                      propertyName="status"
+                      optionsContainer={this.statusDc}
                       form={this.props.form}
                       disabled={true}/>
                   </Col>
@@ -532,15 +565,17 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
           </div>
 
           <div className={"large-section section-container mb-0"}>
-            <Row>
+            <Row type="flex">
               <Col md={24} lg={6}>
-                <div style={{borderRight: '2px solid #e8e8e8', marginRight: '20px', paddingRight: '20px'}}>
+                <div
+                  style={{borderRight: '2px solid #e8e8e8', marginRight: '20px', paddingRight: '20px', height: '100%'}}>
                   <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.filter"})}</h3>
                   <Form layout="vertical" className="compact-form">
                     <Form.Item label={this.props.intl.formatMessage({id: "org.request.filter.1"})}>
-                      <Select onChange={this.onChangeFilter}
+                      <Select onChange={this.onChangeTypeFilter.bind(null, 'changeTypeFilter')}
                               defaultActiveFirstOption={true}
-                              defaultValue={"all"}
+                              value={this.changeTypeSelectedValue}
+                              disabled={this.disabledChangeTypeSelect}
                               filterOption={(input, option) =>
                                 (option.props.children as string).toLowerCase().indexOf(input.toLowerCase()) >= 0
                               }>
@@ -553,7 +588,10 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                       </Select>
                     </Form.Item>
                     <Form.Item label={this.props.intl.formatMessage({id: "org.request.filter.2"})}>
-                      <Select onChange={this.onChangeFilter} defaultActiveFirstOption={true} defaultValue={"all"}>
+                      <Select onChange={this.onChangeDisplayFilter.bind(null, 'displayFilter')}
+                              defaultActiveFirstOption={true}
+                              value={this.displaySelectedValue}
+                              disabled={this.disabledDisplaySelect}>
                         <Select.Option
                           key="all">{this.props.intl.formatMessage({id: "org.request.filter.v1"})}</Select.Option>
                         <Select.Option
@@ -579,47 +617,46 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                 </div>
               </Col>
               <Col md={24} lg={12}>
-                <h3 style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.comment.block"})}</h3>
-
-                <div>
+                <div
+                  style={{borderRight: '2px solid #e8e8e8', marginRight: '20px', paddingRight: '20px', height: '100%'}}>
+                  <h3
+                    style={{fontWeight: "bold"}}>{this.props.intl.formatMessage({id: "org.request.comment.block"})}</h3>
                   <Form layout="horizontal" className="compact-form">
                     <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='modifyDate'/>}
                                key='modifyDate'
                                style={{marginBottom: '12px'}}>
-                      {this.props.form.getFieldDecorator('modifyDate')(<DefaultDatePicker/>)}
+                      {this.props.form.getFieldDecorator('modifyDate', {
+                        rules: [{
+                          required: true,
+                          message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.modifyDate']})
+                        }]
+                      })(<DefaultDatePicker
+                        disabled={isDisabledFields}/>)}
                     </Form.Item>
 
                     <Form.Item label={<Msg entityName={OrgStructureRequest.NAME} propertyName='comment'/>}
                                key="comment">
                       {this.props.form.getFieldDecorator('comment')
-                      (<TextArea rows={4}/>)}
+                      (<TextArea rows={4} disabled={isDisabledFields}/>)}
                     </Form.Item>
                   </Form>
                 </div>
+              </Col>
+              <Col md={24} lg={6}>
                 <div>
-                  <Button type="primary"
-                          disabled={status !== "DONE" && status !== "ERROR"}
-                          loading={status === "LOADING"}
-                          style={{marginRight: "10px"}}
-                          className={"b-btn"}
-                          onClick={this.saveRequest}>
-                    <Icon type="check"/>
-                    <FormattedMessage id="management.editor.submit"/>
-                  </Button>
-                  <Link to={OrgStructureRequestManagement.PATH}>
-                    <Button htmlType="button" type="default">
-                      <Icon type="close"/>
-                      <FormattedMessage id="management.editor.cancel"/>
-                    </Button>
-                  </Link>
+                  <ReadonlyField
+                    entityName={this.dataInstance.entityName}
+                    propertyName="file"
+                    form={this.props.form}
+                  />
                 </div>
               </Col>
             </Row>
           </div>
-          {this.props.entityId != OrgStructureRequestManagement.NEW_SUBPATH ?
+          {!this.isNewEntity() ?
             <div className={"large-section section-container"}>
               <div>
-                {buttons}
+                {this.tableButtons()}
               </div>
               <Table columns={columns}
                      loading={this.treeLoading}
@@ -637,6 +674,9 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                        };
                      }}/>
             </div> : null}
+
+          {this.takCard()}
+
         </Card>
 
         {this.showOrgCreateModal ?
@@ -654,39 +694,161 @@ class OrgStructureRequestEditComponent extends React.Component<Props & WrappedCo
                           treeData={this.treeData}
                           isNew={this.isNew}
                           form={this.props.form}
+                          isDisabledFields={this.isOnApproving()}
                           closeModal={() => this.showPosCreateModal = false}
                           onSave={this.onSavePosition}/> : null}
       </Page>
     );
   }
 
-  componentDidMount() {
-    if (this.props.entityId !== OrgStructureRequestManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
-
-      this.reloadTreeData();
-    } else {
+  loadData = () => {
+    if (this.isNewEntity()) {
       restServices.orgStructureService.initialCreate()
         .then(data => {
           delete data.id;
           this.dataInstance.setItem(data);
         });
-    }
+    } else {
+      this.dataInstance.load(this.props.entityId);
 
-    this.reactionDisposer = reaction(
-      () => {
-        return this.dataInstance.item;
-      },
-      () => {
-        this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
-        );
-      }
-    );
-  }
+      this.reloadTreeData();
+    }
+  };
+
+  afterSendOnApprove = () => {
+    this.props.history!.push(OrgStructureRequestManagement.PATH);
+  };
 
   componentWillUnmount() {
     this.reactionDisposer();
+  }
+
+  componentDidMount() {
+    super.componentDidMount();
+    restServices.orgStructureService.availableSalary()
+      .then((availableSalary: boolean) => {
+        this.availableSalary = availableSalary;
+      });
+
+    restServices.employeeService.hasHrRole({dicHrCode: "C&B_COMPANY"})
+      .then(response => this.isCbCompany = response);
+  }
+
+  tableButtons = () => {
+    const createLinks = (
+      <Menu onClick={this.preCreate}>
+        <Menu.Item key="org">
+          <Icon type="bank"/>
+          {this.props.intl.formatMessage({id: "org.request.org.create"})}
+        </Menu.Item>
+        <Menu.Item key="pos">
+          <Icon type="container"/>
+          {this.props.intl.formatMessage({id: "org.request.pos.create"})}
+        </Menu.Item>
+      </Menu>
+    );
+
+    const buttons = [];
+
+    const createButton = <Dropdown overlay={createLinks} key="create" disabled={!this.selectedRow}>
+      <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto'}}>
+        <Icon type="plus"/>
+        <FormattedMessage id="management.browser.create"/>
+        <Icon type="down"/>
+      </Button>
+    </Dropdown>;
+    const editButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 12px"}}
+                               htmlType="button"
+                               key="edit"
+                               disabled={!this.selectedRow || this.isOnApproving() && this.isCbCompany && this.selectedRow.elementType === 1}
+                               onClick={this.preEdit}>
+      <Icon type="edit"/>
+      <FormattedMessage id="management.browser.edit"/>
+    </Button>;
+    const deleteButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                 disabled={!this.selectedRow}
+                                 onClick={this.excludeSelectedRow}
+                                 key="exclude">
+      <Icon type="delete"/>
+      <FormattedMessage id="management.browser.exclude.ok"/>
+    </Button>;
+    const refreshButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                  onClick={this.reloadTreeData}
+                                  key="refresh">
+      <Icon type="sync"/>
+      <FormattedMessage id="management.browser.refresh"/>
+    </Button>;
+    const printReportButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                      onClick={this.onClickDownloadReport}
+                                      key="report-button">
+      <Icon type="file-excel"/>
+      {this.props.intl.formatMessage({id: 'orgStructureRequest.report'})}
+    </Button>;
+    const printOrderButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
+                                     onClick={this.onClickDownloadOrder}
+                                     key="order-button">
+      <Icon type="file-excel"/>
+      {this.props.intl.formatMessage({id: 'orgStructureRequest.order'})}
+    </Button>;
+    if (!this.isNotDraft()) {
+      buttons.push(createButton, editButton, deleteButton);
+    } else if (this.isCbCompany && this.isOnApproving()) {
+      buttons.push(editButton);
+    }
+    buttons.push(refreshButton);
+    buttons.push(printReportButton, printOrderButton);
+    return buttons;
+  };
+
+  filterTable = (propertyFilterName: string, value: string) => {
+    this.fetchDataService = restServices.orgStructureService.getMergedOrgStructureFilter.bind(null, ({
+      requestId: this.props.entityId,
+      [propertyFilterName]: value.toUpperCase()
+    } as OrgStructureFilterParams));
+
+    this.treeLoading = true;
+    this.fillTreeData(this.fetchDataService());
+  };
+
+  fillTreeData = (fetchServiceResponse: Promise<Array<OrgRequestRow>>) => {
+    fetchServiceResponse.then(loadedData => {
+      //console.log('loadedData: ', loadedData)
+      this.treeData = loadedData;
+    })
+      .catch(async (response: any) => {
+        const reader = response.response.body.getReader();
+        let receivedLength = 0;
+        let chunks = [];
+        while (true) {
+          const {done, value} = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          receivedLength += value.length;
+        }
+
+        let chunksAll = new Uint8Array(receivedLength);
+        let position = 0;
+        for (let chunk of chunks) {
+          chunksAll.set(chunk, position);
+          position += chunk.length;
+        }
+
+        let result = new TextDecoder("utf-8").decode(chunksAll);
+        const parse = JSON.parse(result);
+        Notification.error({message: parse.message});
+      })
+      .finally(() => {
+        this.treeLoading = false;
+        this.selectedRow = null;
+      })
+  }
+
+  onClickDownloadReport = () => {
+    downloadReport("ORG_SRTUCTURE", this.props.entityId, this.props.intl.formatMessage({id: 'orgStructureRequest.report'}), "req");
+  }
+
+  onClickDownloadOrder = () => {
+    downloadReport("ORDER", this.props.entityId, this.props.intl.formatMessage({id: 'orgStructureRequest.order'}), "req");
   }
 }
 

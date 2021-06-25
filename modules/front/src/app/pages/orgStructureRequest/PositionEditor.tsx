@@ -5,12 +5,13 @@ import {IReactionDisposer, observable, toJS} from "mobx";
 import {Alert, Form, Input, InputNumber, message, Modal, Select} from "antd";
 import {RootStoreProp} from "../../store";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {RouteComponentProps, withRouter} from "react-router-dom";
+import {RouteComponentProps} from "react-router-dom";
 import {FormComponentProps} from "antd/lib/form";
 import {OrgRequestGrade, OrgRequestRow} from "./OrgStructureRequestEdit";
 import {restServices} from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
 import {OrgStructureRequestDetail} from "../../../cuba/entities/base/tsadv_OrgStructureRequestDetail";
+import {withRouter} from "react-router";
 
 export class PositionSaveModel {
   rId: string;
@@ -21,6 +22,9 @@ export class PositionSaveModel {
   parentOrganizationGroupId: string | null;
   gradeGroupId: string | null;
   headCount: number | 0;
+  baseSalary?: number;
+  maxSalary?: number;
+  minSalary?: number;
   parentRdId: string | null
 }
 
@@ -30,7 +34,8 @@ export interface EditorProps {
   treeData: OrgRequestRow[],
   isNew: boolean,
   closeModal: () => void,
-  onSave: (rdId: string) => void
+  onSave: (rdId: string) => void,
+  isDisabledFields: boolean,
 }
 
 type Props = FormComponentProps & EditorProps;
@@ -53,13 +58,16 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
 
   reactionDisposer: IReactionDisposer;
 
-  fields = ["id", "rId", "gradeGroupId", "positionGroupId", "parentId", "nameRu", "nameEn", "headCount"];
+  fields = ["id", "rId", "gradeGroupId", "positionGroupId", "parentId", "nameRu", "nameEn", "headCount", "baseSalary", "mtPayrollPer"];
 
   locale = this.props.mainStore!.locale!;
 
+  @observable
+  isCbCompany: boolean = false;
+
   save = (e: React.MouseEvent) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields(this.fields, {force: true}, (err, values) => {
       if (err) {
         message.error(
           this.props.intl.formatMessage({
@@ -79,6 +87,11 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       posSaveModel.positionGroupId = formData.positionGroupId;
       posSaveModel.gradeGroupId = formData.gradeGroupId;
       posSaveModel.headCount = formData.headCount;
+
+      if (this.isCbCompany) {
+        posSaveModel.maxSalary = formData.baseSalary;
+        posSaveModel.minSalary = formData.mtPayrollPer;
+      }
 
       let pId = formData.parentId;
       if (pId !== undefined && pId !== null) {
@@ -168,7 +181,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'parentOrganizationGroup']})
               }]
             })(
-              <Select style={{width: '100%'}}>
+              <Select style={{width: '100%'}} disabled={this.props.isDisabledFields}>
                 {this.organizations && this.organizations.length > 0 ? this.organizations.map((o: any) =>
                     <Select.Option key={o.id}>{o.name}</Select.Option>)
                   : <Select.Option key="empty"/>
@@ -184,7 +197,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'positionNameRu']})
               }]
             })(
-              <Input/>
+              <Input disabled={this.props.isDisabledFields}/>
             )}
           </Form.Item>
           <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='positionNameEn'/>}
@@ -195,7 +208,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'positionNameEn']})
               }]
             })(
-              <Input/>
+              <Input disabled={this.props.isDisabledFields}/>
             )}
           </Form.Item>
           <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='gradeGroup'/>}
@@ -206,7 +219,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'gradeGroup']})
               }]
             })(
-              <Select style={{width: '100%'}}>
+              <Select style={{width: '100%'}} disabled={this.props.isDisabledFields}>
                 {this.grades && this.grades.length > 0 ? this.grades.map((o: any) =>
                     <Select.Option key={o.groupId}>{o.name}</Select.Option>)
                   : <Select.Option key="empty"/>
@@ -220,6 +233,32 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
               rules: [{
                 required: true,
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'headCount']})
+              }]
+            })(
+              <InputNumber disabled={this.props.isDisabledFields}/>
+            )}
+          </Form.Item>
+
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='minSalary'/>}
+                     style={this.isCbCompany ? {} : {display: 'none'}}
+                     key="baseSalary">
+            {getFieldDecorator('baseSalary', {
+              rules: [{
+                required: this.isCbCompany,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'minSalary']})
+              }]
+            })(
+              <InputNumber/>
+            )}
+          </Form.Item>
+
+          <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='maxSalary'/>}
+                     style={this.isCbCompany ? {} : {display: 'none'}}
+                     key="mtPayrollPer">
+            {getFieldDecorator('mtPayrollPer', {
+              rules: [{
+                required: this.isCbCompany,
+                message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'maxSalary']})
               }]
             })(
               <InputNumber/>
@@ -260,9 +299,15 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
         model['parentOrganizationGroupId'] = row.pOrgGroupId;
         model['gradeGroupId'] = row.gradeGroupId;
         model['headCount'] = row.headCount[1];
+        model['baseSalary'] = row.baseSalary && row.baseSalary[1];
+        model['mtPayrollPer'] = row.mtPayrollPer && row.mtPayrollPer[1];
       }
     }
     this.props.form.setFieldsValue(model);
+    restServices.employeeService.hasHrRole({dicHrCode: "C&B_COMPANY"})
+      .then(response => {
+        this.isCbCompany = response
+      })
   }
 }
 

@@ -19,7 +19,6 @@ import moment from "moment/moment";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../../components/MultiFileUpload";
 import {goBackOrHomePage} from "../../../util/util";
-import {OrgStructureRequestManagement} from "../../orgStructureRequest/OrgStructureRequestManagement";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -122,6 +121,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   isNotDraft = () => {
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
+  };
+
+  isOnApproving = () => {
+    return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "APPROVING" : false;
   };
 
   setEmployee = (personGroupId: string): Promise<TsadvUser> => {
@@ -309,7 +312,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   }
 
   isNewEntity = () => {
-    return this.props.entityId === OrgStructureRequestManagement.NEW_SUBPATH;
+    return this.props.entityId === "new";
   }
 
   onReactionDisposerEffect = (item: T | undefined) => {

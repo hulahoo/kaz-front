@@ -146,7 +146,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={PortalFeedbackQuestionManagement.PATH}
                        component={PortalFeedbackQuestionManagement}/>
-                <Route exact={true} path="/org-structure-request/:entityId?" component={OrgStructureRequestManagement}/>
+                <Route exact={true} path="/orgStructureRequest/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
 
                 <Route exact={true}
