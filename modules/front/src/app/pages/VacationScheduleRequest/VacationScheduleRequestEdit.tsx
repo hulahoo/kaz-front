@@ -35,11 +35,13 @@ import Section from "../../hoc/Section";
 import Page from "../../hoc/PageContentHoc";
 import moment from "moment/moment";
 import {isNumber} from "../../util/util";
+import {VacationGanttChart} from "../../components/VacationGanttChart";
 
 type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
   entityId: string;
+  ganttChartVisible?: boolean;
 };
 
 @injectMainStore
@@ -153,7 +155,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
     const {status} = this.dataInstance;
 
-    const isNotDraft = false;
+    const readonly = this.props.ganttChartVisible;
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "vacationScheduleRequest"})}>
@@ -162,7 +164,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
             <Card className="narrow-layout card-actions-container" actions={[
               <Button
                 buttonType={ButtonType.PRIMARY}
-                disabled={status !== "DONE" && status !== "ERROR"}
+                disabled={status !== "DONE" && status !== "ERROR" || readonly}
                 loading={status === "LOADING"}
                 onClick={this.handleSubmit}
                 style={{marginLeft: "8px"}}>
@@ -216,7 +218,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                       }
                     }]
                   }}
-                  disabled={isNotDraft}
+                  disabled={readonly}
                 />
 
                 <ReadonlyField
@@ -224,7 +226,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="endDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
-                  disabled={isNotDraft}
+                  disabled={readonly}
                   getFieldDecoratorOpts={{
                     rules: [{
                       required: true,
@@ -272,7 +274,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   <Form.Item>
                     {getFieldDecorator("comment")(
                       <TextArea
-                        disabled={isNotDraft}
+                        disabled={readonly}
                         rows={4}/>
                     )}
                   </Form.Item>
@@ -304,6 +306,15 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
             </Card>
           </div>
         </Section>
+
+        {
+          this.props.ganttChartVisible && status === 'DONE' && this.props.entityId !== VacationScheduleRequestManagement.NEW_SUBPATH
+            ? <Card className="narrow-layout card-actions-container large-section section-container ">
+              <VacationGanttChart starDate={this.dataInstance.item!.startDate}
+                                  endDate={this.dataInstance.item!.endDate}/>
+            </Card>
+            : <></>
+        }
       </Page>
     );
   }

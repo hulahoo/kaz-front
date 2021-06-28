@@ -56,6 +56,13 @@ export default class MenuStore {
       //   pathPattern: "/absence",
       //   component: AbsenceList
       // },
+      // {
+      //   id: "vacationSchedule",
+      //   caption: "vacationSchedule",
+      //   menuLink: "/vacationSchedule",
+      //   pathPattern: "/vacationSchedule",
+      //   component: null
+      // },
       {
         id: "dmc-my",
         caption: "Мои ДМС",

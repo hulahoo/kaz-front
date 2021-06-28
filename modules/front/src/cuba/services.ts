@@ -35,6 +35,8 @@ import {EnrollmentStatus} from "./enums/enums";
 import {PositionGroupExt} from "./entities/base/base$PositionGroupExt";
 import {saveFile} from "../app/util/util";
 import {Report} from "./entities/base/report$Report";
+import {GanttChartVacationScheduleData} from "../app/components/VacationGanttChart";
+import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleRequest";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -817,8 +819,44 @@ export const restServices = {
         "downloadReportByCode",
         params).then(response => JSON.parse(response));
     }
+  },
+  vacationScheduleRequestService: {
+    ganttChart: (startDate: string, endDate: string): Promise<Array<GanttChartVacationScheduleData>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "ganttChart",
+        {
+          startDate: startDate,
+          endDate: endDate,
+        }
+      ).then(value => JSON.parse(value));
+    },
+    getChildVacationSchedule: (pagination: ServicePagination): Promise<EntitiesPaginationResult<VacationScheduleRequest>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "getChildVacationSchedule", {
+          paginationPojo: pagination
+        })
+        .then(value => {
+          const parse = JSON.parse(value);
+          return {
+            entities: JSON.parse(parse.entities),
+            count: parse.count
+          }
+        });
+    }
   }
 };
+
+export type EntitiesPaginationResult<T> = {
+  entities: Array<SerializedEntity<T>>
+  count: number
+}
+
+export type ServicePagination = {
+  limit: number;
+  offset: number
+}
 
 export type CourseInfo = {
   name: string
