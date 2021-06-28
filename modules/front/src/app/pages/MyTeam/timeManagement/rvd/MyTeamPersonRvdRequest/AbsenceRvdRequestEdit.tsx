@@ -44,6 +44,8 @@ import {parseToJsonFromFieldValue} from "../../../../../components/MultiFileUplo
 import {DicShift} from "../../../../../../cuba/entities/base/tsadv_DicShift";
 import {runReport} from "../../../../../util/reportUtil";
 import {goBackOrHomePage} from "../../../../../util/util";
+import {ExecutiveAssistantsManagement} from "../../../../ExecutiveAssistants/ExecutiveAssistantsManagement";
+import {MyTeamStructureManagement} from "../../../MyTeamStructureManagement";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -62,7 +64,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   });
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "_minimal"
+    view: "_local"
   });
 
   purposeDc = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
@@ -716,6 +718,16 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       })
     }
   }
+
+  afterSendOnApprove = () => {
+    const statusId = this.dataInstance.item && this.dataInstance.item.status && this.dataInstance.item.status.id;
+    if (this.statusesDc.items.find(value => value.id === statusId && value.code === 'DRAFT'))
+      this.props.history!.push(
+        this.props.rootStore!.assistantTeamInfo.active
+          ? ExecutiveAssistantsManagement.PATH
+          : MyTeamStructureManagement.PATH);
+    else this.props.history!.goBack();
+  };
 }
 
 const component = injectIntl(
