@@ -289,13 +289,13 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
     const actions = [];
 
-    if (this.isNewEntity())
-      actions.push(<Button buttonType={ButtonType.PRIMARY}
-                           disabled={status !== "DONE" && status !== "ERROR"}
-                           loading={status === "LOADING"}
-                           onClick={this.saveRequest}>
-        <FormattedMessage id="management.editor.submit"/>
-      </Button>);
+    // if (this.isNewEntity())
+    actions.push(<Button buttonType={ButtonType.FOLLOW}
+                         disabled={status !== "DONE" && status !== "ERROR"}
+                         loading={status === "LOADING"}
+                         onClick={this.saveRequest}>
+      <FormattedMessage id="management.editor.submit"/>
+    </Button>);
 
     actions.push(<Button buttonType={ButtonType.FOLLOW}
                          onClick={event => goBackOrHomePage(this.props.history)}>{this.props.intl.formatMessage({id: "close"})}</Button>);
