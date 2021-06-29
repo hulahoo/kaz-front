@@ -142,8 +142,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   person: PersonExt;
 
   initVariablesByBproc = () => {
-    if (this.activeTask && this.activeTask.hrRole && this.activeTask.hrRole.code) {
-      this.approverHrRoleCode = this.activeTask.hrRole.code;
+    if (this.activeUserTask && this.activeUserTask.hrRole && this.activeUserTask.hrRole.code) {
+      this.approverHrRoleCode = this.activeUserTask.hrRole.code;
     }
   }
 
