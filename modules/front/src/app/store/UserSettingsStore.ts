@@ -3,7 +3,6 @@ import RootStore from "./RootStore";
 import {restServices} from "../../cuba/services";
 import EntityCrudRestService from "../util/EntityCrudRestService";
 import {User} from "../../cuba/entities/base/sec$User";
-import {notification} from "antd";
 
 export default class UserSettingsStore {
   root: RootStore

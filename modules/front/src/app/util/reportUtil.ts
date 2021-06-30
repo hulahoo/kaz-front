@@ -1,6 +1,8 @@
 import {restServices} from "../../cuba/services";
+import Notification from "./Notification/Notification";
+import {IntlFormatters} from "react-intl";
 
-export const downloadReport = (reportCode: string, entityId: string, fileName: string, entityParamName:string) => {
+export const downloadReport = (reportCode: string, entityId: string, fileName: string, entityParamName: string) => {
   restServices.commonReportsService.downloadReportByCode({
     reportCode: reportCode,
     entityId: entityId,
@@ -11,4 +13,22 @@ export const downloadReport = (reportCode: string, entityId: string, fileName: s
     link.download = `${fileName}.${report.extension}`;
     link.click();
   });
+};
+
+export const runReport = (reportCode: string, params: any, intl: IntlFormatters) => {
+  restServices.reports.loadReportByCode(reportCode)
+    .then(report => {
+      restServices.reports.run(report.id,
+        params,
+        reason => Notification.error({
+          message: intl.formatMessage({id: "management.editor.error"})
+        })
+      )
+    }).catch(reason => {
+    Notification.error({
+      message: intl.formatMessage({id: "report.not.found"}, {
+        reportCode: reportCode
+      })
+    })
+  })
 };

@@ -12,6 +12,7 @@ export default class {
   language?: string;
   lastName?: string;
   locale?: string;
+  localeIndex?: number;
   login?: string;
   middleName?: string;
   name?: string;
@@ -74,6 +75,7 @@ export default class {
       this.language = response.language;
       this.lastName = response.lastName;
       this.locale = response.locale;
+      this.localeIndex = ['ru', 'kz', 'en'].indexOf(response.locale) + 1;
       this.login = response.login;
       this.middleName = response.middleName;
       this.name = response.name;

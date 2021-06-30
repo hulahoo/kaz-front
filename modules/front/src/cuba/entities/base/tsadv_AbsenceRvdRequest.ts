@@ -2,13 +2,13 @@ import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicAbsenceType } from "./tsadv$DicAbsenceType";
 import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
-import {AbsPurposeSetting} from "./tsadv_AbsPurposeSetting";
-import {FileDescriptor} from "./sys$FileDescriptor";
+import { DicShift } from "./tsadv_DicShift";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class AbsenceRvdRequest extends AbstractBprocRequest {
   static NAME = "tsadv_AbsenceRvdRequest";
   personGroup?: PersonGroupExt | null;
   type?: DicAbsenceType | null;
-  purpose?: DicAbsencePurpose| AbsPurposeSetting | null;
+  purpose?: DicAbsencePurpose | null;
   purposeText?: string | null;
   timeOfStarting?: any | null;
   timeOfFinishing?: any | null;
@@ -17,6 +17,9 @@ export class AbsenceRvdRequest extends AbstractBprocRequest {
   vacationDay?: boolean | null;
   acquainted?: boolean | null;
   agree?: boolean | null;
+  shiftCode?: string | null;
+  shift?: DicShift | null;
+  overrideAllHoursByDay?: any | null;
   files?: FileDescriptor[] | null;
 }
 export type AbsenceRvdRequestViewName =
@@ -40,6 +43,8 @@ export type AbsenceRvdRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "shiftCode"
+      | "overrideAllHoursByDay"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -58,6 +63,8 @@ export type AbsenceRvdRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "shiftCode"
+      | "overrideAllHoursByDay"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -79,6 +86,8 @@ export type AbsenceRvdRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "shiftCode"
+      | "overrideAllHoursByDay"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -102,14 +111,16 @@ export type AbsenceRvdRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "shiftCode"
+      | "overrideAllHoursByDay"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
       | "comment"
-      | "type"
       | "personGroup"
+      | "type"
       | "purpose"
       | "status"
       | "files"
