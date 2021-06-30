@@ -582,8 +582,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   };
 
   initVariablesByBproc = () => {
-    if (this.activeTask && this.activeTask.hrRole && this.activeTask.hrRole.code) {
-      this.approverHrRoleCode = this.activeTask.hrRole.code;
+    if (this.activeUserTask && this.activeUserTask.hrRole && this.activeUserTask.hrRole.code) {
+      this.approverHrRoleCode = this.activeUserTask.hrRole.code;
     } else if (this.isStartForm && this.dataInstance.item!.assignedPerson!.id === this.props.rootStore!.userInfo!.personGroupId) {
       this.approverHrRoleCode = 'INITIATOR';
     }
@@ -691,13 +691,13 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
           restServices.bprocService.tasks({processInstanceData: value})
             .then(tasks => {
               this.tasks = tasks;
-              this.activeTask = tasks.find(task => !task.endTime
+              this.activeUserTask = tasks.find(task => !task.endTime
                 && Array.isArray(task.assigneeOrCandidates)
                 && task.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
               ) as ExtTaskData;
 
-              if (this.activeTask)
-                restServices.bprocFormService.getTaskFormData({taskId: this.activeTask.id!})
+              if (this.activeUserTask)
+                restServices.bprocFormService.getTaskFormData({taskId: this.activeUserTask.id!})
                   .then(formData => {
                     this.formData = formData;
                     this.isStartForm = false;
