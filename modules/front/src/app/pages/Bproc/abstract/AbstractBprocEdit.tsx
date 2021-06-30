@@ -271,7 +271,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                     this.initVariablesByBproc();
                   });
               else {
-                if (this.isUserInitiator) {
+                if (this.isUserInitiator && this.activeTask) {
                   this.formData = {
                     outcomes: [{id: 'CANCEL'}]
                   };
