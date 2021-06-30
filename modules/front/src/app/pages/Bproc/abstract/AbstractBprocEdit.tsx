@@ -256,12 +256,10 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
             .then(tasks => {
               this.tasks = tasks;
               this.activeTask = tasks.find(task => !task.endTime
-                // && Array.isArray(task.assigneeOrCandidates)
-                // && task.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
               ) as ExtTaskData;
 
               this.activeUserTask = this.activeTask
-              && Array.isArray(this.activeTask.assigneeOrCandidates)
+              && this.activeTask.assigneeOrCandidates
               && this.activeTask.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
                 ? this.activeTask : null;
 
