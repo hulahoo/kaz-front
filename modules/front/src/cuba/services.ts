@@ -37,6 +37,8 @@ import {saveFile} from "../app/util/util";
 import {Report} from "./entities/base/report$Report";
 import {GanttChartVacationScheduleData} from "../app/components/VacationGanttChart";
 import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleRequest";
+import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
+import {PortalMenuCustomization} from "./entities/base/tsadv_PortalMenuCustomization";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -322,6 +324,13 @@ export const restServices = {
         "getCompaniesForLoadDictionary",
         {...param}
       ).then((value: string) => JSON.parse(value));
+    },
+    initPortalMenu: (param: { menuList: Menu[] }): Promise<any> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_PortalHelperService",
+        "initPortalMenu",
+        {...param}
+      );
     },
   },
   bprocService: {

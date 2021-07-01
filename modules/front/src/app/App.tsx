@@ -52,11 +52,17 @@ import {PersonalDataRequestManagement} from "./pages/PersonalDataRequest/Persona
 import {PersonDocumentRequestManagement} from "./pages/PersonDocumentRequest/PersonDocumentRequestManagement";
 import {AddressRequestManagement} from "./pages/AddressRequest/AddressRequestManagement";
 import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationScheduleManagement";
+import {PortalMenuCustomization} from "../cuba/entities/base/tsadv_PortalMenuCustomization";
+import {observable} from "mobx";
 
 @injectMainStore
 @inject("rootStore")
 @observer
 class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+
+  @observable
+  loadedMenu: PortalMenuCustomization[] = this.props.rootStore!.menu.menuCustomization;
+
   render() {
     const {initialized, locale, loginRequired, metadata, messages} = this.props.mainStore!;
 
@@ -92,9 +98,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
             style={{background: "#fff", height: "100%"}}
           >
             <Menu mode="inline" style={{height: "100%", borderRight: 0}} className={"side-menu"}>
-              {menuItems.map((item, idx) =>
-                this.menuItem(item, "" + (idx + 1 + menuIdx), this.props.intl)
-              )}
+              {menuItems.filter(value => this.loadedMenu.find(menu => menu.menuItem === value['id']))
+                .map((item, idx) =>
+                  this.menuItem(item, "" + (idx + 1 + menuIdx), this.props.intl)
+                )}
             </Menu>
           </Layout.Sider>
           <Layout>
@@ -197,7 +204,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
               <span>{this.props.intl.formatMessage({id: "menu." + (item as any).id})}</span>
           </span>
           }>
-          {(item as SubMenu).items.map((ri, index) =>
+          {(item as SubMenu).items.filter(value => this.loadedMenu.find(menu => menu.menuItem === value['id'])).map((ri, index) =>
             this.menuItem(ri, keyString + "-" + (index + 1), intl)
           )}
         </Menu.SubMenu>
@@ -219,7 +226,6 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
       </Menu.Item>
     );
   }
-
 }
 
 const App = injectIntl(AppComponent);

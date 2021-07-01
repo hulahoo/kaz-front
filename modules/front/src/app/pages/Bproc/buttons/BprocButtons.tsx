@@ -29,6 +29,7 @@ type TaskProps = {
   isUpdateBeforeOutcome?: boolean,
   commentRequiredOutcomes?: string[],
   isStartCommentVisible?: boolean,
+  isUserInitiator:boolean
 };
 
 @inject("rootStore")
@@ -56,7 +57,7 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
   render() {
     return this.props.isStartForm
       ? this.StartForm() : this.props.formData.outcomes
-        ? this.props.formData.outcomes.sort((a1, a2) => a1.id!.localeCompare(a2.id!) * (-1)).map(value =>
+        ? this.props.formData.outcomes.filter(value => this.props.isUserInitiator || value.id !== 'CANCEL').sort((a1, a2) => a1.id!.localeCompare(a2.id!) * (-1)).map(value =>
           <OutcomeButtonModal outcome={value}
                               key={value.id}
                               form={this.props.form}

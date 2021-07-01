@@ -49,6 +49,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   tasks: ExtTaskData[] | null;
 
   @observable
+  activeUserTask: ExtTaskData | null;
+
+  @observable
   activeTask: ExtTaskData | null;
 
   @observable
@@ -64,6 +67,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   @observable
   isValidatedSuccess = false;
+
+  @observable
+  isUserInitiator = false;
 
   fields: string[];
 
@@ -185,6 +191,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         isUpdateBeforeOutcome={this.isUpdateBeforeOutcome}
                         commentRequiredOutcomes={this.commentRequiredOutcomes}
                         isStartCommentVisible={this.isStartCommentVisible}
+                        isUserInitiator={this.isUserInitiator}
                         task={this.activeTask}/>
         : <Button
           buttonType={ButtonType.PRIMARY}
@@ -244,22 +251,34 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         this.isCalledProcessInstanceData = true;
         this.processInstanceData = value;
         if (value) {
+          this.isUserInitiator = value.startUserId === this.props.rootStore!.userInfo!.id;
           restServices.bprocService.tasks({processInstanceData: value})
             .then(tasks => {
               this.tasks = tasks;
               this.activeTask = tasks.find(task => !task.endTime
-                && Array.isArray(task.assigneeOrCandidates)
-                && task.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
               ) as ExtTaskData;
 
-              if (this.activeTask)
-                restServices.bprocFormService.getTaskFormData({taskId: this.activeTask.id!})
+              this.activeUserTask = this.activeTask
+              && this.activeTask.assigneeOrCandidates
+              && this.activeTask.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
+                ? this.activeTask : null;
+
+              if (this.activeUserTask)
+                restServices.bprocFormService.getTaskFormData({taskId: this.activeUserTask.id!})
                   .then(formData => {
                     this.formData = formData;
                     this.isStartForm = false;
                     this.initVariablesByBproc();
                   });
-              else this.initVariablesByBproc();
+              else {
+                if (this.isUserInitiator && this.activeTask) {
+                  this.formData = {
+                    outcomes: [{id: 'CANCEL'}]
+                  };
+                  this.isStartForm = false;
+                }
+                this.initVariablesByBproc();
+              }
             })
         } else {
           restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})

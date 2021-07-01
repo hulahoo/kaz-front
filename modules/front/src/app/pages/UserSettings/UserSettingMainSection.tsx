@@ -11,10 +11,27 @@ import {Modal} from "antd";
 import ChangePassword from "./ChangePassword/ChangePassword";
 import {action, observable} from "mobx";
 import {ReactComponent as KeySvg} from '../../../resources/icons/key.svg';
+import {MenuRouteItem, MenuSubMenu} from "../../store/MenuStore";
+import {getCubaREST} from "@cuba-platform/react";
+import {UserRole} from "../../../cuba/entities/base/sec$UserRole";
+
+import en from "../../../i18n/en.json";
+import ru from "../../../i18n/ru.json";
+import {restServices} from "../../../cuba/services";
 
 type ChangePasswordResponse = {
   status: string,
   message: string
+}
+
+export interface Menu {
+  id: string,
+  ru: string,
+  en: string,
+}
+
+export interface SubMenu extends Menu {
+  items: Array<SubMenu | Menu>
 }
 
 @inject("rootStore")
@@ -22,6 +39,8 @@ type ChangePasswordResponse = {
 class UserSettingsMainSection extends React.Component<WrappedComponentProps & RootStoreProp> {
 
   @observable visibleModalChangePassword = false;
+
+  @observable isAdmin = false;
 
   @action
   changeVisibleModalChangePassword = () => {
@@ -44,6 +63,33 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
         message: "Не удалось сохранить настройки пользователя"
       });
     });
+  }
+
+  updateMenuList = () => {
+    const map = this.props.rootStore!.menu.menuList.map(value => this.parseMenu(value));
+    restServices.portalHelperService.initPortalMenu({menuList: map})
+      .then(value => Notification.success({message: 'Меню успешно обновлен'}))
+      .catch(value => Notification.error({message: this.props.intl.formatMessage({id: "management.editor.error"})}))
+  }
+
+  parseMenu = (menu: MenuRouteItem | MenuSubMenu): Menu | SubMenu => {
+    if (menu['items']) {
+      const items = menu['items'] as (MenuSubMenu | MenuRouteItem)[];
+      const parsedItems = items.map(value => this.parseMenu(value));
+      return {
+        id: menu.id,
+        ru: ru["menu." + menu.id],
+        en: en["menu." + menu.id],
+        type: 'P',
+        items: parsedItems
+      } as SubMenu
+    } else
+      return {
+        id: menu.id,
+        ru: ru["menu." + menu.id],
+        en: en["menu." + menu.id],
+        type: 'P',
+      } as Menu
   }
 
   handleClickChanePassword = () => {
@@ -78,9 +124,14 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
                        handleMenuClick={userSettingsStore.setTimeZone}/>,
       {name: this.props.intl.formatMessage({id: 'time-zone'})});
 
+    const UpdateMenuListBtnComponent = CommonComponentHoc(
+      <Button children={<><span><FormattedMessage id="update.menu.list"/></span></>}
+              buttonType={ButtonType.PRIMARY} style={{"width": "244px", /*"height": 'auto'*/}}
+              onClick={this.updateMenuList}/>, {});
+
     const ChangePasswordBtnComponent = CommonComponentHoc(
       <Button children={<><i className={"icon"}><KeySvg/></i><span><FormattedMessage id="password.change"/></span></>}
-              buttonType={ButtonType.PRIMARY} style={{"width": "244px"}}
+              buttonType={ButtonType.PRIMARY} style={{"width": "244px", /*"height": 'auto'*/}}
               onClick={this.changeVisibleModalChangePassword}/>, {});
 
     const SubmitBtnPasswordComponent = CommonComponentHoc(
@@ -90,6 +141,7 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
 
     return <form autoComplete={"off"}>
       <div className={"vertical-form-container"}>
+        {this.isAdmin ? <UpdateMenuListBtnComponent/> : <></>}
         <ChangePasswordBtnComponent/>
         <TimeZoneComponent/>
         <SubmitBtnPasswordComponent/>
@@ -102,6 +154,24 @@ class UserSettingsMainSection extends React.Component<WrappedComponentProps & Ro
         </Modal>
       </div>
     </form>;
+  }
+
+
+  componentDidMount() {
+    (async () => {
+      await getCubaREST()!.searchEntities(UserRole.NAME, {
+        conditions: [{
+          property: 'user.id',
+          operator: '=',
+          value: this.props.rootStore!.userInfo!.id!
+        }, {
+          property: 'role.name',
+          operator: 'in',
+          value: ['Administrators', 'system-full-access']
+        }]
+      }).then(value => value.length > 0)
+        .then(value => this.isAdmin = value);
+    })()
   }
 }
 
