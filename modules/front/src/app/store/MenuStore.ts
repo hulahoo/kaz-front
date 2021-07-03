@@ -1,9 +1,6 @@
 import RootStore from "./RootStore";
 import {action, observable} from "mobx";
 import {RouteItem, SubMenu} from "@cuba-platform/react";
-import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
-import AbsenceList from "../pages/Absence/AbsenceList";
-import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
 import {PortalMenuCustomization} from "../../cuba/entities/base/tsadv_PortalMenuCustomization";
 
 export interface MenuRouteItem extends RouteItem {
