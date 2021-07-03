@@ -50,6 +50,7 @@ class Login extends React.Component<MainStoreInjected & WrappedComponentProps & 
           if (urlToRedirect.replace("/", "").trim().length === 0) {
             this.props.history.push("/my-education")
           }
+          this.props.rootStore!.menu.loadUserMenuCustomization();
           this.props.rootStore!.userInfo.loadUserInfo();
           this.performingLoginRequest = false;
           this.props.mainStore!.userName = login;

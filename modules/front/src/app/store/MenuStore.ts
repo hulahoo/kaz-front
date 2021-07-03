@@ -4,6 +4,7 @@ import {RouteItem, SubMenu} from "@cuba-platform/react";
 import {CertificateRequestManagement} from "../pages/CertificateRequest/CertificateRequestManagement";
 import AbsenceList from "../pages/Absence/AbsenceList";
 import {InsuredPersonManagement} from "../pages/MyDMC/InsuredPersonManagement";
+import {PortalMenuCustomization} from "../../cuba/entities/base/tsadv_PortalMenuCustomization";
 
 export interface MenuRouteItem extends RouteItem {
   id: string,
@@ -11,7 +12,7 @@ export interface MenuRouteItem extends RouteItem {
 
 export interface MenuSubMenu extends SubMenu {
   id: string,
-  items: MenuRouteItem[] | MenuSubMenu[]
+  items: (MenuRouteItem | MenuSubMenu)[]
 }
 
 export default class MenuStore {
@@ -19,9 +20,22 @@ export default class MenuStore {
 
   @observable menuList: Array<MenuRouteItem | MenuSubMenu> = [];
 
+  @observable menuCustomization: Array<PortalMenuCustomization> = [];
+
   constructor(root: RootStore) {
     this.root = root;
     this.loadUserMenuList();
+    this.loadUserMenuCustomization();
+  }
+
+  @action
+  loadUserMenuCustomization = async () => {
+    return await this.root.cubaRest!.invokeService<string>(
+      "tsadv_PortalHelperService",
+      "getPortalMenu",
+      {menuType: 'P'}
+    ).then(value => JSON.parse(value))
+      .then(value => this.menuCustomization = value)
   }
 
   @action
