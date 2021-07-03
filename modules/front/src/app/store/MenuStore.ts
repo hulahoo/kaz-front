@@ -41,72 +41,68 @@ export default class MenuStore {
   @action
   loadUserMenuList = () => {
     this.menuList = [
-      // {id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null},
-      // {
-      //   id: "my-profile",
-      //   caption: "Мой профиль",
-      //   menuLink: "/my-profile",
-      //   pathPattern: "/my-profile",
-      //   component: null
-      // },
-      // {
-      //   id: "my-team",
-      //   caption: "Моя команда",
-      //   menuLink: "/my-team",
-      //   pathPattern: "/my-team",
-      //   component: null
-      // },
-      // {
-      //   id: "assistant-team",
-      //   caption: "Assistant team",
-      //   menuLink: "/assistant-team",
-      //   pathPattern: "/assistant-team",
-      //   component: null
-      // },
-      // {
-      //   id: "absence",
-      //   caption: "Absence",
-      //   menuLink: "/absence",
-      //   pathPattern: "/absence",
-      //   component: AbsenceList
-      // },
-      // {
-      //   id: "vacationSchedule",
-      //   caption: "vacationSchedule",
-      //   menuLink: "/vacationSchedule",
-      //   pathPattern: "/vacationSchedule",
-      //   component: null
-      // },
+      {id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null},
+      {
+        id: "my-profile",
+        caption: "Мой профиль",
+        menuLink: "/my-profile",
+        pathPattern: "/my-profile",
+        component: null
+      },
+      {
+        id: "my-team",
+        caption: "Моя команда",
+        menuLink: "/my-team",
+        pathPattern: "/my-team",
+        component: null
+      },
+      {
+        id: "assistant-team",
+        caption: "Assistant team",
+        menuLink: "/assistant-team",
+        pathPattern: "/assistant-team",
+        component: null
+      },
+      {
+        id: "absence",
+        caption: "Absence",
+        menuLink: "/absence",
+        pathPattern: "/absence",
+        component: null
+      },
+      {
+        id: "vacationSchedule",
+        caption: "vacationSchedule",
+        menuLink: "/vacationSchedule",
+        pathPattern: "/vacationSchedule",
+        component: null
+      },
       {
         id: "dmc-my",
         caption: "Мои ДМС",
         menuLink: "/my-dmc",
         pathPattern: "/my-dmc",
-        component: InsuredPersonManagement,
+        component: null,
       },
       {
-        id: "help",
-        caption: "Справка",
-        items: [
-          {
-            id: "certificateRequest",
-            caption: "Справка с места работы",
-            menuLink: "/certificateRequest",
-            pathPattern: "/certificateRequest/:entityId?",
-            component: CertificateRequestManagement
-          }
-        ],
-      } as MenuSubMenu,
-      // {
-      //   id: "vacation",
-      //   caption: "Отпуска",
-      //   items: [{id: "main", caption: "Главная", menuLink: "/", pathPattern: "/", component: null}],
-      // } as MenuSubMenu,
+        id: "certificateRequest",
+        caption: "Справка с места работы",
+        menuLink: "/certificateRequest",
+        pathPattern: "/certificateRequest/:entityId?",
+        component: null
+      },
+      {
+        id: "personPayslip",
+        caption: "personPayslip",
+        menuLink: "/personPayslip",
+        pathPattern: "/personPayslip",
+        component: null,
+      },
       {
         id: "my-education", caption: "Обучение",
         menuLink: "/my-education",
         pathPattern: "/my-education",
-        component: AbsenceList
+        component: null
       },
       {
         id: "kpi",
@@ -161,16 +157,13 @@ export default class MenuStore {
       //   pathPattern: "/job-offers",
       //   component: null,
       // },
-      // {
-      //   id: "orgStructureRequest",
-      //   caption: "Заявка по Орг.структуре",
-      //   menuLink: "/orgStructureRequest",
-      //   pathPattern: "/orgStructureRequest",
-      //   component: null,
-      // }
+      {
+        id: "orgStructureRequest",
+        caption: "Заявка по Орг.структуре",
+        menuLink: "/orgStructureRequest",
+        pathPattern: "/orgStructureRequest",
+        component: null,
+      }
     ]
-    // restServices.userMenuService.userMenuList().then((response: string) => {
-    //   const menuIdList: string[] = JSON.parse(response);
-    // });
   }
 }
