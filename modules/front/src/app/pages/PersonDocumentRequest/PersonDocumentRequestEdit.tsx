@@ -302,7 +302,7 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
           optionsContainer={this.issuingAuthoritiesDc}
           getFieldDecoratorOpts={{
             rules: [{
-              required: true,
+              required: !this.foreigner && !isNotDraft,
               message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.issuingAuthority']})
             }],
             getValueFromEvent: args => {
@@ -323,7 +323,7 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
           form={this.props.form}
           getFieldDecoratorOpts={{
             rules: [{
-              required: !this.foreigner && !isNotDraft,
+              required: this.foreigner && !isNotDraft,
               message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.issuedBy']})
             }],
             getValueFromEvent: args => {
