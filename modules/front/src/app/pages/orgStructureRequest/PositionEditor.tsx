@@ -30,6 +30,7 @@ export class PositionSaveModel {
 
 export interface EditorProps {
   row: OrgRequestRow | null,
+  isCbCompany: boolean,
   requestId: string,
   treeData: OrgRequestRow[],
   isNew: boolean,
@@ -304,11 +305,9 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       }
     }
     this.props.form.setFieldsValue(model);
-    restServices.employeeService.hasHrRole({dicHrCode: "C&B_COMPANY"})
-      .then(response => {
-        this.isCbCompany = response
-      })
+    this.isCbCompany = this.props.isCbCompany;
   }
 }
 
-export default withRouter(injectIntl(PositionEditor));
+const positionEditor = withRouter(injectIntl(PositionEditor));
+export default positionEditor;

@@ -695,6 +695,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                           isNew={this.isNew}
                           form={this.props.form}
                           isDisabledFields={this.isOnApproving()}
+                          isCbCompany={this.isCbCompany}
                           closeModal={() => this.showPosCreateModal = false}
                           onSave={this.onSavePosition}/> : null}
       </Page>
