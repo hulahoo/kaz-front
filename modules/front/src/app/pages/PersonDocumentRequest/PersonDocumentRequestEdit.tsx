@@ -426,6 +426,8 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
   onReactionDisposerEffect = (item: PersonDocumentRequest | undefined) => {
     this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;
 
+    this.foreigner = !!(item && item.documentType && item.documentType.foreigner);
+
     this.documentTypesDc = dictionaryCollection<DicDocumentType>(DicDocumentType.NAME,
       this.personGroupId, {
         view: "_local",
