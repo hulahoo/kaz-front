@@ -447,5 +447,6 @@
   "newValue": "New value",
   "additionalInformation": "Additional information",
   "orgStructureRequest.report": "Report",
-  "orgStructureRequest.order": "Order"
+  "orgStructureRequest.order": "Order",
+  "bpmUserSubstitution": "Bpm user substitution"
 }

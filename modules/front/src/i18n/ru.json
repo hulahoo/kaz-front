@@ -436,5 +436,6 @@
   "newValue": "Новое значение",
   "additionalInformation": "Дополнительная информация",
   "orgStructureRequest.report": "Отчет",
-  "orgStructureRequest.order": "Приказ"
+  "orgStructureRequest.order": "Приказ",
+  "bpmUserSubstitution": "Замещающие пользователи bpm"
 }
