@@ -66,6 +66,9 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
   changedMap = new Map<string, boolean>();
 
   @observable
+  foreigner = false;
+
+  @observable
   person: PersonExt;
 
   personGroupId: string;
@@ -276,6 +279,10 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
               message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.documentType']})
             }],
             getValueFromEvent: args => {
+
+              const documentType = this.documentTypesDc.items.find(value => value.id === args);
+              this.foreigner = !!(documentType && documentType.foreigner);
+
               if (this.editDocument)
                 this.changedMap.set('documentType', args !== (this.editDocument.documentType ? this.editDocument.documentType.id : undefined));
               return args;
@@ -295,7 +302,7 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
           optionsContainer={this.issuingAuthoritiesDc}
           getFieldDecoratorOpts={{
             rules: [{
-              required: true,
+              required: !this.foreigner && !isNotDraft,
               message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.issuingAuthority']})
             }],
             getValueFromEvent: args => {
@@ -315,6 +322,10 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
           disabled={isNotDraft}
           form={this.props.form}
           getFieldDecoratorOpts={{
+            rules: [{
+              required: this.foreigner && !isNotDraft,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.issuedBy']})
+            }],
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
               if (this.editDocument)
@@ -415,9 +426,11 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
   onReactionDisposerEffect = (item: PersonDocumentRequest | undefined) => {
     this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;
 
+    this.foreigner = !!(item && item.documentType && item.documentType.foreigner);
+
     this.documentTypesDc = dictionaryCollection<DicDocumentType>(DicDocumentType.NAME,
       this.personGroupId, {
-        view: "_minimal",
+        view: "_local",
       });
 
     const requestDate = item && item.requestDate ? item.requestDate : moment().toISOString();

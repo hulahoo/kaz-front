@@ -213,12 +213,6 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
                 disabled={isNotDraft}
                 form={this.props.form}
                 formItemOpts={{style: {marginBottom: "12px"}}}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.attachments']})
-                  }]
-                }}
               />
 
             </Form>
