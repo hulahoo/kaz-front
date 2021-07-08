@@ -461,6 +461,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                         }
                       })(
                         <TimePicker
+                          format={'HH:mm'}
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
@@ -529,6 +530,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                         }
                       })(
                         <TimePicker
+                          format={'HH:mm'}
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
@@ -540,7 +542,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                 entityName={AbsenceRvdRequest.NAME}
                 propertyName="totalHours"
                 form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
+                formItemOpts={{style: {display: "none"}}}
                 disabled={true}
               />
 
