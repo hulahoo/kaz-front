@@ -648,6 +648,13 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                     entityName={this.dataInstance.entityName}
                     propertyName="file"
                     form={this.props.form}
+                    disabled={isDisabledFields}
+                    getFieldDecoratorOpts={{
+                      rules: [{
+                        required: !isDisabledFields,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.file']})
+                      }]
+                    }}
                   />
                 </div>
               </Col>
