@@ -54,6 +54,7 @@ import {AddressRequestManagement} from "./pages/AddressRequest/AddressRequestMan
 import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationScheduleManagement";
 import {PortalMenuCustomization} from "../cuba/entities/base/tsadv_PortalMenuCustomization";
 import {observable} from "mobx";
+import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -160,7 +161,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={AbsenceRvdRequestManagement.PATH_WITH_PARAMS}
                        component={AbsenceRvdRequestManagement}/>
-
+                <Route exact={true}
+                       path={PersonPayslipManagement.PATH}
+                       component={PersonPayslipManagement}/>
 
                 {/*<Route exact={true}*/}
                 {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}

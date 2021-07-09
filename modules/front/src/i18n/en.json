@@ -135,6 +135,7 @@
   "menu.assigment-interview": "Assigment Interviews",
   "menu.job-offers": "Job Offers",
   "menu.certificateRequest": "JCL request",
+  "menu.personPayslip": "Payslip",
   "menu.absenceRequest": "Отсутствие",
   "menu.dmc-my": "Medical insurance",
   "menu.absence": "Absence",
@@ -447,5 +448,6 @@
   "newValue": "New value",
   "additionalInformation": "Additional information",
   "orgStructureRequest.report": "Report",
-  "orgStructureRequest.order": "Order"
+  "orgStructureRequest.order": "Order",
+  "file.download.error": "Error on downloading the file"
 }
