@@ -32,6 +32,7 @@ import {withRouter} from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {SearchSelect} from "../../components/SearchSelect";
+import {formatDate} from "../../util/Date/Date";
 
 type EditorProps = {
   entityId: string;
@@ -95,6 +96,10 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
     "status",
 
     'comment',
+
+    "startDate",
+
+    "endDate",
 
     "addressType",
 
@@ -233,6 +238,20 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
       <div>
 
         <Form.Item
+          label={createElement(Msg, {entityName: entityName, propertyName: "startDate"})}>
+          <Input
+            value={formatDate(this.editAddress.startDate)}
+            disabled/>
+        </Form.Item>
+
+        <Form.Item
+          label={createElement(Msg, {entityName: entityName, propertyName: "endDate"})}>
+          <Input
+            value={formatDate(this.editAddress.endDate)}
+            disabled/>
+        </Form.Item>
+
+        <Form.Item
           label={createElement(Msg, {entityName: entityName, propertyName: "addressType"})}>
           <Input
             value={this.editAddress && this.editAddress.addressType ? this.editAddress.addressType['_instanceName'] || '' : ''}
@@ -331,6 +350,48 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
     return (
       <div>
+
+        <ReadonlyField
+          entityName={entityName}
+          propertyName="startDate"
+          disabled={isNotDraft}
+          form={this.props.form}
+          getFieldDecoratorOpts={{
+            rules: [{
+              required: !isNotDraft,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.startDate']})
+            }],
+            getValueFromEvent: args => {
+              if (this.editAddress)
+                this.changedMap.set('startDate', this.editAddress.startDate ? !moment(this.editAddress.startDate).isSame(args, 'day') : !!args);
+              return args;
+            }
+          }}
+          formItemOpts={{
+            hasFeedback: this.changedMap.get('startDate'),
+          }}
+        />
+
+        <ReadonlyField
+          entityName={entityName}
+          propertyName="endDate"
+          disabled={isNotDraft}
+          form={this.props.form}
+          getFieldDecoratorOpts={{
+            rules: [{
+              required: !isNotDraft,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.endDate']})
+            }],
+            getValueFromEvent: args => {
+              if (this.editAddress)
+                this.changedMap.set('endDate', this.editAddress.endDate ? !moment(this.editAddress.endDate).isSame(args, 'day') : !!args);
+              return args;
+            }
+          }}
+          formItemOpts={{
+            hasFeedback: this.changedMap.get('endDate'),
+          }}
+        />
 
         <ReadonlyField
           entityName={entityName}
@@ -627,7 +688,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
         .then(value => this.editAddress = value as PersonDocument)
         .then(value => {
           this.instanceEditAddress.setItem(value);
-          const properties = ["addressType", "postalCode", "country", "kato", "streetType", "building", "block", "flat", 'addressForExpats', 'addressKazakh', 'addressEnglish', 'streetName'];
+          const properties = ["addressType", "postalCode", "country", "kato", "streetType", "building", "block", "flat", 'addressForExpats', 'addressKazakh', 'addressEnglish', 'streetName', 'startDate', 'endDate'];
           if (this.props.entityId === PersonDocumentRequestManagement.NEW_SUBPATH) {
             this.props.form.setFieldsValue(this.instanceEditAddress.getFieldValues(properties));
           } else if (item) {

@@ -42,6 +42,10 @@ class AddressListComponent extends React.Component<AddressListProps & MainStoreI
     "kato",
 
     "streetType",
+
+    "startDate",
+
+    "endDate",
   ];
 
   @observable selectedRowKey: string | undefined;
