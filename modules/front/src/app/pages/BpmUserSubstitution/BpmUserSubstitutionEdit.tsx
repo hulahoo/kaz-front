@@ -1,6 +1,6 @@
 import * as React from "react";
 import {FormEvent} from "react";
-import {Alert, Card, Form, message} from "antd";
+import {Alert, Card, Form, message, Select} from "antd";
 import {inject, observer} from "mobx-react";
 import {BpmUserSubstitutionManagement} from "./BpmUserSubstitutionManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -8,7 +8,16 @@ import {Link, Redirect} from "react-router-dom";
 import {IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
-import {collection, Field, instance, MultilineText, withLocalizedForm} from "@cuba-platform/react";
+import {
+  collection,
+  Field,
+  injectMainStore,
+  instance,
+  MainStoreInjected,
+  Msg,
+  MultilineText,
+  withLocalizedForm
+} from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
@@ -20,6 +29,7 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import {restServices} from "../../../cuba/services";
 import {RootStoreProp} from "../../store";
 import {catchException} from "../../util/util";
+import {SearchSelect} from "../../components/SearchSelect";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -27,9 +37,10 @@ type EditorProps = {
   entityId: string;
 };
 
+@injectMainStore
 @inject("rootStore")
 @observer
-class BpmUserSubstitutionEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp> {
+class BpmUserSubstitutionEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected> {
   dataInstance = instance<BpmUserSubstitution>(BpmUserSubstitution.NAME, {
     view: "bpmUserSubstitution-view",
     loadImmediately: false
@@ -83,7 +94,7 @@ class BpmUserSubstitutionEditComponent extends React.Component<Props & WrappedCo
       return <Redirect to={BpmUserSubstitutionManagement.PATH}/>;
     }
 
-    const {status} = this.dataInstance;
+    const messages = this.props.mainStore!.messages!;
 
     return (
 
@@ -103,16 +114,20 @@ class BpmUserSubstitutionEditComponent extends React.Component<Props & WrappedCo
                 bordered={false}>
             <Form onSubmit={this.handleSubmit} layout="vertical">
 
-              <Field
-                entityName={BpmUserSubstitution.NAME}
-                propertyName="substitutedUser"
-                form={this.props.form}
-                formItemOpts={{style: {marginBottom: "12px"}}}
-                optionsContainer={this.substitutedUsersDc}
-                getFieldDecoratorOpts={{
-                  rules: [{required: true}]
-                }}
-              />
+              <Form.Item
+                label={<Msg entityName={BpmUserSubstitution.NAME} propertyName={"substitutedUser"}/>}>
+                {this.props.form.getFieldDecorator("substitutedUser", {
+                  rules: [{
+                    required: true,
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages['substitutedUser' + '.kato']})
+                  }],
+                })(<SearchSelect onSearch={this.onSearchUser}
+                                 loading={this.substitutedUsersDc.status === 'LOADING'}
+                                 options={this.substitutedUsersDc && this.substitutedUsersDc.items.map(d =>
+                                   <Select.Option
+                                     key={d.id!}>{d.shortName}</Select.Option>)}/>)
+                }
+              </Form.Item>
 
               <Field
                 entityName={BpmUserSubstitution.NAME}
@@ -147,6 +162,22 @@ class BpmUserSubstitutionEditComponent extends React.Component<Props & WrappedCo
       </Page>
     );
   }
+
+  onSearchUser = (value: string) => {
+    if (value && value.length >= 3) {
+      this.substitutedUsersDc.filter = {
+        conditions: [
+          {
+            property: 'fullName',
+            operator: 'contains',
+            value: value
+          }
+        ]
+      }
+
+      this.substitutedUsersDc.load();
+    }
+  };
 
   componentDidMount() {
     if (this.props.entityId !== BpmUserSubstitutionManagement.NEW_SUBPATH) {
