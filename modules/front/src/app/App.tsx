@@ -52,8 +52,6 @@ import {PersonalDataRequestManagement} from "./pages/PersonalDataRequest/Persona
 import {PersonDocumentRequestManagement} from "./pages/PersonDocumentRequest/PersonDocumentRequestManagement";
 import {AddressRequestManagement} from "./pages/AddressRequest/AddressRequestManagement";
 import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationScheduleManagement";
-import {PortalMenuCustomization} from "../cuba/entities/base/tsadv_PortalMenuCustomization";
-import {observable} from "mobx";
 import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 
 @injectMainStore
@@ -61,10 +59,11 @@ import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManage
 @observer
 class AppComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
-  @observable
-  loadedMenu: PortalMenuCustomization[] = this.props.rootStore!.menu.menuCustomization;
 
   render() {
+
+    const loadedMenu = this.props.rootStore!.menu.menuCustomization;
+
     const {initialized, locale, loginRequired, metadata, messages} = this.props.mainStore!;
 
     if (!initialized || !locale || !this.props.rootStore!.userInfo.initialized) {
@@ -99,7 +98,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
             style={{background: "#fff", height: "100%"}}
           >
             <Menu mode="inline" style={{height: "100%", borderRight: 0}} className={"side-menu"}>
-              {menuItems.filter(value => this.loadedMenu.find(menu => menu.menuItem === value['id']))
+              {menuItems.filter(value => loadedMenu.find(menu => menu.menuItem === value['id']))
                 .map((item, idx) =>
                   this.menuItem(item, "" + (idx + 1 + menuIdx), this.props.intl)
                 )}
@@ -193,6 +192,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
   ) => {
     // Sub Menu  const
     if ((item as any).items != null) {
+
+      const loadedMenu = this.props.rootStore!.menu.menuCustomization;
+
       //recursively walk through sub menus
       const menuSubMenu: MenuSubMenu = item as MenuSubMenu;
       const MenuIcon = getMenuIcon(menuSubMenu.id);
@@ -207,7 +209,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
               <span>{this.props.intl.formatMessage({id: "menu." + (item as any).id})}</span>
           </span>
           }>
-          {(item as SubMenu).items.filter(value => this.loadedMenu.find(menu => menu.menuItem === value['id'])).map((ri, index) =>
+          {(item as SubMenu).items.filter(value => loadedMenu.find(menu => menu.menuItem === value['id'])).map((ri, index) =>
             this.menuItem(ri, keyString + "-" + (index + 1), intl)
           )}
         </Menu.SubMenu>
