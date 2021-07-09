@@ -461,7 +461,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                         }
                       })(
                         <TimePicker
-                          format={'HH:mm'}
+                          format={'HH'}
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
@@ -530,7 +530,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                         }
                       })(
                         <TimePicker
-                          format={'HH:mm'}
+                          format={'HH'}
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
