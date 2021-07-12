@@ -688,13 +688,17 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
         this.isCalledProcessInstanceData = true;
         this.processInstanceData = value;
         if (value) {
+          this.isUserInitiator = value.startUserId === this.props.rootStore!.userInfo!.id;
           restServices.bprocService.tasks({processInstanceData: value})
             .then(tasks => {
               this.tasks = tasks;
-              this.activeUserTask = tasks.find(task => !task.endTime
-                && Array.isArray(task.assigneeOrCandidates)
-                && task.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
+              this.activeTask = tasks.find(task => !task.endTime
               ) as ExtTaskData;
+
+              this.activeUserTask = this.activeTask
+              && this.activeTask.assigneeOrCandidates
+              && this.activeTask.assigneeOrCandidates.some(user => user.id === this.props.rootStore!.userInfo.id)
+                ? this.activeTask : null;
 
               if (this.activeUserTask)
                 restServices.bprocFormService.getTaskFormData({taskId: this.activeUserTask.id!})
@@ -703,7 +707,16 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
                     this.isStartForm = false;
                     this.initVariablesByBproc();
                   });
-              else this.initVariablesByBproc();
+              else {
+                if (this.isUserInitiator && this.activeTask) {
+                  // todo uncomment for cancel
+                  // this.formData = {
+                  //   outcomes: [{id: 'CANCEL'}]
+                  // };
+                  this.isStartForm = false;
+                }
+                this.initVariablesByBproc();
+              }
             })
         } else {
           restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
