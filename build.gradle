@@ -43,7 +43,7 @@ apply(plugin: 'cuba')
 cuba {
     artifact {
         group = 'kz.uco.kzm'
-        version = '0.1'
+        version = '0.1.1'
         isSnapshot = true
     }
     tomcat {
