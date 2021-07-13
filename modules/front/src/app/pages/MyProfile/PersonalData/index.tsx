@@ -35,9 +35,9 @@ class PersonalData extends React.Component<PersonCardProps & MainStoreInjected &
           className={"section-header-container"}><MsgEntity entityName={Address.NAME}/></div>
         <AddressList personGroupId={this.props.person!.groupId}/>
 
-        <div
-          className={"section-header-container"}><MsgEntity entityName={PersonEducation.NAME}/></div>
-        <PersonEducationList/>
+        {/*<div*/}
+        {/*  className={"section-header-container"}><MsgEntity entityName={PersonEducation.NAME}/></div>*/}
+        {/*<PersonEducationList/>*/}
 
       </div>
     )

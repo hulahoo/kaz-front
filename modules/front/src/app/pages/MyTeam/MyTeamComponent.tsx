@@ -179,7 +179,7 @@ class MyTeamComponent extends React.Component<MyTeamStructureProps & MainStoreIn
               this.props.searchVisible === false
                 ? null
                 : <Search style={{padding: '10px 5px 10px 10px'}}
-                          placeholder="Search"
+                          placeholder={this.props.intl.formatMessage({id: 'search'})}
                           onSearch={this.onSearch}/>
             }
 
