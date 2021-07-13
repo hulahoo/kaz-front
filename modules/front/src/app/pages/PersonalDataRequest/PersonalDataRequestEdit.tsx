@@ -21,6 +21,7 @@ import Page from "../../hoc/PageContentHoc";
 import MsgEntity from "../../components/MsgEntity";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {PersonalDataRequestManagement} from "./PersonalDataRequestManagement";
+import {goBackOrHomePage} from "../../util/util";
 
 type EditorProps = {
   entityId: string;
@@ -91,7 +92,7 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                 bordered={false}
                 actions={[
                   <Button buttonType={ButtonType.FOLLOW}
-                          onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                          onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
                   this.getOutcomeBtns()]}>
             <Form>
               {/*<div className={"section-header-container"}><FormattedMessage id={'additionalInformation'}/></div>*/}

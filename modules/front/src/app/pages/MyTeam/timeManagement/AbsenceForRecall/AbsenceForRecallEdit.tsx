@@ -39,6 +39,7 @@ import {
   parseToJsonFromFieldValue
 } from "../../../../components/MultiFileUpload";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
+import {goBackOrHomePage} from "../../../../util/util";
 
 type EditorProps = {
   entityId: string;
@@ -130,7 +131,7 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
           <div>
             <Card className="narrow-layout card-actions-container" actions={[
               <Button buttonType={ButtonType.FOLLOW}
-                      onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                      onClick={event => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
               this.getOutcomeBtns()]}
                   bordered={false}>
               <Form onSubmit={this.validate} layout="vertical">

@@ -25,7 +25,7 @@ import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
 import DefaultDatePicker from "../../components/Datepicker";
 import moment from "moment";
 import {PersonDocumentRequestManagement} from "./PersonDocumentRequestManagement";
-import {isEquals} from "../../util/util";
+import {goBackOrHomePage, isEquals} from "../../util/util";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 
 type EditorProps = {
@@ -131,7 +131,7 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
               bordered={false}
               actions={[
                 <Button buttonType={ButtonType.FOLLOW}
-                        onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                        onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
                 this.getOutcomeBtns()]}>
           <Form layout="vertical">
 

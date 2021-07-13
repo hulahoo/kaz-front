@@ -35,6 +35,7 @@ import moment from "moment/moment";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {ChangeAbsenceDaysRequest} from "../../../cuba/entities/base/tsadv_ChangeAbsenceDaysRequest";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
+import {goBackOrHomePage} from "../../util/util";
 
 type EditorProps = {
   entityId: string;
@@ -134,7 +135,7 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
           <div>
             <Card className="narrow-layout card-actions-container" actions={[
               <Button buttonType={ButtonType.FOLLOW}
-                      onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                      onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
               this.getOutcomeBtns(needBpm)]}
                   bordered={false}>
               <Form onSubmit={this.validate} layout="vertical">

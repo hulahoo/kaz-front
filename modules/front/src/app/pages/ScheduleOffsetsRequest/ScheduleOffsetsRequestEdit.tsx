@@ -39,6 +39,7 @@ import {DicEarningPolicy} from "../../../cuba/entities/base/tsadv_DicEarningPoli
 import {Moment} from "moment";
 import {ScheduleOffsetsRequestManagement} from "./ScheduleOffsetsRequestManagement";
 import {runReport} from "../../util/reportUtil";
+import {goBackOrHomePage} from "../../util/util";
 
 type EditorProps = {
   entityId: string;
@@ -176,7 +177,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
       </Button>);
 
     actions.push(<Button buttonType={ButtonType.FOLLOW}
-                         onClick={this.props.history!.goBack.bind(null)}>{this.props.intl.formatMessage({id: "close"})}</Button>);
+                         onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>);
 
     if (!this.isNewEntity()) {
       actions.push(<Button buttonType={ButtonType.FOLLOW}

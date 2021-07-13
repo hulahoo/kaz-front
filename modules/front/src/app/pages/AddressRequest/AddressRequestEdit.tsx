@@ -22,7 +22,7 @@ import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
 import {Address} from "../../../cuba/entities/base/tsadv$Address";
 import moment from "moment";
 import {PersonDocumentRequestManagement} from "../PersonDocumentRequest/PersonDocumentRequestManagement";
-import {isEquals} from "../../util/util";
+import {goBackOrHomePage, isEquals} from "../../util/util";
 import LoadingPage from "../LoadingPage";
 import MsgEntity from "../../components/MsgEntity";
 import Section from "../../hoc/Section";
@@ -155,7 +155,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
                 bordered={false}
                 actions={[
                   <Button buttonType={ButtonType.FOLLOW}
-                          onClick={this.props.history!.goBack}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                          onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
                   this.getOutcomeBtns()]}>
             <Form layout="vertical">
 

@@ -27,6 +27,7 @@ import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import TextArea from "antd/es/input/TextArea";
 import {restServices} from "../../../cuba/services";
+import {goBackOrHomePage} from "../../util/util";
 
 type EditorProps = {
   entityId: string;
@@ -123,7 +124,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
             <Card className="narrow-layout card-actions-container"
                   actions={[
                     <Button buttonType={ButtonType.FOLLOW} htmlType="button"
-                            onClick={() => this.props.history!.goBack()}>
+                            onClick={() => goBackOrHomePage(this.props.history!)}>
                       <FormattedMessage id="close"/>
                     </Button>,
                     this.getOutcomeBtns(isNeedBpm)
