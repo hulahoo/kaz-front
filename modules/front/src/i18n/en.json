@@ -164,6 +164,7 @@
   "menu.working-schedule": "Working schedule / regime change",
   "menu.temporary-transfer-day": "Temporary transfer to day/night shift",
   "menu.c-b": "C&B",
+  "menu.incentive": "Incentive",
   "absenceRequest": "Absence request",
   "absence": "Absence",
   "settings": "Settings",
@@ -447,5 +448,7 @@
   "newValue": "New value",
   "additionalInformation": "Additional information",
   "orgStructureRequest.report": "Report",
-  "orgStructureRequest.order": "Order"
+  "orgStructureRequest.order": "Order",
+  "final.result": "Final result",
+  "total": "Total"
 }

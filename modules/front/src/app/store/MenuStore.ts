@@ -160,6 +160,13 @@ export default class MenuStore {
         menuLink: "/orgStructureRequest",
         pathPattern: "/orgStructureRequest",
         component: null,
+      },
+      {
+        id: "incentive",
+        caption: "Incentive",
+        menuLink: "/incentive",
+        pathPattern: "/incentive",
+        component: null,
       }
     ]
   }

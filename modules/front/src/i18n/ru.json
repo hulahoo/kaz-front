@@ -146,6 +146,7 @@
   "menu.working-schedule": "Заявка на изменение графика/режима работы",
   "menu.temporary-transfer-day": "Заявка на временный перевод на ночную/дневную смену",
   "menu.c-b": "Эффективность и компенсация",
+  "menu.incentive": "Incentive",
   "absenceRequest": "Заявка на отсутствие",
   "absence": "Отсутствие",
   "settings": "Настройки",
@@ -436,5 +437,7 @@
   "newValue": "Новое значение",
   "additionalInformation": "Дополнительная информация",
   "orgStructureRequest.report": "Отчет",
-  "orgStructureRequest.order": "Приказ"
+  "orgStructureRequest.order": "Приказ",
+  "final.result": "Итоговый результат",
+  "total": "Итого"
 }
