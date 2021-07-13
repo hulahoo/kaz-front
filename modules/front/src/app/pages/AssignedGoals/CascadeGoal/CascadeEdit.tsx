@@ -302,8 +302,7 @@ class CascadeEditComponent extends React.Component<Props & WrappedComponentProps
 
   componentDidMount() {
     this.assignedPerformancePlan.afterLoad = () => {
-      const positionGroupId = this.assignedPerformancePlan.item!.assignedPerson!.currentAssignment!.positionGroup!.id;
-
+      const positionGroupId = this.props.rootStore!.userInfo.positionGroupId!;
       restServices.positionService.getManager(positionGroupId)
         .then(managerPosition => {
           const managerId = this.dataInstance.item && this.dataInstance.item.positionGroup
