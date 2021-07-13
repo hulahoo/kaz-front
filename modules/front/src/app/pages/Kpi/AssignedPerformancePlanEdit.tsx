@@ -39,7 +39,7 @@ import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
 import Notification from "../../util/Notification/Notification";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import {getBusinessKey} from "../../util/util";
+import {getBusinessKey, goBackOrHomePage} from "../../util/util";
 import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
 import TextArea from "antd/es/input/TextArea";
@@ -394,7 +394,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
           <Button buttonType={ButtonType.FOLLOW}
                   onClick={() => {
                     if (this.approverHrRoleCode !== 'INITIATOR')
-                      return this.props.history!.goBack();
+                      return goBackOrHomePage(this.props.history!);
                     else return this.props.history!.push(AssignedPerformancePlanManagement.PATH);
                   }}>{this.props.intl.formatMessage({id: "close"})}</Button>,
           ...this.pageActions()]}
