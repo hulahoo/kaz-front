@@ -46,6 +46,7 @@ import {runReport} from "../../../../../util/reportUtil";
 import {goBackOrHomePage} from "../../../../../util/util";
 import {ExecutiveAssistantsManagement} from "../../../../ExecutiveAssistants/ExecutiveAssistantsManagement";
 import {MyTeamStructureManagement} from "../../../MyTeamStructureManagement";
+import {AssignmentSchedule} from "../../../../../../cuba/entities/base/tsadv$AssignmentSchedule";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -146,6 +147,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
   isUpdateBeforeOutcome = true;
 
+  currentAssignmentSchedule?: AssignmentSchedule;
+
   @observable
   person: PersonExt;
 
@@ -192,6 +195,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     this.setEmployee(this.personGroupId);
 
     this.initCollections();
+
+    this.getCurrentAssignmentSchedule().then(value => this.currentAssignmentSchedule = value);
   }
 
   initAbsenceTypeVariables = (absenceType?: DicAbsenceType | null) => {
@@ -260,8 +265,29 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       if (!agree || !acquainted)
         return new Promise(resolve => resolve(false));
     }
+
+    if (!this.isNotDraft()) {
+      if (!this.checkRotationalWork())
+        return new Promise(resolve => resolve(false));
+    }
+
     return new Promise(resolve => resolve(true));
   };
+
+  checkRotationalWork = (type?: string): boolean => {
+    const absenceType = this.typesAbsenceDC.items.find(value => value.id === (type || this.props.form.getFieldValue('type')));
+
+    if (this.currentAssignmentSchedule && this.currentAssignmentSchedule!.endPolicyCode === '361'
+      && absenceType && !!absenceType.overtimeWork) {
+      Notification.error({
+          message: this.props.intl.formatMessage({id: "absence.rvd.validate.rotational.work"})
+        }
+      )
+
+      return false;
+    }
+    return true;
+  }
 
   setTime = (time?: moment.Moment, dateTime?: moment.Moment) => {
     if (time && dateTime)
@@ -383,6 +409,9 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                     this.props.form.setFieldsValue({purpose: null});
 
                     this.calcHours(args, null, null);
+
+                    this.checkRotationalWork(args);
+
                     return args;
                   }
                 }}
@@ -669,6 +698,17 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
       </Page>
     );
   }
+
+  getCurrentAssignmentSchedule = async () => {
+    return await getCubaREST()!.searchEntities<AssignmentSchedule>(AssignmentSchedule.NAME, {
+      conditions: [{
+        property: 'assignmentGroup.id',
+        operator: '=',
+        value: this.props.rootStore!.userInfo.assignmentGroupId!
+      }]
+    }).then(value => value.length > 0 ? value[0] : undefined);
+  }
+
 
   loadPerson = (personGroupId: string): Promise<PersonExt> => {
     return getCubaREST()!.searchEntities(PersonExt.NAME, {

@@ -19,6 +19,7 @@ export default class {
   position?: string;
   timeZone?: string;
   personGroupId?: string;
+  assignmentGroupId?: string;
   positionId?: string;
   positionGroupId?: string;
   companyCode?: string;
@@ -34,6 +35,7 @@ export default class {
     return await restServices.employeeService.personGroupInfo(this.id!).then(personProfile => {
       if (personProfile) {
         this.personGroupId = personProfile.groupId;
+        this.assignmentGroupId = personProfile.assignmentGroupId;
         this.positionId = personProfile.positionId;
         this.positionGroupId = personProfile.positionGroupId;
         this.companyCode = personProfile.companyCode;
@@ -60,6 +62,7 @@ export default class {
     this.position = undefined;
     this.timeZone = undefined;
     this.personGroupId = undefined;
+    this.assignmentGroupId = undefined;
     this.positionGroupId = undefined;
     this.companyCode = undefined;
   };

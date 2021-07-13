@@ -437,5 +437,6 @@
   "additionalInformation": "Дополнительная информация",
   "orgStructureRequest.report": "Отчет",
   "orgStructureRequest.order": "Приказ",
-  "file.download.error": "Ошибка при загрузке файла"
+  "file.download.error": "Ошибка при загрузке файла",
+  "absence.rvd.validate.rotational.work": "Подача заявки запрещена для работников, занятых на вахтовой работе"
 }

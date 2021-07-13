@@ -448,5 +448,6 @@
   "additionalInformation": "Additional information",
   "orgStructureRequest.report": "Report",
   "orgStructureRequest.order": "Order",
-  "file.download.error": "Error on downloading the file"
+  "file.download.error": "Error on downloading the file",
+  "absence.rvd.validate.rotational.work": "Submission of an request is prohibited for workers engaged in rotational work"
 }
