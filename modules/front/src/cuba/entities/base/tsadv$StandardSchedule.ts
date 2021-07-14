@@ -2,7 +2,9 @@ import { AbstractParentEntity } from "./AbstractParentEntity";
 import { Calendar } from "./tsadv$Calendar";
 import { StandardOffset } from "./tsadv$StandardOffset";
 import { StandardShift } from "./tsadv$StandardShift";
-export class StandardSchedule extends AbstractParentEntity {
+import {DicCompany} from "./base_DicCompany";
+import {ICompanyEntity} from "../interface/ICompanyEntity";
+export class StandardSchedule extends AbstractParentEntity implements ICompanyEntity{
   static NAME = "tsadv$StandardSchedule";
   scheduleName?: string | null;
   description?: string | null;
@@ -15,6 +17,7 @@ export class StandardSchedule extends AbstractParentEntity {
   isHolidayWorkDay?: boolean | null;
   standardOffsets?: StandardOffset[] | null;
   standardShifts?: StandardShift[] | null;
+  company?: DicCompany | null;
 }
 export type StandardScheduleViewName =
   | "_base"

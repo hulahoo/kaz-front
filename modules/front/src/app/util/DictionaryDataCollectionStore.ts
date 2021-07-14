@@ -1,11 +1,11 @@
-import {AbstractDictionary} from "../../cuba/entities/base/AbstractDictionary";
 import {ServiceDataCollectionStore} from "./ServiceDataCollectionStore";
 import {restServices} from "../../cuba/services";
 import {runInAction} from "mobx";
 import {DataCollectionOptions} from "@cuba-platform/react/dist/data/Collection";
 import {getCubaREST} from "@cuba-platform/react";
+import {ICompanyEntity} from "../../cuba/entities/interface/ICompanyEntity";
 
-export class DictionaryDataCollectionStore<T extends AbstractDictionary> extends ServiceDataCollectionStore<T> {
+export class DictionaryDataCollectionStore<T extends ICompanyEntity> extends ServiceDataCollectionStore<T> {
 
   constructor(dictionaryName: string, personGroupId: string, opts: DataCollectionOptions) {
     super(restServices.portalHelperService.companiesForLoadDictionary.bind(null, {
@@ -90,7 +90,7 @@ export class DictionaryDataCollectionStore<T extends AbstractDictionary> extends
   }
 }
 
-export function dictionaryCollection<T extends AbstractDictionary>(dictionaryName: string, personGroupId: string, opts?: DataCollectionOptions): DictionaryDataCollectionStore<T> {
+export function dictionaryCollection<T extends ICompanyEntity>(dictionaryName: string, personGroupId: string, opts?: DataCollectionOptions): DictionaryDataCollectionStore<T> {
   if (!opts) opts = {
     loadImmediately: true
   };

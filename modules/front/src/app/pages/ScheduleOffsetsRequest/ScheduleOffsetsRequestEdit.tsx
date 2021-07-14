@@ -36,7 +36,7 @@ import TextArea from "antd/es/input/TextArea";
 import MsgEntity from '../../components/MsgEntity';
 import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
 import {DicEarningPolicy} from "../../../cuba/entities/base/tsadv_DicEarningPolicy";
-import {Moment} from "moment";
+import moment, {Moment} from "moment";
 import {ScheduleOffsetsRequestManagement} from "./ScheduleOffsetsRequestManagement";
 import {runReport} from "../../util/reportUtil";
 import {goBackOrHomePage} from "../../util/util";
@@ -59,9 +59,7 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   @observable
   loaded: boolean = false;
 
-  newSchedulesDc = collection<StandardSchedule>(StandardSchedule.NAME, {
-    view: "_minimal"
-  });
+  newSchedulesDc: DictionaryDataCollectionStore<StandardSchedule>;
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
@@ -287,6 +285,21 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
                     }}
                   />
 
+                  <ReadonlyField
+                    entityName={ScheduleOffsetsRequest.NAME}
+                    propertyName="earningPolicy"
+                    form={this.props.form}
+                    disabled={this.isDisabledFields}
+                    optionsContainer={this.earningPolicyDc}
+                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    getFieldDecoratorOpts={{
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'earningPolicy']})
+                      }]
+                    }}
+                  />
+
                   <Form.Item label={<Msg entityName={ScheduleOffsetsRequest.NAME} propertyName={"purpose"}/>}
                              key='purpose'
                              style={{marginBottom: '12px'}}>
@@ -401,21 +414,6 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
 
                   <ReadonlyField
                     entityName={ScheduleOffsetsRequest.NAME}
-                    propertyName="earningPolicy"
-                    form={this.props.form}
-                    disabled={this.isDisabledFields}
-                    optionsContainer={this.earningPolicyDc}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
-                    getFieldDecoratorOpts={{
-                      rules: [{
-                        required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[ScheduleOffsetsRequest.NAME + '.' + 'earningPolicy']})
-                      }]
-                    }}
-                  />
-
-                  <ReadonlyField
-                    entityName={ScheduleOffsetsRequest.NAME}
                     propertyName="comment"
                     form={this.props.form}
                     disabled={this.isDisabledFields}
@@ -506,6 +504,25 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
         personGroupId: personGroupId
       });
 
+      const requestDate: moment.Moment = this.isNewEntity() ? moment() : moment(scheduleOffsetRequest.requestDate);
+
+      this.newSchedulesDc = dictionaryCollection<StandardSchedule>(StandardSchedule.NAME, personGroupId, {
+        view: "_minimal",
+        sort: 'scheduleName',
+        loadImmediately: true,
+        filter: {
+          conditions: [{
+            property: 'startDate',
+            operator: '<=',
+            value: requestDate.format('YYYY-MM-DD')
+          }, {
+            property: 'endDate',
+            operator: '>=',
+            value: requestDate.format('YYYY-MM-DD')
+          }]
+        }
+      });
+
       if (this.isNewEntity()) {
         this.standardScheduleDc.afterLoad = () => {
           this.dataInstance.item!.currentSchedule = this.standardScheduleDc.items![0];
@@ -543,11 +560,22 @@ class ScheduleOffsetsRequestEditComponent extends AbstractAgreedBprocEdit<Schedu
   }
 
   loadEarningPolicyDc = (personGroupId: string) => {
-    this.earningPolicyDc = dictionaryCollection<DicEarningPolicy>(DicEarningPolicy.NAME, personGroupId, {});
+    this.earningPolicyDc = dictionaryCollection<DicEarningPolicy>(DicEarningPolicy.NAME, personGroupId, {
+      filter: {
+        conditions: [{
+          property: 'active',
+          operator: '=',
+          value: 'TRUE'
+        }]
+      },
+      loadImmediately: true
+    });
   };
 
   loadPurposesDc = (personGroupId: string) => {
-    this.purposesDc = dictionaryCollection<DicSchedulePurpose>(DicSchedulePurpose.NAME, personGroupId, {});
+    this.purposesDc = dictionaryCollection<DicSchedulePurpose>(DicSchedulePurpose.NAME, personGroupId, {
+      loadImmediately: true
+    });
   };
 
   loadPersonGroupDc = (personGroupId: string) => {

@@ -47,6 +47,7 @@ import {goBackOrHomePage} from "../../../../../util/util";
 import {ExecutiveAssistantsManagement} from "../../../../ExecutiveAssistants/ExecutiveAssistantsManagement";
 import {MyTeamStructureManagement} from "../../../MyTeamStructureManagement";
 import {AssignmentSchedule} from "../../../../../../cuba/entities/base/tsadv$AssignmentSchedule";
+import {AssignmentExt} from "../../../../../../cuba/entities/base/base$AssignmentExt";
 
 
 type Props = FormComponentProps & EditorProps;
@@ -179,7 +180,14 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     });
 
     this.dicShiftDc = dictionaryCollection<DicShift>(DicShift.NAME, this.personGroupId, {
-      view: '_local'
+      view: '_local',
+      filter: {
+        conditions: [{
+          property: 'active',
+          operator: '=',
+          value: 'TRUE'
+        }]
+      }
     });
   }
 
@@ -196,7 +204,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
     this.initCollections();
 
-    this.getCurrentAssignmentSchedule().then(value => this.currentAssignmentSchedule = value);
+    this.getCurrentAssignmentSchedule(this.personGroupId).then(value => this.currentAssignmentSchedule = value);
   }
 
   initAbsenceTypeVariables = (absenceType?: DicAbsenceType | null) => {
@@ -699,12 +707,43 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     );
   }
 
-  getCurrentAssignmentSchedule = async () => {
+  getAssignment = async (personGroupId: string) => {
+    return await getCubaREST()!.searchEntities<AssignmentExt>(AssignmentExt.NAME, {
+      conditions: [{
+        property: 'personGroup.id',
+        operator: '=',
+        value: personGroupId
+      }, {
+        property: 'assignmentStatus.code',
+        operator: 'in',
+        value: ['ACTIVE', 'SUSPENDED']
+      }, {
+        property: 'primaryFlag',
+        operator: '=',
+        value: 'TRUE'
+      }, {
+        property: 'startDate',
+        operator: '<=',
+        value: moment().format('YYYY-MM-DD')
+      }, {
+        property: 'endDate',
+        operator: '>=',
+        value: moment().format('YYYY-MM-DD')
+      }]
+    }, {
+      limit: 1,
+      view: 'portal-assignment-group'
+    });
+  }
+
+  getCurrentAssignmentSchedule = async (personGroupId: string) => {
+    let assignmentGroupId: string;
+    await this.getAssignment(personGroupId).then(value => assignmentGroupId = value[0].group!.id!);
     return await getCubaREST()!.searchEntities<AssignmentSchedule>(AssignmentSchedule.NAME, {
       conditions: [{
         property: 'assignmentGroup.id',
         operator: '=',
-        value: this.props.rootStore!.userInfo.assignmentGroupId!
+        value: assignmentGroupId!
       }]
     }).then(value => value.length > 0 ? value[0] : undefined);
   }
