@@ -21,6 +21,7 @@ import LoadingPage from "../LoadingPage";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {Link} from "react-router-dom";
 import {IncentiveManagement} from "./IncentiveManagement";
+import {capitalizeFirstLetter} from "../../util/util";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -57,7 +58,7 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
       <Page
         pageName={this.props.intl.formatMessage({id: "menu.incentive"}) + ", "
         + this.organization['_instanceName'] + ", "
-        + new Date().toLocaleDateString(this.props.rootStore!.userInfo.locale, dayOptions)}>
+        + capitalizeFirstLetter(new Date().toLocaleDateString(this.props.rootStore!.userInfo.locale, dayOptions))}>
         <Section size="large">
           <Card className="narrow-layout card-actions-container"
                 actions={[

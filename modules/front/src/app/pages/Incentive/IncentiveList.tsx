@@ -1,5 +1,5 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 import {handleTableChange, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
@@ -17,8 +17,10 @@ import Section from "../../hoc/Section";
 import {action} from "mobx";
 import {PaginationConfig} from "antd/es/pagination";
 import {SorterResult} from "antd/es/table";
+import {capitalizeFirstLetter} from "../../util/util";
 
 @injectMainStore
+@inject("rootStore")
 @observer
 class IncentiveListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
   dataCollection = serviceCollection(
@@ -41,6 +43,8 @@ class IncentiveListComponent extends React.Component<MainStoreInjected & Wrapped
 
   render() {
 
+    const dayOptions = {month: 'long', year: 'numeric'};
+
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.incentive"})}>
         <Section size="large">
@@ -55,9 +59,12 @@ class IncentiveListComponent extends React.Component<MainStoreInjected & Wrapped
                  rowKey="id">
             <Column title={<>{this.props.intl.formatMessage({id: "period"})}</>}
                     dataIndex="date"
-                    key="date" render={(text, record: any) => {
-              return formatDate(record.date, 'YYYY.MM');
-            }}/>
+                    key="date"
+                    render={(text, record: any) => {
+                      console.log(record.date);
+                      console.log(new Date(record.date));
+                      return capitalizeFirstLetter(new Date(record.date).toLocaleDateString(this.props.rootStore!.userInfo.locale, dayOptions));
+                    }}/>
             <Column title={<>{this.props.intl.formatMessage({id: "organization"})}</>}
                     dataIndex="organizationName"
                     key="organizationName"
