@@ -38,7 +38,6 @@ import {Report} from "./entities/base/report$Report";
 import {GanttChartVacationScheduleData} from "../app/components/VacationGanttChart";
 import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleRequest";
 import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
-import {PortalMenuCustomization} from "./entities/base/tsadv_PortalMenuCustomization";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -854,6 +853,23 @@ export const restServices = {
           }
         });
     }
+  },
+  incentiveService: {
+    getIncentiveList: (pagination: ServicePagination): Promise<EntitiesPaginationResult<GanttChartVacationScheduleData>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_IncentiveService",
+        "getIncentiveList",
+        {
+          paginationPojo: pagination
+        }
+      ).then(value => {
+        const parse = JSON.parse(value);
+        return {
+          entities: JSON.parse(parse.entities),
+          count: parse.count
+        }
+      });
+    },
   }
 };
 

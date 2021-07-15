@@ -132,3 +132,7 @@ export const goBackOrHomePage = (history: History) => {
     history.push("/");
   else history.goBack();
 }
+
+export const capitalizeFirstLetter = (word: string): string => {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}

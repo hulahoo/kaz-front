@@ -165,6 +165,7 @@
   "menu.working-schedule": "Working schedule / regime change",
   "menu.temporary-transfer-day": "Temporary transfer to day/night shift",
   "menu.c-b": "C&B",
+  "menu.incentive": "Incentive",
   "absenceRequest": "Absence request",
   "absence": "List of absences",
   "settings": "Settings",
@@ -449,5 +450,7 @@
   "orgStructureRequest.report": "Report",
   "orgStructureRequest.order": "Order",
   "file.download.error": "Error on downloading the file",
-  "absence.rvd.validate.rotational.work": "Submission of an request is prohibited for workers engaged in rotational work"
+  "absence.rvd.validate.rotational.work": "Submission of an request is prohibited for workers engaged in rotational work",
+  "final.result": "Final result",
+  "total": "Total"
 }

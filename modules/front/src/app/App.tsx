@@ -53,6 +53,7 @@ import {PersonDocumentRequestManagement} from "./pages/PersonDocumentRequest/Per
 import {AddressRequestManagement} from "./pages/AddressRequest/AddressRequestManagement";
 import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationScheduleManagement";
 import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
+import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -173,6 +174,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={AbsenceForRecallManagement.PATH_WITH_PARAMS}
                        component={AbsenceForRecallManagement}/>
+                <Route exact={true}
+                       path={IncentiveManagement.PATH + "/:entityId?"}
+                       component={IncentiveManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}
