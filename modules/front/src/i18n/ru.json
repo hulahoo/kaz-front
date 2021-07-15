@@ -258,6 +258,7 @@
   "book.pageCount": "Количество страниц",
   "close": "Закрыть",
   "SEND_FOR_APPROVAL": "Отправить на утверждение",
+  "AUTO_REDIRECT": "Автоматическое переназначение",
   "certificateRequest": "Справка с места работы",
   "bproc.startBproc.modal.error": "Пользователь уже добавлен",
   "START.INFO": "Вы уверены, что хотите отправить на утверждение?",

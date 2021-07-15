@@ -263,6 +263,7 @@
   "weight": "Weight",
   "close": "Close",
   "SEND_FOR_APPROVAL": "Send on approve",
+  "AUTO_REDIRECT": "Auto redirect",
   "ratingCount": "rating",
   "book.information": "Information",
   "book.extension": "Extensions",
