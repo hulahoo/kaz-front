@@ -22,6 +22,7 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import {Link} from "react-router-dom";
 import {IncentiveManagement} from "./IncentiveManagement";
 import {capitalizeFirstLetter} from "../../util/util";
+import Notification from "../../util/Notification/Notification";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -46,6 +47,9 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
   @observable
   finalResult: number;
 
+  @observable
+  committing = false;
+
   render() {
 
     if (!this.organization || this.indicators.length !== this.results.length) return <LoadingPage/>;
@@ -69,7 +73,13 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
                             style={{margin: "0 12px 12px 0"}}>
                       <span><FormattedMessage id="close"/></span>
                     </Button>
-                  </Link>
+                  </Link>,
+                  <Button buttonType={ButtonType.FOLLOW}
+                          onClick={this.save}
+                          disabled={this.committing}
+                          style={{margin: "0 12px 12px 0"}}>
+                    <span><FormattedMessage id="save"/></span>
+                  </Button>
                 ]}
                 bordered={false}>
 
@@ -92,8 +102,8 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
                         const result = this.getResult(record);
                         return <Input type={'number'}
                                       value={result.plan || 0}
-                                      onChange={event => {
-                                        result.plan = event.currentTarget.value;
+                                      onChange={async (event) => {
+                                        result.plan = event.currentTarget.value || 0;
                                         this.calcAndSaveResult(record, result);
                                         return event;
                                       }
@@ -109,7 +119,7 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
                         return <Input type={'number'}
                                       value={result.fact || 0}
                                       onChange={event => {
-                                        result.fact = event.currentTarget.value;
+                                        result.fact = event.currentTarget.value || 0;
                                         this.calcAndSaveResult(record, result);
                                         return event;
                                       }}
@@ -120,12 +130,12 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
                       key="result"
                       render={(text, record: OrganizationIncentiveIndicators) => {
                         const result = this.getResult(record);
-                        return <Input disabled={record.indicatorType !== 'RESULT'}
-                                      type={'number'}
+                        return <Input type={'number'}
+                                      disabled={record.indicatorType !== 'RESULT'}
                                       value={result.result || 0}
-                                      onChange={event => {
+                                      onChange={async event => {
                                         result.result = event.currentTarget.value;
-                                        this.calcAndSaveResult(record, result);
+                                        await this.calcAndSaveResult(record, result);
                                         return event;
                                       }}
                         />;
@@ -144,6 +154,18 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
     )
   }
 
+  save = async () => {
+    this.committing = true;
+    for (let result of this.results) {
+      await getCubaREST()!.commitEntity(OrganizationIncentiveResult.NAME, toJS(result))
+        .then(value => result.id = value.id);
+    }
+    Notification.success({
+      message: this.props.intl.formatMessage({id: "management.editor.success"})
+    });
+    this.committing = false;
+  }
+
   calcFinalResult = () => {
     this.finalResult = this.results.map(value => this.getTotal(value)).reduce((a, b) => a + b, 0);
   }
@@ -155,11 +177,6 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
   calcAndSaveResult = (indicator: OrganizationIncentiveIndicators, result: OrganizationIncentiveResult) => {
     if (indicator.indicatorType === 'PLAN_FACT' && result.plan && result.fact) result.result = Math.round(result.fact * 10000.0 / result.plan) / 100;
     if (result.weight !== indicator.weight) result.weight = indicator.weight;
-
-    (async () => {
-      getCubaREST()!.commitEntity(OrganizationIncentiveResult.NAME, toJS(result))
-        .then(value => result.id = value.id);
-    })()
 
     this.results = this.results.map(value => value.indicator === result.indicator ? result : value);
     this.calcFinalResult();
