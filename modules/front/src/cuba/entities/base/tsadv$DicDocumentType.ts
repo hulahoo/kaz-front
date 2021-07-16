@@ -2,6 +2,7 @@ import { AbstractDictionary } from "./AbstractDictionary";
 export class DicDocumentType extends AbstractDictionary {
   static NAME = "tsadv$DicDocumentType";
   foreigner?: boolean | null;
+  isIdOrPassport?: boolean | null;
 }
 export type DicDocumentTypeViewName =
   | "_base"
@@ -17,6 +18,7 @@ export type DicDocumentTypeView<
       | "id"
       | "langValue"
       | "foreigner"
+      | "isIdOrPassport"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -43,6 +45,7 @@ export type DicDocumentTypeView<
       DicDocumentType,
       | "id"
       | "foreigner"
+      | "isIdOrPassport"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -71,6 +74,7 @@ export type DicDocumentTypeView<
       DicDocumentType,
       | "id"
       | "foreigner"
+      | "isIdOrPassport"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -98,6 +102,7 @@ export type DicDocumentTypeView<
       DicDocumentType,
       | "id"
       | "foreigner"
+      | "isIdOrPassport"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
