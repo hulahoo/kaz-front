@@ -54,6 +54,7 @@ import {AddressRequestManagement} from "./pages/AddressRequest/AddressRequestMan
 import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationScheduleManagement";
 import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
+import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -177,6 +178,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={IncentiveManagement.PATH + "/:entityId?"}
                        component={IncentiveManagement}/>
+                <Route exact={true}
+                       path={BpmUserSubstitutionManagement.PATH + "/:entityId?"}
+                       component={BpmUserSubstitutionManagement}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}

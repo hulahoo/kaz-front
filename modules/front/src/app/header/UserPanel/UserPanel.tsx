@@ -22,6 +22,10 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
           <NavLink to={"/user/settings"}><Icon type={"setting"}/>{this.props.intl.formatMessage({id: "settings"})}
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="1">
+          <NavLink to={"/bpmUserSubstitution"}>{this.props.intl.formatMessage({id: "bpmUserSubstitution"})}
+          </NavLink>
+        </Menu.Item>
         <Menu.Divider/>
         <Menu.Item key="2">
           <a onClick={this.showLogoutConfirm}><Icon type={"logout"}/>{this.props.intl.formatMessage({id: "logout"})}</a>

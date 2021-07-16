@@ -38,6 +38,7 @@ import {Report} from "./entities/base/report$Report";
 import {GanttChartVacationScheduleData} from "../app/components/VacationGanttChart";
 import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleRequest";
 import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
+import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -869,6 +870,17 @@ export const restServices = {
           count: parse.count
         }
       });
+    },
+  },
+  bpmUserSubstitutionService: {
+    save: (bpmUserSubstitution: BpmUserSubstitution): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_BpmUserSubstitutionService",
+        "save",
+        {
+          bpmUserSubstitution: bpmUserSubstitution
+        }
+      ).then(value => JSON.parse(value));
     },
   }
 };

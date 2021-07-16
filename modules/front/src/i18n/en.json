@@ -265,6 +265,7 @@
   "weight": "Weight",
   "close": "Close",
   "SEND_FOR_APPROVAL": "Send on approve",
+  "AUTO_REDIRECT": "Auto redirect",
   "ratingCount": "rating",
   "book.information": "Information",
   "book.extension": "Extensions",
@@ -452,5 +453,6 @@
   "file.download.error": "Error on downloading the file",
   "absence.rvd.validate.rotational.work": "Submission of an request is prohibited for workers engaged in rotational work",
   "final.result": "Final result",
-  "total": "Total"
+  "total": "Total",
+  "bpmUserSubstitution": "Bpm user substitution"
 }
