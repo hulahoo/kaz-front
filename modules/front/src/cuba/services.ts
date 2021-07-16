@@ -799,8 +799,8 @@ export const restServices = {
           throw new Error("report[" + reportCode + "] not found!");
         });
     },
-    run: (reportId: string, data: any, catchException?: (reason: any) => void) => {
-      fetch(getCubaREST()!.apiUrl + `reports/v1/run/${reportId}`,
+    run: async (reportId: string, data: any, catchException?: (reason: any) => void) => {
+      return await fetch(getCubaREST()!.apiUrl + `reports/v1/run/${reportId}`,
         {
           headers: {
             'Content-Type': 'application/json; charset=UTF-8',

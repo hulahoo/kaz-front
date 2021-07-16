@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Alert, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Select, Table} from "antd";
+import {Alert, Card, Checkbox, Col, Dropdown, Form, Icon, Menu, Modal, Row, Select, Spin, Table} from "antd";
 
 import {inject, observer} from "mobx-react";
 import {OrgStructureRequestManagement} from "./OrgStructureRequestManagement";
@@ -31,7 +31,7 @@ import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import moment from "moment";
 import DefaultDatePicker from "../../components/Datepicker";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import {downloadReport} from "../../util/reportUtil";
+import {runReport} from "../../util/reportUtil";
 import Button, {ButtonType} from "../../components/Button/Button";
 
 type Props = FormComponentProps & EditorProps;
@@ -178,6 +178,9 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
 
   @observable
   isCbCompany: boolean = false;
+
+  @observable
+  loadingReport: boolean = false;
 
   reactionDisposer: IReactionDisposer;
 
@@ -788,8 +791,9 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     </Button>;
     const printReportButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
                                       onClick={this.onClickDownloadReport}
+                                      disabled={this.loadingReport}
                                       key="report-button">
-      <Icon type="file-excel"/>
+      {this.loadingReport ? <Spin/> : <Icon type="file-excel"/>}
       {this.props.intl.formatMessage({id: 'orgStructureRequest.report'})}
     </Button>;
     const printOrderButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 0"}}
@@ -851,12 +855,35 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
       })
   }
 
-  onClickDownloadReport = () => {
-    downloadReport("ORG_SRTUCTURE", this.props.entityId, this.props.intl.formatMessage({id: 'orgStructureRequest.report'}), "req");
+  onClickDownloadReport = async () => {
+    this.loadingReport = true;
+    const reportCode = "ORG_SRTUCTURE";
+
+    const data = {
+      parameters: [{
+        name: "req",
+        value: this.props.entityId
+      }, {
+        name: 'usr',
+        value: this.props.rootStore!.userInfo.id!
+      }]
+    };
+    await runReport(reportCode, data, this.props.intl);
+    this.loadingReport = false;
+    console.log(this.loadingReport);
   }
 
   onClickDownloadOrder = () => {
-    downloadReport("ORDER", this.props.entityId, this.props.intl.formatMessage({id: 'orgStructureRequest.order'}), "req");
+
+    const reportCode = "ORDER";
+
+    const data = {
+      parameters: [{
+        name: "req",
+        value: this.props.entityId
+      }]
+    };
+    runReport(reportCode, data, this.props.intl);
   }
 }
 
