@@ -431,6 +431,13 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
     this.documentTypesDc = dictionaryCollection<DicDocumentType>(DicDocumentType.NAME,
       this.personGroupId, {
         view: "_local",
+        filter: {
+          conditions: [{
+            property: 'isIdOrPassport',
+            operator: '=',
+            value: 'TRUE'
+          }]
+        }
       });
 
     const requestDate = item && item.requestDate ? item.requestDate : moment().toISOString();
