@@ -65,8 +65,9 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
           ? createElement(Select, {
             optionFilterProp: "children",
             showSearch: true,
+            loading: optionsContainer && optionsContainer.status === "LOADING",
             ...this.props
-          }, optionsContainer && optionsContainer.items.map(entity => createElement(Select.Option, {
+          }, optionsContainer!.items.map(entity => createElement(Select.Option, {
             value: entity.id,
             key: entity.id
           }, entity._instanceName)))
