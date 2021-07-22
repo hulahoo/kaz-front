@@ -26,8 +26,17 @@ type EditorProps = {
   entityId: string;
 };
 
+/**
+ * Абстракный редактор сущности для БПМ заявок <br>
+ * Пример: {@link CertificateRequestEditComponent}
+ *
+ * T - тип сущност, K - props
+ */
 abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends React.Component<K & Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
 
+  /**
+   * Ссылка на дата инстанс создавемого/редактируемого заявок, обязательно нужно переопределить
+   */
   dataInstance: DataInstanceStore<T>;
 
   @observable
@@ -38,19 +47,34 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   @observable
   mainStore = this.props.mainStore!;
 
+  /**
+   * Сотрудник по которому запускается процесс
+   */
   @observable
   employee: TsadvUser;
 
+  /**
+   * Ссылка на процесс инстанс, уникальный инстанс для каждого процесса. Если процесс не начато то значение null
+   */
   processInstanceData: ProcessInstanceData | null;
 
   isCalledProcessInstanceData = false
 
+  /**
+   * Ссылка на процессой задачи
+   */
   @observable
   tasks: ExtTaskData[] | null;
 
+  /**
+   * Ссылка на активной процессой задачи, где утверждающий текущий пользователь
+   */
   @observable
   activeUserTask: ExtTaskData | null;
 
+  /**
+   * Ссылка на активной процессой задачи
+   */
   @observable
   activeTask: ExtTaskData | null;
 
@@ -71,16 +95,28 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   @observable
   isUserInitiator = false;
 
+  /**
+   * Список поле для валидаций и сохранение заявок, обязательно нужно переопределить
+   */
   fields: string[];
 
+  /**
+   * Уникальный код процесса, обязательно нужно переопределить
+   */
   processDefinitionKey: string;
 
   path: string;
 
+  /**
+   * Список ответов который требует комментарий
+   */
   commentRequiredOutcomes = ['REJECT', 'REVISION'];
 
   isStartCommentVisible = false;
 
+  /**
+   * Если true то перед ответом сохраняет запись
+   */
   isUpdateBeforeOutcome = false;
 
   validate = (): Promise<boolean> => {
@@ -138,6 +174,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     });
   }
 
+  /**
+   * return Таблица из списка процессных задач
+   */
   takCard = () => {
     if (!this.tasks) return <div/>;
     const tasks = Array.from(this.tasks);
@@ -170,6 +209,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
 
   beforeCompletePredicate = (outcome: string): Promise<boolean> => new Promise(resolve => resolve(true));
 
+  /**
+   * return Список доступных кнопок для процесса
+   */
   getOutcomeBtns = (isNeedBpm?: any): JSX.Element | null => {
     const {status} = this.dataInstance;
 

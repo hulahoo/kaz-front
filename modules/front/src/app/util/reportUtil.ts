@@ -2,6 +2,10 @@ import {restServices} from "../../cuba/services";
 import Notification from "./Notification/Notification";
 import {IntlFormatters} from "react-intl";
 
+/**
+ * @deprecated The method should not be used
+ * @see runReport
+ */
 export const downloadReport = (reportCode: string, entityId: string, fileName: string, entityParamName: string) => {
   restServices.commonReportsService.downloadReportByCode({
     reportCode: reportCode,
