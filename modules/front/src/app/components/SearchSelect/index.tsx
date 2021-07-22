@@ -1,5 +1,5 @@
 import React from 'react';
-import {Select} from "antd";
+import {Select, Spin} from "antd";
 import {SelectProps, SelectValue} from "antd/lib/select";
 
 type Props = {
@@ -21,7 +21,7 @@ export class SearchSelect<T = SelectValue> extends React.Component<SelectProps<T
         defaultActiveFirstOption={false}
         showArrow={false}
         filterOption={false}
-        notFoundContent={null}
+        notFoundContent={this.props.loading ? <Spin size="small" /> : null}
         {...this.props}
       >
         {options}

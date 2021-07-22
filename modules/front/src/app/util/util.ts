@@ -62,16 +62,20 @@ export const wrapSrcBase64 = (url: string) => {
 };
 
 export const dicValue = (dictionary: AbstractDictionary, lang: string) => {
+  return dictionary[langValue(lang)];
+};
+
+export const langValue = (lang: string) => {
   lang = lang.toLocaleLowerCase();
   switch (lang) {
     case "ru":
-      return dictionary["langValue1"];
+      return "langValue1";
     case "en":
-      return dictionary["langValue3"];
+      return "langValue3";
     case "kz":
-      return dictionary["langValue2"];
+      return "langValue2";
   }
-  return dictionary["langValue1"];
+  return "langValue1";
 };
 
 export const getBusinessKey = (request: AbstractBprocRequest) => {

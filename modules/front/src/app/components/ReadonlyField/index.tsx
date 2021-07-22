@@ -1,7 +1,7 @@
 import * as React from "react";
 import {createElement} from "react";
 import {observer} from "mobx-react";
-import {Form} from "antd";
+import {Form, Select} from "antd";
 import {DataCollectionStore, FormField, injectMainStore, MainStoreInjected, Msg, WithId} from "@cuba-platform/react";
 import {FormComponentProps, FormItemProps} from "antd/lib/form";
 import {GetFieldDecoratorOptions} from "antd/lib/form/Form";
@@ -44,6 +44,8 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     const isDate = propertyInfo && (propertyInfo.type === 'date' || propertyInfo.type === 'dateTime');
     const isFile = propertyInfo && (propertyInfo.type === 'sys$FileDescriptor');
     const isToManyRelation = propertyInfo && this.isToManyRelation(propertyInfo.cardinality);
+    const isAssociation = propertyInfo && propertyInfo.attributeType === 'ASSOCIATION';
+    const isSelectField = !isFile && isAssociation && optionsContainer;
 
     const format = this.props.format || (isDate ? DEFAULT_DATE_PATTERN : undefined);
 
@@ -59,7 +61,16 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     return createElement(Form.Item,
       Object.assign({key: formItemKey ? formItemKey : propertyName}, formItemOpts),
       getFieldDecorator(fieldDecoratorId ? fieldDecoratorId : propertyName, getFieldDecoratorOpts)(
-        createElement(isFile && isToManyRelation ? MultiFileUpload : FormField, props))
+        isSelectField
+          ? createElement(Select, {
+            optionFilterProp: "children",
+            showSearch: true,
+            ...this.props
+          }, optionsContainer && optionsContainer.items.map(entity => createElement(Select.Option, {
+            value: entity.id,
+            key: entity.id
+          }, entity._instanceName)))
+          : createElement(isFile && isToManyRelation ? MultiFileUpload : FormField, props))
     );
   }
 

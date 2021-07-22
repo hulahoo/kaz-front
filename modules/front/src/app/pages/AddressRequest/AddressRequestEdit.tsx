@@ -22,7 +22,7 @@ import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
 import {Address} from "../../../cuba/entities/base/tsadv$Address";
 import moment from "moment";
 import {PersonDocumentRequestManagement} from "../PersonDocumentRequest/PersonDocumentRequestManagement";
-import {goBackOrHomePage, isEquals} from "../../util/util";
+import {goBackOrHomePage, isEquals, langValue} from "../../util/util";
 import LoadingPage from "../LoadingPage";
 import MsgEntity from "../../components/MsgEntity";
 import Section from "../../hoc/Section";
@@ -45,31 +45,39 @@ type EditorProps = {
 class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, EditorProps> {
   processDefinitionKey = "addressRequest";
 
+  dicLangValue = 'langValue' + this.props.rootStore!.userInfo!.localeIndex;
+
   dataInstance = instance<AddressRequest>(AddressRequest.NAME, {
     view: "portal.my-profile",
     loadImmediately: false
   });
 
   addressTypesDc = collection<DicAddressType>(DicAddressType.NAME, {
-    view: "_minimal"
+    view: "_minimal",
+    sort: this.dicLangValue
   });
 
-  countrysDc = collection<DicCountry>(DicCountry.NAME, {view: "_minimal"});
+  countrysDc = collection<DicCountry>(DicCountry.NAME, {
+    view: "_minimal",
+    sort: this.dicLangValue
+  });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
 
-  katosDc = collection<DicKato>(DicKato.NAME, {view: "_minimal", loadImmediately: false});
+  katosDc = collection<DicKato>(DicKato.NAME,
+    {view: "_minimal", loadImmediately: false, sort: this.dicLangValue});
 
   streetTypesDc = collection<DicStreetType>(DicStreetType.NAME, {
-    view: "_minimal"
+    view: "_minimal",
+    sort: this.dicLangValue
   });
 
   @observable
   editAddress: Address;
 
-  instanceEditAddress = instance<PersonDocument>(Address.NAME, {
+  instanceEditAddress = instance<Address>(Address.NAME, {
     view: "portal.my-profile",
     loadImmediately: false
   });
@@ -470,6 +478,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
               return args;
             }
           })(<SearchSelect onSearch={this.onSearchKato}
+                           disabled={isNotDraft}
                            loading={this.katosDc.status === 'LOADING'}
                            options={this.katosDc && this.katosDc.items.map(d => <Select.Option
                              key={d.id!}>{d._instanceName}</Select.Option>)}/>)
@@ -637,11 +646,12 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
   }
 
   onSearchKato = (value: string) => {
+    this.katosDc.items = [];
     if (value && value.length >= 4) {
       this.katosDc.filter = {
         conditions: [
           {
-            property: this.props.rootStore!.userInfo.locale === 'en' ? 'langValue3' : 'langValue1',
+            property: this.dicLangValue,
             operator: 'contains',
             value: value
           }
@@ -691,6 +701,8 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           const properties = ["addressType", "postalCode", "country", "kato", "streetType", "building", "block", "flat", 'addressForExpats', 'addressKazakh', 'addressEnglish', 'streetName', 'startDate', 'endDate'];
           if (this.props.entityId === PersonDocumentRequestManagement.NEW_SUBPATH) {
             this.props.form.setFieldsValue(this.instanceEditAddress.getFieldValues(properties));
+            if (this.instanceEditAddress.item && this.instanceEditAddress.item.kato)
+              this.katosDc.items = [this.instanceEditAddress.item.kato as SerializedEntity<DicKato>]
           } else if (item) {
             properties.forEach(field => {
               this.changedMap.set(field, !isEquals(value[field], item[field]));
