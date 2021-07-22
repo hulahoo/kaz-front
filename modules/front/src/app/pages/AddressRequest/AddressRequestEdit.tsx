@@ -479,6 +479,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
             }
           })(<SearchSelect onSearch={this.onSearchKato}
                            disabled={isNotDraft}
+                           placeholder={this.props.intl.formatMessage({id: 'search'})}
                            loading={this.katosDc.status === 'LOADING'}
                            options={this.katosDc && this.katosDc.items.map(d => <Select.Option
                              key={d.id!}>{d._instanceName}</Select.Option>)}/>)
