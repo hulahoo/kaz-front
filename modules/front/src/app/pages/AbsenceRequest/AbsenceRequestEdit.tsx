@@ -379,6 +379,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                     style={{position: 'absolute', paddingLeft: 170,paddingTop: 17}}>
                       {getFieldDecorator("startTime")(
                         <TimePicker
+                          format={'HH'}
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
@@ -408,6 +409,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                     <Form.Item style={{position: 'absolute', paddingLeft: 170, paddingTop: 17}}>
                       {getFieldDecorator("endTime")(
                         <TimePicker
+                          format={'HH'}
                           disabled={isNotDraft}/>
                       )}
                     </Form.Item>
