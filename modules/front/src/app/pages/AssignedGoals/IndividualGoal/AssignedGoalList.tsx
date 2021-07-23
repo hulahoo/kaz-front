@@ -337,10 +337,13 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
                 dataIndex="goalString"
                 key="goalString"
                 sorter={(a: any, b: any) => {
-                  if (a.key) {
-                    return a;
-                  }
-                  return a.goalString.localeCompare(b.goalString);
+                  const renderedText = a.goalString && a.goalString.trim().length > 0
+                    ? a.goalString
+                    : a.goal
+                      ? (a.goal as SerializedEntity<Goal>)._instanceName
+                      : null;
+
+                  return (renderedText || '').localeCompare(b.goalString);
                 }}
                 render={((text, record: AssignedGoal, index) => {
                   const renderedText = record.goalString && record.goalString.trim().length > 0
