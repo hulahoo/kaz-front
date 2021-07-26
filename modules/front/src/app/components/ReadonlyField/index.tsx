@@ -23,6 +23,7 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
   style?: React.CSSProperties;
   format?: string | string[];
 }> {
+
   render() {
     const {getFieldDecorator} = this.props.form;
     const {
@@ -58,21 +59,30 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
       format: format,
     };
 
+    const mode = this.getSelectMode(propertyInfo!.cardinality);
+
     return createElement(Form.Item,
       Object.assign({key: formItemKey ? formItemKey : propertyName}, formItemOpts),
       getFieldDecorator(fieldDecoratorId ? fieldDecoratorId : propertyName, getFieldDecoratorOpts)(
-        isSelectField
-          ? createElement(Select, {
-            optionFilterProp: "children",
-            showSearch: true,
-            loading: optionsContainer && optionsContainer.status === "LOADING",
-            ...this.props
-          }, optionsContainer!.items.map(entity => createElement(Select.Option, {
-            value: entity.id,
-            key: entity.id
-          }, entity._instanceName)))
+        isSelectField && false
+          ? createElement(EntitySelectField, Object.assign({},
+          {mode, optionsContainer},
+          {allowClear: this.getAllowClear(propertyInfo)},
+          {showSearch: true},
+          props))
           : createElement(isFile && isToManyRelation ? MultiFileUpload : FormField, props))
     );
+  }
+
+  getAllowClear = (propertyInfo: any) => {
+    return !propertyInfo.mandatory;
+  }
+
+  getSelectMode = (cardinality: string) => {
+    if (cardinality === "ONE_TO_MANY" || cardinality === "MANY_TO_MANY") {
+      return "multiple";
+    }
+    return "default";
   }
 
   getPropertyInfo = (): MetaPropertyInfo | null => {
@@ -88,3 +98,28 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     return cardinality === "ONE_TO_MANY" || cardinality === "MANY_TO_MANY";
   }
 }
+
+const EntitySelectField = observer((props) => {
+  const {optionsContainer} = props, rest = __rest(props, ["optionsContainer"]);
+  return (createElement(Select, Object.assign({}, rest, {loading: optionsContainer && optionsContainer.status === "LOADING"}),
+// @ts-ignore
+    optionsContainer && optionsContainer.items.map(entity => createElement(Select.Option, {
+      value: entity.id,
+      key: entity.id
+    }, entity._instanceName))));
+});
+
+// @ts-ignore
+// noinspection PointlessBooleanExpressionJS
+var __rest = (undefined && undefined.__rest) || function (s, e) {
+  var t = {};
+  for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+    t[p] = s[p];
+  if (s != null && typeof Object.getOwnPropertySymbols === "function")
+// @ts-ignore
+    for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+      if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+        t[p[i]] = s[p[i]];
+    }
+  return t;
+};

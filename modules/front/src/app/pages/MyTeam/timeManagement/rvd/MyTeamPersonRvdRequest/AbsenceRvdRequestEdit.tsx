@@ -48,7 +48,7 @@ import {ExecutiveAssistantsManagement} from "../../../../ExecutiveAssistants/Exe
 import {MyTeamStructureManagement} from "../../../MyTeamStructureManagement";
 import {AssignmentSchedule} from "../../../../../../cuba/entities/base/tsadv$AssignmentSchedule";
 import {AssignmentExt} from "../../../../../../cuba/entities/base/base$AssignmentExt";
-
+import {serviceCollection} from "../../../../../util/ServiceDataCollectionStore";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -67,10 +67,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_local"
-  });
-
-  purposeDc = collection<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-    view: "_base"
   });
 
   dicShiftDc: DataCollectionStore<DicShift>;
@@ -130,14 +126,29 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   timeStarting?: moment.Moment; //only time
   timeFinishing?: moment.Moment; //only time
 
-  purposeTempDc = collection<DicPurposeAbsence>(DicPurposeAbsence.NAME, {
-    loadImmediately: false
-  });
+  @observable
+  purposeTempDc = serviceCollection<DicPurposeAbsence>(
+    (pagination) => {
+      if (!this.selectedAbsenceType) return new Promise(resolve => []);
+      return getCubaREST()!.searchEntities<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
+        conditions: [{
+          property: 'absenceType.id',
+          operator: '=',
+          value: this.selectedAbsenceType
+        }]
+      }, {
+        view: 'absPurposeSetting-absence'
+      })
+        .then(items => items.map(item => item.absencePurpose) as Array<SerializedEntity<DicPurposeAbsence>>)
+    },
+    DicPurposeAbsence.NAME);
 
   @observable
   isPurposeText = false;
 
   personGroupId: string;
+
+  selectedAbsenceType: string;
 
   @observable
   typesAbsenceDC: DataCollectionStore<DicAbsenceType>;
@@ -194,7 +205,10 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
   onReactionDisposerEffect = (item: AbsenceRvdRequest | undefined) => {
     this.personGroupId = (item && item.personGroup ? (item.personGroup.id || this.props.personGroupId) : this.props.personGroupId) as string;
 
-    if (item && item.type) this.initPurposeTempDcItems(item.type.id!);
+    if (item && item.type) {
+      this.selectedAbsenceType = item.type.id!;
+      this.purposeTempDc.load();
+    }
 
     if (item) this.initAbsenceTypeVariables(item.type);
 
@@ -215,20 +229,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     else if (this.workOnWeekend) this.reportCode = 'RVD_REQUEST';
     else if (absenceType && absenceType.overtimeWork) this.reportCode = 'OVERTIME_REQUEST';
     else this.reportCode = undefined;
-  }
-
-  initPurposeTempDcItems = (typeId?: string) => {
-    if (typeId)
-      getCubaREST()!.searchEntities<AbsPurposeSetting>(AbsPurposeSetting.NAME, {
-        conditions: [{
-          property: 'absenceType.id',
-          operator: '=',
-          value: typeId
-        }]
-      }, {
-        view: 'absPurposeSetting-absence'
-      })
-        .then(items => this.purposeTempDc.items = items.map(item => item.absencePurpose) as Array<SerializedEntity<DicPurposeAbsence>>);
   }
 
   getUpdateEntityData = (): any => {
@@ -408,7 +408,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                     message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.type']}),
                   }],
                   getValueFromEvent: args => {
-                    this.initPurposeTempDcItems(args);
+                    this.selectedAbsenceType = args;
+                    this.purposeTempDc.load();
 
                     const absenceType = this.typesAbsenceDC.items.find(value => value.id === args);
 
