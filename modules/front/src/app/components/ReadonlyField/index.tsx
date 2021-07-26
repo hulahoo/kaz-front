@@ -64,11 +64,10 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
     return createElement(Form.Item,
       Object.assign({key: formItemKey ? formItemKey : propertyName}, formItemOpts),
       getFieldDecorator(fieldDecoratorId ? fieldDecoratorId : propertyName, getFieldDecoratorOpts)(
-        isSelectField && false
+        isSelectField
           ? createElement(EntitySelectField, Object.assign({},
           {mode, optionsContainer},
           {allowClear: this.getAllowClear(propertyInfo)},
-          {showSearch: true},
           props))
           : createElement(isFile && isToManyRelation ? MultiFileUpload : FormField, props))
     );
@@ -101,7 +100,14 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
 
 const EntitySelectField = observer((props) => {
   const {optionsContainer} = props, rest = __rest(props, ["optionsContainer"]);
-  return (createElement(Select, Object.assign({}, rest, {loading: optionsContainer && optionsContainer.status === "LOADING"}),
+  return (createElement(Select,
+    Object.assign({},
+      rest,
+      {loading: optionsContainer && optionsContainer.status === "LOADING"},
+      {
+        optionFilterProp: "children",
+        showSearch: true
+      }),
 // @ts-ignore
     optionsContainer && optionsContainer.items.map(entity => createElement(Select.Option, {
       value: entity.id,
