@@ -100,12 +100,9 @@ class KpiCard extends React.Component<KpiCardProps & MainStoreInjected & Wrapped
                 </span>
         }}/>
         <Column title={<Msg entityName={AssignedPerformancePlan.NAME} propertyName={"status"}/>}
-                dataIndex={"status"}
-                key={"status"} render={(text, record: SerializedEntity<AssignedPerformancePlan>) => {
-          return <span>
-                {getEnumCaption(record.stepStageStatus, getPropertyInfoNN("stepStageStatus", AssignedPerformancePlan.NAME, this.props.mainStore!.metadata!), this.props.mainStore!.enums!)}
-                </span>
-        }}/>
+                dataIndex={"stage._instanceName"}
+                key={"status"}
+        />
         <Column title={this.props.intl.formatMessage({id: "performanceAppraisalPeriod"})}
                 dataIndex={"endDate"}
                 key={"endDate"} render={(text) => {
