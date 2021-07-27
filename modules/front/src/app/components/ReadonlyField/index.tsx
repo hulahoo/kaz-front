@@ -59,7 +59,7 @@ export class ReadonlyField extends React.Component<MainStoreInjected & FormCompo
       format: format,
     };
 
-    const mode = this.getSelectMode(propertyInfo!.cardinality);
+    const mode = propertyInfo && this.getSelectMode(propertyInfo.cardinality);
 
     return createElement(Form.Item,
       Object.assign({key: formItemKey ? formItemKey : propertyName}, formItemOpts),

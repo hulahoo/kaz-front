@@ -77,6 +77,7 @@ class PersonDocumentListComponent extends React.Component<MainStoreInjected & Wr
 
     return (
       <DataTableFormat
+        enableFiltersOnColumns={[]}
         dataCollection={this.dataCollection}
         fields={this.fields}
         onRowSelectionChange={this.handleRowSelectionChange}

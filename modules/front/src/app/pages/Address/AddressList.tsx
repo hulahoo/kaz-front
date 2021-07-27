@@ -83,6 +83,7 @@ class AddressListComponent extends React.Component<AddressListProps & MainStoreI
     return (
       <DataTableFormat
         dataCollection={this.dataCollection}
+        enableFiltersOnColumns={[]}
         fields={this.fields}
         onRowSelectionChange={this.handleRowSelectionChange}
         hideSelectionColumn={true}
