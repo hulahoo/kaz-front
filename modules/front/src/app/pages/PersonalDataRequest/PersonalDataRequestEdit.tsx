@@ -22,6 +22,9 @@ import MsgEntity from "../../components/MsgEntity";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {PersonalDataRequestManagement} from "./PersonalDataRequestManagement";
 import {goBackOrHomePage} from "../../util/util";
+import {restServices} from "../../../cuba/services";
+import Notification from "../../util/Notification/Notification";
+import {PersonProfile} from "../MyTeam/MyTeamCard";
 
 type EditorProps = {
   entityId: string;
@@ -45,6 +48,9 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
 
   @observable
   person: PersonExt;
+
+  @observable
+  personInfo: PersonProfile;
 
   @observable
   changedMap = new Map<string, boolean>();
@@ -159,9 +165,8 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                       disabled/>
                   </Form.Item>
 
-                  <Form.Item
-                    label={<Msg entityName={PersonExt.NAME} propertyName={'birthPlace'}/>}>
-                    <Input value={this.person && this.person.birthPlace ? this.person.birthPlace || '' : undefined}
+                  <Form.Item label={<FormattedMessage id={'cityOfResidence'}/>}>
+                    <Input value={this.personInfo && this.personInfo.cityOfResidence}
                            disabled/>
                   </Form.Item>
                 </Col>
@@ -419,6 +424,17 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
           this.changedMap.set('middleNameLatin', item.middleNameLatin !== value.middleNameLatin);
         }
       });
+
+    restServices.employeeService.personProfile(item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!)
+      .then(value => {
+        this.personInfo = value;
+      })
+      .catch(() => {
+          Notification.error({
+            message: this.props.intl.formatMessage({id: "management.editor.error"})
+          });
+        }
+      )
   }
 
 }

@@ -59,7 +59,14 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
   countrysDc = collection<DicCountry>(DicCountry.NAME, {
     view: "_minimal",
-    sort: this.dicLangValue
+    sort: this.dicLangValue,
+    filter: {
+      conditions: [{
+        value: 'TRUE',
+        operator: '=',
+        property: 'active'
+      }]
+    }
   });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {

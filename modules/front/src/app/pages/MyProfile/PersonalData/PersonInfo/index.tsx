@@ -79,15 +79,13 @@ class PersonInfo extends React.Component<PersonCardProps & MainStoreInjected & W
               )}
             </Form.Item>
 
-            <Form.Item style={{marginBottom: "12px"}}
-                       label={<FormattedMessage id={'cityOfResidence'}/>}>
-              {this.props.form.getFieldDecorator("cityOfResidence",
-                {
-                  initialValue: this.person ? this.person.cityOfResidence : null
-                })(
-                <Input disabled/>
-              )}
-            </Form.Item>
+            <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
+                  title={this.person && this.person.cityOfResidence}>
+              <Form.Item style={{marginBottom: "12px"}}
+                         label={<FormattedMessage id={'cityOfResidence'}/>}>
+                <Input disabled value={this.person && this.person.cityOfResidence}/>
+              </Form.Item>
+            </span>
 
           </Row>
         </Form>
