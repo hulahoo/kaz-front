@@ -9,7 +9,8 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import GoalForm from './GoalForm';
 
 import {
-  clearFieldErrors, collection,
+  clearFieldErrors,
+  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
   getCubaREST,
@@ -563,7 +564,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   @action
   setReadOnly = (): void => {
     this.readonly = !(this.dataInstance.item
-      && this.dataInstance.item.status!.code === 'DRAFT'
+      && !this.isNotDraft()
       && this.getStageCode() === 'DRAFT'
       && this.dataInstance.item.assignedPerson!.id! === this.props.rootStore!.userInfo.personGroupId!);
   };

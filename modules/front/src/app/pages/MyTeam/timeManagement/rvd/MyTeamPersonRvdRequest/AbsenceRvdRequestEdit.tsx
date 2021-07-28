@@ -802,7 +802,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
   afterSendOnApprove = () => {
     const statusId = this.dataInstance.item && this.dataInstance.item.status && this.dataInstance.item.status.id;
-    if (this.statusesDc.items.find(value => value.id === statusId && value.code === 'DRAFT'))
+    if (this.statusesDc.items.find(value => value.id === statusId && (value.code === 'DRAFT' || value.code === 'TO_BE_REVISED')))
       this.props.history!.push(
         this.props.rootStore!.assistantTeamInfo.active
           ? ExecutiveAssistantsManagement.PATH
