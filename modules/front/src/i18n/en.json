@@ -284,7 +284,7 @@
   "candidates": "Candidates",
   "APPROVE": "Approve",
   "REJECT": "Reject",
-  "CANCEL": "Process canceled",
+  "CANCEL": "Cancel process",
   "REVISION": "Send for review",
   "START": "Send for approval",
   "tasks": "Tasks",

@@ -58,7 +58,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
   });
 
   countrysDc = collection<DicCountry>(DicCountry.NAME, {
-    view: "_minimal",
+    view: "_local",
     sort: this.dicLangValue,
     filter: {
       conditions: [{
@@ -99,6 +99,9 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
   @observable
   isLocaleEn = this.props.rootStore!.userInfo.locale === 'en';
+
+  @observable
+  isKatoRequired = false;
 
   isUpdateBeforeOutcome = true;
 
@@ -461,6 +464,8 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
               message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.country']})
             }],
             getValueFromEvent: args => {
+              const country = this.countrysDc.items.find(value => value.id === args);
+              this.isKatoRequired = !!(country && country.code === 'KZ');
               if (this.editAddress)
                 this.changedMap.set('country', args !== (this.editAddress.country ? this.editAddress.country.id : undefined));
               return args;
@@ -476,7 +481,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
           label={<Msg entityName={entityName} propertyName={"kato"}/>}>
           {this.props.form.getFieldDecorator("kato", {
             rules: [{
-              required: true,
+              required: this.isKatoRequired,
               message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.kato']})
             }],
             getValueFromEvent: args => {
@@ -679,6 +684,8 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
       this.katosDc.items = [item.kato as SerializedEntity<DicKato>];
       this.katosDc.status = 'DONE';
     }
+
+    this.isKatoRequired = !!(item && item.country && item.country.code === 'KZ');
 
     getCubaREST()!.searchEntities<PersonExt>(PersonExt.NAME, {
       conditions: [{
