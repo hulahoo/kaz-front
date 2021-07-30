@@ -276,6 +276,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
   }
 
   onRowClick = (record: any) => {
+    console.log(record);
     this.selectedRow = record;
   }
 
@@ -296,11 +297,9 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
         id: "management.browser.exclude.cancel"
       }),
       onOk: () => {
-        restServices.orgStructureService.exclude({
+        restServices.orgStructureService.excludeData({
           requestId: this.props.entityId,
-          requestDetailId: row.rdId || null,
-          elementGroupId: row.posGroupId || row.orgGroupId || null,
-          elementType: row.elementType
+          data: row
         }).then(() => {
           Notification.success({
             message:
@@ -671,7 +670,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
               <Table columns={columns}
                      loading={this.treeLoading}
                      dataSource={Array.from(this.treeData || '')}
-                     rowKey={(r: OrgRequestRow) => r.rowKey}
+                     rowKey={(r: OrgRequestRow) => r.rowKey + '/' + (r.pOrgGroupId || '')}
                      className="kzm-tree-table"
                      indentSize={10}
                      pagination={false}

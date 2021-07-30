@@ -672,6 +672,13 @@ export const restServices = {
         {...param}
       );
     },
+    excludeData: (param: { requestId: string, data: OrgRequestRow }): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_OrgStructureRequestService",
+        "exclude",
+        {...param}
+      );
+    },
     getGrades: (): Promise<Array<OrgRequestGrade>> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_OrgStructureRequestService",
