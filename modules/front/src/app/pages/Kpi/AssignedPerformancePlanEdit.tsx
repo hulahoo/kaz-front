@@ -300,7 +300,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const isExtraPointEnable = this.approverHrRoleCode === 'MANAGER';
 
-    const isForm2Visible = this.isNotDraft() && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR';
+    const isForm2Visible = this.getStatusCode() !== 'DRAFT' && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR';
 
     const file = this.dataInstance.item && this.dataInstance.item.file ? this.dataInstance.item.file : undefined;
 
@@ -565,7 +565,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   setReadOnly = (): void => {
     this.readonly = !(this.dataInstance.item
       && !this.isNotDraft()
-      && this.getStageCode() === 'DRAFT'
+      && (this.getStageCode() === 'DRAFT' || this.getStageCode() === 'COMPLETED')
       && this.dataInstance.item.assignedPerson!.id! === this.props.rootStore!.userInfo.personGroupId!);
   };
 
@@ -614,7 +614,12 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
   update = () => {
     if (this.assignedGoalListUpdate) this.assignedGoalListUpdate();
-    return this.dataInstance.update(this.getUpdateEntityData());
+    const updateEntityData = this.getUpdateEntityData();
+
+    if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
+      updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
+    }
+    return this.dataInstance.update(updateEntityData);
   };
 
   setReactionDisposer = () => {

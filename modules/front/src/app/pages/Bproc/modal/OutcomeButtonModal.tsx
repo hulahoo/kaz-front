@@ -140,10 +140,11 @@ class OutcomeButtonModal extends Component<Props & WrappedComponentProps & Route
         visible={this.modalVisibleMap.get(outcome.id!)}
         onOk={this.handleOk.bind(null, outcome)}
         onCancel={this.handleCancel.bind(null, outcome)}>
-        <Form.Item>
-          {createElement(Fragment, null, this.props.intl.formatMessage({id: 'comment'}))}
+        <Form.Item
+          label={createElement(Fragment, null, this.props.intl.formatMessage({id: 'comment'}))}>
           {getFieldDecorator("bproc-comment", {
             rules: [{
+              required: !!(this.props.commentRequiredOutcomes || []).find(o => o === this.props.openedOutcomeModal),
               validator: this.commentValidator
             }]
           })(

@@ -362,10 +362,12 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
             </Table>
 
             <div style={this.props.isStartCommentVisible ? {} : {display: 'none'}}>
-              <Form.Item>
-                {createElement(Fragment, null, this.props.intl.formatMessage({id: 'comment'}))}
+              <Form.Item
+                label={createElement(Fragment, null, this.props.intl.formatMessage({id: 'comment'}))}
+              >
                 {this.props.form.getFieldDecorator("bproc-comment", {
                   rules: [{
+                    required: !!((this.props.commentRequiredOutcomes || []).find(outcome => outcome === 'START')),
                     validator: this.commentValidator
                   }]
                 })(

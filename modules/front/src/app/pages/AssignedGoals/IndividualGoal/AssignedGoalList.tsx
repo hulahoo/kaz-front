@@ -49,6 +49,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
   @observable isUserManager: boolean = false;
 
+  @observable
   kpiDataInstance = queryInstance<AssignedPerformancePlan>(
     AssignedPerformancePlan.NAME,
     "kpiEditPage",
@@ -285,6 +286,8 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
     const isFirstStep = this.getStageCode() === 'DRAFT';
     const isSecondStep = this.getStageCode() === 'COMPLETED';
     const isDraft = !this.kpiDataInstance.item || !this.kpiDataInstance.item.status || this.kpiDataInstance.item.status.code == 'DRAFT'
+
+    console.log(isFirstStep, isSecondStep, this.getStageCode());
 
     const assessmentColumn = !isFirstStep && !isSecondStep
       ? <Column title={<FormattedMessage id="goalForm.column.assessment"/>}
