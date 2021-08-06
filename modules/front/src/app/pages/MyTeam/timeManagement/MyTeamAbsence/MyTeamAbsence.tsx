@@ -1,22 +1,24 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 
 import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {MyTeamCardProps} from "../../MyTeamCard";
 import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
 import {observable} from "mobx";
-import {Link} from "react-router-dom";
+import {RouteComponentProps} from "react-router-dom";
 import {ChangeAbsenceDaysRequestManagement} from "../ChangeAbsenceDaysRequest/ChangeAbsenceDaysRequestManagement";
 import moment from "moment/moment";
 import {AbsenceForRecallManagement} from "../AbsenceForRecall/AbsenceForRecallManagement";
 import Button, {ButtonType} from "../../../../components/Button/Button";
 import {formatDate} from "../../../../util/Date/Date";
+import {withRouter} from "react-router";
 
 
 @injectMainStore
+@inject("rootStore")
 @observer
-class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps> {
+class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected & WrappedComponentProps & RouteComponentProps<any>> {
 
   dataCollection = collection<Absence>(Absence.NAME, {
     view: "absence.view",
@@ -43,19 +45,19 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
   render() {
     return (
       <DataTable
-        buttons={[<Link to={AbsenceForRecallManagement.PATH + '/new/' + this.selectedRowKey}>
+        buttons={[
           <Button disabled={this.disabledAbsenceForRecall}
                   buttonType={ButtonType.PRIMARY}
+                  onClick={event => this.props.history!.push(AbsenceForRecallManagement.PATH + '/new/' + this.selectedRowKey)}
                   style={{margin: "0 12px 12px 0", width: 'auto'}}>
             <FormattedMessage id={'create.request.absence.for.recall'}/>
-          </Button>
-        </Link>,
-          <Link to={ChangeAbsenceDaysRequestManagement.PATH + '/new/' + this.selectedRowKey}>
-            <Button disabled={this.disabledChangeVacationDates} buttonType={ButtonType.PRIMARY}
-                    style={{margin: "0 12px 12px 0", width: 'auto'}}>
-              <FormattedMessage id={'create.request.change.vacation.dates'}/>
-            </Button>
-          </Link>]}
+          </Button>,
+          <Button disabled={this.disabledChangeVacationDates}
+                  buttonType={ButtonType.PRIMARY}
+                  onClick={event => this.props.history!.push(ChangeAbsenceDaysRequestManagement.PATH + '/new/' + this.selectedRowKey)}
+                  style={{margin: "0 12px 12px 0", width: 'auto'}}>
+            <FormattedMessage id={'create.request.change.vacation.dates'}/>
+          </Button>]}
         dataCollection={this.dataCollection}
         onRowSelectionChange={this.selectRow}
         fields={this.absenceFields}
@@ -101,4 +103,4 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
   }
 }
 
-export default injectIntl(MyTeamAbsence);
+export default withRouter(injectIntl(MyTeamAbsence));

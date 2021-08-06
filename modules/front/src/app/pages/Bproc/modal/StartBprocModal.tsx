@@ -215,11 +215,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
 
   onChangeBprocRole = (value: string, option: React.ReactElement<HTMLLIElement>) => {
     if (value) {
-      this.selectedHrRole = {
-        id: value,
-        langValue1: (option.props['children'] as any)
-      };
-      this.selectedHrRole["_instanceName"] = this.selectedHrRole.langValue1;
+      if (this.bprocRolesDefiner && this.bprocRolesDefiner.links)
+        this.selectedHrRole = this.bprocRolesDefiner.links.map(link => link.hrRole).find(hrRole => hrRole!.id === value) as DicHrRole;
     } else {
       this.selectedHrRole = null;
     }
