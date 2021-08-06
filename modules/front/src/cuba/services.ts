@@ -878,6 +878,17 @@ export const restServices = {
         }
       });
     },
+    saveMonthResult: (status: string, comment: string, incentiveMonthResultId: string) => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_IncentiveService",
+        "saveMonthResult",
+        {
+          status: status,
+          comment: comment,
+          incentiveMonthResultId: incentiveMonthResultId
+        }
+      );
+    }
   },
   bpmUserSubstitutionService: {
     save: (bpmUserSubstitution: BpmUserSubstitution): Promise<boolean> => {
