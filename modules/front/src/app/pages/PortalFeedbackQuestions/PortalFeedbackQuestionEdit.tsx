@@ -6,6 +6,7 @@ import {injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   clearFieldErrors,
+  collection,
   extractServerValidationErrors,
   getCubaREST,
   injectMainStore,
@@ -19,15 +20,17 @@ import "../../../app/App.css";
 import {RouteComponentProps, withRouter} from "react-router";
 import LoadingPage from "../LoadingPage";
 import {ReadonlyField} from "../../components/ReadonlyField";
-import {rootStore, RootStoreProp} from "../../store";
+import {RootStoreProp} from "../../store";
 import {FormComponentProps} from "antd/lib/form";
 import {IReactionDisposer, observable, reaction} from "mobx";
 import {PortalFeedbackQuestions} from "../../../cuba/entities/base/tsadv_PortalFeedbackQuestions";
 import {PortalFeedback} from "../../../cuba/entities/base/tsadv_PortalFeedback";
-import {dicValue} from "../../util/util";
+import {dicValue, langValue} from "../../util/util";
 import Notification from "../../util/Notification/Notification";
 import TextArea from "antd/es/input/TextArea";
 import {restServices} from "../../../cuba/services";
+import {DicPortalFeedbackType} from "../../../cuba/entities/base/tsadv_DicPortalFeedbackType";
+import {parseToJsonFromFieldValue} from "../../components/MultiFileUpload";
 
 const {Option} = Select;
 
@@ -42,16 +45,22 @@ type EditorProps = {
 @observer
 class PortalFeedbackQuestionEdit extends React.Component<EditorProps & Props & WrappedComponentProps & RouteComponentProps<any> & RootStoreProp & MainStoreInjected> {
   dataInstance = instance<PortalFeedbackQuestions>(PortalFeedbackQuestions.NAME, {
-    view: "absenceRequest.edit",
+    view: "portalFeedbackQuestions.edit",
     loadImmediately: false
   });
+
+  portalFeedbackTypeDc = collection<DicPortalFeedbackType>(DicPortalFeedbackType.NAME, {view: "_local"});
 
   @observable portalFeedbacks: PortalFeedback[] = [];
 
   fields = [
+    "type",
+
     "topic",
 
-    "text"
+    "text",
+
+    "files"
   ];
 
   @observable
@@ -83,12 +92,21 @@ class PortalFeedbackQuestionEdit extends React.Component<EditorProps & Props & W
         portalFeedback: {
           id: this.selectedFeedbackId
         },
-        ...this.props.form.getFieldsValue(this.fields)
+        ...this.props.form.getFieldsValue(this.fields),
+        files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
       };
       this.dataInstance
         .update(updateEntityData)
         .then(() => {
-          Notification.success({message: this.props.intl.formatMessage({id: "your.question.accepted"})});
+          const type = this.portalFeedbackTypeDc.items.find(value => value.id === this.props.form.getFieldValue('type'));
+          const systemNotificationText = type && type["systemNotificationText" + this.props.rootStore!.userInfo.localeIndex];
+          Notification.success(
+            {
+              message:
+                systemNotificationText && systemNotificationText.trim() !== ""
+                  ? systemNotificationText.trim()
+                  : this.props.intl.formatMessage({id: "your.question.accepted"})
+            });
           this.props.history!.goBack();
         })
         .catch((e: any) => {
@@ -175,6 +193,20 @@ class PortalFeedbackQuestionEdit extends React.Component<EditorProps & Props & W
 
               <ReadonlyField
                 entityName={this.dataInstance.entityName}
+                propertyName="type"
+                form={this.props.form}
+                optionsContainer={this.portalFeedbackTypeDc}
+                formItemOpts={{style: {marginBottom: "12px"}}}
+                getFieldDecoratorOpts={{
+                  rules: [{
+                    required: true,
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.type']})
+                  }]
+                }}
+              />
+
+              <ReadonlyField
+                entityName={this.dataInstance.entityName}
                 propertyName="topic"
                 form={this.props.form}
                 formItemOpts={{style: {marginBottom: "12px"}}}
@@ -203,6 +235,12 @@ class PortalFeedbackQuestionEdit extends React.Component<EditorProps & Props & W
                 </Form.Item>
               </div>
 
+              <ReadonlyField
+                entityName={this.dataInstance.entityName}
+                propertyName="files"
+                form={this.props.form}
+                formItemOpts={{style: {marginBottom: "12px"}}}
+              />
             </Form>
           </Card>
 

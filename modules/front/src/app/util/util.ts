@@ -61,8 +61,8 @@ export const wrapSrcBase64 = (url: string) => {
   return "data:image/png;base64, " + url;
 };
 
-export const dicValue = (dictionary: AbstractDictionary, lang: string) => {
-  return dictionary[langValue(lang)];
+export const dicValue = (dictionary?: AbstractDictionary, lang?: string) => {
+  return dictionary && lang && dictionary[langValue(lang)];
 };
 
 export const langValue = (lang: string) => {

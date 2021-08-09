@@ -443,5 +443,6 @@
   "absence.rvd.validate.rotational.work": "Подача заявки запрещена для работников, занятых на вахтовой работе",
   "final.result": "Итоговый результат",
   "total": "Итого",
-  "bpmUserSubstitution": "Замещающие пользователи bpm"
+  "bpmUserSubstitution": "Замещающие пользователи bpm",
+  "send.message": "Отправить сообщение"
 }
