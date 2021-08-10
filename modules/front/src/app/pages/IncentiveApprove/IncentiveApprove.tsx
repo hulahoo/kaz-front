@@ -45,9 +45,6 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
   });
 
   @observable
-  organization?: OrganizationGroup | null;
-
-  @observable
   results: OrganizationIncentiveResult[] = [];
 
   @observable
@@ -55,7 +52,7 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
 
   render() {
 
-    if (this.dataInstance.status === 'LOADING' || !this.organization) return <LoadingPage/>;
+    if (this.dataInstance.status === 'LOADING') return <LoadingPage/>;
 
     const messages = this.props.mainStore!.messages!;
 
@@ -64,7 +61,6 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
     return (
       <Page
         pageName={this.props.intl.formatMessage({id: "menu.incentive"}) + ", "
-        + this.organization['_instanceName'] + ", "
         + capitalizeFirstLetter(new Date().toLocaleDateString(this.props.rootStore!.userInfo.locale, dayOptions))}>
         <Section size="large">
           <Card className="narrow-layout card-actions-container"
@@ -173,8 +169,6 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
   componentDidMount() {
     (async () => {
       await this.dataInstance.load(this.props.entityId);
-
-      this.organization = this.dataInstance.item && this.dataInstance.item.department;
 
       this.results = this.dataInstance.item && this.dataInstance.item.incentiveResults || [];
 

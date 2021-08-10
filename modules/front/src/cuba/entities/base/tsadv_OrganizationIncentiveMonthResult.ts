@@ -7,7 +7,6 @@ export class OrganizationIncentiveMonthResult extends StandardEntity {
   static NAME = "tsadv_OrganizationIncentiveMonthResult";
   company?: DicCompany | null;
   period?: any | null;
-  department?: OrganizationGroupExt | null;
   incentiveResults?: OrganizationIncentiveResult[] | null;
   status?: DicIncentiveResultStatus | null;
   comment?: string | null;
@@ -27,11 +26,11 @@ export type OrganizationIncentiveMonthResultView<
   : V extends "organizationIncentiveMonthResult.browse"
   ? Pick<
       OrganizationIncentiveMonthResult,
-      "id" | "period" | "comment" | "company" | "department" | "status"
+      "id" | "period" | "comment" | "company" | "status"
     >
   : V extends "organizationIncentiveMonthResult.edit"
   ? Pick<
       OrganizationIncentiveMonthResult,
-      "id" | "period" | "comment" | "department" | "status"
+      "id" | "period" | "comment" | "status"
     >
   : never;
