@@ -139,7 +139,7 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           <Card
             hoverable
             cover={<img alt="example"
-                        src={this.urlImg ? this.urlImg : "https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"}/>}>
+                        src={this.urlImg ? this.urlImg : require('../../../resources/img/my-team-person-logo.jpg')}/>}>
             <span className={'ant-tree-node-content-wrapper ant-tree-node-content-wrapper-normal'}
                   title={this.person.fullName}>
             <Meta title={<div style={{fontSize: 10, marginTop: '10px'}}>{this.person.firstLastName}</div>}/>
