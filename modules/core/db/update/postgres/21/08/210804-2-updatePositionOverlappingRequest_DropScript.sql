@@ -1,0 +1,1 @@
+alter table KZM_POSITION_OVERLAPPING_REQUEST drop column POSITION_ID__U54158 cascade ;

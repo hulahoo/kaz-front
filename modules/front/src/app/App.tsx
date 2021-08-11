@@ -55,6 +55,7 @@ import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationSched
 import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
+import {PositionOverlappingRequestManagement} from "./pages/PositionOverlappingRequest/PositionOverlappingRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -112,6 +113,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
+                <Route exact={true} path="/position-overlapping-request" component={PositionOverlappingRequestManagement}/>
+                <Route exact={true} path={PositionOverlappingRequestManagement.PATH + "/:entityId?"}
+                       component={PositionOverlappingRequestManagement}/>
                 <Route exact={true} path={MyProfileManagement.PATH} component={MyProfileManagement}/>
                 <Route exact={true} path={AddressRequestManagement.PATH + '/:entityId/:addressId?'}
                        component={AddressRequestManagement}/>
