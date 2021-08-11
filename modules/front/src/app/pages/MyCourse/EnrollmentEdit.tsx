@@ -6,7 +6,7 @@ import {DataContainerStatus, getCubaREST, injectMainStore} from "@cuba-platform/
 import "../../../app/App.css";
 import {Enrollment} from "../../../cuba/entities/base/tsadv$Enrollment";
 import Section from "../../hoc/Section";
-import {Col, Icon, Row, Spin} from "antd";
+import {Button, Col, Icon, Row, Spin} from "antd";
 import NoImage from "../../components/NoImage";
 import Page from "../../hoc/PageContentHoc";
 import {Meta} from "antd/es/list/Item";
@@ -75,14 +75,23 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       <div>{this.props.intl.formatMessage({id: "homework"})}</div>
     </>;
     const linkHomework = this.isHasHomework && this.dataInstance
-      ? <Link
-        to={"/" + EnrollmentManagement.PATH + "/" + this.props.entityId + "/" + EnrollmentManagement.HOMEWORK}>
+      ? <div
+        onClick={() => {
+          if (!this.isAllPassed()) {
+            Notification.info({
+              message: this.props.intl.formatMessage({id: 'complete.all.sections.course.first'})
+            });
+            return
+          } else
+            this.props.history.push("/" + EnrollmentManagement.PATH + "/" + this.props.entityId + "/" + EnrollmentManagement.HOMEWORK);
+        }}
+      >
         <div key="homework" id="homework">
           <Meta title={homeworkTitle}
                 className={"course-section-item"}>
           </Meta>
         </div>
-      </Link>
+      </div>
       : null;
 
     const courseSections = this.dataInstance ? this.dataInstance.course!.sections!.map(s => {
@@ -235,8 +244,24 @@ class EnrollmentEditComponent extends React.Component<Props & WrappedComponentPr
       });
       return;
     }
+
+    if (this.selectedSection!.type === "feedback") {
+      if (!this.isAllPassed()) {
+        Notification.info({
+          message: this.props.intl.formatMessage({id: 'complete.all.sections.course.first'})
+        });
+        return;
+      }
+    }
     this.setVisibleModal(true);
   };
+
+  isAllPassed = () => {
+    return this.dataInstance.course!.sections!
+      .every(value => (value.courseSectionAttempts !== undefined
+        && value.courseSectionAttempts !== []
+        && value.courseSectionAttempts!.some(a => !!a.success)));
+  }
 
   clickSection = (e: React.MouseEvent<HTMLDivElement>) => {
     const courseSectionId = (e.currentTarget.children.item(0)! as any).id!;
