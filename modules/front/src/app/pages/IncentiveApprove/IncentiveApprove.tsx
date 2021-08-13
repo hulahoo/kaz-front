@@ -147,7 +147,7 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
       restServices.incentiveService.saveMonthResult(status, this.props.form.getFieldValue('comment'), this.props.entityId)
         .then(value => {
           Notification.success({
-            message: this.props.intl.formatMessage({id: `bproc.${status}.success`})
+            message: this.props.intl.formatMessage({id: status === 'APPROVED' ? 'bproc.APPROVE.success' : 'bproc.REVISION.success'})
           });
           goBackOrHomePage(this.props.history);
         })
