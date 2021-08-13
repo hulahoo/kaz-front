@@ -20,7 +20,6 @@ import Button, {ButtonType} from "../../components/Button/Button";
 import {capitalizeFirstLetter, goBackOrHomePage} from "../../util/util";
 import {DicIncentiveIndicatorScoreSetting} from "../../../cuba/entities/base/tsadv_DicIncentiveIndicatorScoreSetting";
 import {OrganizationIncentiveMonthResult} from "../../../cuba/entities/base/tsadv_OrganizationIncentiveMonthResult";
-import {OrganizationGroup} from "../../../cuba/entities/base/base$OrganizationGroup";
 import {instanceStore} from "../../util/InstanceStore";
 import TextArea from "antd/es/input/TextArea";
 import {withRouter} from "react-router";
@@ -46,9 +45,6 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
 
   @observable
   results: OrganizationIncentiveResult[] = [];
-
-  @observable
-  finalResult: number;
 
   render() {
 
@@ -89,12 +85,12 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
                   </Button>]}
                 bordered={false}>
 
-            <div>
-              <h1><FormattedMessage id={'final.result'}/> - {this.finalResult} %</h1>
-            </div>
-
             <Table dataSource={this.results}
                    pagination={false}>
+              <Column title={messages[OrganizationIncentiveResult.NAME + '.organizationGroup']}
+                      dataIndex="organizationGroup._instanceName"
+                      key="organizationGroup"
+              />
               <Column title={messages[OrganizationIncentiveResult.NAME + '.indicator']}
                       dataIndex="indicator._instanceName"
                       key="indicator"
@@ -149,12 +145,18 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
         return;
       }
       restServices.incentiveService.saveMonthResult(status, this.props.form.getFieldValue('comment'), this.props.entityId)
-      goBackOrHomePage(this.props.history);
+        .then(value => {
+          Notification.success({
+            message: this.props.intl.formatMessage({id: `bproc.${status}.success`})
+          });
+          goBackOrHomePage(this.props.history);
+        })
+        .catch((e: any) => {
+          Notification.error({
+            message: this.props.intl.formatMessage({id: "management.editor.error"})
+          });
+        })
     })
-  }
-
-  calcFinalResult = () => {
-    this.finalResult = this.results.map(value => this.getTotal(value)).reduce((a, b) => a + b, 0);
   }
 
   getTotal = (result: OrganizationIncentiveResult) => {
@@ -171,8 +173,6 @@ class IncentiveApproveComponent extends React.Component<Props & MainStoreInjecte
       await this.dataInstance.load(this.props.entityId);
 
       this.results = this.dataInstance.item && this.dataInstance.item.incentiveResults || [];
-
-      this.calcFinalResult();
     })()
   }
 }
