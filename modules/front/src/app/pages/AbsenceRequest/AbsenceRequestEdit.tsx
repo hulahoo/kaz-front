@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement} from "react";
-import {Card, Form, TimePicker} from "antd";
+import {Card, Form} from "antd";
 import {inject, observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
 
@@ -38,6 +38,7 @@ import DefaultDatePicker from "../../components/Datepicker";
 import {goBackOrHomePage, isNumber} from "../../util/util";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import TimePicker from "../../components/TimePicker/TimePicker";
 
 type EditorProps = {
   entityId: string;
