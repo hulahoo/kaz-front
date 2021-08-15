@@ -3,16 +3,20 @@ package kz.uco.kzm.web.screens.positionoverlappingrequest;
 import com.haulmont.addon.bproc.web.processform.Outcome;
 import com.haulmont.addon.bproc.web.processform.ProcessForm;
 import com.haulmont.cuba.gui.components.Button;
-import com.haulmont.cuba.gui.screen.*;
+import com.haulmont.cuba.gui.components.Form;
+import com.haulmont.cuba.gui.model.InstanceContainer;
+import com.haulmont.cuba.gui.screen.EditedEntityContainer;
+import com.haulmont.cuba.gui.screen.LoadDataBeforeShow;
+import com.haulmont.cuba.gui.screen.UiController;
+import com.haulmont.cuba.gui.screen.UiDescriptor;
+import com.haulmont.cuba.security.global.UserSession;
 import kz.uco.kzm.entity.PositionOverlappingRequest;
 import kz.uco.tsadv.entity.bproc.AbstractBprocRequest;
-import kz.uco.tsadv.modules.personal.dictionary.DicReceivingType;
-import kz.uco.tsadv.modules.personal.model.CertificateRequest;
-import kz.uco.tsadv.modules.personal.model.PersonalDataRequest;
+import kz.uco.tsadv.global.common.CommonUtils;
+import kz.uco.tsadv.modules.personal.model.AssignmentExt;
+import kz.uco.tsadv.service.CommonReportsService;
+import kz.uco.tsadv.service.EmployeeService;
 import kz.uco.tsadv.web.abstraction.bproc.AbstractBprocEditor;
-import kz.uco.tsadv.web.addressrequest.AddressRequestEdit;
-import kz.uco.tsadv.web.screens.certificaterequest.CertificateRequestEdit;
-import kz.uco.tsadv.web.screens.personaldatarequest.PersonalDataRequestEdit;
 
 import javax.inject.Inject;
 
@@ -30,5 +34,35 @@ import javax.inject.Inject;
 )
 public class PositionOverlappingRequestEdit extends AbstractBprocEditor<PositionOverlappingRequest> {
 
+        @Inject
+        protected InstanceContainer<AssignmentExt> assignmentDc;
+        @Inject
+        protected EmployeeService employeeService;
+        @Inject
+        protected UserSession userSession;
+        @Inject
+        protected Form form;
+        @Inject
+        protected Button getReferenceBtn;
+        @Inject
+        protected CommonReportsService commonReportsService;
+
+        @Override
+        protected void initVariables() {
+                super.initVariables();
+                initAssignment();
+        }
+
+        protected void initAssignment() {
+                AssignmentExt assignmentExt = employeeService
+                        .getAssignmentExt(getEditedEntity().getPersonGroup().getId(), CommonUtils.getSystemDate(), "assignment.view");
+                assignmentDc.setItem(assignmentExt);
+        }
+
+        @Override
+        protected void initEditableFields() {
+                super.initEditableFields();
+                form.setEditable(isDraft());
+        }
 
 }

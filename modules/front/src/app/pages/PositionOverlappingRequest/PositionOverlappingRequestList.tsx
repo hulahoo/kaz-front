@@ -1,42 +1,39 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
-import { Modal, List, Icon, Spin } from "antd";
+import {Icon, Modal} from "antd";
 
-import {
-  collection,
-  injectMainStore,
-  MainStoreInjected,
-  EntityProperty
-} from "@cuba-platform/react";
+import {collection, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 
-import { PositionOverlappingRequest } from "../../../cuba/entities/kzm$PositionOverlappingRequest";
-import { SerializedEntity } from "@cuba-platform/rest";
-import { PositionOverlappingRequestManagement } from "./PositionOverlappingRequestManagement";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
-import {CertificateRequestManagement} from "../CertificateRequest/CertificateRequestManagement";
+import {PositionOverlappingRequest} from "../../../cuba/entities/kzm$PositionOverlappingRequest";
+import {SerializedEntity} from "@cuba-platform/rest";
+import {PositionOverlappingRequestManagement} from "./PositionOverlappingRequestManagement";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import Button, {ButtonType} from "../../components/Button/Button";
-import Section from "../../hoc/Section";
 import DataTableFormat from "../../components/DataTable/intex";
-import {CertificateRequest} from "../../../cuba/entities/base/tsadv_CertificateRequest";
-import {downloadFile} from "../../util/util";
-import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
-import Page from "../../hoc/PageContentHoc";
+import {RootStoreProp} from "../../store";
+import {PersonProfile} from "../MyTeam/MyTeamCard";
+
+export  type  PersonCardProps = {
+  person?: PersonProfile
+}
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class PositionOverlappingRequestListComponent extends React.Component<
-  MainStoreInjected & WrappedComponentProps
-> {
+class PositionOverlappingRequestListComponent extends React.Component<PersonCardProps & MainStoreInjected & WrappedComponentProps & RootStoreProp>{
+
+  person = this.props.person;
+
   dataCollection = collection<PositionOverlappingRequest>(
     PositionOverlappingRequest.NAME,
-    { view: "positionOverlappingRequest-edit", sort: "-updateTs" }
+    { view: "positionOverlappingRequest-edit",
+      sort: "-updateTs",
+      filter: {
+        conditions: [{property: "personGroup.id", operator: "=", value: this.person!.groupId}]
+      }
+  }
   );
 
   fields = [
@@ -48,6 +45,9 @@ class PositionOverlappingRequestListComponent extends React.Component<
 
     "status",
   ];
+
+
+
 
   showDeletionDialog = (e: SerializedEntity<PositionOverlappingRequest>) => {
     Modal.confirm({
@@ -74,9 +74,10 @@ class PositionOverlappingRequestListComponent extends React.Component<
     const buttons = [
       <Link
         to={
-          PositionOverlappingRequestManagement.PATH + "/" + PositionOverlappingRequestManagement.NEW_SUBPATH
+          PositionOverlappingRequestManagement.PATH + "/"
+          + PositionOverlappingRequestManagement.NEW_SUBPATH + "/"+ this.person!.groupId
         }
-        key="create">
+        key="create" >
         <Button buttonType={ButtonType.PRIMARY}
                 style={{margin: "0 12px 12px 0"}}>
           <span>
@@ -87,8 +88,7 @@ class PositionOverlappingRequestListComponent extends React.Component<
     ];
 
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "positionOverlappingRequest"})}>
-        <Section size="large">
+
           <div>
             <div style={{marginBottom: 16}}>
               {buttons}
@@ -105,8 +105,7 @@ class PositionOverlappingRequestListComponent extends React.Component<
                              }]}
                              fields={this.fields}/>
           </div>
-        </Section>
-      </Page>
+
     );
   }
 }

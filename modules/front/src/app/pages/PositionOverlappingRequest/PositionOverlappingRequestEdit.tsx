@@ -1,53 +1,38 @@
 import * as React from "react";
-import {createElement, FormEvent} from "react";
-import { Card, Form, Input} from "antd";
+import {createElement} from "react";
+import {Card, Form, Input} from "antd";
 import {inject, observer} from "mobx-react";
-import { observable, reaction, toJS } from "mobx";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {observable} from "mobx";
+import {injectIntl} from "react-intl";
 
-import {
-  Field,
-  instance,
-  withLocalizedForm,
-  extractServerValidationErrors,
-  constructFieldsWithErrors,
-  clearFieldErrors,
-  MultilineText, collection, injectMainStore, Msg, getCubaREST
-} from "@cuba-platform/react";
+import {collection, getCubaREST, injectMainStore, instance, Msg, withLocalizedForm} from "@cuba-platform/react";
 
 import "../../../app/App.css";
-
-import { PositionOverlappingRequest } from "../../../cuba/entities/kzm$PositionOverlappingRequest";
+import {restQueries} from "../../../cuba/queries";
+import {PositionOverlappingRequest} from "../../../cuba/entities/kzm$PositionOverlappingRequest";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import {CertificateRequest} from "../../../cuba/entities/base/tsadv_CertificateRequest";
 import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import {DicPositionsOverlappingType} from "../../../cuba/entities/kzm$DicPositionsOverlappingType";
 import LoadingPage from "../LoadingPage";
-import {CertificateRequestManagement} from "../CertificateRequest/CertificateRequestManagement";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import Button, {ButtonType} from "../../components/Button/Button";
 import {goBackOrHomePage} from "../../util/util";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
-import {PersonGroup} from "../../../cuba/entities/base/base$PersonGroup";
-import {InsuredPerson} from "../../../cuba/entities/base/tsadv$InsuredPerson";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
-import {AddressRequest} from "../../../cuba/entities/base/tsadv$AddressRequest";
 import moment from "moment";
-import {PositionGroup} from "../../../cuba/entities/base/base$PositionGroup";
 import {OrganizationGroup} from "../../../cuba/entities/base/base$OrganizationGroup";
 import TextArea from "antd/es/input/TextArea";
 import MsgEntity from "../../components/MsgEntity";
-import {PersonDocumentRequest} from "../../../cuba/entities/base/tsadv_PersonDocumentRequest";
-import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
+import {Redirect} from "react-router-dom";
+import {PositionOverlappingRequestManagement} from "./PositionOverlappingRequestManagement";
+import {withRouter} from "react-router";
+import {PositionGroupExt} from "../../../cuba/entities/base/base$PositionGroupExt";
 
 type EditorProps = {
-  entityId: string;
+  entityId: string,
+  personGroupId: any;
 };
 @inject("rootStore")
 @injectMainStore
@@ -69,8 +54,8 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
     {view: "_minimal"}
   )
 
-  positionGroupDc = collection<PositionGroup>(
-    PositionGroup.NAME,
+  positionGroupDc = collection<PositionGroupExt>(
+    PositionGroupExt.NAME,
     {view: "_minimal"}
   )
 
@@ -90,8 +75,6 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
 
     "requestDate",
 
-    "personGroup",
-
     "workCompletionDate",
 
     "positionGroup",
@@ -103,6 +86,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
     "status",
 
     "type",
+    "attachment"
 
   ];
 
@@ -110,7 +94,9 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
   @observable
   person: PersonExt;
 
-  personGroupId: string;
+  organization: any;
+
+  editedPositionOverlappingRequest: PositionOverlappingRequest;
 
   @observable
   mainStore = this.props.mainStore!;
@@ -119,29 +105,36 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
   isUpdateBeforeOutcome = true;
 
   update = () => {
+
     if (this.isNotDraft())
       return this.dataInstance.update(this.getUpdateEntityData());
     return this.dataInstance.update({
-      personGroup: this.personGroupId,
-      editedPositionOverlappingRequest: this.editPositionOverlappingRequest ?
-      this.editPositionOverlappingRequest.id : undefined,
+      personGroup: {
+        id: this.props!.personGroupId
+      },
+      basePositionOverlappingRequest: this.editedPositionOverlappingRequest ? this.editPositionOverlappingRequest.id : undefined,
       ...this.getUpdateEntityData()
     });
   };
 
+  isNotDraft = () => {
+    return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.langValue3 !== "Draft" : true;
+  };
+
 
   render() {
-    if (!this.mainStore) {
+    if (!this.dataInstance) {
       return <LoadingPage/>
     }
+
+
+    if (this.updated) {
+      return <Redirect to={PositionOverlappingRequestManagement.PATH}/>;
+    }
+
 
     const messages = this.mainStore.messages!;
-    if (!messages) {
-      return <LoadingPage/>
-    }
-
     const entityName = this.dataInstance.entityName;
-    const isNotDraft = this.isNotDraft();
 
 
     return <Page pageName={<MsgEntity entityName={PositionOverlappingRequest.NAME}/>}>
@@ -203,6 +196,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                         form={this.props.form}
                         formItemOpts={{style: {marginBottom: "12px"}}}
                         optionsContainer={this.positionOverlappingTypeDc}
+                        disabled={this.isNotDraft()!}
                         getFieldDecoratorOpts={{
                           rules: [{
                             required: true,
@@ -217,6 +211,8 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                         entityName={PositionOverlappingRequest.NAME}
                         propertyName="positionGroup"
                         form={this.props.form}
+                        disabled={this.isNotDraft()!}
+
                         formItemOpts={{style: {marginBottom: "12px"}}}
                         optionsContainer={this.positionGroupDc}
                         getFieldDecoratorOpts={{
@@ -225,7 +221,11 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                             message: this.props.intl.formatMessage(
                               {id: "form.validation.required"},
                               {fieldName: messages[PositionOverlappingRequest.NAME + '.positionGroup']})
-                          }]
+                          }],
+                          getValueFromEvent: positionId => {
+                            this.fillOrganization(positionId);
+                            return positionId;
+                          }
                         }}
                       />
 
@@ -235,6 +235,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                         form={this.props.form}
                         formItemOpts={{style: {marginBottom: "12px"}}}
                         optionsContainer={this.organizationGroupDc}
+                        disabled={true}
                         getFieldDecoratorOpts={{
                           rules: [{
                             required: true,
@@ -250,7 +251,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                           propertyName="workCompletionDate"
                           form={this.props.form}
                           formItemOpts={{style: {marginBottom: "12px"}}}
-                          disabled={false}
+                          disabled={this.isNotDraft()!}
                           getFieldDecoratorOpts={{
                             rules: [{required: true,}]
                           }}
@@ -260,7 +261,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                         label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "justification"})}>
                         {this.props.form.getFieldDecorator("justification")(
                           <TextArea
-                            disabled={isNotDraft}
+                            disabled={this.isNotDraft()!}
                             rows={4}/>
                         )}
                       </Form.Item>
@@ -268,7 +269,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                         entityName={entityName}
                         propertyName="attachment"
                         form={this.props.form}
-                        disabled={isNotDraft}
+                        disabled={this.isNotDraft()!}
                         formItemOpts={{style: {marginBottom: "12px"}}}
                         getFieldDecoratorOpts={{
                           rules: [{
@@ -285,15 +286,26 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
 
   }
 
+  fillOrganization = (positionId: string ) => {
+    restQueries.organizationGroupByPositionId(positionId).then(values => {
+        const organId = values.length<1? "" : values[0].id;
+        this.props.form.setFields({
+          department: {
+            value: organId
+          }
+        })
+    });
+  }
+
   onReactionDisposerEffect = (item: PositionOverlappingRequest | undefined) => {
 
-    this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;
+    const personGroupId = item && item.personGroup ? item.personGroup.id! : this.props!.personGroupId!;
     const requestDate = item && item.requestDate ? item.requestDate : moment().toISOString();
     getCubaREST()!.searchEntities<PersonExt>(PersonExt.NAME, {
       conditions: [{
         property: "group.id",
         operator: '=',
-        value: this.personGroupId
+        value: personGroupId
       }, {
         property: 'startDate',
         operator: '<=',
@@ -309,8 +321,6 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
       .then(value => this.person = value)
   }
 
-
-
 }
 
 
@@ -319,12 +329,12 @@ export default injectIntl(
     onValuesChange: (props: any, changedValues: any) => {
       // Reset server-side errors when field is edited
       Object.keys(changedValues).forEach((fieldName: string) => {
-        props.form.setFields({
+      props.form.setFields({
           [fieldName]: {
             value: changedValues[fieldName]
           }
         });
       });
     }
-  })(PositionOverlappingRequestEditComponent)
+  })(withRouter(PositionOverlappingRequestEditComponent))
 );

@@ -216,8 +216,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     const {status} = this.dataInstance;
 
     if (isNeedBpm !== false) isNeedBpm = true;
-    console.log('1')
-    console.log(this.formData)
+
     return this.formData
       ? isNeedBpm
         ? <BprocButtons dataInstance={this.dataInstance}
@@ -334,10 +333,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
       })
     } else {
       const processDefinitionKey = this.processDefinitionKey;
-      console.log(processDefinitionKey)
+
       restServices.bprocService.getStartFormData({processDefinitionKey: processDefinitionKey})
         .then(formData => {
-          console.log(formData)
           this.formData = formData;
           this.isStartForm = true;
           this.initVariablesByBproc();

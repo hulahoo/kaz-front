@@ -1,7 +1,6 @@
 package kz.uco.kzm.entity;
 
 import kz.uco.base.entity.abstraction.AbstractDictionary;
-import kz.uco.tsadv.modules.personal.model.CertificateRequest;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;

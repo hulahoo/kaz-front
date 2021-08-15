@@ -4,7 +4,7 @@ import { observer } from "mobx-react";
 import PositionOverlappingRequestEdit from "./PositionOverlappingRequestEdit";
 import PositionOverlappingRequestList from "./PositionOverlappingRequestList";
 
-type Props = RouteComponentProps<{ entityId?: string }>;
+type Props = RouteComponentProps<{ entityId?: string, personGroupId?: string }>;
 
 @observer
 export class PositionOverlappingRequestManagement extends React.Component<
@@ -14,11 +14,11 @@ export class PositionOverlappingRequestManagement extends React.Component<
   static NEW_SUBPATH = "new";
 
   render() {
-    const { entityId } = this.props.match.params;
+    const { entityId, personGroupId } = this.props.match.params;
     return (
       <>
-        {entityId ? (
-          <PositionOverlappingRequestEdit entityId={entityId} />
+        {entityId? (
+          <PositionOverlappingRequestEdit entityId={entityId} personGroupId={personGroupId} />
         ) : (
           <PositionOverlappingRequestList />
         )}

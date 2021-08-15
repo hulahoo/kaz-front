@@ -114,8 +114,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
                 <Route exact={true} path="/position-overlapping-request" component={PositionOverlappingRequestManagement}/>
-                <Route exact={true} path={PositionOverlappingRequestManagement.PATH + "/:entityId?"}
+                <Route exact={true} path={PositionOverlappingRequestManagement.PATH + "/:entityId/:personGroupId?"}
                        component={PositionOverlappingRequestManagement}/>
+                <Route path="/positionOverlappingRequest/:entityId" component={PositionOverlappingRequestManagement}/>
                 <Route exact={true} path={MyProfileManagement.PATH} component={MyProfileManagement}/>
                 <Route exact={true} path={AddressRequestManagement.PATH + '/:entityId/:addressId?'}
                        component={AddressRequestManagement}/>

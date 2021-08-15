@@ -3,11 +3,12 @@ import { PersonGroup } from "./base/base$PersonGroup";
 import { DicPositionsOverlappingType } from "./kzm$DicPositionsOverlappingType";
 import { OrganizationGroup } from "./base/base$OrganizationGroup";
 import { FileDescriptor } from "./base/sys$FileDescriptor";
+import {PositionGroupExt} from "./base/base$PositionGroupExt";
 export class PositionOverlappingRequest extends AbstractBprocRequest {
   static NAME = "kzm$PositionOverlappingRequest";
   personGroup?: PersonGroup | null;
   type?: DicPositionsOverlappingType | null;
-  department?: OrganizationGroup | null;
+  department?: PositionGroupExt | null;
   file?: FileDescriptor | null;
 }
 export type PositionOverlappingRequestViewName =

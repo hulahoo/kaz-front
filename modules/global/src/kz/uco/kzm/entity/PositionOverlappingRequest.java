@@ -5,6 +5,7 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.entity.annotation.Lookup;
 import com.haulmont.cuba.core.entity.annotation.LookupType;
+import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
 import kz.uco.base.entity.shared.OrganizationGroup;
 import kz.uco.base.entity.shared.PersonGroup;
 import kz.uco.base.entity.shared.PositionGroup;
@@ -14,11 +15,13 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+@PublishEntityChangedEvents
 @Table(name = "KZM_POSITION_OVERLAPPING_REQUEST")
 @Entity(name = "kzm$PositionOverlappingRequest")
 @NamePattern("%s|requestNumber")
 public class PositionOverlappingRequest extends AbstractBprocRequest {
     private static final long serialVersionUID = -4680709725704873203L;
+
 
     @Lookup(type = LookupType.SCREEN, actions = "lookup")
     @NotNull
@@ -33,7 +36,6 @@ public class PositionOverlappingRequest extends AbstractBprocRequest {
     private String justification;
 
     @Lookup(type = LookupType.SCREEN, actions = "lookup")
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "POSITION_ID")
     private PositionGroup positionGroup;

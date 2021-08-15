@@ -11,6 +11,7 @@ import Notification from "../../util/Notification/Notification";
 import MyTeamPersonCard from "./personalData/MyTeamPersonCard/MyTeamPersonCard";
 import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
 import MyTeamPersonRvd from "./timeManagement/rvd/MyTeamPersonRvd/MyTeamPersonRvd";
+import PositionOverlappingRequestListComponent from "../PositionOverlappingRequest/PositionOverlappingRequestList";
 // import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
 import AbsenceRvdRequestList from "./timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
 import {rootStore, RootStoreProp} from "../../store";
@@ -89,6 +90,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <AssignmentScheduleStandard personGroupId={this.person!.groupId}/>
       case 'scheduleOffsetRequest':
         return <MyTeamScheduleOffsetRequestList personGroupId={this.person!.groupId}/>
+      case 'positionOverlappingRequest':
+        return <PositionOverlappingRequestListComponent person={this.person} />
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -100,6 +103,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
       id: 'personalData'
     }, {
       id: 'timeManagement'
+    },{
+      id: 'positionOverlappingRequest'
     },]
   }
 
@@ -119,6 +124,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         }, {
           id: 'scheduleOffsetRequest'
         }]
+      case 'positionOverlappingRequest':
+        return [{id: 'positionOverlappingRequest'}]
     }
     return [{
       id: 'personalData'

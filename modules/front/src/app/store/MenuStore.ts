@@ -112,13 +112,6 @@ export default class MenuStore {
           component: null,
         }],
       },
-      {
-        id: "position-overlapping-request",
-        caption: "Position Overlapping Request",
-        menuLink: "/position-overlapping-request",
-        pathPattern: "/position-overlapping-request",
-        component: null
-      },
       // {
       //   id: "my-rating",
       //   caption: "Моя оценка",
