@@ -1,6 +1,6 @@
 import * as React from "react";
 import {createElement} from "react";
-import {Card, Form, Input, Select, TimePicker} from "antd";
+import {Card, Form, Input, Select} from "antd";
 import {inject, observer} from "mobx-react";
 import {AbsenceRvdRequestManagement} from "./AbsenceRvdRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
@@ -49,6 +49,7 @@ import {MyTeamStructureManagement} from "../../../MyTeamStructureManagement";
 import {AssignmentSchedule} from "../../../../../../cuba/entities/base/tsadv$AssignmentSchedule";
 import {AssignmentExt} from "../../../../../../cuba/entities/base/base$AssignmentExt";
 import {serviceCollection} from "../../../../../util/ServiceDataCollectionStore";
+import TimePicker from "../../../../../components/TimePicker/TimePicker";
 
 type Props = FormComponentProps & EditorProps;
 

@@ -448,6 +448,7 @@
   "final.result": "Итоговый результат",
   "total": "Итого",
   "bpmUserSubstitution": "Замещающие пользователи bpm",
+  "complete.all.sections.course.first": "Сначала пройдите все разделы курса"
   "menu.position-overlapping-request": "Запрос на совмещение позиций",
   "positionOverlappingRequest": "Изменение условий труда работника"
 }
