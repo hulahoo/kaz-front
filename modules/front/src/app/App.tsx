@@ -55,6 +55,7 @@ import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationSched
 import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
+import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHierarchyManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -158,6 +159,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        component={PortalFeedbackQuestionManagement}/>
                 <Route exact={true} path="/orgStructureRequest/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
+                <Route exact={true} path={PositionHierarchyManagement.PATH} component={PositionHierarchyManagement}/>
                 <Route exact={true} path={VacationScheduleManagement.PATH} component={VacationScheduleManagement}/>
                 <Route exact={true}
                        path={AbsenceRvdRequestManagement.PATH_WITH_PARAMS}

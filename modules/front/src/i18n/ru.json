@@ -96,6 +96,7 @@
   "menu.main": "Главная",
   "menu.my-profile": "Личный кабинет",
   "menu.my-team": "Моя команда",
+  "menu.position-hierarchy": "Штатное расписание",
   "menu.assistant-team": "Команда ассистента",
   "menu.help": "Справка",
   "menu.vacation": "Отпуска",
@@ -443,5 +444,9 @@
   "absence.rvd.validate.rotational.work": "Подача заявки запрещена для работников, занятых на вахтовой работе",
   "final.result": "Итоговый результат",
   "total": "Итого",
-  "bpmUserSubstitution": "Замещающие пользователи bpm"
+  "bpmUserSubstitution": "Замещающие пользователи bpm",
+  "jobDescription": "ДИ",
+  "jobDescriptionRequests": "Заявки ДИ",
+  "formJD": "Форма ДИ",
+  "jobResponsibilities": "Должностные обязанности"
 }

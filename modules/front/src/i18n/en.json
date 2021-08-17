@@ -115,6 +115,7 @@
   "menu.main": "Main",
   "menu.my-profile": "My Profile",
   "menu.my-team": "My Team",
+  "menu.position-hierarchy": "Position scheduler",
   "menu.assistant-team": "Assistant team",
   "menu.help": "Job Confirmation Letter",
   "menu.vacation": "Vacation",
@@ -454,5 +455,9 @@
   "absence.rvd.validate.rotational.work": "Submission of an request is prohibited for workers engaged in rotational work",
   "final.result": "Final result",
   "total": "Total",
-  "bpmUserSubstitution": "Bpm user substitution"
+  "bpmUserSubstitution": "Bpm user substitution",
+  "jobDescription": "Job description",
+  "jobDescriptionRequests": "Job description requests",
+  "formJD": "Job description form",
+  "jobResponsibilities": "Job responsibilities"
 }
