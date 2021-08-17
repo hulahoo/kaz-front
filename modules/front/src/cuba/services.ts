@@ -39,6 +39,7 @@ import {GanttChartVacationScheduleData} from "../app/components/VacationGanttCha
 import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleRequest";
 import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
 import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
+import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -622,7 +623,7 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     },
-    hasHrRole: (param: {dicHrCode: string}): Promise<boolean> => {
+    hasHrRole: (param: { dicHrCode: string }): Promise<boolean> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_EmployeeService",
         "hasHrRole",
@@ -888,6 +889,22 @@ export const restServices = {
           bpmUserSubstitution: bpmUserSubstitution
         }
       ).then(value => JSON.parse(value));
+    },
+  },
+  positionStructureService: {
+    getChildren: (param: { parentId: string }): Promise<Array<PositionHierarchy>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PositionStructureService",
+        "getChildren",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    getStartData: (param: {}): Promise<Array<PositionHierarchy>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PositionStructureService",
+        "getStartData",
+        {...param}
+      ).then(r => JSON.parse(r));
     },
   }
 };

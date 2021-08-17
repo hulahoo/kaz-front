@@ -112,6 +112,12 @@ export default class MenuStore {
           component: null,
         }],
       },
+      {
+        id: "position-hierarchy", caption: "Штатное расписание",
+        menuLink: "/position-hierarchy",
+        pathPattern: "/position-hierarchy",
+        component: null
+      },
       // {
       //   id: "my-rating",
       //   caption: "Моя оценка",

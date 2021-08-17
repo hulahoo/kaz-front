@@ -96,6 +96,7 @@
   "menu.main": "Главная",
   "menu.my-profile": "Личный кабинет",
   "menu.my-team": "Моя команда",
+  "menu.position-hierarchy": "Штатное расписание",
   "menu.assistant-team": "Команда ассистента",
   "menu.help": "Справка",
   "menu.vacation": "Отпуска",
@@ -444,5 +445,9 @@
   "final.result": "Итоговый результат",
   "total": "Итого",
   "bpmUserSubstitution": "Замещающие пользователи bpm",
-  "complete.all.sections.course.first": "Сначала пройдите все разделы курса"
+  "complete.all.sections.course.first": "Сначала пройдите все разделы курса",
+  "jobDescription": "ДИ",
+  "jobDescriptionRequests": "Заявки ДИ",
+  "formJD": "Форма ДИ",
+  "jobResponsibilities": "Должностные обязанности"
 }

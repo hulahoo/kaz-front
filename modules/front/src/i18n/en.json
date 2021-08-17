@@ -115,6 +115,7 @@
   "menu.main": "Main",
   "menu.my-profile": "My Profile",
   "menu.my-team": "My Team",
+  "menu.position-hierarchy": "Position scheduler",
   "menu.assistant-team": "Assistant team",
   "menu.help": "Job Confirmation Letter",
   "menu.vacation": "Vacation",
@@ -455,5 +456,9 @@
   "final.result": "Final result",
   "total": "Total",
   "bpmUserSubstitution": "Bpm user substitution",
-  "complete.all.sections.course.first": "Complete all sections of the course first"
+  "complete.all.sections.course.first": "Complete all sections of the course first",
+  "jobDescription": "Job description",
+  "jobDescriptionRequests": "Job description requests",
+  "formJD": "Job description form",
+  "jobResponsibilities": "Job responsibilities"
 }

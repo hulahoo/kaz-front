@@ -1,0 +1,11 @@
+.tabSheet{
+  height: 100%;
+}
+
+.tabSheet .ant-tabs-content{
+  height: 100%;
+}
+
+.tabSheet .ant-tabs-content .ant-tabs-tabpane{
+  height: 100%;
+}
