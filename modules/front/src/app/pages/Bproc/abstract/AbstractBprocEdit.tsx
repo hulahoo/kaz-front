@@ -53,6 +53,9 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   @observable
   employee: TsadvUser;
 
+  @observable
+  employeePersonGroupId: string;
+
   /**
    * Ссылка на процесс инстанс, уникальный инстанс для каждого процесса. Если процесс не начато то значение null
    */
@@ -192,6 +195,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   };
 
   setEmployee = (personGroupId: string): Promise<TsadvUser> => {
+    this.employeePersonGroupId = personGroupId;
     return getCubaREST()!.searchEntities<TsadvUser>(TsadvUser.NAME, {
       conditions: [{
         property: 'personGroup.id',
@@ -223,7 +227,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         formData={this.formData}
                         validate={this.validate}
                         beforeCompletePredicate={this.beforeCompletePredicate}
-                        employeePersonGroupId={() => this.employee ? this.employee.personGroup!.id : this.props.rootStore!.userInfo.personGroupId}
+                        employeePersonGroupId={() => this.employeePersonGroupId ? this.employeePersonGroupId : this.props.rootStore!.userInfo.personGroupId!}
                         update={this.update}
                         processInstanceData={this.processInstanceData}
                         afterSendOnApprove={this.afterSendOnApprove}
