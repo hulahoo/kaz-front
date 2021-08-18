@@ -87,7 +87,7 @@ class CertificateRequestListComponent extends React.Component<MainStoreInjected 
                                    const template = this.templates.find(value => isEquals(value.certificateType, record.certificateType)
                                      && isEquals(value.language, record.language)
                                      && isEquals(value.organization && value.organization.company && value.organization.company.code, this.props.rootStore!.userInfo!.companyCode)
-                                     && isEquals(value.showSalary, record.showSalary)
+                                     && isEquals(!!value.showSalary, !!record.showSalary)
                                      && isEquals(value.receivingType, record.receivingType));
 
                                    let reportName = template && template.report && template.report['_instanceName'];
