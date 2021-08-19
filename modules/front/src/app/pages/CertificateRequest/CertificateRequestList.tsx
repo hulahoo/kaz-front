@@ -13,7 +13,6 @@ import {Icon} from "antd";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import DataTableFormat from "../../components/DataTable/intex";
-import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
 import {downloadFile, isEquals} from "../../util/util";
 import {observable} from "mobx";
 import {CertificateTemplate} from "../../../cuba/entities/base/tsadv_CertificateTemplate";
@@ -45,7 +44,7 @@ class CertificateRequestListComponent extends React.Component<MainStoreInjected 
   templates: CertificateTemplate[] = [];
 
   render() {
-    if (!this.dataCollection.items)
+    if (!this.dataCollection.items || this.templates.length === 0)
       return <Icon type="spin"/>;
 
     const buttons = [
@@ -88,7 +87,10 @@ class CertificateRequestListComponent extends React.Component<MainStoreInjected 
                                      && isEquals(value.language, record.language)
                                      && isEquals(value.organization && value.organization.company && value.organization.company.code, this.props.rootStore!.userInfo!.companyCode)
                                      && isEquals(!!value.showSalary, !!record.showSalary)
-                                     && isEquals(value.receivingType, record.receivingType));
+                                     && isEquals(value.receivingType, record.receivingType)
+                                   );
+
+                                   console.log(template);
 
                                    let reportName = template && template.report && template.report['_instanceName'];
 
@@ -119,7 +121,7 @@ class CertificateRequestListComponent extends React.Component<MainStoreInjected 
     getCubaREST()!.loadEntities<CertificateTemplate>(CertificateTemplate.NAME, {
       view: 'portal-certificateTemplate'
     })
-      .then(value => this.templates = value);
+      .then(value => this.templates = value.slice());
   }
 }
 
