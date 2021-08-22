@@ -4,8 +4,8 @@
         <jpql>
             select o
             from base$OrganizationGroupExt o
-            where o.id in (select p.organizationGroup.id
-            from base$PositionGroupExt p where p.id=:positionId)
+            where o.id in (select p.organizationGroupExt.id
+            from base$PositionExt p where p.group.id=:positionId )
         </jpql>
         <params>
             <param name="positionId" type="java.util.UUID"/>
