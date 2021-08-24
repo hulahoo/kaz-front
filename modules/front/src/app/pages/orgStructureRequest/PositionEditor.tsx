@@ -236,7 +236,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'headCount']})
               }]
             })(
-              <InputNumber disabled={this.props.isDisabledFields}/>
+              <InputNumber min={0} disabled={this.props.isDisabledFields}/>
             )}
           </Form.Item>
 
@@ -249,7 +249,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'minSalary']})
               }]
             })(
-              <InputNumber/>
+              <InputNumber  min={0}/>
             )}
           </Form.Item>
 
@@ -262,7 +262,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'maxSalary']})
               }]
             })(
-              <InputNumber/>
+              <InputNumber  min={0}/>
             )}
           </Form.Item>
 
