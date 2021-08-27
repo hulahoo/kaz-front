@@ -460,5 +460,6 @@
   "jobDescription": "Job description",
   "jobDescriptionRequests": "Job description requests",
   "formJD": "Job description form",
-  "jobResponsibilities": "Job responsibilities"
+  "jobResponsibilities": "Job responsibilities",
+  "send.message": "Send a message"
 }

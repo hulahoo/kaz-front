@@ -37,7 +37,7 @@ class UserPanel extends React.Component<MainStoreInjected & WrappedComponentProp
       <div>
         <Link to={PortalFeedbackQuestionManagement.PATH}>
           <Button>
-            {this.props.intl.formatMessage({id: "ask.question"})}
+            {this.props.intl.formatMessage({id: "send.message"})}
           </Button>
         </Link>
       </div>

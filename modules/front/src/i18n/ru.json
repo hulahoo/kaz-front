@@ -449,5 +449,6 @@
   "jobDescription": "ДИ",
   "jobDescriptionRequests": "Заявки ДИ",
   "formJD": "Форма ДИ",
-  "jobResponsibilities": "Должностные обязанности"
+  "jobResponsibilities": "Должностные обязанности",
+  "send.message": "Отправить сообщение"
 }
