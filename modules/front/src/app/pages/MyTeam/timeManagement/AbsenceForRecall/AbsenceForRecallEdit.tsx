@@ -299,7 +299,7 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: true,
+                      required: !this.isDatesDisabled,
                       validator: (rule, value, callback) => {
                         if (!value && !(isNotDraft || this.isDatesDisabled))
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
@@ -337,7 +337,7 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: true,
+                      required: !this.isDatesDisabled,
                       validator: (rule, value, callback) => {
                         if (!value && !(isNotDraft || this.isDatesDisabled))
                           return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.dateFrom']}));
@@ -418,7 +418,7 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
       },
       (item) => {
 
-        // this.isDatesDisabled = item!.compensationPayment === true;
+        this.isDatesDisabled = item!.compensationPayment === true;
 
         if (item!.vacation)
           this.loadVacation(item!.vacation!.id)
