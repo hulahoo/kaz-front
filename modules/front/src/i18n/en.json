@@ -461,5 +461,22 @@
   "jobDescriptionRequests": "Job description requests",
   "formJD": "Job description form",
   "jobResponsibilities": "Job responsibilities",
-  "send.message": "Send a message"
+  "send.message": "Send a message",
+
+  "assignment": "Punishments",
+  "punishmentRequest": "Punishment Request",
+  "PunishmentRequest": "Punishment Request",
+  "punishment": "Punishment",
+  "punishmentDismiss": "Punishment dismiss request",
+  "PunishmentAssignmentRequest.offenceType": "Offence Type",
+  "PunishmentAssignmentRequest": "Punishment Assignment Request",
+  "PunishmentAssignmentRequest.punishmentType": "Punishment Type",
+  "employee.name": "Employee name",
+  "punishmentRequest.create": "Create punishment request",
+  "punishmentRequest.assignment": "Assignment",
+  "punishmentRequest.removal": "Removal",
+  "employee.positionName": "Position name",
+  "employee.organizationName": "Organization name",
+  "employee.hireDate": "Hire date"
+
 }

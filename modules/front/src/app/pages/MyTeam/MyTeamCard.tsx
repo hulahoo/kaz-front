@@ -18,6 +18,8 @@ import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 import MyTeamAbsenceRequest from "./timeManagement/MyTeamAbsenceRequest/MyTeamAbsenceRequest";
 import {MyTeamData} from "./MyTeamComponent";
+import PunishmentRequestList from "./assignment/PunishmentRequestList";
+import PunishmentList from "./assignment/punishment/PunishmentList";
 
 const {TabPane} = Tabs;
 
@@ -89,6 +91,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <AssignmentScheduleStandard personGroupId={this.person!.groupId}/>
       case 'scheduleOffsetRequest':
         return <MyTeamScheduleOffsetRequestList personGroupId={this.person!.groupId}/>
+      case 'punishmentRequest':
+        return <PunishmentRequestList personGroupId={this.person!.groupId}/>
+      case 'punishment':
+        return <PunishmentList />
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -100,7 +106,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
       id: 'personalData'
     }, {
       id: 'timeManagement'
-    },]
+    }, {
+      id: 'assignment'
+    },
+    ]
   }
 
   getLeftMenu = (): Menu[] => {
@@ -118,6 +127,13 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           id: 'scheduleStandard'
         }, {
           id: 'scheduleOffsetRequest'
+        }]
+      case 'assignment':
+        return [{
+          id: 'punishmentRequest'
+        },
+          {
+          id: 'punishment'
         }]
     }
     return [{

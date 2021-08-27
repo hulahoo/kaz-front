@@ -450,5 +450,19 @@
   "jobDescriptionRequests": "Заявки ДИ",
   "formJD": "Форма ДИ",
   "jobResponsibilities": "Должностные обязанности",
-  "send.message": "Отправить сообщение"
+  "send.message": "Отправить сообщение",
+
+  "punishmentRequest": "Служебные записки",
+  "PunishmentRequest": "Служебные записки",
+  "punishment": "Дисциплинарные взыскания",
+  "punishmentDismiss": "Снятие Дисциплинарного взыскания",
+  "punishmentRequest.create": "Дисциплинарное взыскание",
+  "punishmentRequest.assignment" : "Назначение",
+  "punishmentRequest.removal" : "Снятие",
+  "employee.name": "ФИО работника",
+  "PunishmentAssignmentRequest": "Дисциплинарные взыскания",
+  "employee.positionName": "Должность",
+  "employee.organizationName": "Подразделение",
+  "employee.hireDate": "Дата приема"
+
 }
