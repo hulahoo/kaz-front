@@ -5,10 +5,7 @@ import com.haulmont.addon.bproc.web.processform.ProcessForm;
 import com.haulmont.cuba.gui.components.Button;
 import com.haulmont.cuba.gui.components.Form;
 import com.haulmont.cuba.gui.model.InstanceContainer;
-import com.haulmont.cuba.gui.screen.EditedEntityContainer;
-import com.haulmont.cuba.gui.screen.LoadDataBeforeShow;
-import com.haulmont.cuba.gui.screen.UiController;
-import com.haulmont.cuba.gui.screen.UiDescriptor;
+import com.haulmont.cuba.gui.screen.*;
 import com.haulmont.cuba.security.global.UserSession;
 import kz.uco.kzm.entity.PositionOverlappingRequest;
 import kz.uco.tsadv.entity.bproc.AbstractBprocRequest;
@@ -50,7 +47,7 @@ public class PositionOverlappingRequestEdit extends AbstractBprocEditor<Position
         @Override
         protected void initVariables() {
                 super.initVariables();
-                initAssignment();
+           //     initAssignment();
         }
 
         protected void initAssignment() {
@@ -63,6 +60,11 @@ public class PositionOverlappingRequestEdit extends AbstractBprocEditor<Position
         protected void initEditableFields() {
                 super.initEditableFields();
                 form.setEditable(isDraft());
+        }
+
+        @Subscribe("getReferenceBtn")
+        protected void onGetReferenceBtnClick(Button.ClickEvent event) {
+                closeWithCommit();
         }
 
 }

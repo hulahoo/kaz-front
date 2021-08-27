@@ -9,6 +9,7 @@
             <view extends="_local">
                 <property name="personGroup" view="_minimal"/>
                 <property name="positionGroup" view="_minimal"/>
+                <property name="department" view="_minimal"/>
                 <property name="type" view="_minimal"/>
                 <property name="attachment" view="_minimal"/>
                 <property name="status" view="_minimal"/>
@@ -22,38 +23,70 @@
                 </query>
             </loader>
         </collection>
+        <collection id="statusesDc" class="kz.uco.tsadv.modules.personal.dictionary.DicRequestStatus" view="dicRequestStatus-edit">
+            <loader id="statusesDl">
+                <query>
+                    <![CDATA[select e from tsadv$DicRequestStatus e]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="tasksDc"
+                    class="kz.uco.tsadv.entity.bproc.ExtTaskData"/>
+        <instance id="assignmentDc"
+                  class="kz.uco.tsadv.modules.personal.model.AssignmentExt"/>
+
+
     </data>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="scrollBox" spacing="true">
+    <layout expand="procActionsBox" spacing="true">
         <scrollBox id="scrollBox" spacing="true">
             <form id="form" dataContainer="positionOverlappingRequestDc">
                 <column width="350px">
-                    <textField id="legacyIdField" property="legacyId"/>
-                    <textField id="organizationBinField" property="organizationBin"/>
-                    <textField id="integrationUserLoginField" property="integrationUserLogin"/>
-                    <textField id="requestNumberField" property="requestNumber"/>
-                    <pickerField id="statusField" property="status">
-                        <actions>
-                            <action id="lookup" type="picker_lookup"/>
-                            <action id="clear" type="picker_clear"/>
-                        </actions>
-                    </pickerField>
-                    <dateField id="requestDateField" property="requestDate"/>
-                    <textField id="commentField" property="comment"/>
-                    <pickerField id="personGroupField" property="personGroup"/>
+                    <textField id="requestNumberField" property="requestNumber" editable="false"/>
+                    <lookupField id="statusField" optionsContainer="statusesDc" property="status" editable="false"/>
+                    <dateField id="requestDateField" property="requestDate" editable="false"/>
+                    <pickerField id="personGroupField" property="personGroup" editable="false"/>
                     <dateField id="workCompletionDateField" property="workCompletionDate"/>
                     <textField id="justificationField" property="justification"/>
                     <pickerField id="positionGroupField" property="positionGroup"/>
+                    <pickerField id="departmentField" property="department"/>
                     <lookupPickerField id="typeField" optionsContainer="typesDc" property="type"/>
                     <upload id="attachmentField" fileStoragePutMode="IMMEDIATE" property="attachment"
                             showFileName="true"/>
                 </column>
             </form>
+            <vbox id="bpmActorsVBox"
+                  width="1000px"
+                  spacing="true">
+                <groupBox id="bpmActorsBox"
+                          caption="msg://kz.uco.tsadv.bproc/bproc.participants"
+                          spacing="true">
+                    <table id="procTasksTable"
+                           height="100%"
+                           showSelection="false"
+                           dataContainer="tasksDc"
+                           width="100%">
+                        <columns>
+                            <column id="hrRole"/>
+                            <column id="assignee" generator="generateAssignee"/>
+                            <column id="createTime"/>
+                            <column id="endTime"/>
+                            <column id="outcome" generator="generateOutcome"/>
+                            <column id="comment"/>
+                        </columns>
+                    </table>
+                </groupBox>
+            </vbox>
+
         </scrollBox>
-        <hbox id="editActions" spacing="true">
-            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
-            <button id="closeBtn" action="windowClose"/>
+        <hbox id="procActionsBox"
+              align="BOTTOM_LEFT"
+              spacing="true">
+            <hbox id="procActionButtonHBox"
+                  spacing="true"/>
+            <button id="getReferenceBtn" caption="msg://getReference" visible="false"/>
+            <button action="windowClose"/>
         </hbox>
     </layout>
 </window>
