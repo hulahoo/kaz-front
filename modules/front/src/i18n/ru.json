@@ -150,6 +150,8 @@
   "menu.c-b": "Эффективность и компенсация",
   "menu.incentive": "Ежемесячное премирование",
   "absenceRequest": "Заявка на отсутствие",
+  "absenceBalance": "Мой баланс отпусков",
+  "currentAbsenceBalance": "Баланс на текущий день:",
   "absence": "Список отсутствий",
   "settings": "Настройки",
   "logout": "Выйти",
