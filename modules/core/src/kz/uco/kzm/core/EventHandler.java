@@ -36,11 +36,13 @@ public class EventHandler {
             ActivityType activityType = metadata.create(ActivityType.class);
             activityType.setCode("POSITION_OVERLAPPING_REQUEST_APPROVE");
             activityType.setScreen("kzm$PositionOverlappingRequest.edit");
-            activityType.setLangValue1("Утверждение / отклонение заявление на atest ");
+            activityType.setLangValue1("Утверждение / отклонение заявление на совмещении позиции");
+            activityType.setLangValue2("Бекіту / қабылдамау позицияны біріктіруге өтініш");
+            activityType.setLangValue3("Approval / rejection of an application for position overlapping request");
             WindowProperty windowProperty = metadata.create(WindowProperty.class);
             windowProperty.setEntityName("kzm$PositionOverlappingRequest");
             windowProperty.setScreenName("kzm$PositionOverlappingRequest.edit");
-            windowProperty.setViewName("positionOverlappingRequest-edit");
+            windowProperty.setViewName("positionOverlappingRequest-view");
             activityType.setWindowProperty(windowProperty);
             em.persist(windowProperty);
             em.persist(activityType);
