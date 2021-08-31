@@ -415,7 +415,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
   }
 
   afterSendOnApprove = () => {
-    this.props.history!.push("/dismissalApplication");
+    this.props.history!.push("/dismissalRequest");
   };
 }
 
