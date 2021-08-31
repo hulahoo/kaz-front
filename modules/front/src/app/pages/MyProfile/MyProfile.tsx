@@ -16,6 +16,8 @@ import {AddressRequest} from "../../../cuba/entities/base/tsadv$AddressRequest";
 import AddressRequestList from "../AddressRequest/AddressRequestList";
 import PersonalDataRequestList from "../PersonalDataRequest/PersonalDataRequestList";
 import PersonDocumentRequestList from "../PersonDocumentRequest/PersonDocumentRequestList";
+import {DismissalRequest} from "../../../cuba/entities/base/tsadv_DismissalRequest";
+import DismissalRequestFormComponent from "../DismissalRequest/DismissalRequestForm";
 
 const {TabPane} = Tabs;
 
@@ -66,6 +68,9 @@ class MyProfile extends React.Component<MyProfileProps & WrappedComponentProps &
         }, {
           id: 'addressRequest',
           caption: messages[AddressRequest.NAME]
+        }, {
+          id: 'dismissalRequest',
+          caption: messages[DismissalRequest.NAME]
         }
         ]
       case 'timeManagement':
@@ -177,6 +182,8 @@ class MyProfile extends React.Component<MyProfileProps & WrappedComponentProps &
         return <PersonDocumentRequestList personGroupId={this.props.personGroupId}/>;
       case 'addressRequest':
         return <AddressRequestList personGroupId={this.props.personGroupId}/>;
+      case 'dismissalRequest':
+        return <DismissalRequestFormComponent withoutPage entityId="new" />;
     }
     return (
       <div>

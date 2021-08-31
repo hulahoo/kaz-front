@@ -173,6 +173,13 @@ export default class MenuStore {
         menuLink: "/incentive",
         pathPattern: "/incentive",
         component: null,
+      },
+      {
+        id: "dismissal",
+        caption: "dismissal",
+        menuLink: "/dismissalRequest",
+        pathPattern: "/dismissalRequest",
+        component: null,
       }
     ]
   }
