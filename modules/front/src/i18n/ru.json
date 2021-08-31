@@ -149,6 +149,10 @@
   "menu.temporary-transfer-day": "Заявка на временный перевод на ночную/дневную смену",
   "menu.c-b": "Эффективность и компенсация",
   "menu.incentive": "Ежемесячное премирование",
+  "menu.dismissal": "Заявка на увольнение",
+  "dismissal.downloadExitInterview": "Скачать обходной лист",
+  "dismissal-interview": "Заключительное интервью",
+  "dismissal-interview.title": "Для выгрузки обходного листа убедительно просим вас ответить на следующие вопросы",
   "absenceRequest": "Заявка на отсутствие",
   "absence": "Список отсутствий",
   "settings": "Настройки",
@@ -300,7 +304,7 @@
   "exclude.type.1": "организацию",
   "exclude.type.2": "позицию",
   "sendOnApprove": "Отправить на согласование",
-  "bproc.participants": "Этапы согласования",
+  "bproc.participants": "История согласования",
   "create.leavingVacationRequest": "Создать заявку на выход из отпуска",
   "leavingVacationRequest": "Заявка на выход из отпуска",
   "leavingVacationRequest.plannedStartDate.validating": "В случае выхода на работу до истечения отпуска без сохранения заработной платы по уходу за ребенком до достижения им возраста трех лет работник обязан уведомить работодателя о своем намерении за месяц до начала работы. Вы указали меньший период. Выберите другую дату",
@@ -449,5 +453,8 @@
   "jobDescription": "ДИ",
   "jobDescriptionRequests": "Заявки ДИ",
   "formJD": "Форма ДИ",
-  "jobResponsibilities": "Должностные обязанности"
+  "jobResponsibilities": "Должностные обязанности",
+  "exitInterview.modal.title": "Спасибо что ответили на вопросы!",
+  "exitInterview.modal.error.title": "Пожалуйста заполните все поля",
+  "dismissal.closeInterview": "Окей"
 }
