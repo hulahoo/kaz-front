@@ -218,7 +218,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
     const now = moment();
     const {getFieldDecorator} = this.props.form;
     return (
-      <Page pageName={this.props.intl.formatMessage({id: "PunishmentRequest"})}>
+      <Page pageName={this.props.intl.formatMessage({id: "PunishmentRemovalRequest"})}>
         <Section size="large">
           <Card className="narrow-layout card-actions-container"
                 actions={this.actions()}

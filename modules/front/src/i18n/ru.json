@@ -454,10 +454,12 @@
 
   "punishmentRequest": "Служебные записки",
   "PunishmentRequest": "Служебные записки",
+  "PunishmentRemovalRequest": "Снятие Дисциплинарного взыскания",
   "punishment": "Дисциплинарные взыскания",
   "punishmentDismiss": "Снятие Дисциплинарного взыскания",
   "punishmentRequest.create": "Дисциплинарное взыскание",
   "punishmentRequest.assignment" : "Назначение",
+  "assignment" : "Назначение",
   "punishmentRequest.removal" : "Снятие",
   "employee.name": "ФИО работника",
   "PunishmentAssignmentRequest": "Дисциплинарные взыскания",
