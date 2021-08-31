@@ -10,7 +10,7 @@ import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
-import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
+import {AnsweredQuestion, AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
@@ -905,6 +905,16 @@ export const restServices = {
         "getStartData",
         {...param}
       ).then(r => JSON.parse(r));
+    },
+  },
+  dismissalService: {
+    saveUserFeedback: (params: { templateId: string, personGroupId: string, questionsAndAnswers: AnsweredQuestion[] }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DismissalService",
+        "saveUserFeedback",
+        {...params},
+        fetchOpts
+      );
     },
   }
 };
