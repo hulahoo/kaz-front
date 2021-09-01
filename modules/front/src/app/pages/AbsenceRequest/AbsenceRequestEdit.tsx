@@ -377,43 +377,43 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   </Form.Item>
 
                   <Form.Item
-                    style={{position: 'absolute', paddingLeft: 170,paddingTop: 17}}>
-                      {getFieldDecorator("startTime")(
-                        <TimePicker
-                          format={'HH'}
-                          disabled={isNotDraft}/>
-                      )}
-                    </Form.Item>
+                    style={{position: 'absolute', paddingLeft: 170, paddingTop: 17}}>
+                    {getFieldDecorator("startTime")(
+                      <TimePicker
+                        format={'HH'}
+                        disabled={isNotDraft}/>
+                    )}
+                  </Form.Item>
                 </div>
 
                 {warningMessage}
 
-                  <div style={{display: 'flex'}}>
-                    <Form.Item
-                      label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "dateTo"})}>
-                      {getFieldDecorator("dateTo", {
-                        rules: [{
-                          required: true,
-                          message: this.props.intl.formatMessage({id: "validation.absenceRequest.dateTo"}),
-                          validator: this.dateValidator
-                        }],
-                        getValueFromEvent: args => {
-                          this.calcAbsenceDays(null, null, args);
-                          return args
-                        }
-                      })(
-                        <DefaultDatePicker
-                          disabled={isNotDraft}/>
-                      )}
-                    </Form.Item>
+                <div style={{display: 'flex'}}>
+                  <Form.Item
+                    label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "dateTo"})}>
+                    {getFieldDecorator("dateTo", {
+                      rules: [{
+                        required: true,
+                        message: this.props.intl.formatMessage({id: "validation.absenceRequest.dateTo"}),
+                        validator: this.dateValidator
+                      }],
+                      getValueFromEvent: args => {
+                        this.calcAbsenceDays(null, null, args);
+                        return args
+                      }
+                    })(
+                      <DefaultDatePicker
+                        disabled={isNotDraft}/>
+                    )}
+                  </Form.Item>
 
-                    <Form.Item style={{position: 'absolute', paddingLeft: 170, paddingTop: 17}}>
-                      {getFieldDecorator("endTime")(
-                        <TimePicker
-                          format={'HH'}
-                          disabled={isNotDraft}/>
-                      )}
-                    </Form.Item>
+                  <Form.Item style={{position: 'absolute', paddingLeft: 170, paddingTop: 17}}>
+                    {getFieldDecorator("endTime")(
+                      <TimePicker
+                        format={'HH'}
+                        disabled={isNotDraft}/>
+                    )}
+                  </Form.Item>
                 </div>
 
                 <ReadonlyField
@@ -425,7 +425,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                       {
                         validator: (rule, value, callback) => {
                           const type = this.getSelectedAbsenceType();
-                          if (!type || !isNumber(value)) return callback();
+                          if (!type || !isNumber(value) || isNotDraft) return callback();
                           if (type.isEcologicalAbsence && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
                             callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           }
@@ -486,7 +486,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                     rules: [{
                       validator: (rule, value, callback) => {
                         const absenceType = this.getSelectedAbsenceType();
-                        if (!absenceType) return;
+                        if (!absenceType || isNotDraft) return;
                         if (absenceType.isFileRequired && !value) {
                           callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.files']}));
                         } else callback();
@@ -750,14 +750,14 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         if (item && item.endTime) obj['endTime'] = moment(item.dateTo + " " + item.endTime);
 
         this.vacationScheduleCollection = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
-          view: "_local",
-          sort: "-startDate",
-          loadImmediately: true,
-          filter: {
-            conditions: [{
-              property: "personGroup.id",
-              operator: "=",
-              value: this.personGroupId
+            view: "_local",
+            sort: "-startDate",
+            loadImmediately: true,
+            filter: {
+              conditions: [{
+                property: "personGroup.id",
+                operator: "=",
+                value: this.personGroupId
               },
                 {property: "startDate", operator: ">=", value: obj["requestDate"]},
                 {property: "sentToOracle", operator: "=", value: 'SENT_TO_ORACLE'}]
