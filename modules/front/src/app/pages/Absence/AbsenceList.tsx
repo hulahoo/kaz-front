@@ -228,15 +228,16 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "absenceBalance"})} key="4">
               <h2 style={{color:"deepskyblue"}}>{this.props.intl.formatMessage({id: "currentAbsenceBalance"}) +" " + this.state.data}</h2>
+             <div >
               <ReactHTMLTableToExcel id="test-table-xls-button"
                                      className="ant-btn ant-btn-lg"
                                      table="table-to-xls"
                                      filename={new Date().toDateString()}
                                      sheet="tablexls"
-                                     buttonText="Excel "
-
+                                     buttonText="Excel"
               >
                 </ReactHTMLTableToExcel>
+             </div>
               <table id={"table-to-xls"}>
                 <DataTableFormat
                   dataCollection={this.dataCollectionAbsenceBalance}
