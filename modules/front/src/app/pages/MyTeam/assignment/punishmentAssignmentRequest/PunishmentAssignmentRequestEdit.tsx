@@ -184,7 +184,6 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
 
     const actions = [];
 
-    // if (this.isNewEntity())
     actions.push(<Button buttonType={ButtonType.FOLLOW}
                          disabled={status !== "DONE" && status !== "ERROR"}
                          loading={status === "LOADING"}
@@ -318,7 +317,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
                 optionsContainer={this.offenceTypesDc}
-                disabled={this.isApproved() || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -332,7 +331,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="assignmentDate"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={this.isApproved() || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -346,7 +345,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="accident"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={this.isApproved() || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -360,7 +359,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="hasDeclaratory"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={this.isApproved() || this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft || this.isApproved() || this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked"
                 }}
@@ -370,7 +369,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 entityName={this.dataInstance.entityName}
                 propertyName="declaratoryFile"
                 form={this.props.form}
-                disabled={this.isApproved() || !this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft || this.isApproved() || !this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
                 formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               <ReadonlyField
@@ -378,7 +377,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="hasRefusal"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={this.isApproved() || this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft || this.isApproved() || this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked"
                 }}
@@ -388,8 +387,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 entityName={this.dataInstance.entityName}
                 propertyName="refusalFile"
                 form={this.props.form}
-                // disabled={this.approverHrRoleCode !== 'MANAGER_ASSISTANT' && isNotDraft}
-                disabled={this.isApproved() || !this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft || this.isApproved() || !this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'HR'}
                 formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               <ReadonlyField
@@ -398,7 +396,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
                 optionsContainer={this.typesDc}
-                disabled={this.isApproved() || this.approverHrRoleCode === 'HR'}
+                disabled={isNotDraft && this.approverHrRoleCode != 'ORG_MANGER'}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -411,7 +409,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 entityName={this.dataInstance.entityName}
                 propertyName="additionalFiles"
                 form={this.props.form}
-                disabled={this.isApproved()}
+                disabled={isNotDraft}
                 formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               {this.globalErrors.length > 0 && (

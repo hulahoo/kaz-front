@@ -466,6 +466,7 @@
   "assignment": "Punishments",
   "punishmentRequest": "Punishment Request",
   "PunishmentRequest": "Punishment Request",
+  "PunishmentRemovalRequest": "Punishment Removal Request",
   "punishment": "Punishment",
   "punishmentDismiss": "Punishment dismiss request",
   "PunishmentAssignmentRequest.offenceType": "Offence Type",
