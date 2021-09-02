@@ -61,8 +61,6 @@ class IncentiveListComponent extends React.Component<MainStoreInjected & Wrapped
                     dataIndex="date"
                     key="date"
                     render={(text, record: any) => {
-                      console.log(record.date);
-                      console.log(new Date(record.date));
                       return capitalizeFirstLetter(new Date(record.date).toLocaleDateString(this.props.rootStore!.userInfo.locale, dayOptions));
                     }}/>
             <Column title={<>{this.props.intl.formatMessage({id: "organization"})}</>}

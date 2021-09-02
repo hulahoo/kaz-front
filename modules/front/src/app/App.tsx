@@ -56,6 +56,7 @@ import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManage
 import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
 import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHierarchyManagement";
+import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveApproveManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -180,6 +181,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={IncentiveManagement.PATH + "/:entityId?"}
                        component={IncentiveManagement}/>
+                <Route exact={true}
+                       path={IncentiveApproveManagement.PATH + "/:entityId"}
+                       component={IncentiveApproveManagement}/>
                 <Route exact={true}
                        path={BpmUserSubstitutionManagement.PATH + "/:entityId?"}
                        component={BpmUserSubstitutionManagement}/>

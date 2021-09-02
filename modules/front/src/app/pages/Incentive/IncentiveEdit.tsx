@@ -23,6 +23,7 @@ import {Link} from "react-router-dom";
 import {IncentiveManagement} from "./IncentiveManagement";
 import {capitalizeFirstLetter} from "../../util/util";
 import Notification from "../../util/Notification/Notification";
+import {DicIncentiveIndicatorScoreSetting} from "../../../cuba/entities/base/tsadv_DicIncentiveIndicatorScoreSetting";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -171,7 +172,12 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
   }
 
   getTotal = (result: OrganizationIncentiveResult) => {
-    return Math.round((result.weight * result.result / 100 || 0) * 100) / 100;
+    const scoreSettings = result.indicator!.scoreSettings as DicIncentiveIndicatorScoreSetting[];
+    if (!scoreSettings) return 0;
+
+    const score = scoreSettings.find(value => parseFloat(value.minPercent!) <= result.result && result.result <= parseFloat(value.maxPercent!));
+
+    return score && score.totalScore;
   }
 
   calcAndSaveResult = (indicator: OrganizationIncentiveIndicators, result: OrganizationIncentiveResult) => {
@@ -213,9 +219,9 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
         operator: '=',
         value: this.props.entityId
       }, {
-        property: 'responsiblePerson.id',
+        property: 'responsiblePosition.id',
         operator: '=',
-        value: this.props.rootStore!.userInfo!.personGroupId!
+        value: this.props.rootStore!.userInfo!.positionGroupId!
       }, {
         property: 'dateFrom',
         operator: '<=',
