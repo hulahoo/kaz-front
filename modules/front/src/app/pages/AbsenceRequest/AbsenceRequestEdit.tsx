@@ -745,6 +745,12 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         this.isOriginalSheet = !!(item && item.type && item.type.isOriginalSheet);
         this.isVacationDate = !!(item && item.type && item.type.isVacationDate);
 
+        this.isLaborLeave = !!(item && item.type
+          && item.type.isVacationDate
+          && item.type.availableForChangeDate
+          && item.type.availableForRecallAbsence
+          && item.type.useInSelfService);
+
         const obj = this.onReactionFieldsValue(item);
         if (item && item.startTime) obj['startTime'] = moment(item.dateFrom + " " + item.startTime);
         if (item && item.endTime) obj['endTime'] = moment(item.dateTo + " " + item.endTime);
