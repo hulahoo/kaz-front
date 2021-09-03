@@ -9,18 +9,19 @@ buildscript {
                 password(rootProject.hasProperty('repoPass') ? rootProject['repoPass'] : 'cuba123')
             }
         }
+
+        maven {
+            url 'https://repo.cuba-platform.com/content/groups/premium'
+            credentials {
+                username(rootProject.hasProperty('premiumRepoUser') ? rootProject['premiumRepoUser'] : System.getenv('CUBA_PREMIUM_USER'))
+                password(rootProject.hasProperty('premiumRepoPass') ? rootProject['premiumRepoPass'] : System.getenv('CUBA_PREMIUM_PASSWORD'))
+            }
+        }
         maven {
             url 'http://apps.uco.kz/nexus/content/groups/uco-group/'
             credentials {
                 username('uco')
                 password('!uco@')
-            }
-        }
-        maven {
-            url 'https://cuba-platform.bintray.com/premium'
-            credentials {
-                username(rootProject.hasProperty('bintrayPremiumRepoUser') ? rootProject['bintrayPremiumRepoUser'] : System.getenv('CUBA_PREMIUM_USER'))
-                password(rootProject.hasProperty('premiumRepoPass') ? rootProject['premiumRepoPass'] : System.getenv('CUBA_PREMIUM_PASSWORD'))
             }
         }
     }
