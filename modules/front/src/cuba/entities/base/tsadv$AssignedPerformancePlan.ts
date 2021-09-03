@@ -2,6 +2,7 @@ import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PerformancePlan } from "./tsadv$PerformancePlan";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
+import {DicPerformanceStage} from "./tsadv_DicPerformanceStage";
 export class AssignedPerformancePlan extends AbstractBprocRequest {
   static NAME = "tsadv$AssignedPerformancePlan";
   static PROCESS_DEFINITION_KEY = "kpi";
@@ -27,6 +28,7 @@ export class AssignedPerformancePlan extends AbstractBprocRequest {
   purpose?: string | null;
   file?: FileDescriptor | null;
   lineManager?: PersonGroupExt | null;
+  stage?: DicPerformanceStage | null;
 }
 export type AssignedPerformancePlanViewName =
   | "_base"

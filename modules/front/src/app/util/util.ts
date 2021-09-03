@@ -80,7 +80,7 @@ export const langValue = (lang: string) => {
 
 export const getBusinessKey = (request: AbstractBprocRequest) => {
   if (request instanceof AssignedPerformancePlan || request["_entityName"] === AssignedPerformancePlan.NAME)
-    return request.id + "/" + request["stepStageStatus"];
+    return request.id + "/" + (request["stage"] && request["stage"]["code"]);
   return request.id;
 };
 

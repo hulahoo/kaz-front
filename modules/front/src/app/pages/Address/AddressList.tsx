@@ -107,7 +107,7 @@ class AddressListComponent extends React.Component<AddressListProps & MainStoreI
       }, {
         property: 'status.code',
         operator: 'in',
-        value: ['DRAFT', 'APPROVING']
+        value: ['DRAFT', 'TO_BE_REVISED', 'APPROVING']
       }]
     }, {
       view: 'portal.my-profile'
