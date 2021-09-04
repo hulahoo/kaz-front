@@ -105,6 +105,13 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
     return plannedStartDate !== null && plannedStartDate !== undefined;
   }
 
+  dateValidator2 = (rule: any, value: any, callback: any) => {
+    const requestDate = this.props.form.getFieldValue('requestDate');
+    if (requestDate && requestDate > value) {
+      callback(this.props.intl.formatMessage({id: "plannedStartDateValidateMessage"}));
+    } else callback();
+  }
+
   render() {
 
     if (!this.dataInstance) {
@@ -212,6 +219,8 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                       required: true,
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.plannedStartDate']}),
                       validator: this.dateValidator
+                    }, {
+                      validator: this.dateValidator2
                     }]
                   }}
                 />

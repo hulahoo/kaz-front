@@ -450,5 +450,8 @@
   "jobDescriptionRequests": "Заявки ДИ",
   "formJD": "Форма ДИ",
   "jobResponsibilities": "Должностные обязанности",
-  "send.message": "Отправить сообщение"
+  "send.message": "Отправить сообщение",
+  "plannedStartDateValidateMessage": "Дата выхода не должна быть меньше чем Дата заявки",
+  "dateFromMustBeAfterRequestDate": "Дата с должно быть больше чем Дата заявки",
+  "notEnoughBalanceOfDaysForStartDate": "Не достаточно баланса дней на дату начала"
 }

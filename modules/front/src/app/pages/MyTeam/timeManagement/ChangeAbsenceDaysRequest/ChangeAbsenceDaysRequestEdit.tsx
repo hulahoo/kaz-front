@@ -27,7 +27,7 @@ import {ReadonlyField} from "../../../../components/ReadonlyField";
 import {RootStoreProp} from "../../../../store";
 import {PersonExt} from "../../../../../cuba/entities/base/base$PersonExt";
 import {ChangeAbsenceDaysRequest} from "../../../../../cuba/entities/base/tsadv_ChangeAbsenceDaysRequest";
-import moment from "moment/moment";
+import moment, {Moment} from "moment/moment";
 import {observable, reaction} from "mobx";
 import {Absence} from "../../../../../cuba/entities/base/tsadv$Absence";
 import {dictionaryCollection, DictionaryDataCollectionStore} from "../../../../util/DictionaryDataCollectionStore";
@@ -376,6 +376,15 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                           return callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
                         else return callback();
                       }
+                    }, {
+                      validator: (rule, value, callback) => {
+                        const requestDate = this.props.form.getFieldValue('requestDate');
+                        if (requestDate && requestDate > value) {
+                          callback(this.props.intl.formatMessage({id: "dateFromMustBeAfterRequestDate"}));
+                        } else callback();
+                      }
+                    }, {
+                      validator: this.validateBalanceDays
                     }],
                     getValueFromEvent: args => {
                       this.validatedDates({'newStartDate': args});
@@ -409,6 +418,8 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                         else
                           return callback();
                       }
+                    }, {
+                      validator: this.validateBalanceDays
                     }],
                     getValueFromEvent: args => {
                       this.validatedDates({'newEndDate': args});
@@ -505,6 +516,65 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         </Section>
       </Page>
     );
+  }
+
+
+  validateBalanceDays = (rule: any, value: any, callback: any, source?: any, options?: any) => {
+    let valid = true
+    console.log('')
+    console.log('rule', rule)
+    console.log('source', source)
+    console.log('options', options)
+    console.log('person', this.dataInstance.item!.employee)
+    if (rule) {
+      const {field} = rule
+      if (field) {
+        let newStartDate
+        let newEndDate
+        if (field === 'newStartDate') {
+          newStartDate = value.clone();
+          newEndDate = this.props.form.getFieldValue('newEndDate');
+        } else if (field === 'newEndDate') {
+          newEndDate = value.clone();
+          newStartDate = this.props.form.getFieldValue('newStartDate');
+        }
+        if (newStartDate && newEndDate) {
+          let newStartDateMoment = (newStartDate as Moment).clone();
+          let newEndDateMoment = (newEndDate as Moment).clone();
+          restServices.absenceBalanceService.getAbsenceBalance({
+            personGroupId: this.person.group!.id,
+            absenceDate: newStartDateMoment
+          }).then(value1 => {
+            console.log('response')
+            console.log(value1)
+            console.log(newStartDateMoment, newEndDateMoment)
+            valid = newStartDateMoment.add(value1, "days").isBefore(newEndDateMoment)
+          })
+        }
+      }
+    }
+    if (value) {
+      // let newEndDateMoment = (value as Moment).clone();
+      // let newStartDate = this.props.form.getFieldValue('newStartDate');
+      // if (newStartDate) {
+      //   let newStartDateMoment = (newStartDate as Moment).clone();
+      //   (async () => {
+      //     await restServices.absenceBalanceService.getAbsenceBalance({
+      //       personGroupId: this.person.group!.id,
+      //       absenceDate: newStartDateMoment
+      //     }).then(value1 => {
+      //       console.log(value1)
+      //       console.log(newStartDateMoment, newEndDateMoment)
+      //       valid = newStartDateMoment.add(value1, "days").isBefore(newEndDateMoment)
+      //     })
+      //   })()
+      // }
+    }
+    if (!valid) {
+      callback(this.props.intl.formatMessage({id: "dateFromMustBeAfterRequestDate"}))
+    } else {
+      callback()
+    }
   }
 
   loadData = () => {
