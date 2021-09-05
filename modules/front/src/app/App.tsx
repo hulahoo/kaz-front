@@ -161,7 +161,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/orgStructureRequest/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
                 <Route exact={true} path={PositionHierarchyManagement.PATH} component={PositionHierarchyManagement}/>
-                <Route exact={true} path={VacationScheduleManagement.PATH} component={VacationScheduleManagement}/>
+                <Route exact={true} path={VacationScheduleManagement.PATH+'/:type'} component={VacationScheduleManagement}/>
                 <Route exact={true}
                        path={AbsenceRvdRequestManagement.PATH_WITH_PARAMS}
                        component={AbsenceRvdRequestManagement}/>

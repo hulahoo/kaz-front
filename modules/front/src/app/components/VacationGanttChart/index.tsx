@@ -1,12 +1,13 @@
 import * as React from 'react';
 
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4lang_ru_RU from "@amcharts/amcharts4/lang/ru_RU";
 import {getCubaREST} from "@cuba-platform/react";
 import {observable} from "mobx";
+import {RootStoreProp} from "../../store";
 
 export type GanttChartVacationScheduleData = {
   personGroupId: string;
@@ -23,8 +24,9 @@ export type Props = {
   endDate: string,
 }
 
+@inject("rootStore")
 @observer
-export class VacationGanttChart extends React.Component<Props> {
+export class VacationGanttChart extends React.Component<Props & RootStoreProp> {
 
   gantData: Array<GanttChartVacationScheduleData> = [];
 
@@ -50,6 +52,9 @@ export class VacationGanttChart extends React.Component<Props> {
       "tsadv_VacationScheduleRequestService",
       "ganttChart",
       {
+        personGroupId: this.props.rootStore!.assistantTeamInfo!.active
+          ? this.props.rootStore!.assistantTeamInfo!.selectedManager!.groupId
+          : this.props.rootStore!.userInfo.personGroupId!,
         startDate: startDate,
         endDate: endDate,
       }

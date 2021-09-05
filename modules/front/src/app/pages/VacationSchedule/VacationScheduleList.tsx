@@ -1,15 +1,16 @@
 import * as React from "react";
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import DataTableFormat from "../../components/DataTable/intex";
 import {Link} from "react-router-dom";
 import {VacationScheduleRequestManagement} from "../VacationScheduleRequest/VacationScheduleRequestManagement";
 import {serviceCollection} from "../../util/ServiceDataCollectionStore";
 import {restServices} from "../../../cuba/services";
+import {RootStoreProp} from "../../store";
 
+@inject("rootStore")
 @observer
-export class VacationScheduleList extends React.Component {
-  static PATH = "/vacationSchedule";
+export class VacationScheduleList extends React.Component<RootStoreProp> {
 
   dataCollectionVacationSchedule = serviceCollection<VacationScheduleRequest>(
     (pagination) => restServices.vacationScheduleRequestService.getChildVacationSchedule({
@@ -29,7 +30,11 @@ export class VacationScheduleList extends React.Component {
 
     "absenceDays",
 
-    "sentToOracle"
+    "assignmentSchedule",
+
+    "approved",
+
+    "sentToOracle",
   ];
 
   render() {
@@ -53,5 +58,6 @@ export class VacationScheduleList extends React.Component {
 
   componentDidMount() {
     this.dataCollectionVacationSchedule.load();
+    this.props.rootStore!.assistantTeamInfo.active = false;
   }
 }

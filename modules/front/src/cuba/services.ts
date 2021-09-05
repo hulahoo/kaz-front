@@ -40,6 +40,7 @@ import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleReq
 import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
 import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
 import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
+import {DicAbsenceType} from "./entities/base/tsadv$DicAbsenceType";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -455,6 +456,13 @@ export const restServices = {
     }
   },
   absenceService: {
+    getLaborLeave: (view = '_local'): Promise<DicAbsenceType> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AbsenceService",
+        "getLaborLeave",
+        {view: view}
+      ).then(value => JSON.parse(value));
+    },
     vacationDurationType: (param: { personGroupId: string, absenceTypeId: string, dateFrom: Date | null }): Promise<string> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_AbsenceService",
@@ -853,6 +861,21 @@ export const restServices = {
         "tsadv_VacationScheduleRequestService",
         "getChildVacationSchedule", {
           paginationPojo: pagination
+        })
+        .then(value => {
+          const parse = JSON.parse(value);
+          return {
+            entities: JSON.parse(parse.entities),
+            count: parse.count
+          }
+        });
+    },
+    getPositionChildVacationSchedule: (pagination: ServicePagination, positionGroupId: string): Promise<EntitiesPaginationResult<VacationScheduleRequest>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "getChildVacationSchedule", {
+          paginationPojo: pagination,
+          positionGroupId: positionGroupId
         })
         .then(value => {
           const parse = JSON.parse(value);

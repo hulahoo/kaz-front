@@ -39,15 +39,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
     }
   });
 
-  dataCollectionVacationSchedule = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
-      view: "_local",
-      sort: "-requestNumber",
-      filter: {
-        conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
-      }
-    }
-  );
-
   dataCollectionAbsence = collection<Absence>(Absence.NAME, {
     view: "absence.view",
     sort: "-dateFrom",
@@ -142,33 +133,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                   onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
                   fields={this.absenceFields}
                   hideSelectionColumn={true}
-                />
-              </div>
-            </TabPane>
-            <TabPane tab={this.props.intl.formatMessage({id: "vacationScheduleRequest"})} key="2">
-              <div>
-                <div style={{marginBottom: 16}}>
-                  <Link
-                    to={VacationScheduleRequestManagement.PATH + "/" + VacationScheduleRequestManagement.NEW_SUBPATH}>
-                    <Button type={ButtonType.PRIMARY}
-                            key="vacationScheduleRequestCreateBtn"
-                            style={{margin: "0 12px 12px 0"}}>
-                      <span><FormattedMessage id="new.request"/></span>
-                    </Button>
-                  </Link>
-                </div>
-                <DataTableFormat
-                  dataCollection={this.dataCollectionVacationSchedule}
-                  fields={this.vacationScheduleFields}
-                  hideSelectionColumn={true}
-                  render={[{
-                    column: this.vacationScheduleFields[0],
-                    render: (text, record) => {
-                      return <Link to={VacationScheduleRequestManagement.PATH + "/" + record.id}>
-                        {text}
-                      </Link>
-                    }
-                  }]}
                 />
               </div>
             </TabPane>

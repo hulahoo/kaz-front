@@ -10,6 +10,7 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   clearFieldErrors,
+  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
   getCubaREST,
@@ -36,6 +37,11 @@ import Page from "../../hoc/PageContentHoc";
 import moment from "moment/moment";
 import {isNumber} from "../../util/util";
 import {VacationGanttChart} from "../../components/VacationGanttChart";
+import {PersonGroup} from "../../../cuba/entities/base/base$PersonGroup";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {AssignmentSchedule} from "../../../cuba/entities/base/tsadv$AssignmentSchedule";
+import {JSON_DATE_TIME_FORMAT} from "../../util/Date/Date";
+import {collectionWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -52,6 +58,9 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     VacationScheduleRequest.NAME,
     {view: "vacationScheduleRequest-edit"}
   );
+
+  personGroupDc: DataCollectionStore<PersonGroup>;
+  assignmentScheduleDc: DataCollectionStore<AssignmentSchedule>;
 
   @observable
   updated = false;
@@ -73,6 +82,10 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
     "comment",
 
+    "assignmentSchedule",
+
+    "approved",
+
     "sentToOracle",
 
     "attachment"
@@ -82,6 +95,8 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
   globalErrors: string[] = [];
 
   personGroupId: string;
+
+  laborLeave: DicAbsenceType;
 
   handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -147,7 +162,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
   render() {
     if (this.updated) {
-      return <Redirect to={"/absence/2"}/>;
+      return <Redirect to={"/vacationSchedule/my"}/>;
     }
 
     const {getFieldDecorator} = this.props.form;
@@ -189,6 +204,24 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName="requestDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
+                  disabled={true}
+                />
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="personGroup"
+                  form={this.props.form}
+                  optionsContainer={this.personGroupDc}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  disabled={true}
+                />
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="assignmentSchedule"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  optionsContainer={this.assignmentScheduleDc}
                   disabled={true}
                 />
 
@@ -252,6 +285,11 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                           if (!isNumber(value) || !isNumber(balance)) return callback();
                           if (balance < parseInt(value)) {
                             return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
+                          } else if (this.laborLeave && this.laborLeave.minDay && this.laborLeave.minDay < parseInt(value)) {
+                            return callback(
+                              this.props.intl.formatMessage({id: 'vacationRequest.validation.minDay'},
+                                {days: this.laborLeave.minDay})
+                            );
                           }
                           return callback();
                         }
@@ -283,8 +321,17 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                 <ReadonlyField
                   entityName={VacationScheduleRequest.NAME}
                   propertyName="attachment"
+                  disabled={readonly}
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="approved"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  disabled={true}
                 />
 
                 <ReadonlyField
@@ -369,6 +416,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
   callForceAbsenceDayValidator = () => this.props.form.validateFields(['absenceDays'], {force: true});
 
   componentDidMount() {
+    restServices.absenceService.getLaborLeave().then(value => this.laborLeave = value);
     if (this.props.entityId !== VacationScheduleRequestManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
     } else {
@@ -384,9 +432,52 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
         this.personGroupId = item && item.personGroup ? item.personGroup.id : this.props.rootStore!.userInfo.personGroupId!;
 
+        this.personGroupDc = collection(PersonGroup.NAME, {
+          view: '_minimal',
+          filter: {
+            conditions: [{
+              property: 'id',
+              operator: '=',
+              value: this.personGroupId
+            }]
+          },
+          loadImmediately: true
+        })
+
+        this.assignmentScheduleDc = collectionWithAfterLoad(AssignmentSchedule.NAME,
+          () => this.props.form.setFieldsValue({assignmentSchedule: this.assignmentScheduleDc.items[0].id}),
+          {
+            view: '_minimal',
+            filter: {
+              conditions:
+                item && item.assignmentSchedule ? [
+                  {
+                    property: 'id',
+                    operator: '=',
+                    value: item && item.assignmentSchedule.id!
+                  }] : [{
+                  property: 'assignmentGroup.id',
+                  operator: '=',
+                  value: this.props.rootStore!.userInfo.assignmentGroupId!
+                }, {
+                  property: 'startDate',
+                  operator: '<=',
+                  value: moment().format(JSON_DATE_TIME_FORMAT)
+                }, {
+                  property: 'endDate',
+                  operator: '>=',
+                  value: moment().format(JSON_DATE_TIME_FORMAT)
+                }]
+            }
+          })
+
         this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
+          {
+            ...this.dataInstance.getFieldValues(this.fields),
+            personGroup: this.personGroupId
+          }
         );
+
       }
     );
   }
