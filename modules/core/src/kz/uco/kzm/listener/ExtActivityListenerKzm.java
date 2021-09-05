@@ -31,9 +31,10 @@ public class ExtActivityListenerKzm extends ExtActivityListener {
                 put("entityId", String.valueOf(entity.getId()));
                 put("referenceId", String.valueOf(entity.getReferenceId()));
                 ActivityType type = entity.getType();
-                if (type != null && !PersistenceHelper.isLoaded(type, "windowProperty")
-                        && type.getWindowProperty() != null
-                        && !PersistenceHelper.isLoaded(type.getWindowProperty(), "entityName")) {
+                if (type != null
+                        && (!PersistenceHelper.isLoaded(type, "windowProperty")
+                        || type.getWindowProperty() != null
+                        && !PersistenceHelper.isLoaded(type.getWindowProperty(), "entityName"))) {
                     type = dataManager.reload(type, new View(ActivityType.class)
                             .addProperty("windowProperty", new View(WindowProperty.class).addProperty("entityName")));
                 }
