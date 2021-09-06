@@ -42,6 +42,7 @@ import {
 } from "../../../../components/MultiFileUpload";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {goBackOrHomePage} from "../../../../util/util";
+import {Moment} from "moment";
 
 type EditorProps = {
   entityId: string;
@@ -126,7 +127,6 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     const endDate = values['newEndDate'] || this.props.form.getFieldValue('newEndDate');
     const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
     const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
-
     if (startDate && endDate && this.absence && this.absence.personGroup) {
       const personGroupId = this.absence.personGroup!.id!;
       restServices.absenceService.countDays({
@@ -138,7 +138,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         .then(countDay => {
           this.getAbsenceBalance(personGroupId, this.absence.type, startDate)
             .then(balance => {
-              this.validatedBalanceSuccess = countDay <= (balance + (this.absence.type!.daysAdvance || 0));
+              console.log('test',startDate,endDate,balance)
+              let newStartDateMoment = (startDate as Moment).clone();
+              let newEndDateMoment = (endDate as Moment).clone();
+              this.validatedBalanceSuccess = newStartDateMoment.add(balance, "days").isBefore(newEndDateMoment)
               this.props.form.validateFields(['newStartDate'], {force: true});
             });
 
@@ -364,6 +367,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                     }, {
                       validator: (rule, value, callback) => {
                         const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
+                        const requestDate = this.props.form.getFieldValue('requestDate');
                         this.props.form.validateFields(['newEndDate', 'periodStartDate'], {force: true});
                         if (value && scheduleStartDate && scheduleStartDate.clone().startOf('day') > value.clone().startOf('day'))
                           return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
@@ -374,10 +378,13 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                           return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                         else if (!this.validatedDatesSuccess)
                           return callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
-                        else return callback();
+                        else if (requestDate && requestDate > value) {
+                          return callback(this.props.intl.formatMessage({id: "dateFromMustBeAfterRequestDate"}));
+                        } else return callback();
                       }
                     }],
                     getValueFromEvent: args => {
+                      console.log('getValueFromEvent', args)
                       this.validatedDates({'newStartDate': args});
                       return args;
                     }

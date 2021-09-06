@@ -463,5 +463,8 @@
   "jobDescriptionRequests": "Job description requests",
   "formJD": "Job description form",
   "jobResponsibilities": "Job responsibilities",
-  "send.message": "Send a message"
+  "send.message": "Send a message",
+  "plannedStartDateValidateMessage": "The release date must not be less than the request date",
+  "dateFromMustBeAfterRequestDate": "Date from must be greater than Application Date",
+  "notEnoughBalanceOfDaysForStartDate": "Not enough balance of days as of the start date"
 }
