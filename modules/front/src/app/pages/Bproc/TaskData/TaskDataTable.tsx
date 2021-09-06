@@ -65,7 +65,7 @@ class TaskDataTable extends React.Component<TaskProps & MainStoreInjected & Wrap
                 render={(text, record, index) => {
                   const outcome = (record as ExtTaskData).outcome;
                   return outcome ?
-                    <div className="break-words">{this.props.intl.formatMessage({id: outcome!})}</div> : "";
+                    <div className="break-words">{this.props.intl.formatMessage({id: 'result.'+outcome!})}</div> : "";
                 }}/>
         <Column title={<Msg entityName={ExtTaskData.NAME} propertyName='comment'/>}
                 dataIndex="comment"
