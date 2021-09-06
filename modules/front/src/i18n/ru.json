@@ -455,5 +455,10 @@
   "send.message": "Отправить сообщение",
   "plannedStartDateValidateMessage": "Дата выхода не должна быть меньше чем Дата заявки",
   "dateFromMustBeAfterRequestDate": "Дата с должно быть больше чем Дата заявки",
-  "notEnoughBalanceOfDaysForStartDate": "Не достаточно баланса дней на дату начала"
+  "notEnoughBalanceOfDaysForStartDate": "Не достаточно баланса дней на дату начала",
+  "result.APPROVE": "Утверждено",
+  "result.REJECT": "Отклонено",
+  "result.REVISION": "Отправлено на доработку",
+  "result.CANCEL": "Процесс отменен",
+  "result.START": "Отправлено на согласование"
 }
