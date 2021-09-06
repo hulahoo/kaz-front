@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@amcharts/amcharts4": "^4.10.19",
+    "@ant-design/icons": "^4.6.3",
     "@cuba-platform/react": "^0.4.0",
     "@cuba-platform/rest": "^0.7.0",
     "@types/sockjs-client": "^1.5.0",
@@ -13,6 +14,7 @@
     "moment": "^2.23.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
+    "react-html-table-to-excel": "^2.0.0",
     "react-intl": "^3.3.2",
     "react-multi-split-pane": "^0.3.2",
     "react-resizable": "latest",

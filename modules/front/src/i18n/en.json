@@ -168,6 +168,8 @@
   "menu.c-b": "C&B",
   "menu.incentive": "Incentive",
   "absenceRequest": "Absence request",
+  "absenceBalance": "Absence Balance",
+  "currentAbsenceBalance": "Current Absence Balance : ",
   "absence": "List of absences",
   "settings": "Settings",
   "logout": "Logout",
