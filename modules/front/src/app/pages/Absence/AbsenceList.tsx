@@ -111,10 +111,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
     "additionalBalanceDays",
 
-    "daysSpent",
-
-    "extraDaysSpent",
-
     "daysLeft",
 
     "extraDaysLeft",
@@ -211,7 +207,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                     }
                   }]}
                 />
-                </div>
+              </div>
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "absenceRequest"})} key="3">
               <div>
@@ -228,21 +224,29 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "absenceBalance"})} key="4">
               <h2 style={{color:"deepskyblue"}}>{this.props.intl.formatMessage({id: "currentAbsenceBalance"}) +" " + this.state.data}</h2>
-             <div >
-              <ReactHTMLTableToExcel id="test-table-xls-button"
-                                     className="ant-btn ant-btn-lg"
-                                     table="table-to-xls"
-                                     filename={new Date().toDateString()}
-                                     sheet="tablexls"
-                                     buttonText="Excel"
-              >
+              <div >
+                <ReactHTMLTableToExcel id="test-table-xls-button"
+                                       className="ant-btn ant-btn-lg"
+                                       table="table-to-xls"
+                                       filename={new Date().toDateString()}
+                                       sheet="tablexls"
+                                       buttonText="Excel"
+                >
                 </ReactHTMLTableToExcel>
-             </div>
+              </div>
               <table id={"table-to-xls"}>
                 <DataTableFormat
                   dataCollection={this.dataCollectionAbsenceBalance}
                   fields={this.AbsenceBalanceFields}
                   hideSelectionColumn={true}
+                  render={[{
+                    column:this.AbsenceBalanceFields[4],
+                    render:(text, record) => Number(record.daysLeft).toFixed(3)
+                  },
+                    {
+                      column:this.AbsenceBalanceFields[5],
+                      render:(text, record) => Number(record.daysLeft).toFixed(3)
+                    }]}
                 />
               </table>
             </TabPane>
