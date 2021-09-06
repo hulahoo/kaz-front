@@ -78,7 +78,6 @@ type PersonProfile = {
 class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<PunishmentRemovalRequest, EditorProps & Props & WrappedComponentProps & MainStoreInjected> {
   dataInstance = instance<PunishmentRemovalRequest>(PunishmentRemovalRequest.NAME, {
     view: "punishmentRemovalRequest-view",
-    loadImmediately: false
   });
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
@@ -213,7 +212,6 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
       return <Redirect to={PunishmentRemovalRequestManagement.PATH} />;
     }
     const messages = this.mainStore.messages!;
-    const isNotDraft = this.isNotDraft();
     const {getFieldDecorator} = this.props.form;
     return (
       <Page pageName={this.props.intl.formatMessage({id: "PunishmentRemovalRequest"})}>
@@ -267,52 +265,38 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
 
               <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                 {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "personGroup"})}
-                <Input disabled={true}
+                <Input disabled
                        value={this.personProfile ? this.personProfile.fullName || '' : ''}
                 />
               </div>
 
               <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                 <FormattedMessage id="employee.positionName"/>
-                <Input disabled={true}
+                <Input disabled
                        value={this.personProfile ? this.personProfile.positionName || '' : ''}
                 />
               </div>
 
               <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                 <FormattedMessage id="employee.organizationName"/>
-                <Input disabled={true}
+                <Input disabled
                        value={this.personProfile ? this.personProfile.organizationName || '' : ''}
                 />
               </div>
 
               <FormattedMessage id="employee.hireDate"/>
               <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
-                <DefaultDatePicker disabled={true}
+                <DefaultDatePicker disabled
                                    value={this.personProfile ? moment(this.personProfile.hireDate) || '' : null}
                 />
               </div>
 
               <ReadonlyField
                 entityName={PunishmentRemovalRequest.NAME}
-                propertyName="removingOrderDate"
-                form={this.props.form}
-                disabled={isNotDraft}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
-                getFieldDecoratorOpts={{
-                  rules: [{
-                    required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.removingOrderDate']}),
-                  }]
-                }}
-              />
-
-              <ReadonlyField
-                entityName={PunishmentRemovalRequest.NAME}
                 propertyName="removingOrderNum"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={isNotDraft}
+                disabled={!this.isDraft()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -326,7 +310,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 propertyName="earlyTerminationReason"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={isNotDraft}
+                disabled={!this.isDraft()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -339,7 +323,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 entityName={PunishmentRemovalRequest.NAME}
                 propertyName="removingFile"
                 form={this.props.form}
-                disabled={isNotDraft}
+                disabled={!this.isDraft()}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
                 getFieldDecoratorOpts={{
                   rules: [{
@@ -365,6 +349,14 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
       </Page>
 
     );
+  }
+
+  isDraft() {
+    const completeStatus = this.statusesDc.items.find(value => value.code === 'DRAFT')
+    if (completeStatus) {
+      return this.props.form.getFieldValue('status') === completeStatus.id
+    }
+    return false
   }
 
   afterSendOnApprove = () => {

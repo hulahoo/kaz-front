@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { observer } from "mobx-react";
-import PunishmentRequestEdit from "./PunishmentAssignmentRequestEdit";
+import PunishmentAssignmentRequestEdit from "./PunishmentAssignmentRequestEdit";
 
 type Props = RouteComponentProps<{ entityId?: string, personGroupId: string }>;
 
@@ -15,7 +15,7 @@ export class PunishmentAssignmentRequestManagement extends React.Component<Props
     const {entityId, personGroupId} = this.props.match.params;
     return (
       <>
-          <PunishmentRequestEdit entityId={entityId} personGroupId={personGroupId} />
+          <PunishmentAssignmentRequestEdit entityId={entityId} personGroupId={personGroupId} />
       </>
     );
   }
