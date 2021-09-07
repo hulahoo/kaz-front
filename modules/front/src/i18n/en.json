@@ -471,5 +471,6 @@
   "result.REJECT": "Rejected",
   "result.REVISION": "Revisioned",
   "result.CANCEL": "Canceled",
-  "result.START": "Started"
+  "result.START": "Started",
+  "balance": "Balance at the start date of the vacation"
 }

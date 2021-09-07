@@ -2,7 +2,7 @@ import * as React from "react";
 import {createElement} from "react";
 import {Card, Form, Input, message} from "antd";
 import {inject, observer} from "mobx-react";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   collection,
@@ -111,6 +111,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
   validatedDatesSuccess: boolean = true;
 
+  @observable
+  balance: number | undefined
+
   getAbsenceBalance = (personGroupId?: string, absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
     if (absenceType && dateFrom && personGroupId) {
       return restServices.absenceBalanceService.getAbsenceBalance({
@@ -127,6 +130,36 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     const endDate = values['newEndDate'] || this.props.form.getFieldValue('newEndDate');
     const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
     const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
+    if (values['newStartDate'] === null) {
+      this.balance = undefined
+      this.validatedBalanceSuccess = true
+    } else if (values['newStartDate'] || values['newStartDate'] === undefined) {
+      if (startDate && this.absence && this.absence.personGroup) {
+        const personGroupId = this.absence.personGroup!.id!;
+        this.getAbsenceBalance(personGroupId, this.absence.type, startDate)
+          .then(balance => {
+            this.balance = balance
+            const startDateMoment = (startDate as Moment).clone()
+            if (values['newEndDate'] === null) {
+              this.balance = undefined
+              this.validatedBalanceSuccess = true
+            } else if (endDate) {
+              const endDateMoment = (endDate as Moment).clone()
+              this.validatedBalanceSuccess = !(startDateMoment.add(balance + 1, 'days').isBefore(endDateMoment))
+            } else {
+              this.validatedBalanceSuccess = true
+            }
+            this.props.form.validateFields(['newStartDate'], {force: true});
+          });
+      } else {
+        this.balance = undefined
+        this.validatedBalanceSuccess = true
+      }
+    } else {
+      this.balance = undefined
+      this.validatedBalanceSuccess = true
+    }
+
     if (startDate && endDate && this.absence && this.absence.personGroup) {
       const personGroupId = this.absence.personGroup!.id!;
       restServices.absenceService.countDays({
@@ -134,29 +167,17 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         dateTo: endDate,
         personGroupId: personGroupId,
         absenceTypeId: this.absence.type!.id
+      }).then(countDay => {
+        restServices.absenceService.countDays({
+          dateFrom: scheduleStartDate,
+          dateTo: scheduleEndDate,
+          personGroupId: personGroupId,
+          absenceTypeId: this.absence.type!.id
+        }).then(countScheduleDay => {
+          this.validatedDatesSuccess = countDay <= countScheduleDay + (this.absence.type!.daysAdvance || 0);
+          this.props.form.validateFields(['newStartDate'], {force: true});
+        });
       })
-        .then(countDay => {
-          this.getAbsenceBalance(personGroupId, this.absence.type, startDate)
-            .then(balance => {
-              console.log('test',startDate,endDate,balance)
-              let newStartDateMoment = (startDate as Moment).clone();
-              let newEndDateMoment = (endDate as Moment).clone();
-              this.validatedBalanceSuccess = newStartDateMoment.add(balance, "days").isBefore(newEndDateMoment)
-              this.props.form.validateFields(['newStartDate'], {force: true});
-            });
-
-          restServices.absenceService.countDays({
-            dateFrom: scheduleStartDate,
-            dateTo: scheduleEndDate,
-            personGroupId: personGroupId,
-            absenceTypeId: this.absence.type!.id
-          })
-            .then(countScheduleDay => {
-              this.validatedDatesSuccess = countDay <= countScheduleDay + (this.absence.type!.daysAdvance || 0);
-              this.props.form.validateFields(['newStartDate'], {force: true});
-            });
-
-        })
     }
   }
 
@@ -384,7 +405,6 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                       }
                     }],
                     getValueFromEvent: args => {
-                      console.log('getValueFromEvent', args)
                       this.validatedDates({'newStartDate': args});
                       return args;
                     }
@@ -423,6 +443,12 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                     }
                   }}
                 />
+
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  <FormattedMessage id="balance"/>
+                  <Input disabled={true}
+                         value={this.balance}/>
+                </div>
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
