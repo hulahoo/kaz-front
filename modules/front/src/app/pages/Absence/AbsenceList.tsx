@@ -241,11 +241,11 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                   hideSelectionColumn={true}
                   render={[{
                     column:this.AbsenceBalanceFields[4],
-                    render:(text, record) => Number(record.daysLeft).toFixed(3)
+                    render:(text, record) =>Number(record.daysLeft).toFixed(3)
                   },
                     {
                       column:this.AbsenceBalanceFields[5],
-                      render:(text, record) => Number(record.daysLeft).toFixed(3)
+                      render:(text, record) =>Number(record.daysLeft).toFixed(3)
                     }]}
                 />
               </table>
