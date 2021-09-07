@@ -136,3 +136,6 @@ span .ant-checkbox-disabled .ant-checkbox-inner{
 .DragLayer.vertical {
   cursor: col-resize;
 }
+.main-layout.ant-layout{
+  height: auto;
+}
