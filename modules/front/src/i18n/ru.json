@@ -456,5 +456,6 @@
   "jobResponsibilities": "Должностные обязанности",
   "exitInterview.modal.title": "Спасибо что ответили на вопросы!",
   "exitInterview.modal.error.title": "Пожалуйста заполните все поля",
-  "dismissal.closeInterview": "Окей"
+  "dismissal.closeInterview": "Окей",
+  "result.SEND_FOR_APPROVAL": "Отправлено на согласование"
 }

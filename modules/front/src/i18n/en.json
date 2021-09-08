@@ -467,5 +467,6 @@
   "jobDescriptionRequests": "Job description requests",
   "formJD": "Job description form",
   "jobResponsibilities": "Job responsibilities",
-  "dismissal.closeInterview": "Okay"
+  "dismissal.closeInterview": "Okay",
+  "result.SEND_FOR_APPROVAL": "Send for Approval"
 }
