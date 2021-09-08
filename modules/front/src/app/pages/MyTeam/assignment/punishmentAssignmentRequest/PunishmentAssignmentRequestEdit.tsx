@@ -319,7 +319,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
                 optionsContainer={this.offenceTypesDc}
-                disabled={!this.isDraft()}
+                disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -333,7 +333,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="assignmentDate"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={!this.isDraft()}
+                disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -347,7 +347,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="accident"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={!this.isDraft()}
+                disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -361,7 +361,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="hasDeclaratory"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={!this.isDraft() || this.isApproved() || this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
+                disabled={(!this.isDraft() && !this.isRevise()) || this.isApproved() || this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked"
                 }}
@@ -371,7 +371,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 entityName={this.dataInstance.entityName}
                 propertyName="declaratoryFile"
                 form={this.props.form}
-                disabled={!this.isDraft() || this.isApproved() || !this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
+                disabled={(!this.isDraft() && !this.isRevise()) || this.isApproved() || !this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
                 formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               <ReadonlyField
@@ -379,7 +379,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="hasRefusal"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={!this.isDraft() || this.isApproved() || this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
+                disabled={(!this.isDraft() && !this.isRevise()) || this.isApproved() || this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
                 getFieldDecoratorOpts={{
                   valuePropName: "checked"
                 }}
@@ -389,7 +389,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 entityName={this.dataInstance.entityName}
                 propertyName="refusalFile"
                 form={this.props.form}
-                disabled={!this.isDraft() || this.isApproved() || !this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
+                disabled={(!this.isDraft() && !this.isRevise()) || this.isApproved() || !this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
                 formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               <ReadonlyField
@@ -398,7 +398,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
                 optionsContainer={this.typesDc}
-                disabled={!this.isDraft() && this.approverHrRoleCode != 'ORG_MANGER' && this.approverHrRoleCode != 'IER_COMPANY'}
+                disabled={(!this.isDraft() && !this.isRevise()) && this.approverHrRoleCode != 'ORG_MANGER' && this.approverHrRoleCode != 'IER_COMPANY'}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -411,7 +411,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 entityName={this.dataInstance.entityName}
                 propertyName="additionalFiles"
                 form={this.props.form}
-                disabled={!this.isDraft()}
+                disabled={!this.isDraft() && !this.isRevise()}
                 formItemOpts={{style: {marginBottom: "12px"}}}/>
 
               {this.globalErrors.length > 0 && (
@@ -465,6 +465,14 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
 
   isDraft() {
     const completeStatus = this.statusesDc.items.find(value => value.code === 'DRAFT')
+    if (completeStatus) {
+      return this.props.form.getFieldValue('status') === completeStatus.id
+    }
+    return false
+  }
+
+  isRevise() {
+    const completeStatus = this.statusesDc.items.find(value => value.code === 'TO_BE_REVISED')
     if (completeStatus) {
       return this.props.form.getFieldValue('status') === completeStatus.id
     }

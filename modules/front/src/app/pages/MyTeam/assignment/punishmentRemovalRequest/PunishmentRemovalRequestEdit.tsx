@@ -296,7 +296,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 propertyName="removingOrderNum"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={!this.isDraft()}
+                disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -310,7 +310,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 propertyName="earlyTerminationReason"
                 form={this.props.form}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={!this.isDraft()}
+                disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -323,7 +323,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 entityName={PunishmentRemovalRequest.NAME}
                 propertyName="removingFile"
                 form={this.props.form}
-                disabled={!this.isDraft()}
+                disabled={!this.isDraft() && !this.isRevise()}
                 formItemOpts={{ style: { marginBottom: "12px" } }}
                 getFieldDecoratorOpts={{
                   rules: [{
@@ -353,6 +353,14 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
 
   isDraft() {
     const completeStatus = this.statusesDc.items.find(value => value.code === 'DRAFT')
+    if (completeStatus) {
+      return this.props.form.getFieldValue('status') === completeStatus.id
+    }
+    return false
+  }
+
+  isRevise() {
+    const completeStatus = this.statusesDc.items.find(value => value.code === 'TO_BE_REVISED')
     if (completeStatus) {
       return this.props.form.getFieldValue('status') === completeStatus.id
     }
