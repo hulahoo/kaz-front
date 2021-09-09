@@ -472,5 +472,8 @@
   "result.REVISION": "Revisioned",
   "result.CANCEL": "Canceled",
   "result.START": "Started",
-  "balance": "Balance at the start date of the vacation"
+  "balance": "Balance at the start date of the vacation",
+  "absenceDays": "Days",
+  "absenceRequestAlert": "You are on paid annual labor leave. Specify the conditions for the transfer of vacation dates",
+  "validation.absenceRequest.validate": "There are {days} days left until the end of the vacation. Specify the correct dates for the transfer of vacation dates"
 }
