@@ -4,6 +4,9 @@ import {RadioChangeEvent} from "antd/es/radio";
 import CheckboxGroup, {CheckboxValueType} from "antd/es/checkbox/Group";
 import {AnswerModel} from "./Question";
 import {AnsweredQuestion} from "./TestComponent";
+import {observer} from "mobx-react";
+import {getCubaREST} from "@cuba-platform/react";
+import {observable} from "mobx";
 
 export interface AnswerComponentProps {
   answers?: AnswerModel[],
@@ -16,7 +19,11 @@ export interface AnswerComponentHandlers {
   addRemoveAnswer: (a: AnsweredQuestion) => void
 }
 
+@observer
 class Answer extends React.Component<AnswerComponentProps & AnswerComponentHandlers> {
+
+  @observable
+  imgUrlMap = new Map<string, string>();
 
   answerChangeHandler = (e: RadioChangeEvent | React.FocusEvent<HTMLInputElement>) => {
     this.props.addRemoveAnswer({
@@ -38,25 +45,42 @@ class Answer extends React.Component<AnswerComponentProps & AnswerComponentHandl
       case "ONE": {
         return <Radio.Group onChange={this.answerChangeHandler} className={"answer-block"}>
           {this.props.answers!.map(el => {
-            return <Card className="card-test-answer-item"><Radio value={el.id}
-                                                                  style={{
-                                                                    display: "block",
-                                                                    wordWrap: "break-word",
-                                                                    whiteSpace: "normal"
-                                                                  }}>{el.text}</Radio></Card>
+            const imgUrl = el.imageId && this.imgUrlMap.get(el.imageId);
+            return <Card className="card-test-answer-item"
+                         key={el.id}><Radio value={el.id}
+                                            key={`radio_${el.id}`}
+                                            style={{
+                                              display: "block",
+                                              wordWrap: "break-word",
+                                              whiteSpace: "normal"
+                                            }}><span>{el.text}</span>{
+              imgUrl
+                ? <img alt={el.text}
+                       style={{maxHeight: 200, paddingLeft: 10}}
+                       src={imgUrl}/>
+                : <></>
+            }</Radio></Card>
           })}
         </Radio.Group>;
       }
       case "MANY": {
         return <CheckboxGroup onChange={this.answerCheckboxChangeHandler} className={"answer-block"}>
           {this.props.answers!.map(el => {
-            return <Card className="card-test-answer-item"><Checkbox value={el.id}
-                                                                     style={{
-                                                                       display: "block",
-                                                                       wordWrap: "break-word",
-                                                                       whiteSpace: "normal",
-                                                                       marginLeft: '0'
-                                                                     }}>{el.text}</Checkbox></Card>
+            const imgUrl = el.imageId && this.imgUrlMap.get(el.imageId);
+            return <Card className="card-test-answer-item" key={el.id}><Checkbox value={el.id}
+                                                                                 key={`checkBox_${el.id}`}
+                                                                                 style={{
+                                                                                   display: "block",
+                                                                                   wordWrap: "break-word",
+                                                                                   whiteSpace: "normal",
+                                                                                   marginLeft: '0'
+                                                                                 }}>{el.text}</Checkbox>{
+              imgUrl
+                ? <img alt={el.text}
+                       style={{maxHeight: 200, paddingLeft: 10}}
+                       src={imgUrl}/>
+                : <></>
+            }</Card>
           })}
         </CheckboxGroup>
       }
@@ -74,7 +98,18 @@ class Answer extends React.Component<AnswerComponentProps & AnswerComponentHandl
 
   render() {
     const {type} = this.props;
+    console.log(this.imgUrlMap.size);
     return this.getAnswerComponentByType(type);
+  }
+
+  componentDidMount() {
+
+    if (this.props.answers)
+      this.props.answers.map(value => value.imageId)
+        .filter(value => value)
+        .forEach(imageId =>
+          getCubaREST()!.getFile(imageId!)
+            .then((value: Blob) => this.imgUrlMap.set(imageId!, URL.createObjectURL(value))));
   }
 }
 
