@@ -114,12 +114,27 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   @observable
   balance: number | undefined
 
+  @observable
+  absenceDays: number | undefined
+
   getAbsenceBalance = (personGroupId?: string, absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
     if (absenceType && dateFrom && personGroupId) {
       return restServices.absenceBalanceService.getAbsenceBalance({
         absenceTypeId: absenceType.id,
         personGroupId: personGroupId,
         absenceDate: dateFrom
+      });
+    }
+    return new Promise<number>(resolve => resolve(0));
+  }
+
+  getCountDays = (dateFrom: Date, dateTo: Date, personGroupId?: string, absenceType?: DicAbsenceType | null) => {
+    if (absenceType && dateFrom && personGroupId) {
+      return restServices.absenceService.countDays({
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        absenceTypeId: absenceType.id,
+        personGroupId: personGroupId
       });
     }
     return new Promise<number>(resolve => resolve(0));
@@ -132,7 +147,6 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
     if (values['newStartDate'] === null) {
       this.balance = undefined
-      this.validatedBalanceSuccess = true
     } else if (values['newStartDate'] || values['newStartDate'] === undefined) {
       if (startDate && this.absence && this.absence.personGroup) {
         const personGroupId = this.absence.personGroup!.id!;
@@ -141,25 +155,41 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
             this.balance = balance
             const startDateMoment = (startDate as Moment).clone()
             if (values['newEndDate'] === null) {
-              this.balance = undefined
-              this.validatedBalanceSuccess = true
-            } else if (endDate) {
-              const endDateMoment = (endDate as Moment).clone()
-              this.validatedBalanceSuccess = !(startDateMoment.add(balance + 1, 'days').isBefore(endDateMoment))
-            } else {
-              this.validatedBalanceSuccess = true
+              if (!startDateMoment) {
+                this.balance = undefined
+              }
             }
             this.props.form.validateFields(['newStartDate'], {force: true});
           });
       } else {
         this.balance = undefined
-        this.validatedBalanceSuccess = true
       }
     } else {
       this.balance = undefined
-      this.validatedBalanceSuccess = true
     }
 
+    if (values['newEndDate'] === null || values['newStartDate'] === null) {
+      this.absenceDays = undefined
+      this.validatedBalanceSuccess = true
+    } else if (startDate && endDate && this.absence && this.absence.personGroup) {
+      this.getCountDays(startDate, endDate, this.absence.personGroup!.id, this.absence.type).then(value => {
+        if (value) {
+          this.absenceDays = value
+          if (this.absenceDays && this.balance) {
+            this.validatedBalanceSuccess = this.absenceDays <= this.balance
+          } else {
+            this.validatedBalanceSuccess = true
+
+          }
+        } else {
+          this.absenceDays = undefined
+          this.validatedBalanceSuccess = true
+        }
+      })
+    } else {
+      this.absenceDays = undefined
+      this.validatedBalanceSuccess = true
+    }
     if (startDate && endDate && this.absence && this.absence.personGroup) {
       const personGroupId = this.absence.personGroup!.id!;
       restServices.absenceService.countDays({
@@ -443,6 +473,12 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                     }
                   }}
                 />
+
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  <FormattedMessage id="absenceDays"/>
+                  <Input disabled={true}
+                         value={this.absenceDays}/>
+                </div>
 
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   <FormattedMessage id="balance"/>
