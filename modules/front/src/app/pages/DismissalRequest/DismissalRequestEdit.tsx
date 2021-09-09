@@ -42,6 +42,7 @@ type EditorProps = {
   withoutPage?: boolean;
   setData(data: any): void;
   openInterview(): void;
+  setEntityId(entityId: string): void;
 };
 
 const PageWrapper: React.FC<{ entityName: string, withoutPage?: boolean }> = ({ children, entityName, withoutPage }) => {
@@ -213,7 +214,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
     }
 
     if (this.updated) {
-      return <Redirect to={DismissalRequestManagement.PATH} />;
+      return <Redirect to={this.dataInstance.item && this.dataInstance.item.id} />;
     }
     console.log(this.dataInstance.item)
     return (
@@ -256,7 +257,10 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
               entityName={DismissalRequest.NAME}
               propertyName="dateOfDismissal"
               form={this.props.form}
-              formItemOpts={{ style: { marginBottom: "12px" } }}
+              formItemOpts={{
+                style: { marginBottom: "12px" },
+                hasFeedback: false
+              }}
               getFieldDecoratorOpts={{
                 rules: [{ required: true }]
               }}
@@ -415,7 +419,9 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
   }
 
   afterSendOnApprove = () => {
-    this.props.history!.push("/dismissalRequest");
+    console.log(this.dataInstance.item && this.dataInstance.item.id);
+    // this.props.history!.push("/dismissalRequest");
+    this.props.setEntityId(this.dataInstance.item && this.dataInstance.item.id);
   };
 }
 

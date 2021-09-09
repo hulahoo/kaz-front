@@ -5,6 +5,7 @@ import DismissalIntervew from './ExitInterview/DismissalInterview';
 interface State {
     isInterviewOpen: boolean;
     data: any;
+    entityId: string;
 }
 
 interface Props {
@@ -33,6 +34,7 @@ class DismissalRequestFormComponent extends React.Component<Props, State> {
     state = {
         isInterviewOpen: false,
         data: null,
+        entityId: "",
     }
 
     openInterview() {
@@ -63,7 +65,10 @@ class DismissalRequestFormComponent extends React.Component<Props, State> {
                         : <DismissalRequestEdit
                             setData={(data: any) => this.setState({ data })}
                             openInterview={this.openInterview.bind(this)}
-                            {...this.props} />
+                            {...this.props}
+                            entityId={this.state.entityId || this.props.entityId}
+                            setEntityId={(entityId: string) => this.setState({ entityId })}
+                        />
                 }
             </DismissalRequestFormCtx.Provider>
         )
