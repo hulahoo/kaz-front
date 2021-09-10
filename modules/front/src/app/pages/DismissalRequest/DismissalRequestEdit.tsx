@@ -43,6 +43,8 @@ type EditorProps = {
   setData(data: any): void;
   openInterview(): void;
   setEntityId(entityId: string): void;
+  isCanViewInterview: boolean | null;
+  setIsCanViewInterview(isCanViewInterview: boolean): void;
 };
 
 const PageWrapper: React.FC<{ entityName: string, withoutPage?: boolean }> = ({ children, entityName, withoutPage }) => {
@@ -121,8 +123,9 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
   personGroupId: string;
 
   update = () => {
-    if (this.isNotDraft())
+    if (this.isNotDraft()) {
       return this.dataInstance.update(this.getUpdateEntityData());
+    }
     return this.dataInstance.update({
       personGroup: this.personGroupId,
       ...this.getUpdateEntityData()
@@ -216,7 +219,6 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
     if (this.updated) {
       return <Redirect to={this.dataInstance.item && this.dataInstance.item.id} />;
     }
-    console.log(this.dataInstance.item)
     return (
       <PageWrapper entityName={DismissalRequest.NAME} withoutPage={this.props.withoutPage}>
         <Card
@@ -401,6 +403,22 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
   onReactionDisposerEffect = (item: DismissalRequest | undefined) => {
     this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;
 
+    if (this.props.entityId === DismissalRequestManagement.NEW_SUBPATH) {
+      restServices.dismissalService.getDismissalRequest({ personGroupId: this.props.rootStore!.userInfo!.personGroupId! })
+        .then(value => {
+          console.log(value)
+          this.props.setEntityId(value.id)
+        });
+    }
+
+    if (this.props.isCanViewInterview === null) {
+      restServices.dismissalService.existExitInterview({ personGroupId: this.props.rootStore!.userInfo!.personGroupId! })
+        .then(value => {
+          console.log(`setIsCanViewInterview(${value})`)
+          this.props.setIsCanViewInterview(value);
+        });
+    }
+
     const dismissalId = this.props.entityId;
 
     restServices.employeeService.personProfile(this.personGroupId)
@@ -416,17 +434,9 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
           });
         }
       })
-
-    restServices.dismissalService.getDismissalRequest({personGroupId: this.personGroupId})
-    .then(value => {console.log(value);});
-
-    restServices.dismissalService.existExitInterview({personGroupId: this.personGroupId})
-    .then(value => {console.log(value);});
   }
 
   afterSendOnApprove = () => {
-    console.log(this.dataInstance.item && this.dataInstance.item.id);
-    // this.props.history!.push("/dismissalRequest");
     this.props.setEntityId(this.dataInstance.item && this.dataInstance.item.id);
   };
 }

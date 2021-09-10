@@ -4,6 +4,7 @@ import DismissalIntervew from './ExitInterview/DismissalInterview';
 
 interface State {
     isInterviewOpen: boolean;
+    isCanViewInterview: boolean | null;
     data: any;
     entityId: string;
 }
@@ -26,13 +27,13 @@ export const DismissalRequestFormCtx = React.createContext<IDismissalRequestForm
     openInterview() { },
     closeInterview() { },
     toggleInterview() { },
-
 })
 
 class DismissalRequestFormComponent extends React.Component<Props, State> {
 
     state = {
         isInterviewOpen: false,
+        isCanViewInterview: null,
         data: null,
         entityId: "",
     }
@@ -58,15 +59,18 @@ class DismissalRequestFormComponent extends React.Component<Props, State> {
                 toggleInterview: this.toggleInterview.bind(this),
             }}>
                 {
-                    this.state.isInterviewOpen
+                    (this.state.isInterviewOpen && this.state.isCanViewInterview)
                         ? <DismissalIntervew
                             data={this.state.data}
                             closeInterview={this.closeInterview.bind(this)} />
                         : <DismissalRequestEdit
+                            key={"DismissalRequestEdit"}
                             setData={(data: any) => this.setState({ data })}
                             openInterview={this.openInterview.bind(this)}
                             {...this.props}
                             entityId={this.state.entityId || this.props.entityId}
+                            isCanViewInterview={this.state.isCanViewInterview}
+                            setIsCanViewInterview={(isCanViewInterview: boolean) => this.setState({ isCanViewInterview })}
                             setEntityId={(entityId: string) => this.setState({ entityId })}
                         />
                 }
