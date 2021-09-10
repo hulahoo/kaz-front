@@ -40,6 +40,7 @@ import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleReq
 import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
 import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
 import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
+import {DismissalRequest} from "./entities/base/tsadv_DismissalRequest";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -923,6 +924,20 @@ export const restServices = {
         {...params},
         fetchOpts
       );
+    },
+    getDismissalRequest: (params: {personGroupId: string}): Promise<DismissalRequest> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_DismissalService",
+        "getDismissalRequest",
+        {...params}
+        ).then(r => JSON.parse(r));
+    },
+    existExitInterview: (params: {personGroupId: string}): Promise<boolean> => {
+      return getCubaREST()!.invokeService<boolean>(
+        "tsadv_DismissalService",
+        "existExitInterview",
+        {...params}
+        ).then((r: boolean) => r);
     },
   }
 };
