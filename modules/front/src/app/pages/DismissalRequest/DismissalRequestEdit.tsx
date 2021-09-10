@@ -418,7 +418,10 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
       })
 
     restServices.dismissalService.getDismissalRequest({personGroupId: this.personGroupId})
-    .then(value => {console.log(value);})
+    .then(value => {console.log(value);});
+
+    restServices.dismissalService.existExitInterview({personGroupId: this.personGroupId})
+    .then(value => {console.log(value);});
   }
 
   afterSendOnApprove = () => {
