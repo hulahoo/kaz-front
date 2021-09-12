@@ -62,7 +62,10 @@ class DismissalRequestFormComponent extends React.Component<Props, State> {
                     (this.state.isInterviewOpen && this.state.isCanViewInterview)
                         ? <DismissalIntervew
                             data={this.state.data}
-                            closeInterview={this.closeInterview.bind(this)} />
+                            closeInterview={this.closeInterview.bind(this)}
+                            isCanViewInterview={this.state.isCanViewInterview}
+                            setIsCanViewInterview={(isCanViewInterview: string) => this.setState({ isCanViewInterview })}
+                        />
                         : <DismissalRequestEdit
                             key={"DismissalRequestEdit"}
                             setData={(data: any) => this.setState({ data })}

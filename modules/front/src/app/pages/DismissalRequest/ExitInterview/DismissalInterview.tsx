@@ -19,10 +19,10 @@ interface State {
 
 interface Props {
   intl: IntlShape;
-
   closeInterview(): void;
-
   data: any;
+  isCanViewInterview: string | null;
+  setIsCanViewInterview(isCanViewInterview: any): void;
 }
 
 @inject("rootStore")
@@ -98,6 +98,7 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
           title: this.props.intl.formatMessage({id: "exitInterview.modal.title"}),
           okText: this.props.intl.formatMessage({id: "dismissal.closeInterview"}),
           onOk: () => {
+            this.props.setIsCanViewInterview(null);
             closeInterview();
             console.log("runReport()", data)
             runReport(reportCode, data, this.props.intl);
