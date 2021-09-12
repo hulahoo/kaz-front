@@ -46,7 +46,8 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
 
   answeredFeedback: AnsweredFeedback = {
     courseId: "empty",
-    templateId: this.exitInterviewTemplateId,
+    // templateId: this.exitInterviewTemplateId,
+    templateId: "",
     questionsAndAnswers: []
   };
 

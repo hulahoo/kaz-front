@@ -36,6 +36,7 @@ import { FileDescriptor } from "../../../cuba/entities/base/sys$FileDescriptor";
 import { restServices } from "../../../cuba/services";
 import { PersonProfile } from "../MyTeam/MyTeamCard";
 import { DicRequestStatus } from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import { runReport } from '../../util/reportUtil';
 
 type EditorProps = {
   entityId: string;
@@ -189,9 +190,18 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
     });
   };
 
-  handleOpenInterview = () => {
-    this.props.setData(this.dataInstance.item);
-    this.props.openInterview();
+  handleOpenInterview = () => () => {
+    if (this.props.isCanViewInterview) {
+      runReport("EXIT_INTERVIEW", {
+        parameters: [{
+          name: "entity",
+          value: this.dataInstance.item && this.dataInstance.item.id
+        }]
+      }, this.props.intl);
+    } else {
+      this.props.setData(this.dataInstance.item);
+      this.props.openInterview();
+    }
   }
 
   render() {
@@ -290,7 +300,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
               <Button
                 disabled={!isOnApproved && isUserInitiator || !isUserInitiator || isOnApproving || isOnCANCELED || !isUserInitiator && isOnREVISION}
                 htmlType="button"
-                onClick={this.handleOpenInterview}
+                onClick={this.handleOpenInterview()}
                 style={{ marginLeft: "8px" }}
               >
                 <FormattedMessage id="dismissal.downloadExitInterview" />
