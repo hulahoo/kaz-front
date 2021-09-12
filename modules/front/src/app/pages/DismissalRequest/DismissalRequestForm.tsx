@@ -4,7 +4,7 @@ import DismissalIntervew from './ExitInterview/DismissalInterview';
 
 interface State {
     isInterviewOpen: boolean;
-    isCanViewInterview: boolean | null;
+    isCanViewInterview: string | null;
     data: any;
     entityId: string;
 }
@@ -70,7 +70,7 @@ class DismissalRequestFormComponent extends React.Component<Props, State> {
                             {...this.props}
                             entityId={this.state.entityId || this.props.entityId}
                             isCanViewInterview={this.state.isCanViewInterview}
-                            setIsCanViewInterview={(isCanViewInterview: boolean) => this.setState({ isCanViewInterview })}
+                            setIsCanViewInterview={(isCanViewInterview: string) => this.setState({ isCanViewInterview })}
                             setEntityId={(entityId: string) => this.setState({ entityId })}
                         />
                 }

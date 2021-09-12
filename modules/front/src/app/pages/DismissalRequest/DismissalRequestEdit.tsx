@@ -44,8 +44,8 @@ type EditorProps = {
   setData(data: any): void;
   openInterview(): void;
   setEntityId(entityId: string): void;
-  isCanViewInterview: boolean | null;
-  setIsCanViewInterview(isCanViewInterview: boolean): void;
+  isCanViewInterview: string | null;
+  setIsCanViewInterview(isCanViewInterview: any): void;
 };
 
 const PageWrapper: React.FC<{ entityName: string, withoutPage?: boolean }> = ({ children, entityName, withoutPage }) => {
@@ -191,17 +191,18 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
   };
 
   handleOpenInterview = () => () => {
-    if (this.props.isCanViewInterview) {
+    if (this.props.isCanViewInterview === "true") {
       runReport("EXIT_INTERVIEW", {
         parameters: [{
           name: "entity",
           value: this.dataInstance.item && this.dataInstance.item.id
         }]
       }, this.props.intl);
-    } else {
+    } else if (this.props.isCanViewInterview === "false") {
       this.props.setData(this.dataInstance.item);
       this.props.openInterview();
     }
+    this.props.setIsCanViewInterview(null);
   }
 
   render() {

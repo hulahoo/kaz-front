@@ -932,12 +932,12 @@ export const restServices = {
         {...params}
         ).then(r => JSON.parse(r));
     },
-    existExitInterview: (params: {personGroupId: string}): Promise<boolean> => {
-      return getCubaREST()!.invokeService<boolean>(
+    existExitInterview: (params: {personGroupId: string}): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
         "tsadv_DismissalService",
         "existExitInterview",
         {...params}
-        ).then((r: boolean) => r);
+        ).then((r: string) => r);
     },
   }
 };
