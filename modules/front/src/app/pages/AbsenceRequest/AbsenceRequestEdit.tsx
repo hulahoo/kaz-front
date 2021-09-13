@@ -86,6 +86,8 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   remainingDaysWeekendWork: number = 0;
 
+  absenceBalance: number = 0;
+
   isCheckWork = false;
 
   @observable
@@ -433,10 +435,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                         validator: (rule, value, callback) => {
                           const type = this.getSelectedAbsenceType();
                           if (!type || !isNumber(value) || isNotDraft) return callback();
-                          if (type.isEcologicalAbsence && (this.balance + (type.daysAdvance || 0) < parseInt(value))) {
+                          if (type.isEcologicalAbsence && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
                             return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           }
-                          if (this.isLaborLeave && (this.balance + (type.daysAdvance || 0) < parseInt(value))) {
+                          if (this.isLaborLeave && (this.absenceBalance + (type.daysAdvance || 0) < parseInt(value))) {
                             return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                           } else if (this.isCheckWork && this.remainingDaysWeekendWork <= 0) {
                             return callback(this.props.intl.formatMessage({id: 'validation.no.weekendWork'}));
@@ -702,6 +704,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
       })
         .then(value => {
           this.balance = value;
+          this.absenceBalance = value;
           this.callForceAbsenceDayValidator();
         })
     }
