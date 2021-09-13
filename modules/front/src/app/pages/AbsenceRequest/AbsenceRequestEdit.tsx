@@ -527,7 +527,26 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         propertyName="originalSheet"
         form={this.props.form}
         disabled={isNotDraft}
-        getFieldDecoratorOpts={{valuePropName: 'checked'}}
+        getFieldDecoratorOpts={{
+          valuePropName: 'checked',
+          rules: [
+            {
+              required: this.isOriginalSheet
+            },
+            {
+              validator: (rule, value, callback) => {
+                if (this.isOriginalSheet) {
+                  if (value) {
+                    return callback()
+                  } else {
+                    return callback(this.props.intl.formatMessage({id: "originalSheetFieldValidate"}))
+                  }
+                } else {
+                  return callback()
+                }
+              }
+            }]
+        }}
         formItemOpts={{style: {marginBottom: "12px"}}}
       />
     </div>
@@ -570,17 +589,15 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         disabled={isNotDraft}
         formItemOpts={{style: {marginBottom: "12px"}}}
         getFieldDecoratorOpts={{
-          rules: [
-            {
-              required: isVisible,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.newStartDate']})
-            },
+          rules: [{
+            required: isVisible,
+            message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.newStartDate']})
+          },
             {
               validator: (rule, value, callback) => {
                 this.validateNewStartEndDate(rule, value, callback)
               }
-            }
-          ],
+            }],
           getValueFromEvent: args => {
             if (args) {
               this.newStartDate = moment(new Date((args as Moment).format("YYYY-MM-DD")))
@@ -599,17 +616,15 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
         disabled={isNotDraft}
         formItemOpts={{style: {marginBottom: "12px"}}}
         getFieldDecoratorOpts={{
-          rules: [
-            {
-              required: isVisible,
-              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.newEndDate']})
-            },
+          rules: [{
+            required: isVisible,
+            message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.newEndDate']})
+          },
             {
               validator: (rule, value, callback) => {
                 this.validateNewStartEndDate(rule, value, callback)
               }
-            }
-          ],
+            }],
           getValueFromEvent: args => {
             if (args) {
               this.newEndDate = moment(new Date((args as Moment).format("YYYY-MM-DD")))
@@ -891,29 +906,45 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           }, {
             view: "_local"
           }).then(value => {
-            if (value && value.length > 0 && value[0]) {
-              let result = value[0] as Absence
-              if (result && result.dateFrom && result.dateTo && this.newStartDate && this.newEndDate) {
-                let dateToMoment = moment(new Date(result.dateTo))
-                dateToMoment = dateToMoment.isBefore(endDateMoment) ? dateToMoment : endDateMoment
-                let daysMoved = Math.floor(dateToMoment.diff(startDateMoment, 'days'))
-                let daysNew = Math.floor(this.newEndDate.diff(this.newStartDate, 'days'))
-                if (daysNew != daysMoved) {
-                  return callback(this.props.intl.formatMessage({id: "validation.absenceRequest.validate"},
-                    {days: this.props.form.getFieldValue('absenceDays')}));
+              if (value && value.length > 0 && value[0]) {
+                let result = value[0] as Absence
+                if (result && result.dateFrom && result.dateTo && this.newStartDate && this.newEndDate) {
+                  let dateToMoment = moment(new Date(result.dateTo))
+                  dateToMoment = dateToMoment.isBefore(endDateMoment) ? dateToMoment : endDateMoment
+                  let daysMoved = Math.floor(dateToMoment.diff(startDateMoment, 'days'))
+                  let type = this.props.form.getFieldValue(`type`);
+                  const personGroupId = rootStore.userInfo.personGroupId;
+                  (async () => {
+                    if (type && personGroupId && this.newStartDate && this.newEndDate) {
+                      await restServices.absenceService.countDays({
+                        dateFrom: this.newStartDate.toDate(),
+                        dateTo: this.newEndDate.toDate(),
+                        absenceTypeId: type,
+                        personGroupId: personGroupId
+                      }).then(daysNew => {
+                        if (daysNew != daysMoved) {
+                          return callback(this.props.intl.formatMessage({id: "validation.absenceRequest.validate"},
+                            {days: daysMoved}));
+                        } else {
+                          return callback()
+                        }
+                      })
+                    } else {
+                      return callback()
+                    }
+                  })()
                 } else {
                   return callback()
                 }
               } else {
                 return callback()
               }
-            } else {
-              return callback()
             }
-          });
+          );
         }
       )();
     }
+    return callback()
   }
 }
 
