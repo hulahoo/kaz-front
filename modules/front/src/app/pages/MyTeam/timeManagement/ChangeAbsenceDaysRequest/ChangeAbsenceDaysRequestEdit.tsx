@@ -609,7 +609,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   }
 
   componentDidMount() {
-    restServices.portalHelperService.getConfig("kz.uco.tsadv.config.AbsenceConfig", "getChangeAbsenceDaysRequest")
+    restServices.portalHelperService.getConfig({
+      classFQN: "kz.uco.tsadv.config.AbsenceConfig",
+      methodName: "getChangeAbsenceDaysRequest"
+    })
       .then(absenceTypeId => {
         if (absenceTypeId)
           getCubaREST()!.loadEntity<DicAbsenceType>(DicAbsenceType.NAME, absenceTypeId, {view: '_local'})

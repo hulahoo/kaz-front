@@ -234,8 +234,8 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
                   <Form.Item>
-                    {getFieldDecorator("comment",{
-                      rules:[{
+                    {getFieldDecorator("comment", {
+                      rules: [{
                         required: !!(this.dicAbsenceType && this.dicAbsenceType.isJustRequired && !isNotDraft),
                         message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.comment']})
                       }]
@@ -273,7 +273,10 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
   }
 
   componentDidMount() {
-    restServices.portalHelperService.getConfig("kz.uco.tsadv.config.AbsenceConfig", "getLeavingVacationRequest")
+    restServices.portalHelperService.getConfig({
+      classFQN: "kz.uco.tsadv.config.AbsenceConfig",
+      methodName: "getLeavingVacationRequest"
+    })
       .then(absenceTypeId => {
         if (absenceTypeId)
           getCubaREST()!.loadEntity<DicAbsenceType>(DicAbsenceType.NAME, absenceTypeId, {view: '_local'})

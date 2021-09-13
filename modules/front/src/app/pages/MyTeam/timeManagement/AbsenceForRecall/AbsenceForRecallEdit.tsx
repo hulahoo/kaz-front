@@ -422,7 +422,10 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
   }
 
   componentDidMount() {
-    restServices.portalHelperService.getConfig("kz.uco.tsadv.config.AbsenceConfig", "getAbsenceForRecallType")
+    restServices.portalHelperService.getConfig({
+      classFQN: "kz.uco.tsadv.config.AbsenceConfig",
+      methodName: "getAbsenceForRecallType"
+    })
       .then(absenceTypeId => {
         if (absenceTypeId)
           getCubaREST()!.loadEntity<DicAbsenceType>(DicAbsenceType.NAME, absenceTypeId, {view: '_local'})

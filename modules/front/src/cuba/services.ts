@@ -333,15 +333,13 @@ export const restServices = {
         {...param}
       );
     },
-    getConfig: (classFQN: string, methodName: string): Promise<any> => {
+    getConfig: (param: { classFQN: string, methodName: string }, fetchOpts?: FetchOptions): Promise<string> => {
       return getCubaREST()!.invokeService(
         "tsadv_PortalHelperService",
         "getConfig",
-        {
-          classFQN: classFQN,
-          methodName: methodName
-        }
-      );
+        {...param},
+        fetchOpts
+      ).then((response: string) => response);
     },
   },
   bprocService: {
