@@ -207,16 +207,12 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
 
   render() {
 
-    let isNotDraft = this.isNotDraft();
+    // let isNotDraft = this.isNotDraft();
     let isOnApproved = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "APPROVED" : false;
-    let isUserInitiator = this.isUserInitiator;
     let isOnREVISION = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "TO_BE_REVISED" : false;
     let isOnApproving = this.isOnApproving();
     let isOnCANCELED = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "CANCELED_BY_INITIATOR" : false;
 
-    if (!isNotDraft) {
-      isUserInitiator = true;
-    }
 
     // const messages = this.mainStore.messages!;
     // if (!messages) {
@@ -237,7 +233,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
           bordered={false}
           actions={[
             <Buttonv2 buttonType={ButtonType.FOLLOW}
-              onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({ id: "close" })}</Buttonv2>,
+                      onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({ id: "close" })}</Buttonv2>,
             this.getOutcomeBtns()]}>
 
           <Form onSubmit={this.handleSubmit} layout="vertical">
@@ -262,11 +258,11 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
               getFieldDecoratorOpts={{
                 rules: [{ required: true }]
               }}
-              disabled={isOnApproving || isOnCANCELED || isOnApproving || !isUserInitiator && isOnREVISION || isOnApproved}
+              disabled={isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION || isOnApproved}
             />
 
             <ReadonlyField
-              disabled={isOnApproving || isOnCANCELED || isOnApproving || !isUserInitiator && isOnREVISION || isOnApproved}
+              disabled={isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION || isOnApproved}
               entityName={DismissalRequest.NAME}
               propertyName="dateOfDismissal"
               form={this.props.form}
@@ -280,7 +276,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
             />
 
             <ReadonlyField
-              disabled={isOnApproving || isOnCANCELED || isOnApproving || !isUserInitiator && isOnREVISION || isOnApproved}
+              disabled={isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION || isOnApproved}
               entityName={DismissalRequest.NAME}
               propertyName="employeeFile"
               form={this.props.form}
@@ -299,7 +295,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
 
             <Form.Item style={{ textAlign: "left" }}>
               <Button
-                disabled={!isOnApproved && isUserInitiator || !isUserInitiator || isOnApproving || isOnCANCELED || !isUserInitiator && isOnREVISION}
+                disabled={!isOnApproved && this.isUserInitiator || !this.isUserInitiator || isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION}
                 htmlType="button"
                 onClick={this.handleOpenInterview()}
                 style={{ marginLeft: "8px" }}
@@ -447,9 +443,10 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
       })
   }
 
-  afterSendOnApprove = () => {
-    this.props.setEntityId(this.dataInstance.item && this.dataInstance.item.id);
-  };
+  // afterSendOnApprove = () => {
+  //
+  //   this.props.setEntityId(this.dataInstance.item && this.dataInstance.item.id);
+  // };
 }
 
 export default injectIntl(
