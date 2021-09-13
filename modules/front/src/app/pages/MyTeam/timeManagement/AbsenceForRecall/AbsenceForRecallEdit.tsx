@@ -40,6 +40,7 @@ import {
 } from "../../../../components/MultiFileUpload";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {goBackOrHomePage} from "../../../../util/util";
+import {DicAbsenceType} from "../../../../../cuba/entities/base/tsadv$DicAbsenceType";
 
 type EditorProps = {
   entityId: string;
@@ -95,6 +96,9 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
 
   @observable
   absence: Absence;
+
+  @observable
+  dicAbsenceType: SerializedEntity<DicAbsenceType> | undefined;
 
   @observable
   isDatesDisabled: boolean = false;
@@ -380,6 +384,12 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
                   propertyName="files"
                   form={this.props.form}
                   disabled={isNotDraft}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: !!(this.dicAbsenceType && this.dicAbsenceType.isFileRequired && !isNotDraft),
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.files']})
+                    }]
+                  }}
                   formItemOpts={{style: {marginBottom: "12px"}}}/>
 
                 {this.takCard()}
@@ -409,6 +419,17 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
           this.setEmployee(absence.personGroup!.id!);
         });
     }
+  }
+
+  componentDidMount() {
+    restServices.portalHelperService.getConfig("kz.uco.tsadv.config.AbsenceConfig", "getAbsenceForRecallType")
+      .then(absenceTypeId => {
+        if (absenceTypeId)
+          getCubaREST()!.loadEntity<DicAbsenceType>(DicAbsenceType.NAME, absenceTypeId, {view: '_local'})
+            .then(value => this.dicAbsenceType = value);
+      });
+
+    super.componentDidMount();
   }
 
   setReactionDisposer = () => {

@@ -333,6 +333,16 @@ export const restServices = {
         {...param}
       );
     },
+    getConfig: (classFQN: string, methodName: string): Promise<any> => {
+      return getCubaREST()!.invokeService(
+        "tsadv_PortalHelperService",
+        "getConfig",
+        {
+          classFQN: classFQN,
+          methodName: methodName
+        }
+      );
+    },
   },
   bprocService: {
     tasks: (param: { processInstanceData: ProcessInstanceData }): Promise<Array<SerializedEntity<ExtTaskData>>> => {

@@ -66,6 +66,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   isPurposeTypeOther = false;
 
   @observable
+  dicAbsenceType: SerializedEntity<DicAbsenceType> | undefined;
+
+  @observable
   dicPurposeAbsence: DictionaryDataCollectionStore<DicPurposeAbsence>;
 
   fields = [
@@ -541,7 +544,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   disabled={isNotDraft}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: !!(this.absence && this.absence.type && this.absence.type.isFileRequired && !isNotDraft),
+                      required: !!(this.dicAbsenceType && this.dicAbsenceType.isFileRequired && !isNotDraft),
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.files']})
                     }]
                   }}
@@ -603,6 +606,16 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
       personGroupId, {
         view: '_local'
       });
+  }
+
+  componentDidMount() {
+    restServices.portalHelperService.getConfig("kz.uco.tsadv.config.AbsenceConfig", "getChangeAbsenceDaysRequest")
+      .then(absenceTypeId => {
+        if (absenceTypeId)
+          getCubaREST()!.loadEntity<DicAbsenceType>(DicAbsenceType.NAME, absenceTypeId, {view: '_local'})
+            .then(value => this.dicAbsenceType = value);
+      });
+    super.componentDidMount();
   }
 
   setReactionDisposer = () => {
