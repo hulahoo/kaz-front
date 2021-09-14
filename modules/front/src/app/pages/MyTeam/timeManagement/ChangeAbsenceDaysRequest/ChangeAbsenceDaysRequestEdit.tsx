@@ -133,10 +133,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
   getCountDays = (dateFrom: Date, dateTo: Date, personGroupId?: string, absenceType?: DicAbsenceType | null) => {
     if (absenceType && dateFrom && personGroupId) {
-      return restServices.absenceService.countDays({
+      return restServices.absenceService.countDaysWithoutHolidays({
         dateFrom: dateFrom,
         dateTo: dateTo,
-        absenceTypeId: absenceType.id,
         personGroupId: personGroupId
       });
     }
