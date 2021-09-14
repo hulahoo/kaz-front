@@ -595,7 +595,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           },
             {
               validator: (rule, value, callback) => {
-                this.validateNewStartEndDate(rule, value, callback)
+                this.validateNewStartEndDate(rule, value, callback, 'newStartDate')
               }
             }],
           getValueFromEvent: args => {
@@ -604,7 +604,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
             } else {
               this.newStartDate = null
             }
-            this.props.form.validateFields(['newStartDate', 'newEndDate'], {force: true})
+            this.props.form.validateFields(['newEndDate'], {force: true})
             return args
           }
         }}
@@ -622,7 +622,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           },
             {
               validator: (rule, value, callback) => {
-                this.validateNewStartEndDate(rule, value, callback)
+                this.validateNewStartEndDate(rule, value, callback, 'newEndDate')
               }
             }],
           getValueFromEvent: args => {
@@ -631,7 +631,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
             } else {
               this.newEndDate = null
             }
-            this.props.form.validateFields(['newStartDate', 'newEndDate'], {force: true})
+            this.props.form.validateFields(['newStartDate'], {force: true})
             return args
           }
         }}
@@ -866,13 +866,18 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   callForceAbsenceDayValidator = () => this.props.form.validateFields(['absenceDays'], {force: true});
 
-  validateNewStartEndDate = (rule: any, value: any, callback: any) => {
+  validateNewStartEndDate = (rule: any, value: any, callback: any, source: any) => {
     const startDate = this.props.form.getFieldValue('dateFrom')
     const endDate = this.props.form.getFieldValue('dateTo')
     let startDateMoment = startDate as Moment
     let endDateMoment = endDate as Moment
     if (startDateMoment && endDateMoment && this.newStartDate && this.newEndDate) {
+      startDateMoment = moment(new Date(startDateMoment.format("YYYY-MM-DD")));
+      endDateMoment = moment(new Date(endDateMoment.format("YYYY-MM-DD")));
+      let success = true;
+      let daysToMove: number | undefined
       (async () => {
+          let result: Absence | undefined
           await getCubaREST()!.searchEntities(Absence.NAME, {
             conditions: [{
               property: 'personGroup.id',
@@ -908,44 +913,44 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
             view: "_local"
           }).then(value => {
               if (value && value.length > 0 && value[0]) {
-                let result = value[0] as Absence
-                if (result && result.dateFrom && result.dateTo && this.newStartDate && this.newEndDate) {
-                  let dateToMoment = moment(new Date(result.dateTo))
-                  dateToMoment = dateToMoment.isBefore(endDateMoment) ? dateToMoment : endDateMoment
-                  let daysMoved = Math.floor(dateToMoment.diff(startDateMoment, 'days'))
-                  let type = this.props.form.getFieldValue(`type`);
-                  const personGroupId = rootStore.userInfo.personGroupId;
-                  (async () => {
-                    if (type && personGroupId && this.newStartDate && this.newEndDate) {
-                      await restServices.absenceService.countDays({
-                        dateFrom: this.newStartDate.toDate(),
-                        dateTo: this.newEndDate.toDate(),
-                        absenceTypeId: type,
-                        personGroupId: personGroupId
-                      }).then(daysNew => {
-                        if (daysNew != daysMoved) {
-                          return callback(this.props.intl.formatMessage({id: "validation.absenceRequest.validate"},
-                            {days: daysMoved}));
-                        } else {
-                          return callback()
-                        }
-                      })
-                    } else {
-                      return callback()
-                    }
-                  })()
-                } else {
-                  return callback()
-                }
-              } else {
-                return callback()
+                result = value[0] as Absence
               }
             }
           );
+          if (result && result.dateFrom && result.dateTo && this.newStartDate && this.newEndDate) {
+            let dateToMoment = moment(new Date(result.dateTo))
+            dateToMoment = dateToMoment.isBefore(endDateMoment) ? dateToMoment : endDateMoment
+            let daysMoved = Math.floor(dateToMoment.diff(startDateMoment, 'days')) + 1
+            if (this.balance && this.balance < daysMoved) {
+              daysMoved = this.balance
+            }
+            let type = this.props.form.getFieldValue(`type`);
+            const personGroupId = rootStore.userInfo.personGroupId;
+            if (type && personGroupId && this.newStartDate && this.newEndDate) {
+              await restServices.absenceService.countDays({
+                dateFrom: this.newStartDate.toDate(),
+                dateTo: this.newEndDate.toDate(),
+                absenceTypeId: type,
+                personGroupId: personGroupId
+              }).then(daysNew => {
+                if (daysNew != daysMoved) {
+                  success = false;
+                  daysToMove = daysMoved
+                }
+              })
+            }
+          }
+          if (success) {
+            return callback()
+          } else {
+            return callback(this.props.intl.formatMessage({id: "validation.absenceRequest.validate"},
+              {days: daysToMove}));
+          }
         }
       )();
+    } else {
+      return callback()
     }
-    return callback()
   }
 }
 
