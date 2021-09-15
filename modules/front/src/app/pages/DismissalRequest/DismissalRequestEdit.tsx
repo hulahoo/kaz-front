@@ -232,9 +232,20 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
           className="narrow-layout card-actions-container"
           bordered={false}
           actions={[
-            <Buttonv2 buttonType={ButtonType.FOLLOW}
-                      onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({ id: "close" })}</Buttonv2>,
-            this.getOutcomeBtns()]}>
+            <Button
+              disabled={!isOnApproved && this.isUserInitiator || !this.isUserInitiator || isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION}
+              type="primary"
+              htmlType="button"
+              onClick={this.handleOpenInterview()}
+              style={{ marginLeft: "8px" }}
+            >
+              <FormattedMessage id="dismissal.downloadExitInterview" />
+            </Button>,
+            <Buttonv2
+              type="primary"
+              onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({ id: "close" })}</Buttonv2>,
+            this.getOutcomeBtns()
+          ]}>
 
           <Form onSubmit={this.handleSubmit} layout="vertical">
             {/* <ReadonlyField
@@ -293,7 +304,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
               />
             )}
 
-            <Form.Item style={{ textAlign: "left" }}>
+            {/* <Form.Item style={{ textAlign: "left" }}>
               <Button
                 disabled={!isOnApproved && this.isUserInitiator || !this.isUserInitiator || isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION}
                 htmlType="button"
@@ -302,7 +313,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
               >
                 <FormattedMessage id="dismissal.downloadExitInterview" />
               </Button>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
         </Card>
       </PageWrapper >
@@ -431,15 +442,13 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
     restServices.employeeService.personProfile(this.personGroupId)
       .then(value => {
         this.person = value;
-        if (dismissalId === DismissalRequestManagement.NEW_SUBPATH) {
-          this.props.form.setFields({
-            employeeName: { value: value.fullName },
-            staffUnit: { value: value.positionName },
-            position: { value: value.positionName },
-            subdivision: { value: value.organizationName },
-            dateOfReceipt: { value: moment(value.hireDate) }
-          });
-        }
+        this.props.form.setFields({
+          employeeName: { value: value.fullName },
+          staffUnit: { value: value.positionName },
+          position: { value: value.positionName },
+          subdivision: { value: value.organizationName },
+          dateOfReceipt: { value: moment(value.hireDate) }
+        });
       })
   }
 
