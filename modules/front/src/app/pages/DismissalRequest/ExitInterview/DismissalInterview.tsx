@@ -1,18 +1,18 @@
-import {injectMainStore} from '@cuba-platform/react';
-import {Button, Modal} from 'antd';
-import {action, observable} from 'mobx';
-import {inject, observer} from 'mobx-react';
+import { injectMainStore } from '@cuba-platform/react';
+import { Button, Modal } from 'antd';
+import { action, observable } from 'mobx';
+import { inject, observer } from 'mobx-react';
 import React from 'react';
-import {FormattedMessage, injectIntl, IntlShape} from 'react-intl';
-import {restServices} from '../../../../cuba/services';
+import { FormattedMessage, injectIntl, IntlShape } from 'react-intl';
+import { restServices } from '../../../../cuba/services';
 import Question from '../../../components/Test/Question';
-import {AnsweredQuestion} from '../../../components/Test/TestComponent';
-import {RootStoreProp} from '../../../store';
-import {FeedbackCourse} from '../../MyCourse/RenderModalBody/Feedback/FeedbackComponent';
-import {AnsweredFeedback} from '../../MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent';
+import { AnsweredQuestion } from '../../../components/Test/TestComponent';
+import { RootStoreProp } from '../../../store';
+import { FeedbackCourse } from '../../MyCourse/RenderModalBody/Feedback/FeedbackComponent';
+import { AnsweredFeedback } from '../../MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent';
 import '../../../components/Test/style.less';
 import './style.less';
-import {runReport} from '../../../util/reportUtil';
+import { runReport } from '../../../util/reportUtil';
 
 interface State {
 }
@@ -68,12 +68,12 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
   }
 
   submitFeedback = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const {closeInterview} = this.props;
+    const { closeInterview } = this.props;
 
     if (!this.validate()) {
       Modal.error({
-        title: this.props.intl.formatMessage({id: "exitInterview.modal.error.title"}),
-        okText: this.props.intl.formatMessage({id: "dismissal.closeInterview"}),
+        title: this.props.intl.formatMessage({ id: "exitInterview.modal.error.title" }),
+        okText: this.props.intl.formatMessage({ id: "cubaReact.dataTable.ok" }),
       })
       return;
     }
@@ -95,8 +95,8 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
     })
       .then((response: string) => {
         Modal.success({
-          title: this.props.intl.formatMessage({id: "exitInterview.modal.title"}),
-          okText: this.props.intl.formatMessage({id: "dismissal.closeInterview"}),
+          title: this.props.intl.formatMessage({ id: "exitInterview.modal.title" }),
+          okText: this.props.intl.formatMessage({ id: "cubaReact.dataTable.ok" }),
           onOk: () => {
             this.props.setIsCanViewInterview(null);
             closeInterview();
@@ -108,15 +108,15 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
   };
 
   render() {
-    const {closeInterview} = this.props;
+    const { closeInterview } = this.props;
     return (
       <div className="dismissal-interview-page">
         <h4 className="dismissal-interview-page__title">
-          <FormattedMessage id="dismissal-interview.title"/>
+          <FormattedMessage id="dismissal-interview.title" />
         </h4>
         {
           this.feedbacks && this.feedbacks.map(question => (
-            <div style={{margin: "1rem 0"}} key={question.id}>
+            <div style={{ margin: "1rem 0" }} key={question.id}>
               <Question
                 testSectionId={""}
                 question={{
@@ -141,7 +141,7 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
           size="large"
           onClick={this.submitFeedback}
           loading={this.performingFinishRequest}>
-          <FormattedMessage id="dismissal.downloadExitInterview"/>
+          <FormattedMessage id="dismissal.downloadExitInterview" />
         </Button>
         <Button
           className="dismissal-interview__close-btn"
@@ -149,7 +149,7 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
           htmlType="button"
           size="large"
           onClick={closeInterview}>
-          <FormattedMessage id="close"/>
+          <FormattedMessage id="close" />
         </Button>
       </div>
     )
@@ -157,12 +157,12 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
 
   componentDidMount(): void {
     restServices.portalHelperService
-      .getConfig({classFQN: 'kz.uco.tsadv.config.DismissalConfig', methodName: 'getExitInterviewTemplateId'})
+      .getConfig({ classFQN: 'kz.uco.tsadv.config.DismissalConfig', methodName: 'getExitInterviewTemplateId' })
       .then((response) => {
         console.log(response);
         this.exitInterviewTemplateId = response;
         restServices.lmsService
-          .loadFeedbackData({feedbackTemplateId: this.exitInterviewTemplateId})
+          .loadFeedbackData({ feedbackTemplateId: this.exitInterviewTemplateId })
           .then((response: FeedbackCourse[]) => {
             console.log(response);
             this.feedbacks = response;
