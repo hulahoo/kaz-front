@@ -68,10 +68,10 @@ class CourseList<T> extends React.Component<WrappedComponentProps & RootStorePro
             </div>
             <div style={{width:"20%", marginLeft:"30px"}}>
               <Select allowClear={true} placeholder={"Выберите..."} onChange={value => this.handleChange("name",value as string)} style={{width:"100%"}} >
-                <Option value={"1"}>От а до я</Option>
-                <Option value={"2"}>От я до а</Option>
-                <Option value={"3"}>Сначала новые</Option>
-                <Option value={"4"}>Сначала старые</Option>
+                <Option value={"1"}>{this.props.intl.formatMessage({id: "filter.AtoZ"})}</Option>
+                <Option value={"2"}>{this.props.intl.formatMessage({id: "filter.ZtoA"})}</Option>
+                <Option value={"3"}>{this.props.intl.formatMessage({id: "filter.Newest"})}</Option>
+                <Option value={"4"}>{this.props.intl.formatMessage({id: "filter.Oldest"})}</Option>
               </Select>
             </div>
           </div>
