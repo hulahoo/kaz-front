@@ -1,5 +1,5 @@
 import React from 'react';
-import {Spin, Tabs} from "antd";
+import {Select, Spin, Tabs} from "antd";
 import {inject, observer} from "mobx-react";
 import {Link} from "react-router-dom";
 import SearchInput from "../../components/SearchInput";
@@ -29,6 +29,13 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
   @observable
   dataCollection: EnrollmentCatalogModel[] = [];
 
+  @observable
+  filterValue:string = ""
+  handleChange = (name:string, value:string) =>{
+    this.filterValue = value
+    console.log("filteredValue",this.filterValue)
+  }
+
   onSearch = (value: string) => {
     if (value) {
       restServices.enrollmentService.searchEnrollments({
@@ -52,21 +59,42 @@ class EnrollmentListComponent<T> extends React.Component<RootStoreProp & Wrapped
 
   render() {
     const {TabPane} = Tabs;
-
+    const { Option } = Select;
     const defaultTabKey = this.props.rootStore!.courseCatalogStore ? this.props.rootStore!.courseCatalogStore.selectedEnrollmentId : undefined;
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "menu.my-courses"})}>
         <Section size="large" visible={false}>
           <Spin spinning={this.status === 'LOADING'}>
-            <SearchInput onSearch={this.onSearch}/>
+            <div style={{display:"flex"}}>
+              <div style={{width:"70%"}}>
+                <SearchInput onSearch={this.onSearch}/>
+              </div>
+              <div style={{width:"20%", marginLeft:"30px"}}>
+                <Select allowClear={true} placeholder={"Выберите..."} onChange={value => this.handleChange("name",value as string)} style={{width:"100%"}} >
+                  <Option value={"1"}>{this.props.intl.formatMessage({id: "filter.AtoZ"})}</Option>
+                  <Option value={"2"}>{this.props.intl.formatMessage({id: "filter.ZtoA"})}</Option>
+                  <Option value={"3"}>{this.props.intl.formatMessage({id: "filter.Newest"})}</Option>
+                  <Option value={"4"}>{this.props.intl.formatMessage({id: "filter.Oldest"})}</Option>
+                </Select>
+              </div>
+            </div>
             {this.status === 'DONE' ? <Tabs onChange={this.tabOnChange} defaultActiveKey={defaultTabKey}>
               {this.dataCollection.map((category: SerializedEntity<EnrollmentCatalogModel>) => <TabPane
                 tab={category.langValue}
                 key={category.id}>
                 <div className={"courses-cards-wrapper"}>
                   <div className={"courses-cards"}>
-                    {category.courses!.map(course => <Link
+                    {category.courses!.sort((a:any,b:any) => {
+                      return   this.filterValue ==='1'?
+                        a.name.localeCompare(b.name,'en',{numeric:true})
+                        :this.filterValue ===""? 0
+                          :this.filterValue ==="2"?  b.name.localeCompare(a.name,'en',{numeric:true})
+                            :this.filterValue==="3"? new Date(b.createTs).valueOf() - new Date (a.createTs).valueOf()
+                              :this.filterValue==="4"?new Date(a.createTs).valueOf() - new Date (b.createTs).valueOf()
+                                :""
+
+                    }).map(course => <Link
                       to={"/" + CourseManagement.PATH + "/" + course.id}><PanelCard key={course.id}
                                                                                     loading={false} {...course}
                                                                                     name={course.name!}
