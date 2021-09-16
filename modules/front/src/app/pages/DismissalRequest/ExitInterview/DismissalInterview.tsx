@@ -8,7 +8,6 @@ import { restServices } from '../../../../cuba/services';
 import Question from '../../../components/Test/Question';
 import { AnsweredQuestion } from '../../../components/Test/TestComponent';
 import { RootStoreProp } from '../../../store';
-import { FeedbackCourse } from '../../MyCourse/RenderModalBody/Feedback/FeedbackComponent';
 import { AnsweredFeedback } from '../../MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent';
 import '../../../components/Test/style.less';
 import './style.less';
@@ -25,6 +24,19 @@ interface Props {
   setIsCanViewInterview(isCanViewInterview: any): void;
 }
 
+export type FeedbackExitInterview = {
+  id: string,
+  questionLangValue: string,
+  questionType: any,
+  answers?: FeedbackExitInterviewAnswer[]
+}
+
+export type FeedbackExitInterviewAnswer = {
+  id: string,
+  answerLangValue: string,
+  imageId: string,
+}
+
 @inject("rootStore")
 @injectMainStore
 @observer
@@ -34,7 +46,7 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
   exitInterviewTemplateId: string;
 
   @observable
-  feedbacks: FeedbackCourse[];
+  feedbacks: FeedbackExitInterview[];
 
   @observable
   performingFinishRequest = false;
@@ -121,12 +133,12 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
                 testSectionId={""}
                 question={{
                   id: question.id,
-                  text: question.questionLangValue1,
+                  text: question.questionLangValue,
                   type: question.questionType,
                   answers: question.answers
                     ? question.answers.map(answer => ({
                       id: answer.id,
-                      text: answer.answerLangValue1,
+                      text: answer.answerLangValue,
                     }))
                     : undefined
                 }}
@@ -163,8 +175,7 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
         this.exitInterviewTemplateId = response;
         restServices.lmsService
           .loadFeedbackData({ feedbackTemplateId: this.exitInterviewTemplateId })
-          .then((response: FeedbackCourse[]) => {
-            console.log(response);
+          .then((response: FeedbackExitInterview[]) => {
             this.feedbacks = response;
           })
       })
