@@ -22,6 +22,7 @@ export type FeedbackCourse = {
 export type FeedbackAnswer = {
   id: string,
   answerLangValue1: string,
+  imageId: string,
 }
 
 class FeedbackComponent extends React.Component<FeedbackComponentProps & WrappedComponentProps> {
