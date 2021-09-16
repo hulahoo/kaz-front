@@ -103,6 +103,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   newEndDate: Moment | undefined | null
 
+  validatedNewPeriod: boolean = true
+
+  daysToMove: number | undefined
+
   fields = [
     "dateFrom",
 
@@ -595,16 +599,17 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           },
             {
               validator: (rule, value, callback) => {
-                this.validateNewStartEndDate(rule, value, callback, 'newStartDate')
+                this.validateNewStartEndDate(rule, value, callback)
               }
-            }],
+            }
+          ],
           getValueFromEvent: args => {
             if (args) {
               this.newStartDate = moment(new Date((args as Moment).format("YYYY-MM-DD")))
             } else {
               this.newStartDate = null
             }
-            this.props.form.validateFields(['newEndDate'], {force: true})
+            this.setValidatedNewPeriod()
             return args
           }
         }}
@@ -622,16 +627,17 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
           },
             {
               validator: (rule, value, callback) => {
-                this.validateNewStartEndDate(rule, value, callback, 'newEndDate')
+                this.validateNewStartEndDate(rule, value, callback)
               }
-            }],
+            }
+          ],
           getValueFromEvent: args => {
             if (args) {
               this.newEndDate = moment(new Date((args as Moment).format("YYYY-MM-DD")))
             } else {
               this.newEndDate = null
             }
-            this.props.form.validateFields(['newStartDate'], {force: true})
+            this.setValidatedNewPeriod()
             return args
           }
         }}
@@ -866,7 +872,7 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   callForceAbsenceDayValidator = () => this.props.form.validateFields(['absenceDays'], {force: true});
 
-  validateNewStartEndDate = (rule: any, value: any, callback: any, source: any) => {
+  setValidatedNewPeriod = () => {
     const startDate = this.props.form.getFieldValue('dateFrom')
     const endDate = this.props.form.getFieldValue('dateTo')
     let startDateMoment = startDate as Moment
@@ -940,16 +946,24 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
               })
             }
           }
-          if (success) {
-            return callback()
-          } else {
-            return callback(this.props.intl.formatMessage({id: "validation.absenceRequest.validate"},
-              {days: daysToMove}));
-          }
+          this.validatedNewPeriod = success
+          this.daysToMove = daysToMove
+          this.props.form.validateFields(['newStartDate', 'newEndDate'], {force: true})
         }
       )();
     } else {
+      this.validatedNewPeriod = true
+      this.daysToMove = 0
+      this.props.form.validateFields(['newStartDate', 'newEndDate'], {force: true})
+    }
+  }
+
+  validateNewStartEndDate = (rule: any, value: any, callback: any) => {
+    if (this.validatedNewPeriod) {
       return callback()
+    } else {
+      return callback(this.props.intl.formatMessage({id: "validation.absenceRequest.validate"},
+        {days: this.daysToMove}));
     }
   }
 }
