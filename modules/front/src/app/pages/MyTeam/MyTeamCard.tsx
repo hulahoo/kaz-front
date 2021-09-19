@@ -25,6 +25,7 @@ export type PersonProfile = {
   id: string,
   groupId: string,
   positionGroupId: string,
+  organizationGroupId: string,
   assignmentGroupId: string,
   positionId: string,
   fullName: string,

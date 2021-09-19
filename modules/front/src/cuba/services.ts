@@ -41,6 +41,8 @@ import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
 import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
 import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
 import {DicAbsenceType} from "./entities/base/tsadv$DicAbsenceType";
+import {AssignmentSchedule} from "./entities/base/tsadv$AssignmentSchedule";
+import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -938,6 +940,40 @@ export const restServices = {
         "tsadv_PositionStructureService",
         "getStartData",
         {...param}
+      ).then(r => JSON.parse(r));
+    },
+  },
+  assignmentScheduleService: {
+    getAssignmentSchedule: (param: { personGroupId: string, date: string, view: string }): Promise<SerializedEntity<AssignmentSchedule>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AssignmentScheduleService",
+        "getAssignmentSchedule",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+  },
+  employeeHierarchyService: {
+    getChildEmployees: (param: { positionGroupId: string, date: string, view: string }): Promise<SerializedEntity<PersonGroupExt>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeHierarchyService",
+        "getChildEmployees",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+  },
+  hrService: {
+    getEmployers: (): Promise<SerializedEntity<PersonGroupExt>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_HrService",
+        "getEmployers",
+        {}
+      ).then(r => JSON.parse(r));
+    },
+    isHr: (): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_HrService",
+        "isHr",
+        {}
       ).then(r => JSON.parse(r));
     },
   }

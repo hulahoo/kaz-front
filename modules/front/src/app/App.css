@@ -3,6 +3,10 @@
   height: 100%;
 }
 
+.selected-column-invisible .ant-table-selection-column{
+  display: none;
+}
+
 /*.narrow-layout {*/
 /*  max-width: 1024px;*/
 /*  margin: auto;*/

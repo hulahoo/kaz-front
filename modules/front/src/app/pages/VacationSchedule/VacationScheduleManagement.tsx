@@ -1,9 +1,9 @@
 import * as React from "react";
 import {observer} from "mobx-react";
-import {VacationScheduleList} from "./VacationScheduleList";
+import VacationScheduleList from "./VacationScheduleList";
 import {RouteComponentProps} from "react-router";
 import MyVacationScheduleList from "./MyVacationScheduleList";
-import {AssistantVacationSchedule} from "./AssistantVacationSchedule";
+import AssistantVacationSchedule from "./AssistantVacationSchedule";
 
 type Props = RouteComponentProps<{ type: string }>;
 
