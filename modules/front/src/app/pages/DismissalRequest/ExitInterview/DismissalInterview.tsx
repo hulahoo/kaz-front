@@ -5,7 +5,7 @@ import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { FormattedMessage, injectIntl, IntlShape } from 'react-intl';
 import { restServices } from '../../../../cuba/services';
-import Question from '../../../components/Test/Question';
+import Question, { QuestionError } from '../../../components/Test/Question';
 import { AnsweredQuestion } from '../../../components/Test/TestComponent';
 import { RootStoreProp } from '../../../store';
 import { AnsweredFeedback } from '../../MyCourse/RenderModalBody/Feedback/FeedbackQuestionAnswerComponent';
@@ -55,6 +55,11 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
     this.performingFinishRequest = value;
   };
 
+  @observable
+  errors: {
+    [key: string]: QuestionError
+  } = {}
+
 
   answeredFeedback: AnsweredFeedback = {
     courseId: "empty",
@@ -64,15 +69,28 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
   };
 
   addRemoveAnswer = (a: AnsweredQuestion) => {
-    for (let i = this.answeredFeedback.questionsAndAnswers!.length - 1; i > -1; i--) {
-      if (this.answeredFeedback.questionsAndAnswers![i].questionId === a.questionId) {
-        this.answeredFeedback.questionsAndAnswers!.splice(i, 1);
-      }
-    }
+    this.answeredFeedback.questionsAndAnswers = this.answeredFeedback.questionsAndAnswers
+      .filter(question => {
+        return question.questionId !== a.questionId
+      })
     this.answeredFeedback.questionsAndAnswers!.push(a);
   };
 
   validate() {
+    const answers = {}
+    this.answeredFeedback.questionsAndAnswers.forEach(question => {
+      answers[question.questionId] = question
+    })
+    this.errors = {}
+    this.feedbacks.forEach(feedback => {
+      if (!answers[feedback.id]) {
+        this.errors[feedback.id] = {
+          message: 'This field is required',
+          questionId: feedback.id
+        }
+      }
+    })
+
     if (this.answeredFeedback.questionsAndAnswers.length < this.feedbacks.length) {
       return false;
     }
@@ -130,6 +148,7 @@ class DismissalIntervew extends React.Component<Props & RootStoreProp, State> {
           this.feedbacks && this.feedbacks.map(question => (
             <div style={{ margin: "1rem 0" }} key={question.id}>
               <Question
+                error={this.errors[question.id]}
                 testSectionId={""}
                 question={{
                   id: question.id,

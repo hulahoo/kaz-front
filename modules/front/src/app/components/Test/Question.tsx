@@ -1,5 +1,5 @@
 import React from "react";
-import {AnsweredQuestion} from "./TestComponent";
+import { AnsweredQuestion } from "./TestComponent";
 import Answer from "./Answer";
 
 export type QuestionModel = {
@@ -14,9 +14,16 @@ export type AnswerModel = {
   text: string
 }
 
+export type QuestionError = {
+  message: string,
+  questionId: string,
+}
+
+
 export interface TestComponentProps {
   question: QuestionModel,
-  testSectionId: string
+  testSectionId: string,
+  error?: QuestionError
 }
 
 export interface TestComponentHandlers {
@@ -28,10 +35,14 @@ class Question extends React.Component<TestComponentProps & TestComponentHandler
   render() {
     return (
       <div className={"question-block"}>
-        <div className={"question-title"}>{this.props.question.text}</div>
+        <div
+          style={{
+            color: this.props.error ? 'red' : 'inherit'
+          }}
+          className={"question-title"}>{this.props.question.text}</div>
         <div className={"question-options"}>
           <Answer answers={this.props.question.answers} type={this.props.question.type}
-                  addRemoveAnswer={this.props.addRemoveAnswer} questionId={this.props.question.id} testSectionId={this.props.testSectionId}/>
+            addRemoveAnswer={this.props.addRemoveAnswer} questionId={this.props.question.id} testSectionId={this.props.testSectionId} />
         </div>
       </div>);
   }
