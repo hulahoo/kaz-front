@@ -1,10 +1,10 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { AssignmentGroupExt } from "./base$AssignmentGroupExt";
-import { FileDescriptor } from "./sys$FileDescriptor";
 import { DicAbsenceType } from "./tsadv$DicAbsenceType";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicAbsencePurpose } from "./tsadv_DicAbsencePurpose";
-import {VacationScheduleRequest} from "./tsadv_VacationScheduleRequest";
+import { VacationScheduleRequest } from "./tsadv_VacationScheduleRequest";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class AbsenceRequest extends AbstractBprocRequest {
   static NAME = "tsadv$AbsenceRequest";
   assignmentGroup?: AssignmentGroupExt | null;
@@ -37,6 +37,7 @@ export class AbsenceRequest extends AbstractBprocRequest {
   files?: FileDescriptor[] | null;
   startTime?: any | null;
   endTime?: any | null;
+  additionalTime?: number | null;
 }
 export type AbsenceRequestViewName =
   | "_base"
@@ -76,12 +77,13 @@ export type AbsenceRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "startTime"
+      | "endTime"
+      | "additionalTime"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "comment"
-      | "startTime"
-      | "endTime"
     >
   : V extends "_local"
   ? Pick<
@@ -108,14 +110,15 @@ export type AbsenceRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "startTime"
+      | "endTime"
+      | "additionalTime"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
       | "comment"
-      | "startTime"
-      | "endTime"
     >
   : V extends "_minimal"
   ? Pick<AbsenceRequest, "id" | "requestNumber" | "requestDate">
@@ -144,6 +147,9 @@ export type AbsenceRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "startTime"
+      | "endTime"
+      | "additionalTime"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -155,8 +161,6 @@ export type AbsenceRequestView<
       | "purpose"
       | "status"
       | "files"
-      | "startTime"
-      | "endTime"
     >
   : V extends "absenceRequest-for-my-team"
   ? Pick<
@@ -183,6 +187,9 @@ export type AbsenceRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "startTime"
+      | "endTime"
+      | "additionalTime"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -193,8 +200,6 @@ export type AbsenceRequestView<
       | "personGroup"
       | "purpose"
       | "status"
-      | "startTime"
-      | "endTime"
     >
   : V extends "absenceRequest-for-ss-my-team"
   ? Pick<
@@ -221,14 +226,15 @@ export type AbsenceRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "startTime"
+      | "endTime"
+      | "additionalTime"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
       | "comment"
-      | "startTime"
-      | "endTime"
     >
   : V extends "absenceRequest.edit"
   ? Pick<
@@ -255,6 +261,9 @@ export type AbsenceRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "startTime"
+      | "endTime"
+      | "additionalTime"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -269,8 +278,6 @@ export type AbsenceRequestView<
       | "vacationScheduleRequest"
       | "vacationDurationType"
       | "files"
-      | "startTime"
-      | "endTime"
     >
   : V extends "absenceRequest.view"
   ? Pick<
@@ -297,6 +304,9 @@ export type AbsenceRequestView<
       | "vacationDay"
       | "acquainted"
       | "agree"
+      | "startTime"
+      | "endTime"
+      | "additionalTime"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -305,12 +315,10 @@ export type AbsenceRequestView<
       | "comment"
       | "assignmentGroup"
       | "type"
+      | "files"
       | "status"
       | "personGroup"
       | "purpose"
       | "vacationScheduleRequest"
-      | "startTime"
-      | "endTime"
-      | "files"
     >
   : never;

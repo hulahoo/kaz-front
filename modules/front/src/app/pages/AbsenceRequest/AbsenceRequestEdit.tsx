@@ -473,6 +473,18 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   disabled={true}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectStartDate"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectEndDate"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
                 <div className={"ant-row ant-form-item"}
                      style={this.isLaborLeave ? {marginBottom: "12px"} : {display: 'none'}}>
                   <FormattedMessage id="balance"/>

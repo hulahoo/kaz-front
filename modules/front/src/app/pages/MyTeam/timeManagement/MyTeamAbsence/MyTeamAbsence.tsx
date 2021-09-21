@@ -35,6 +35,10 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
 
     "dateTo",
 
+    "projectStartDate",
+
+    "projectEndDate",
+
     "absenceDays"
   ];
 
@@ -93,7 +97,8 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
         && absence.type.availableForChangeDate
         && absence.type.availableForRecallAbsence
         && absence.type.useInSelfService
-        && moment(absence.dateFrom) > moment()) !== true;
+        && (moment(absence.dateFrom) > moment() ||
+          (absence.projectStartDate && moment(absence.projectStartDate) > moment()))) !== true;
       this.disabledAbsenceForRecall = (absence && absence.type
         && absence.type.useInSelfService
         && absence.type.availableForChangeDate

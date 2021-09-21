@@ -82,6 +82,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
     "scheduleEndDate",
 
+    "projectStartDate",
+
+    "projectEndDate",
+
     "purpose",
 
     "purposeText",
@@ -360,7 +364,18 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   disabled={true}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
-
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectStartDate"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectEndDate"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
                   propertyName="purpose"
