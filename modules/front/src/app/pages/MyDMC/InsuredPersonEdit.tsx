@@ -75,9 +75,9 @@ class InsuredPersonEditComponent extends React.Component<Props & RootStoreProp &
     loadImmediately: false,
     filter: {
       conditions: [{
-        property: 'id',
+        property: 'version',
         operator: '=',
-        value: null
+        value: 10000
       }]
     }
   });
