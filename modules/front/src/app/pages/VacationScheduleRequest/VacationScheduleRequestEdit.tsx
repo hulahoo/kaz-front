@@ -13,6 +13,7 @@ import {
   collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
+  getCubaREST,
   injectMainStore,
   MainStoreInjected,
   Msg,
@@ -43,6 +44,11 @@ import {JSON_DATE_TIME_FORMAT} from "../../util/Date/Date";
 import {instanceStore} from "../../util/InstanceStore";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {SerializedEntity} from "@cuba-platform/rest";
+
+export type VacationPojo = {
+  id?: string,
+  startDate: string
+}
 
 type Props = FormComponentProps & EditorProps;
 
@@ -107,6 +113,8 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
   personGroupId: string;
 
   laborLeave: DicAbsenceType;
+
+  hasMinDayVacation = false;
 
   handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -235,7 +243,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                   propertyName: "assignmentSchedule"
                 })}>
                   <input
-                    style={{width:'100%'}}
+                    style={{width: '100%'}}
                     disabled={true}
                     value={this.assignmentSchedule && this.assignmentSchedule._instanceName}/>
                 </Form.Item>
@@ -250,6 +258,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                       this.getAssignmentSchedule(args);
                       this.getAbsenceBalance(args);
                       this.getAbsenceDays(args);
+                      this.checkMinDayVacation(args);
                       return args
                     },
                     rules: [{
@@ -299,13 +308,19 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                         validator: (rule, value, callback) => {
                           const balance = this.props.form.getFieldValue('balance');
                           if (!isNumber(value) || !isNumber(balance)) return callback();
-                          if (balance < parseInt(value)) {
+                          const absenceDays = parseInt(value);
+                          if (balance < absenceDays) {
                             return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
-                          } else if (this.laborLeave && this.laborLeave.minDay && this.laborLeave.minDay < parseInt(value)) {
-                            return callback(
-                              this.props.intl.formatMessage({id: 'vacationRequest.validation.minDay'},
-                                {days: this.laborLeave.minDay})
-                            );
+                          } else if (this.laborLeave && this.laborLeave.minDay) {
+                            const minDay = this.laborLeave.minDay;
+                            if (minDay > absenceDays && !this.hasMinDayVacation) {
+                              return callback(
+                                this.props.intl.formatMessage({id: 'vacationRequest.validation.minDay'},
+                                  {days: this.laborLeave.minDay})
+                              );
+                            } /*else if ( minDay >= absenceDays && this.hasMinDayVacation) {
+
+                            }*/
                           }
                           return callback();
                         }
@@ -398,6 +413,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
           personGroupId: personGroupId
         }).then(value => {
           this.props.form.setFields({"absenceDays": {value: value}});
+          this.callForceAbsenceDayValidator();
         })
       }
     }
@@ -407,9 +423,11 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
 
     if (dateFrom && this.personGroupId) {
-      restServices.absenceBalanceService.getAbsenceBalance({
-        personGroupId: this.personGroupId,
-        absenceDate: dateFrom
+      restServices.vacationScheduleRequestService.getVacationScheduleBalanceDays({
+        vacation: {
+          id: this.props.entityId !== VacationScheduleRequestManagement.NEW_SUBPATH ? this.props.entityId : undefined,
+          startDate: dateFrom.format(JSON_DATE_TIME_FORMAT)
+        }
       })
         .then(value => {
           this.props.form.setFieldsValue({"balance": value});
@@ -437,6 +455,38 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     }).then(value => this.assignmentSchedule = value);
   };
 
+  checkMinDayVacation = async (startDate?: moment.Moment) => {
+    if (this.laborLeave && this.laborLeave.minDay && startDate) {
+      const year = parseInt(startDate.format('YYYY'));
+
+      await getCubaREST()!.searchEntitiesWithCount(VacationScheduleRequest.NAME, {
+        conditions: [{
+          property: 'personGroup.id',
+          operator: '=',
+          value: this.personGroupId
+        }, {
+          property: 'absenceDays',
+          operator: '>=',
+          value: this.laborLeave.minDay
+        }, {
+          property: 'startDate',
+          operator: '>',
+          value: (year - 1) + '-12-31'
+        }, {
+          property: 'endDate',
+          operator: '<',
+          value: (year + 1) + '-01-01'
+        }]
+      }, {
+        limit: 1
+      }).then(value => this.hasMinDayVacation = (value.count > 0))
+        .then(value => {
+          console.log(this.hasMinDayVacation)
+        })
+        .then(value => this.callForceAbsenceDayValidator());
+    }
+  }
+
   componentDidMount() {
     (async () => {
       restServices.absenceService.getLaborLeave().then(value => this.laborLeave = value);
@@ -452,6 +502,8 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
       }
 
       this.initPersonGroupDc();
+
+      this.checkMinDayVacation();
 
     })()
 

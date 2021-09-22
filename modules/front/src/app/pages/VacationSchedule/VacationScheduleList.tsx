@@ -39,7 +39,12 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
   onRunningReport = false;
 
   @observable
+  onRunningApprove = false;
+
+  @observable
   selectedRowKey: string | undefined;
+
+  selectedRowKeys: string[] | undefined;
 
   @observable
   selectedData: SerializedEntity<VacationScheduleRequest> | undefined;
@@ -74,6 +79,15 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
       dataCollection: this.dataCollectionVacationSchedule
     });
   };
+
+  approve = async () => {
+    this.onRunningApprove = true;
+    if (this.selectedRowKeys)
+      await restServices.vacationScheduleRequestService
+        .approveVacationRequest({vacations: this.selectedRowKeys});
+    this.onRunningApprove = false;
+    this.dataCollectionVacationSchedule.load();
+  }
 
   render() {
     return (
@@ -119,21 +133,29 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
               : <Icon type="excel"/>}
             <FormattedMessage id="report"/>
           </Button>
+          <Button
+            htmlType="button"
+            style={{margin: "0 12px 12px 0"}}
+            onClick={this.approve}
+            key="approve"
+            disabled={this.onRunningReport}
+            type="default">
+            {this.onRunningReport
+              ? <Spin/>
+              : <></>}
+            <FormattedMessage id="vacationSchedule.btn.approve"/>
+          </Button>
         </div>
 
         <Table dataSource={this.dataCollectionVacationSchedule.items.slice()}
-               className={'selected-column-invisible'}
                rowSelection={{
-                 selectedRowKeys: this.selectedRowKey ? [this.selectedRowKey] : [],
-                 type:'radio',
+                 type: 'checkbox',
+                 onChange: this.handleRowSelectionChange
                }}
                onChange={this.handleChange}
                pagination={{
                  showSizeChanger: true,
                  total: this.dataCollectionVacationSchedule.count,
-               }}
-               onRowClick={(record, index) => {
-                 this.handleRowSelectionChange([record.id]);
                }}
                rowKey={'id'}>
           <Column key='requestNumber'
@@ -255,7 +277,8 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
   }
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
-    this.selectedRowKey = selectedRowKeys[0];
+    this.selectedRowKeys = selectedRowKeys;
+    this.selectedRowKey = selectedRowKeys.length === 1 ? selectedRowKeys[0] : undefined;
     this.selectedData = this.selectedRowKey ? this.getRecordById(this.selectedRowKey) : undefined;
   };
 

@@ -311,6 +311,7 @@
   "leavingVacationRequest.plannedStartDate.validating": "В случае выхода на работу до истечения отпуска без сохранения заработной платы по уходу за ребенком до достижения им возраста трех лет работник обязан уведомить работодателя о своем намерении за месяц до начала работы. Вы указали меньший период. Выберите другую дату",
   "new.request": "Новая заявка",
   "vacationScheduleRequest": "График отпусков",
+  "vacationSchedule.btn.approve": "Согласовать",
   "course.section.finish": "Завершить раздел",
   "course.feedback.finish": "Отправить",
   "course.section.test.finish": "Завершить тест",

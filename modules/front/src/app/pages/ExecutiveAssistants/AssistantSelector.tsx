@@ -65,19 +65,16 @@ export class AssistantSelector extends React.Component<RootStoreProp & Assistant
 
   componentDidMount() {
     this.props.rootStore!.assistantTeamInfo.active = true;
+
     restServices.executiveAssistantService.getManagerList(this.props.rootStore!.userInfo!.positionGroupId!)
       .then(value => this.managers = value)
       .then(value => {
-        const selectedManager = this.props.rootStore!.assistantTeamInfo.selectedManager;
-        if (value && value.length === 1) this.onChangeManager(value[0].id);
-        else if (!value || value.length === 0 || (selectedManager && !value.find(item => item.id === selectedManager.id)))
+        let selectedManager = this.props.rootStore!.assistantTeamInfo.selectedManager;
+        if (value && value.length === 1) selectedManager = value[0];
+        else if (!value || value.length === 0 || (selectedManager && !value.find(item => item.id === selectedManager!.id)))
           this.props.rootStore!.assistantTeamInfo.selectedManager = undefined;
+        if (selectedManager) this.onChangeManager(selectedManager.id)
         return value;
       });
-
-    if (this.props.onChange &&
-      this.props.rootStore!.assistantTeamInfo.selectedManager) {
-      this.props.onChange(this.props.rootStore!.assistantTeamInfo.selectedManager);
-    }
   }
 }

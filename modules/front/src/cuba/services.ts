@@ -43,6 +43,7 @@ import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
 import {DicAbsenceType} from "./entities/base/tsadv$DicAbsenceType";
 import {AssignmentSchedule} from "./entities/base/tsadv$AssignmentSchedule";
 import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
+import {VacationPojo} from "../app/pages/VacationScheduleRequest/VacationScheduleRequestEdit";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -848,6 +849,20 @@ export const restServices = {
     }
   },
   vacationScheduleRequestService: {
+    approveVacationRequest: (params: { vacations: string[] }): Promise<void> => {
+      return getCubaREST()!.invokeService<void>(
+        "tsadv_VacationScheduleRequestService",
+        "approveVacationRequest",
+        params
+      );
+    },
+    getVacationScheduleBalanceDays: (params: { vacation: VacationPojo }): Promise<number> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "getVacationScheduleBalanceDays",
+        params
+      ).then(value => JSON.parse(value));
+    },
     ganttChart: (startDate: string, endDate: string): Promise<Array<GanttChartVacationScheduleData>> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_VacationScheduleRequestService",
