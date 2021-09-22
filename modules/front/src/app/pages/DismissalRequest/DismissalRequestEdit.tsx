@@ -241,9 +241,10 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
             >
               <FormattedMessage id="dismissal.downloadExitInterview" />
             </Button>,
-            <Buttonv2
+            <Button
               type="primary"
-              onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({ id: "close" })}</Buttonv2>,
+              htmlType="button"
+              onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({ id: "close" })}</Button>,
             this.getOutcomeBtns()
           ]}>
 
