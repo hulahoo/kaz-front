@@ -83,7 +83,7 @@ class MyTeamAbsence extends React.Component<MyTeamCardProps & MainStoreInjected 
     }
     this.columnCount++;
 
-    if (this.columnCount > 1 && this.columnCount < 4)
+    if (this.columnCount > 1 && this.columnCount < 6)
       return formatDate(record[this.absenceFields[this.columnCount - 1]]);
     return text;
   }

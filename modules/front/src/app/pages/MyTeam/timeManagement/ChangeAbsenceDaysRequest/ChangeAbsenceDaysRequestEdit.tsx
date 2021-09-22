@@ -204,15 +204,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         personGroupId: personGroupId,
         absenceTypeId: this.absence.type!.id
       }).then(countDay => {
-        restServices.absenceService.countDays({
-          dateFrom: scheduleStartDate,
-          dateTo: scheduleEndDate,
-          personGroupId: personGroupId,
-          absenceTypeId: this.absence.type!.id
-        }).then(countScheduleDay => {
-          this.validatedDatesSuccess = countDay <= countScheduleDay + (this.absence.type!.daysAdvance || 0);
-          this.props.form.validateFields(['newStartDate'], {force: true});
-        });
+        if (this.balance) {
+          this.validatedDatesSuccess = countDay <= this.balance
+        }
+        this.props.form.validateFields(['newStartDate'], {force: true});
       })
     }
   }
@@ -367,12 +362,14 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
                   propertyName="projectStartDate"
+                  disabled={true}
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
                   propertyName="projectEndDate"
+                  disabled={true}
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
@@ -606,7 +603,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         .then(absence => {
           this.props.form.setFieldsValue({
             scheduleStartDate: moment(absence.dateFrom),
-            scheduleEndDate: moment(absence.dateTo)
+            scheduleEndDate: moment(absence.dateTo),
+            projectStartDate: moment(absence.projectStartDate),
+            projectEndDate: moment(absence.projectEndDate)
           });
           this.initDictionaries(absence.personGroup!.id!);
           this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
@@ -648,7 +647,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
             .then(absence => {
               this.props.form.setFieldsValue({
                 scheduleStartDate: moment(absence.dateFrom),
-                scheduleEndDate: moment(absence.dateTo)
+                scheduleEndDate: moment(absence.dateTo),
+                projectStartDate: moment(absence.projectStartDate),
+                projectEndDate: moment(absence.projectEndDate)
               });
               this.initDictionaries(absence.personGroup!.id!);
               this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
