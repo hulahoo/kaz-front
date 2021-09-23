@@ -718,8 +718,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
         value: personGroupId
       }, {
         property: 'assignmentStatus.code',
-        operator: 'in',
-        value: ['ACTIVE', 'SUSPENDED']
+        operator: '<>',
+        value: 'TERMINATED'
       }, {
         property: 'primaryFlag',
         operator: '=',
