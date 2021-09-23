@@ -127,17 +127,17 @@ configure(coreModule) {
     task createDb(dependsOn: assembleDbScripts, description: 'Creates local database', type: CubaDbCreation) {
         dbms = 'postgres'
         host = 'localhost'
-        dbName = 'tsadv_master7'
-        dbUser = 'tal'
-        dbPassword = 'tal'
+        dbName = 'kazmin_front'
+        dbUser = 'tof'
+        dbPassword = '1'
     }
 
     task updateDb(dependsOn: assembleDbScripts, description: 'Updates local database', type: CubaDbUpdate) {
         dbms = 'postgres'
         host = 'localhost'
-        dbName = 'tsadv_master7'
-        dbUser = 'tal'
-        dbPassword = 'tal'
+        dbName = 'kazmin_front'
+        dbUser = 'tof'
+        dbPassword = '1'
     }
 }
 
