@@ -209,6 +209,23 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
 
                       <ReadonlyField
                         entityName={PositionOverlappingRequest.NAME}
+                        propertyName="department"
+                        form={this.props.form}
+                        formItemOpts={{style: {marginBottom: "12px"}}}
+                        optionsContainer={this.organizationGroupDc}
+                        disabled={true}
+                        getFieldDecoratorOpts={{
+                          rules: [{
+                            required: true,
+                            message: this.props.intl.formatMessage(
+                              {id: "form.validation.required"},
+                              {fieldName: messages[PositionOverlappingRequest.NAME + '.department']})
+                          }]
+                        }}
+                      />
+
+                      <ReadonlyField
+                        entityName={PositionOverlappingRequest.NAME}
                         propertyName="positionGroup"
                         form={this.props.form}
                         disabled={this.isNotDraft()!}
@@ -229,22 +246,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                         }}
                       />
 
-                      <ReadonlyField
-                        entityName={PositionOverlappingRequest.NAME}
-                        propertyName="department"
-                        form={this.props.form}
-                        formItemOpts={{style: {marginBottom: "12px"}}}
-                        optionsContainer={this.organizationGroupDc}
-                        disabled={true}
-                        getFieldDecoratorOpts={{
-                          rules: [{
-                            required: true,
-                            message: this.props.intl.formatMessage(
-                              {id: "form.validation.required"},
-                              {fieldName: messages[PositionOverlappingRequest.NAME + '.department']})
-                          }]
-                        }}
-                      />
+
                       <Form onSubmit={this.validate} layout="vertical">
                         <ReadonlyField
                           entityName={PositionOverlappingRequest.NAME}
