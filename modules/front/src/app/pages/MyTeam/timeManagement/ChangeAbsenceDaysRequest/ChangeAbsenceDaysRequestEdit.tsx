@@ -434,10 +434,11 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                         const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
                         const requestDate = this.props.form.getFieldValue('requestDate');
                         this.props.form.validateFields(['newEndDate', 'periodStartDate'], {force: true});
-                        if (value && scheduleStartDate && scheduleStartDate.clone().startOf('day') > value.clone().startOf('day'))
+                        if (value && scheduleStartDate && scheduleStartDate.clone().startOf('day') > value.clone().startOf('day')
+                          && value.clone().startOf('day') < requestDate)
                           return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
-                            startDate: messages[this.dataInstance.entityName + '.newStartDate'],
-                            endDate: messages[this.dataInstance.entityName + '.scheduleStartDate']
+                            startDate: messages[this.dataInstance.entityName + '.scheduleStartDate'],
+                            endDate: messages[this.dataInstance.entityName + '.newStartDate']
                           }));
                         else if (!this.validatedBalanceSuccess)
                           return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
