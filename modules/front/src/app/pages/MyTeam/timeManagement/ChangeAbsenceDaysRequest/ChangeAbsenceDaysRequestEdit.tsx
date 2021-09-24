@@ -431,21 +431,17 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newStartDate']}),
                     }, {
                       validator: (rule, value, callback) => {
-                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
                         const requestDate = this.props.form.getFieldValue('requestDate');
                         this.props.form.validateFields(['newEndDate', 'periodStartDate'], {force: true});
-                        if (value && scheduleStartDate && scheduleStartDate.clone().startOf('day') > value.clone().startOf('day')
-                          && value.clone().startOf('day') < requestDate)
-                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
-                            startDate: messages[this.dataInstance.entityName + '.scheduleStartDate'],
-                            endDate: messages[this.dataInstance.entityName + '.newStartDate']
-                          }));
-                        else if (!this.validatedBalanceSuccess)
+                        if (!this.validatedBalanceSuccess)
                           return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                         else if (!this.validatedDatesSuccess)
                           return callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
                         else if (requestDate && requestDate > value) {
-                          return callback(this.props.intl.formatMessage({id: "dateFromMustBeAfterRequestDate"}));
+                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                            startDate: messages[this.dataInstance.entityName + '.requestDate'],
+                            endDate: messages[this.dataInstance.entityName + '.newStartDate']
+                          }));
                         } else return callback();
                       }
                     }],
