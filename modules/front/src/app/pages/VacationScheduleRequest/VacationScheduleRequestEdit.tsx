@@ -47,6 +47,7 @@ import {SerializedEntity} from "@cuba-platform/rest";
 
 export type VacationPojo = {
   id?: string,
+  personGroupId: string,
   startDate: string
 }
 
@@ -426,6 +427,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
       restServices.vacationScheduleRequestService.getVacationScheduleBalanceDays({
         vacation: {
           id: this.props.entityId !== VacationScheduleRequestManagement.NEW_SUBPATH ? this.props.entityId : undefined,
+          personGroupId: this.personGroupId,
           startDate: dateFrom.format(JSON_DATE_TIME_FORMAT)
         }
       })

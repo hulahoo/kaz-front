@@ -10,30 +10,62 @@ import {Button, Icon, Modal, Spin, Table} from "antd";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {action, observable} from "mobx";
 import {SerializedEntity} from "@cuba-platform/rest";
-import {getCubaREST, handleTableChange, injectMainStore, MainStoreInjected, Msg} from "@cuba-platform/react";
+import {
+  ComparisonType,
+  getCubaREST,
+  injectMainStore,
+  MainStoreInjected,
+  Msg,
+  setPagination,
+  setSorter
+} from "@cuba-platform/react";
 import {PersonContact} from "../../../cuba/entities/base/tsadv$PersonContact";
 import moment from "moment";
 import {formatDate, JSON_DATE_TIME_FORMAT} from "../../util/Date/Date";
 import {runReport} from "../../util/reportUtil";
+import CustomFilter, {
+  enumFilter,
+  FilterEntityValue,
+  FilterValue,
+  setFilters
+} from "../../components/querySettings/CustomFilter";
 import {Organization} from "../../../cuba/entities/base/base$Organization";
 import Column from "antd/es/table/Column";
 import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
 import {PaginationConfig} from "antd/es/pagination";
 import {SorterResult} from "antd/es/table";
+import {EntitiesResult, QuerySettings} from "../../components/querySettings";
+
+export type VacationScheduleListProps = {
+  positionGroupId?: string
+}
 
 @inject("rootStore")
 @injectMainStore
 @observer
-class VacationScheduleListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
+class VacationScheduleListComponent extends React.Component<VacationScheduleListProps & MainStoreInjected & WrappedComponentProps & RootStoreProp> {
 
   dataCollectionVacationSchedule = serviceCollection<VacationScheduleRequest>(
-    (pagination) => restServices.vacationScheduleRequestService.getChildVacationSchedule({
-      limit: pagination.limit,
-      offset: pagination.offset
-    }),
+    (pagination) => this.getChildVacationSchedule(pagination),
     VacationScheduleRequest.NAME);
 
+  getChildVacationSchedule = (querySettings: QuerySettings): Promise<EntitiesResult<VacationScheduleRequest>> => {
+    return restServices.vacationScheduleRequestService
+      .getPositionChildVacationSchedule(
+        querySettings,
+        this.getPositionGroup()
+      );
+  }
+
+  getPositionGroup = () => {
+    if (this.props.positionGroupId) return this.props.positionGroupId;
+    return this.props.rootStore!.userInfo!.positionGroupId!
+  }
+
   reportCode = 'DEPARTMENT_VACATION_SCHEDULE';
+
+  @observable
+  filterValues = new Map<string, FilterValue>();
 
   @observable
   onRunningReport = false;
@@ -54,6 +86,8 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
 
     "personGroup",
 
+    "positionGroup",
+
     "startDate",
 
     "endDate",
@@ -67,18 +101,47 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
     "sentToOracle",
   ];
 
+
+  customFilters = new Map();
+
+  @observable.ref filters: Record<string, string[]> | undefined;
+  @observable operator: ComparisonType | undefined;
+  @observable value: any;
+
+  @action
+  handleOperatorChange = (operator: ComparisonType) => this.operator = operator;
+
+  @action
+  handleValueChange = (value: any) => this.value = value;
+
   @action
   handleChange = (pagination: PaginationConfig, tableFilters: Record<string, string[]>, sorter: SorterResult<any>): void => {
-    handleTableChange({
-      pagination: pagination,
-      filters: tableFilters,
-      sorter: sorter,
-      defaultSort: '-updateTs',
-      fields: this.vacationScheduleFields,
-      mainStore: this.props.mainStore!,
-      dataCollection: this.dataCollectionVacationSchedule
-    });
+    // console.log(tableFilters);
+
+    // tableFilters = tableFilters.
+
+    // tableFilters
+
+    // tableFilters['sentToOracle'] = tableFilters['sentToOracle'].join(',');
+    // handleTableChange({
+    //   pagination: pagination,
+    //   filters: tableFilters,
+    //   sorter: sorter,
+    //   defaultSort: '-updateTs',
+    //   fields: this.vacationScheduleFields,
+    //   mainStore: this.props.mainStore!,
+    //   dataCollection: this.dataCollectionVacationSchedule
+    // });
+    setFilters(tableFilters, this.vacationScheduleFields, this.props.mainStore!, this.dataCollectionVacationSchedule, this.getEntityName);
+    setSorter(sorter, '-updateTs', this.dataCollectionVacationSchedule);
+    setPagination(pagination, this.dataCollectionVacationSchedule);
+    this.dataCollectionVacationSchedule.load();
   };
+
+  getEntityName = (property: string) => {
+    if (property === 'positionGroup' || property === 'organizationGroup') return AssignmentExt.NAME;
+    return this.dataCollectionVacationSchedule.entityName;
+  }
 
   approve = async () => {
     this.onRunningApprove = true;
@@ -88,6 +151,21 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
     this.onRunningApprove = false;
     this.dataCollectionVacationSchedule.load();
   }
+
+  @observable
+  searchText?: string;
+
+  handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+    confirm();
+  };
+
+  handleReset = (clearFilters: any) => {
+    clearFilters();
+  };
+
+  handleChangeFilterValue = (entityProperty: string, filterValue: FilterValue) => this.filterValues.set(entityProperty, filterValue);
+
+  getFilterValue = (property: string) => this.filterValues.get(property);
 
   render() {
     return (
@@ -152,6 +230,7 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
                  type: 'checkbox',
                  onChange: this.handleRowSelectionChange
                }}
+               loading={this.dataCollectionVacationSchedule.status === 'LOADING'}
                onChange={this.handleChange}
                pagination={{
                  showSizeChanger: true,
@@ -164,37 +243,92 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
                     to={VacationScheduleRequestManagement.PATH + "/" + record.id + "/" + VacationScheduleRequestManagement.GANT_CHART}>
                     {text}
                   </Link>}
+                  sorter
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         entityName={VacationScheduleRequest.NAME}
+                                                         entityProperty={'requestNumber'}/>}
                   dataIndex={'requestNumber'}/>
           <Column key='personGroup'
                   title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='personGroup'/>}
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         loadFilterValues={this.loadPersonGroupFilterValues}
+                                                         entityName={VacationScheduleRequest.NAME}
+                                                         entityProperty={'personGroup'}/>}
                   dataIndex={'personGroup._instanceName'}/>
           <Column key='positionGroup'
                   title={<Msg entityName={AssignmentExt.NAME} propertyName='positionGroup'/>}
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         loadFilterValues={this.loadPositionGroupFilterValues}
+                                                         entityName={AssignmentExt.NAME}
+                                                         entityProperty={'positionGroup'}/>}
                   render={(text, record: VacationScheduleRequest) => record.personGroup!.primaryAssignment!.positionGroup!['_instanceName']}/>
           <Column key='organizationGroup'
                   title={<Msg entityName={AssignmentExt.NAME} propertyName='organizationGroup'/>}
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         loadFilterValues={this.loadOrganizationGroupFilterValues}
+                                                         entityName={AssignmentExt.NAME}
+                                                         entityProperty={'organizationGroup'}/>}
                   render={(text, record: VacationScheduleRequest) => record.personGroup!.primaryAssignment!.organizationGroup!['_instanceName']}/>
           <Column key='startDate'
                   title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='startDate'/>}
                   render={(text) => formatDate(text)}
+                  sorter
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         entityName={VacationScheduleRequest.NAME}
+                                                         entityProperty={'startDate'}/>}
                   dataIndex={'startDate'}/>
           <Column key='endDate'
                   title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='endDate'/>}
                   render={(text) => formatDate(text)}
+                  sorter
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         entityName={VacationScheduleRequest.NAME}
+                                                         entityProperty={'endDate'}/>}
                   dataIndex={'endDate'}/>
           <Column key='absenceDays'
                   title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='absenceDays'/>}
+                  sorter
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         entityName={VacationScheduleRequest.NAME}
+                                                         entityProperty={'absenceDays'}/>}
                   dataIndex={'absenceDays'}/>
           <Column key='assignmentSchedule'
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         entityName={VacationScheduleRequest.NAME}
+                                                         entityProperty={'assignmentSchedule'}/>}
                   title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='assignmentSchedule'/>}
                   dataIndex={'assignmentSchedule._instanceName'}/>
           <Column key='approved'
                   title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='approved'/>}
+                  sorter
+                  filterDropdown={props => <CustomFilter filterProps={props}
+                                                         onChangeValue={this.handleChangeFilterValue}
+                                                         filterValue={this.getFilterValue}
+                                                         entityName={VacationScheduleRequest.NAME}
+                                                         entityProperty={'approved'}/>}
                   render={(text, record: VacationScheduleRequest) => <FormattedMessage
                     id={record.approved ? 'cubaReact.dataTable.yes' : 'cubaReact.dataTable.no'}/>}
                   dataIndex={'approved'}/>
           <Column key='sentToOracle'
                   title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='sentToOracle'/>}
+                  sorter
+                  filters={enumFilter('sentToOracle', VacationScheduleRequest.NAME, this.props.mainStore!)}
                   dataIndex={'sentToOracle'}/>
         </Table>
       </div>
@@ -283,10 +417,58 @@ class VacationScheduleListComponent extends React.Component<MainStoreInjected & 
   };
 
   componentDidMount() {
-    this.props.rootStore!.vacationRequestStore.setType('manager');
+    this.props.rootStore!.vacationRequestStore.setType(this.props.positionGroupId ? 'assistant' : 'manager');
+    this.dataCollectionVacationSchedule.limit = 10;
+    this.dataCollectionVacationSchedule.offset = 0;
     this.dataCollectionVacationSchedule.load();
     this.props.rootStore!.assistantTeamInfo.active = false;
   }
+
+  loadPersonGroupFilterValues = (): Promise<Array<FilterEntityValue>> => {
+    return restServices.vacationScheduleRequestService
+      .filterEmployees({
+        positionGroupId: this.getPositionGroup(),
+        date: moment().format(JSON_DATE_TIME_FORMAT),
+        view: '_minimal',
+        isAssistant: this.props.rootStore!.assistantTeamInfo.active
+      }).then(persons => persons.map(person => {
+        return {
+          value: person.id,
+          caption: person._instanceName,
+        }
+      }));
+  }
+
+  loadPositionGroupFilterValues = (): Promise<Array<FilterEntityValue>> => {
+    return restServices.vacationScheduleRequestService
+      .filterPositions({
+        positionGroupId: this.getPositionGroup(),
+        date: moment().format(JSON_DATE_TIME_FORMAT),
+        view: '_minimal',
+        isAssistant: this.props.rootStore!.assistantTeamInfo.active
+      }).then(positions => positions.map(position => {
+        return {
+          value: position.id,
+          caption: position._instanceName,
+        }
+      }));
+  }
+
+  loadOrganizationGroupFilterValues = (): Promise<Array<FilterEntityValue>> => {
+    return restServices.vacationScheduleRequestService
+      .filterOrganizations({
+        positionGroupId: this.getPositionGroup(),
+        date: moment().format(JSON_DATE_TIME_FORMAT),
+        view: '_minimal',
+        isAssistant: this.props.rootStore!.assistantTeamInfo.active
+      }).then(organizations => organizations.map(organization => {
+        return {
+          value: organization.id,
+          caption: organization._instanceName,
+        }
+      }));
+  }
+
 }
 
 const VacationScheduleList = injectIntl(VacationScheduleListComponent);
