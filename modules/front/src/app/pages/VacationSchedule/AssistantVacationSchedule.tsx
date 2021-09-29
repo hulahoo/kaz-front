@@ -17,7 +17,8 @@ class AssistantVacationScheduleComponent extends React.Component<MainStoreInject
   selectedPerson?: PersonProfile;
 
   renderAssistantVacationSchedule = (selectedPerson: PersonProfile): React.ReactNode => {
-    return (<VacationScheduleList positionGroupId={selectedPerson.positionGroupId}/>)
+    return (<VacationScheduleList positionGroupId={selectedPerson.positionGroupId}
+                                  organizationGroupId={selectedPerson.organizationGroupId}/>)
   }
 
   render() {

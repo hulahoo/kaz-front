@@ -35,9 +35,12 @@ import {AssignmentExt} from "../../../cuba/entities/base/base$AssignmentExt";
 import {PaginationConfig} from "antd/es/pagination";
 import {SorterResult} from "antd/es/table";
 import {EntitiesResult, QuerySettings} from "../../components/querySettings";
+//@ts-ignore
+import ReactHTMLTableToExcel from 'react-html-table-to-excel'
 
 export type VacationScheduleListProps = {
   positionGroupId?: string
+  organizationGroupId?: string
 }
 
 @inject("rootStore")
@@ -223,114 +226,124 @@ class VacationScheduleListComponent extends React.Component<VacationScheduleList
               : <></>}
             <FormattedMessage id="vacationSchedule.btn.approve"/>
           </Button>
+          <div style={{display:'inline'}}>
+            <ReactHTMLTableToExcel id="test-table-xls-button"
+                                   className="ant-btn ant-btn-default"
+                                   table="table-to-xls"
+                                   filename={new Date().toDateString()}
+                                   sheet="tablexls"
+                                   buttonText="Excel"/>
+          </div>
         </div>
 
-        <Table dataSource={this.dataCollectionVacationSchedule.items.slice()}
-               rowSelection={{
-                 type: 'checkbox',
-                 onChange: this.handleRowSelectionChange
-               }}
-               loading={this.dataCollectionVacationSchedule.status === 'LOADING'}
-               onChange={this.handleChange}
-               pagination={{
-                 showSizeChanger: true,
-                 total: this.dataCollectionVacationSchedule.count,
-               }}
-               rowKey={'id'}>
-          <Column key='requestNumber'
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='requestNumber'/>}
-                  render={(text, record: VacationScheduleRequest) => <Link
-                    to={VacationScheduleRequestManagement.PATH + "/" + record.id + "/" + VacationScheduleRequestManagement.GANT_CHART}>
-                    {text}
-                  </Link>}
-                  sorter
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         entityName={VacationScheduleRequest.NAME}
-                                                         entityProperty={'requestNumber'}/>}
-                  dataIndex={'requestNumber'}/>
-          <Column key='personGroup'
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='personGroup'/>}
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         loadFilterValues={this.loadPersonGroupFilterValues}
-                                                         entityName={VacationScheduleRequest.NAME}
-                                                         entityProperty={'personGroup'}/>}
-                  dataIndex={'personGroup._instanceName'}/>
-          <Column key='positionGroup'
-                  title={<Msg entityName={AssignmentExt.NAME} propertyName='positionGroup'/>}
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         loadFilterValues={this.loadPositionGroupFilterValues}
-                                                         entityName={AssignmentExt.NAME}
-                                                         entityProperty={'positionGroup'}/>}
-                  render={(text, record: VacationScheduleRequest) => record.personGroup!.primaryAssignment!.positionGroup!['_instanceName']}/>
-          <Column key='organizationGroup'
-                  title={<Msg entityName={AssignmentExt.NAME} propertyName='organizationGroup'/>}
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         loadFilterValues={this.loadOrganizationGroupFilterValues}
-                                                         entityName={AssignmentExt.NAME}
-                                                         entityProperty={'organizationGroup'}/>}
-                  render={(text, record: VacationScheduleRequest) => record.personGroup!.primaryAssignment!.organizationGroup!['_instanceName']}/>
-          <Column key='startDate'
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='startDate'/>}
-                  render={(text) => formatDate(text)}
-                  sorter
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         entityName={VacationScheduleRequest.NAME}
-                                                         entityProperty={'startDate'}/>}
-                  dataIndex={'startDate'}/>
-          <Column key='endDate'
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='endDate'/>}
-                  render={(text) => formatDate(text)}
-                  sorter
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         entityName={VacationScheduleRequest.NAME}
-                                                         entityProperty={'endDate'}/>}
-                  dataIndex={'endDate'}/>
-          <Column key='absenceDays'
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='absenceDays'/>}
-                  sorter
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         entityName={VacationScheduleRequest.NAME}
-                                                         entityProperty={'absenceDays'}/>}
-                  dataIndex={'absenceDays'}/>
-          <Column key='assignmentSchedule'
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         entityName={VacationScheduleRequest.NAME}
-                                                         entityProperty={'assignmentSchedule'}/>}
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='assignmentSchedule'/>}
-                  dataIndex={'assignmentSchedule._instanceName'}/>
-          <Column key='approved'
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='approved'/>}
-                  sorter
-                  filterDropdown={props => <CustomFilter filterProps={props}
-                                                         onChangeValue={this.handleChangeFilterValue}
-                                                         filterValue={this.getFilterValue}
-                                                         entityName={VacationScheduleRequest.NAME}
-                                                         entityProperty={'approved'}/>}
-                  render={(text, record: VacationScheduleRequest) => <FormattedMessage
-                    id={record.approved ? 'cubaReact.dataTable.yes' : 'cubaReact.dataTable.no'}/>}
-                  dataIndex={'approved'}/>
-          <Column key='sentToOracle'
-                  title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='sentToOracle'/>}
-                  sorter
-                  filters={enumFilter('sentToOracle', VacationScheduleRequest.NAME, this.props.mainStore!)}
-                  dataIndex={'sentToOracle'}/>
-        </Table>
+        <table id={"table-to-xls"}>
+          <Table dataSource={this.dataCollectionVacationSchedule.items.slice()}
+                 rowSelection={{
+                   type: 'checkbox',
+                   onChange: this.handleRowSelectionChange
+                 }}
+                 loading={this.dataCollectionVacationSchedule.status === 'LOADING'}
+                 onChange={this.handleChange}
+                 pagination={{
+                   showSizeChanger: true,
+                   total: this.dataCollectionVacationSchedule.count,
+                 }}
+                 rowKey={'id'}>
+            <Column key='requestNumber'
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='requestNumber'/>}
+                    render={(text, record: VacationScheduleRequest) => <Link
+                      to={VacationScheduleRequestManagement.PATH + "/" + record.id + "/" + VacationScheduleRequestManagement.GANT_CHART}>
+                      {text}
+                    </Link>}
+                    sorter
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           entityName={VacationScheduleRequest.NAME}
+                                                           entityProperty={'requestNumber'}/>}
+                    dataIndex={'requestNumber'}/>
+            <Column key='personGroup'
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='personGroup'/>}
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           loadFilterValues={this.loadPersonGroupFilterValues}
+                                                           entityName={VacationScheduleRequest.NAME}
+                                                           entityProperty={'personGroup'}/>}
+                    dataIndex={'personGroup._instanceName'}/>
+            <Column key='positionGroup'
+                    title={<Msg entityName={AssignmentExt.NAME} propertyName='positionGroup'/>}
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           loadFilterValues={this.loadPositionGroupFilterValues}
+                                                           entityName={AssignmentExt.NAME}
+                                                           entityProperty={'positionGroup'}/>}
+                    render={(text, record: VacationScheduleRequest) => record.personGroup!.primaryAssignment!.positionGroup!['_instanceName']}/>
+            <Column key='organizationGroup'
+                    title={<Msg entityName={AssignmentExt.NAME} propertyName='organizationGroup'/>}
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           loadFilterValues={this.loadOrganizationGroupFilterValues}
+                                                           entityName={AssignmentExt.NAME}
+                                                           entityProperty={'organizationGroup'}/>}
+                    render={(text, record: VacationScheduleRequest) => record.personGroup!.primaryAssignment!.organizationGroup!['_instanceName']}/>
+            <Column key='startDate'
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='startDate'/>}
+                    render={(text) => formatDate(text)}
+                    sorter
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           entityName={VacationScheduleRequest.NAME}
+                                                           entityProperty={'startDate'}/>}
+                    dataIndex={'startDate'}/>
+            <Column key='endDate'
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='endDate'/>}
+                    render={(text) => formatDate(text)}
+                    sorter
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           entityName={VacationScheduleRequest.NAME}
+                                                           entityProperty={'endDate'}/>}
+                    dataIndex={'endDate'}/>
+            <Column key='absenceDays'
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='absenceDays'/>}
+                    sorter
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           entityName={VacationScheduleRequest.NAME}
+                                                           entityProperty={'absenceDays'}/>}
+                    dataIndex={'absenceDays'}/>
+            <Column key='assignmentSchedule'
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           entityName={VacationScheduleRequest.NAME}
+                                                           entityProperty={'assignmentSchedule'}/>}
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='assignmentSchedule'/>}
+                    dataIndex={'assignmentSchedule._instanceName'}/>
+            <Column key='approved'
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='approved'/>}
+                    sorter
+                    filterDropdown={props => <CustomFilter filterProps={props}
+                                                           onChangeValue={this.handleChangeFilterValue}
+                                                           filterValue={this.getFilterValue}
+                                                           entityName={VacationScheduleRequest.NAME}
+                                                           entityProperty={'approved'}/>}
+                    render={(text, record: VacationScheduleRequest) => <FormattedMessage
+                      id={record.approved ? 'cubaReact.dataTable.yes' : 'cubaReact.dataTable.no'}/>}
+                    dataIndex={'approved'}/>
+            <Column key='sentToOracle'
+                    title={<Msg entityName={VacationScheduleRequest.NAME} propertyName='sentToOracle'/>}
+                    sorter
+                    filters={enumFilter('sentToOracle', VacationScheduleRequest.NAME, this.props.mainStore!)}
+                    dataIndex={'sentToOracle'}/>
+          </Table>
+        </table>
       </div>
     );
   }
@@ -351,7 +364,7 @@ class VacationScheduleListComponent extends React.Component<VacationScheduleList
         operator: '>='
       }, {
         property: 'group.id',
-        value: this.props.rootStore!.userInfo.organizationGroupId!,
+        value: this.props.organizationGroupId ? this.props.organizationGroupId : this.props.rootStore!.userInfo.organizationGroupId!,
         operator: '='
       }]
     }, {
