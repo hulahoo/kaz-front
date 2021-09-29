@@ -265,6 +265,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                     rules: [{
                       required: true,
                       validator: (rule, value, callback) => {
+                        if (readonly) return callback();
                         if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.startDate']}));
 
                         const requestDate = this.props.form.getFieldValue('requestDate');
@@ -307,6 +308,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                     rules: [
                       {
                         validator: (rule, value, callback) => {
+                          if (readonly) return callback();
                           const balance = this.props.form.getFieldValue('balance');
                           if (!isNumber(value) || !isNumber(balance)) return callback();
                           const absenceDays = parseInt(value);
