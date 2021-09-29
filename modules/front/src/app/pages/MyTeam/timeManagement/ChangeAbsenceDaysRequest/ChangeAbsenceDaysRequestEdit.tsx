@@ -2,7 +2,7 @@ import * as React from "react";
 import {createElement} from "react";
 import {Card, Form, Input, message} from "antd";
 import {inject, observer} from "mobx-react";
-import {injectIntl, WrappedComponentProps} from "react-intl";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   collection,
@@ -42,6 +42,7 @@ import {
 } from "../../../../components/MultiFileUpload";
 import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {goBackOrHomePage} from "../../../../util/util";
+import {Moment} from "moment";
 
 type EditorProps = {
   entityId: string;
@@ -65,6 +66,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
   isPurposeTypeOther = false;
 
   @observable
+  dicAbsenceType: SerializedEntity<DicAbsenceType> | undefined;
+
+  @observable
   dicPurposeAbsence: DictionaryDataCollectionStore<DicPurposeAbsence>;
 
   fields = [
@@ -77,6 +81,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     "scheduleStartDate",
 
     "scheduleEndDate",
+
+    "projectStartDate",
+
+    "projectEndDate",
 
     "purpose",
 
@@ -110,6 +118,12 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
   validatedDatesSuccess: boolean = true;
 
+  @observable
+  balance: number | undefined
+
+  @observable
+  absenceDays: number | undefined
+
   getAbsenceBalance = (personGroupId?: string, absenceType?: DicAbsenceType | null, dateFrom?: moment.Moment) => {
     if (absenceType && dateFrom && personGroupId) {
       return restServices.absenceBalanceService.getAbsenceBalance({
@@ -121,12 +135,67 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
     return new Promise<number>(resolve => resolve(0));
   }
 
+  getCountDays = (dateFrom: Date, dateTo: Date, personGroupId?: string, absenceType?: DicAbsenceType | null) => {
+    if (absenceType && dateFrom && personGroupId) {
+      return restServices.absenceService.countDaysWithoutHolidays({
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        personGroupId: personGroupId
+      });
+    }
+    return new Promise<number>(resolve => resolve(0));
+  }
+
   validatedDates = (values: any) => {
     const startDate = values['newStartDate'] || this.props.form.getFieldValue('newStartDate');
     const endDate = values['newEndDate'] || this.props.form.getFieldValue('newEndDate');
     const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
     const scheduleEndDate = this.props.form.getFieldValue('scheduleEndDate');
+    if (values['newStartDate'] === null) {
+      this.balance = undefined
+    } else if (values['newStartDate'] || values['newStartDate'] === undefined) {
+      if (startDate && this.absence && this.absence.personGroup) {
+        const personGroupId = this.absence.personGroup!.id!;
+        this.getAbsenceBalance(personGroupId, this.absence.type, startDate)
+          .then(balance => {
+            this.balance = balance
+            const startDateMoment = (startDate as Moment).clone()
+            if (values['newEndDate'] === null) {
+              if (!startDateMoment) {
+                this.balance = undefined
+              }
+            }
+            this.props.form.validateFields(['newStartDate'], {force: true});
+          });
+      } else {
+        this.balance = undefined
+      }
+    } else {
+      this.balance = undefined
+    }
 
+    if (values['newEndDate'] === null || values['newStartDate'] === null) {
+      this.absenceDays = undefined
+      this.validatedBalanceSuccess = true
+    } else if (startDate && endDate && this.absence && this.absence.personGroup) {
+      this.getCountDays(startDate, endDate, this.absence.personGroup!.id, this.absence.type).then(value => {
+        if (value) {
+          this.absenceDays = value
+          if (this.absenceDays && this.balance) {
+            this.validatedBalanceSuccess = this.absenceDays <= this.balance
+          } else {
+            this.validatedBalanceSuccess = true
+
+          }
+        } else {
+          this.absenceDays = undefined
+          this.validatedBalanceSuccess = true
+        }
+      })
+    } else {
+      this.absenceDays = undefined
+      this.validatedBalanceSuccess = true
+    }
     if (startDate && endDate && this.absence && this.absence.personGroup) {
       const personGroupId = this.absence.personGroup!.id!;
       restServices.absenceService.countDays({
@@ -134,26 +203,12 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         dateTo: endDate,
         personGroupId: personGroupId,
         absenceTypeId: this.absence.type!.id
+      }).then(countDay => {
+        if (this.balance) {
+          this.validatedDatesSuccess = countDay <= this.balance
+        }
+        this.props.form.validateFields(['newStartDate'], {force: true});
       })
-        .then(countDay => {
-          this.getAbsenceBalance(personGroupId, this.absence.type, startDate)
-            .then(balance => {
-              this.validatedBalanceSuccess = countDay <= (balance + (this.absence.type!.daysAdvance || 0));
-              this.props.form.validateFields(['newStartDate'], {force: true});
-            });
-
-          restServices.absenceService.countDays({
-            dateFrom: scheduleStartDate,
-            dateTo: scheduleEndDate,
-            personGroupId: personGroupId,
-            absenceTypeId: this.absence.type!.id
-          })
-            .then(countScheduleDay => {
-              this.validatedDatesSuccess = countDay <= countScheduleDay + (this.absence.type!.daysAdvance || 0);
-              this.props.form.validateFields(['newStartDate'], {force: true});
-            });
-
-        })
     }
   }
 
@@ -304,7 +359,20 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   disabled={true}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
-
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectStartDate"
+                  disabled={true}
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectEndDate"
+                  disabled={true}
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
                   propertyName="purpose"
@@ -363,18 +431,18 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newStartDate']}),
                     }, {
                       validator: (rule, value, callback) => {
-                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
+                        const requestDate = this.props.form.getFieldValue('requestDate');
                         this.props.form.validateFields(['newEndDate', 'periodStartDate'], {force: true});
-                        if (value && scheduleStartDate && scheduleStartDate.clone().startOf('day') > value.clone().startOf('day'))
-                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
-                            startDate: messages[this.dataInstance.entityName + '.newStartDate'],
-                            endDate: messages[this.dataInstance.entityName + '.scheduleStartDate']
-                          }));
-                        else if (!this.validatedBalanceSuccess)
+                        if (!this.validatedBalanceSuccess)
                           return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                         else if (!this.validatedDatesSuccess)
                           return callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
-                        else return callback();
+                        else if (requestDate && requestDate > value) {
+                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                            startDate: messages[this.dataInstance.entityName + '.requestDate'],
+                            endDate: messages[this.dataInstance.entityName + '.newStartDate']
+                          }));
+                        } else return callback();
                       }
                     }],
                     getValueFromEvent: args => {
@@ -416,6 +484,18 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                     }
                   }}
                 />
+
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  <FormattedMessage id="absenceDays"/>
+                  <Input disabled={true}
+                         value={this.absenceDays}/>
+                </div>
+
+                <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
+                  <FormattedMessage id="balance"/>
+                  <Input disabled={true}
+                         value={this.balance}/>
+                </div>
 
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
@@ -472,7 +552,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   disabled={isNotDraft}
                   getFieldDecoratorOpts={{
                     rules: [{
-                      required: !!(this.absence && this.absence.type && this.absence.type.isFileRequired && !isNotDraft),
+                      required: !!(this.dicAbsenceType && this.dicAbsenceType.isFileRequired && !isNotDraft),
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.files']})
                     }]
                   }}
@@ -520,7 +600,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         .then(absence => {
           this.props.form.setFieldsValue({
             scheduleStartDate: moment(absence.dateFrom),
-            scheduleEndDate: moment(absence.dateTo)
+            scheduleEndDate: moment(absence.dateTo),
+            projectStartDate: absence.projectStartDate ? moment(absence.projectStartDate) : undefined,
+            projectEndDate: absence.projectEndDate ? moment(absence.projectEndDate) : undefined
           });
           this.initDictionaries(absence.personGroup!.id!);
           this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
@@ -536,6 +618,19 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
       });
   }
 
+  componentDidMount() {
+    restServices.portalHelperService.getConfig({
+      classFQN: "kz.uco.tsadv.config.AbsenceConfig",
+      methodName: "getChangeAbsenceDaysRequest"
+    })
+      .then(absenceTypeId => {
+        if (absenceTypeId)
+          getCubaREST()!.loadEntity<DicAbsenceType>(DicAbsenceType.NAME, absenceTypeId, {view: '_local'})
+            .then(value => this.dicAbsenceType = value);
+      });
+    super.componentDidMount();
+  }
+
   setReactionDisposer = () => {
     this.reactionDisposer = reaction(
       () => {
@@ -549,7 +644,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
             .then(absence => {
               this.props.form.setFieldsValue({
                 scheduleStartDate: moment(absence.dateFrom),
-                scheduleEndDate: moment(absence.dateTo)
+                scheduleEndDate: moment(absence.dateTo),
+                projectStartDate: moment(absence.projectStartDate),
+                projectEndDate: moment(absence.projectEndDate)
               });
               this.initDictionaries(absence.personGroup!.id!);
               this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);

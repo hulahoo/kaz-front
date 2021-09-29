@@ -49,6 +49,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
 
   @observable isUserManager: boolean = false;
 
+  @observable
   kpiDataInstance = queryInstance<AssignedPerformancePlan>(
     AssignedPerformancePlan.NAME,
     "kpiEditPage",
@@ -117,9 +118,11 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
       .catch(action(() => {
       }));
   };
+  
+  getStageCode = () => this.kpiDataInstance.item && this.kpiDataInstance.item.stage && this.kpiDataInstance.item.stage.code;
 
   recalcTotalResult = () => {
-    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    const isSecondStep = this.getStageCode() === 'COMPLETED';
     if (this.props.setTotalResult) {
       if (this.dataCollection.length > 0) {
 
@@ -140,7 +143,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   };
 
   managerCommentRender = (text: string, record: any) => {
-    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const isThirdStep = this.getStageCode() === 'ASSESSMENT';
     const disabled = !this.isManager() || !isThirdStep;
     return (
       <div>
@@ -168,7 +171,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   managerAssessmentColumnRender = (text: string, record: any) => {
-    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const isThirdStep = this.getStageCode() === 'ASSESSMENT';
     return (
       <div>
         <Form.Item>
@@ -195,7 +198,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   employeeCommentRender = (text: string, record: any) => {
-    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const isThirdStep = this.getStageCode() === 'ASSESSMENT';
     const disabled = !this.isInitiator() || !isThirdStep;
     return (
       <div>
@@ -223,7 +226,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   assessmentColumnRender = (text: string, record: any) => {
-    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const isThirdStep = this.getStageCode() === 'ASSESSMENT';
     return (
       <div>
         <Form.Item>
@@ -250,7 +253,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   validate = (): boolean => {
-    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const isThirdStep = this.getStageCode() === 'ASSESSMENT';
     let isValidatedSuccess = true;
     if (isThirdStep)
       this.form.validateFields((err: any, values: any) => {
@@ -267,7 +270,7 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   update = () => {
-    const isThirdStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'ASSESSMENT';
+    const isThirdStep = this.getStageCode() === 'ASSESSMENT';
     if (isThirdStep && this.dataCollection)
       this.dataCollection.forEach(value => {
         getCubaREST()!.commitEntity(AssignedGoal.NAME, toJS(value))
@@ -280,9 +283,11 @@ class AssignedGoalList extends React.Component<MainStoreInjected & WrappedCompon
   }
 
   render() {
-    const isFirstStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'DRAFT';
-    const isSecondStep = this.kpiDataInstance.item && this.kpiDataInstance.item.stepStageStatus === 'COMPLETED';
+    const isFirstStep = this.getStageCode() === 'DRAFT';
+    const isSecondStep = this.getStageCode() === 'COMPLETED';
     const isDraft = !this.kpiDataInstance.item || !this.kpiDataInstance.item.status || this.kpiDataInstance.item.status.code == 'DRAFT'
+
+    console.log(isFirstStep, isSecondStep, this.getStageCode());
 
     const assessmentColumn = !isFirstStep && !isSecondStep
       ? <Column title={<FormattedMessage id="goalForm.column.assessment"/>}

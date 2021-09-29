@@ -107,7 +107,7 @@ class PersonInfo extends React.Component<PersonCardProps & MainStoreInjected & W
       }, {
         property: 'status.code',
         operator: 'in',
-        value: ['DRAFT', 'APPROVING']
+        value: ['DRAFT', 'TO_BE_REVISED', 'APPROVING']
       }]
     }, {
       view: 'personalDataRequest-edit'

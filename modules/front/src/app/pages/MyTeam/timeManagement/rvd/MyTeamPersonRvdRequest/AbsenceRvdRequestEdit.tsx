@@ -302,8 +302,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     if (time && dateTime)
       dateTime.set({
         hour: time.get("hour"),
-        minute: time.get("minute"),
-        second: time.get("second"),
+        minute: 0,
+        second: 0,
         millisecond: 0
       });
   }
@@ -487,6 +487,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                         initialValue: this.dataInstance.item && this.dataInstance.item.timeOfStarting ? moment(this.dataInstance.item.timeOfStarting) : undefined,
                         getValueFromEvent: time => {
                           if (time) {
+                            console.log('time',time)
                             const timeOfStarting = this.props.form.getFieldValue('timeOfStarting') as moment.Moment;
                             this.timeStarting = time;
 
@@ -717,8 +718,8 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
         value: personGroupId
       }, {
         property: 'assignmentStatus.code',
-        operator: 'in',
-        value: ['ACTIVE', 'SUSPENDED']
+        operator: '<>',
+        value: 'TERMINATED'
       }, {
         property: 'primaryFlag',
         operator: '=',
@@ -804,7 +805,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
 
   afterSendOnApprove = () => {
     const statusId = this.dataInstance.item && this.dataInstance.item.status && this.dataInstance.item.status.id;
-    if (this.statusesDc.items.find(value => value.id === statusId && value.code === 'DRAFT'))
+    if (this.statusesDc.items.find(value => value.id === statusId && (value.code === 'DRAFT' || value.code === 'TO_BE_REVISED')))
       this.props.history!.push(
         this.props.rootStore!.assistantTeamInfo.active
           ? ExecutiveAssistantsManagement.PATH

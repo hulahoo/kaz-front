@@ -103,6 +103,9 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
   @observable
   isKatoRequired = false;
 
+  @observable
+  approverHrRoleCode: string;
+
   isUpdateBeforeOutcome = true;
 
   fields = [
@@ -252,6 +255,8 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
     const entityName = this.dataInstance.entityName;
 
+    const isHr = this.approverHrRoleCode === 'HR';
+
     return (
       <div>
 
@@ -340,7 +345,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
         </Form.Item>
 
         <Form.Item
-          style={this.isLocaleEn ? {display: 'none'} : {}}
+          style={this.isLocaleEn && !isHr ? {display: 'none'} : {}}
           label={createElement(Msg, {entityName: entityName, propertyName: "addressKazakh"})}>
           <Input
             value={this.editAddress ? this.editAddress.addressKazakh || '' : ''}
@@ -348,7 +353,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
         </Form.Item>
 
         <Form.Item
-          style={!this.isLocaleEn ? {display: 'none'} : {}}
+          style={!this.isLocaleEn && !isHr ? {display: 'none'} : {}}
           label={createElement(Msg, {entityName: entityName, propertyName: "addressEnglish"})}>
           <Input
             value={this.editAddress ? this.editAddress.addressEnglish || '' : ''}
@@ -365,6 +370,8 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
     const entityName = this.dataInstance.entityName;
     const isNotDraft = this.isNotDraft();
+
+    const isHr = this.approverHrRoleCode === 'HR';
 
     return (
       <div>
@@ -617,7 +624,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
         <ReadonlyField
           entityName={entityName}
-          disabled={isNotDraft}
+          disabled={isNotDraft && !isHr}
           propertyName='addressKazakh'
           form={this.props.form}
           getFieldDecoratorOpts={{
@@ -629,7 +636,7 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
             }
           }}
           formItemOpts={{
-            style: this.isLocaleEn ? {display: 'none'} : {},
+            style: this.isLocaleEn && !isHr ? {display: 'none'} : {},
             hasFeedback: this.changedMap.get('addressKazakh'),
             validateStatus: "success",
           }}
@@ -637,11 +644,11 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
 
         <ReadonlyField
           entityName={entityName}
-          disabled={isNotDraft}
+          disabled={isNotDraft && !isHr}
           propertyName='addressEnglish'
           form={this.props.form}
           formItemOpts={{
-            style: !this.isLocaleEn ? {display: 'none'} : {},
+            style: !this.isLocaleEn && !isHr ? {display: 'none'} : {},
             hasFeedback: this.changedMap.get('addressEnglish'),
             validateStatus: "success",
           }}
@@ -674,6 +681,12 @@ class AddressRequestEditComponent extends AbstractBprocEdit<AddressRequest, Edit
       this.katosDc.load();
     }
   };
+
+  initVariablesByBproc = () => {
+    if (this.activeUserTask && this.activeUserTask.hrRole && this.activeUserTask.hrRole.code) {
+      this.approverHrRoleCode = this.activeUserTask.hrRole.code;
+    }
+  }
 
   onReactionDisposerEffect = (item: AddressRequest | undefined) => {
     this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;

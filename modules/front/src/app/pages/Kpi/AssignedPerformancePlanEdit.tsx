@@ -10,6 +10,7 @@ import GoalForm from './GoalForm';
 
 import {
   clearFieldErrors,
+  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
   getCubaREST,
@@ -39,7 +40,7 @@ import {AssignedGoal} from "../../../cuba/entities/base/tsadv$AssignedGoal";
 import Notification from "../../util/Notification/Notification";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import {getBusinessKey, goBackOrHomePage} from "../../util/util";
+import {getBusinessKey, goBackOrHomePage, isEquals} from "../../util/util";
 import {withRouter} from "react-router";
 import {restServices} from "../../../cuba/services";
 import TextArea from "antd/es/input/TextArea";
@@ -49,6 +50,7 @@ import {AbstractBprocRequest} from "../../../cuba/entities/base/AbstractBprocReq
 import {ScoreSetting} from "../../../cuba/entities/base/tsadv_ScoreSetting";
 import {collectionWithAfterLoad, DataCollectionStoreWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
 import DefaultDatePicker from "../../components/Datepicker";
+import {DicPerformanceStage} from "../../../cuba/entities/base/tsadv_DicPerformanceStage";
 
 const {TreeNode} = Tree;
 
@@ -76,6 +78,19 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   dataInstance = instance<AssignedPerformancePlan>(AssignedPerformancePlan.NAME, {
     view: "assignedPerformancePlan-myKpi-edit",
     loadImmediately: false
+  });
+
+  @observable
+  stageCollection = collection<DicPerformanceStage>(DicPerformanceStage.NAME, {
+    view: "_local",
+    sort: "order",
+    filter: {
+      conditions: [{
+        property: 'active',
+        operator: '=',
+        value: 'TRUE'
+      }]
+    }
   });
 
   @observable
@@ -273,27 +288,19 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     callback();
   };
 
+  getStageCode = () => this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code;
+
   getAdditionalForm = () => {
 
     const {getFieldDecorator} = this.props.form;
 
-    const stepIndex = this.dataInstance.item && this.cardStatusEnumValues
-      ? this.cardStatusEnumValues
-        .map((value, index) => {
-          return {
-            index: index,
-            id: value.id
-          }
-        })
-        .filter(s => s.id === this.dataInstance.item!.stepStageStatus)
-        .map(s => s.index)[0]
-      : undefined;
+    const stepIndex = this.stageCollection.items.findIndex(value => isEquals(value,this.dataInstance.item && this.dataInstance.item.stage));
 
     if (!stepIndex || stepIndex < 2 || this.approverHrRoleCode === 'INITIATOR') return <></>;
 
     const isExtraPointEnable = this.approverHrRoleCode === 'MANAGER';
 
-    const isForm2Visible = this.isNotDraft() && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR';
+    const isForm2Visible = this.getStatusCode() !== 'DRAFT' && this.approverHrRoleCode && this.approverHrRoleCode !== 'INITIATOR';
 
     const file = this.dataInstance.item && this.dataInstance.item.file ? this.dataInstance.item.file : undefined;
 
@@ -357,23 +364,13 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     const {status} = this.dataInstance;
     const {getFieldDecorator} = this.props.form;
 
-    const statusesPerformancePlan: EnumValueInfo[] = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
+    const statusesPerformancePlan = this.stageCollection.items;
 
-    const stepIndex = this.dataInstance.item
-      ? statusesPerformancePlan
-        .map((value, index) => {
-          return {
-            index: index,
-            id: value.id
-          }
-        })
-        .filter(s => s.id === this.dataInstance.item!.stepStageStatus)
-        .map(s => s.index)[0]
-      : undefined;
+    const stepIndex = this.stageCollection.items.findIndex(value => isEquals(value,this.dataInstance.item && this.dataInstance.item.stage));
 
     const statusSteps: StatusStepProp[] = statusesPerformancePlan.map((s, i) => {
       return {
-        description: s.caption,
+        description: s._instanceName,
         title: i + 1
       }
     });
@@ -567,8 +564,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   @action
   setReadOnly = (): void => {
     this.readonly = !(this.dataInstance.item
-      && this.dataInstance.item.status!.code === 'DRAFT'
-      && this.dataInstance.item.stepStageStatus === 'DRAFT'
+      && !this.isNotDraft()
+      && (this.getStageCode() === 'DRAFT' || this.getStageCode() === 'COMPLETED')
       && this.dataInstance.item.assignedPerson!.id! === this.props.rootStore!.userInfo.personGroupId!);
   };
 
@@ -604,7 +601,6 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
   }
 
   getUpdateEntityData = (): any => {
-    const step = this.dataInstance.item!.stepStageStatus;
     return {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
@@ -612,14 +608,18 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       result: this.totalResult || 0,
       kpiScore: this.getPoint(this.totalResult),
       finalScore: this.getPoint(this.totalResult) + (this.props.form.getFieldValue("extraPoint") || 0),
-      stepStageStatus: step !== undefined && step != null ? step : "DRAFT",
       ...this.props.form.getFieldsValue(this.fields)
     }
   };
 
   update = () => {
     if (this.assignedGoalListUpdate) this.assignedGoalListUpdate();
-    return this.dataInstance.update(this.getUpdateEntityData());
+    const updateEntityData = this.getUpdateEntityData();
+
+    if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
+      updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
+    }
+    return this.dataInstance.update(updateEntityData);
   };
 
   setReactionDisposer = () => {

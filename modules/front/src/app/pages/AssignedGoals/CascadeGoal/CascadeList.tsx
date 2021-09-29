@@ -37,8 +37,6 @@ class CascadeListComponent extends React.Component<
 
     "gzp",
 
-    "stepStageStatus",
-
     "startDate",
 
     "endDate",

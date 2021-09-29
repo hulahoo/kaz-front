@@ -1,6 +1,7 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { QuestionBank } from "./tsadv$QuestionBank";
 import { Answer } from "./tsadv$Answer";
+import {FileDescriptor} from "./sys$FileDescriptor";
 export class Question extends AbstractParentEntity {
   static NAME = "tsadv$Question";
   bank?: QuestionBank | null;
@@ -8,6 +9,7 @@ export class Question extends AbstractParentEntity {
   type?: any | null;
   score?: number | null;
   answers?: Answer[] | null;
+  image?: FileDescriptor | null;
 }
 export type QuestionViewName =
   | "_base"

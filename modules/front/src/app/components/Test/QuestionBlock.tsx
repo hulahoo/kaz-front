@@ -5,7 +5,6 @@ import {AnsweredQuestion, TestSectionModel} from "./TestComponent";
 import {action, observable} from "mobx";
 import {observer} from "mobx-react";
 import {injectIntl, WrappedComponentProps} from "react-intl";
-import {log} from "util";
 
 type Props = {
   testSections: TestSectionModel[]
@@ -64,8 +63,10 @@ class QuestionBlock extends Component<Props & WrappedComponentProps> {
             : null}
 
           {currentTestSection.questionsAndAnswers.map((question, index) => <div
-            className={"question-container" + (this.questionIndex === index ? " visible" : "")}><Question
+            className={"question-container" + (this.questionIndex === index ? " visible" : "")}
+            key={question.id}><Question
             addRemoveAnswer={this.props.addRemoveAnswer}
+            key={`question_${question.id}`}
             question={question}
             testSectionId={currentTestSection.id!}/>
             <div className="question-control-block">

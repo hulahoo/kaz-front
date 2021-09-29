@@ -61,7 +61,7 @@ class OrgStructureRequestListComponent extends React.Component<MainStoreInjected
     buttons.push(<Button
       htmlType="button"
       style={{margin: "0 12px 12px 0"}}
-      disabled={!this.selectedData || !this.selectedData.status || this.selectedData.status.code !== 'DRAFT'}
+      disabled={!this.selectedData || !this.selectedData.status || (this.selectedData.status.code !== 'DRAFT' && this.selectedData.status.code !== 'TO_BE_REVISED')}
       onClick={this.deleteSelectedRow}
       key="remove"
       type="default">

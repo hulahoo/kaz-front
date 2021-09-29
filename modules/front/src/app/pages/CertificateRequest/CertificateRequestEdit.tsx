@@ -44,7 +44,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
   });
 
   statusesDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "_minimal"
+    view: "_local"
   });
 
   receivingTypesDc = collection<DicReceivingType>(DicReceivingType.NAME, {
@@ -107,6 +107,15 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
     const val = this.receivingTypesDc.items.find(value => value.id === fieldValue)!;
     const isNeedBpm = fieldValue && val && val.code === 'ON_HAND';
 
+    const status = this.props.form.getFieldValue("status");
+    let saveButton = true
+    if (status) {
+      const foundStatus = this.statusesDc.items.find(value => value.id === status);
+      if (foundStatus && foundStatus.code && foundStatus.code === "APPROVED" && !isNeedBpm) {
+        saveButton = false
+      }
+    }
+
     if (this.updated) {
       return <Redirect to={CertificateRequestManagement.PATH}/>;
     }
@@ -127,7 +136,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
                             onClick={() => goBackOrHomePage(this.props.history!)}>
                       <FormattedMessage id="close"/>
                     </Button>,
-                    this.getOutcomeBtns(isNeedBpm)
+                    saveButton ? this.getOutcomeBtns(isNeedBpm) : null
                   ]}
                   bordered={false}>
               <Form onSubmit={this.validate} layout="vertical">

@@ -139,8 +139,6 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     view: "_minimal"
   });
 
-  availableSalary: boolean = false;
-
   fetchDataService = restServices.orgStructureService.getMergedOrgStructure.bind(null, {requestId: this.props.entityId});
 
   @observable
@@ -177,7 +175,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
   updated = false;
 
   @observable
-  isCbCompany: boolean = false;
+  availableSalary: boolean = false;
 
   @observable
   loadingReport: boolean = false;
@@ -704,7 +702,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
                           isNew={this.isNew}
                           form={this.props.form}
                           isDisabledFields={this.isOnApproving()}
-                          isCbCompany={this.isCbCompany}
+                          availableSalary={this.availableSalary}
                           closeModal={() => this.showPosCreateModal = false}
                           onSave={this.onSavePosition}/> : null}
       </Page>
@@ -739,9 +737,6 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
       .then((availableSalary: boolean) => {
         this.availableSalary = availableSalary;
       });
-
-    restServices.employeeService.hasHrRole({dicHrCode: "C&B_COMPANY"})
-      .then(response => this.isCbCompany = response);
   }
 
   tableButtons = () => {
@@ -770,7 +765,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     const editButton = <Button buttonType={ButtonType.FOLLOW} style={{width: 'auto', margin: "0 12px 12px 12px"}}
                                htmlType="button"
                                key="edit"
-                               disabled={!this.selectedRow || this.isOnApproving() && this.isCbCompany && this.selectedRow.elementType === 1}
+                               disabled={!this.selectedRow || this.isOnApproving() && this.availableSalary && this.selectedRow.elementType === 1}
                                onClick={this.preEdit}>
       <Icon type="edit"/>
       <FormattedMessage id="management.browser.edit"/>
@@ -803,7 +798,7 @@ class OrgStructureRequestEditComponent extends AbstractBprocEdit<OrgStructureReq
     </Button>;
     if (!this.isNotDraft()) {
       buttons.push(createButton, editButton, deleteButton);
-    } else if (this.isCbCompany && this.isOnApproving()) {
+    } else if (this.availableSalary && this.isOnApproving()) {
       buttons.push(editButton);
     }
     buttons.push(refreshButton);

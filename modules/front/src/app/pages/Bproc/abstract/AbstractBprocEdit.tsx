@@ -187,8 +187,13 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
   }
 
   isNotDraft = () => {
-    return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code !== "DRAFT" : true;
+    const status = this.getStatusCode();
+    return status !== "DRAFT" && status !== "TO_BE_REVISED";
   };
+
+  getStatusCode = () => {
+    return this.dataInstance.item && this.dataInstance.item.status && this.dataInstance.item.status.code;
+  }
 
   isOnApproving = () => {
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "APPROVING" : false;

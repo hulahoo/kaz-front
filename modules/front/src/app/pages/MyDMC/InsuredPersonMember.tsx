@@ -58,11 +58,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
     loadImmediately: false
   });
 
-  familyDataCollection = collection<InsuredPerson>(InsuredPerson.NAME, {
-    view: "insuredPerson-browseView",
-    sort: "-updateTs"
-  });
-
   relativesDc = collection<DicRelationshipType>(DicRelationshipType.NAME, {
     view: "_minimal",
     filter: {
@@ -205,26 +200,6 @@ class InsuredPersonMemberComponent extends React.Component<Props & WrappedCompon
           }
           this.props.onChangeVisible(false)
         });
-    });
-  };
-
-  showDeletionDialog = (e: SerializedEntity<InsuredPerson>) => {
-    Modal.confirm({
-      title: this.props.intl.formatMessage(
-        {id: "management.browser.delete.areYouSure"},
-        {instanceName: e._instanceName}
-      ),
-      okText: this.props.intl.formatMessage({
-        id: "management.browser.delete.ok"
-      }),
-      cancelText: this.props.intl.formatMessage({
-        id: "management.browser.delete.cancel"
-      }),
-      onOk: () => {
-        this.selectedRowKey = undefined;
-
-        return this.familyDataCollection.delete(e);
-      }
     });
   };
 

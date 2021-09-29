@@ -1,7 +1,7 @@
 @import "helium-defaults";
-@import "kz.uco.tsadv/helium-ext-defaults";
+@import "kz.uco.kzm/helium-ext-defaults";
 @import "app-components";
-@import "kz.uco.tsadv/helium-ext";
+@import "kz.uco.kzm/helium-ext";
 
 @import "timeline";
 @import "uactivity";
@@ -13,7 +13,7 @@
   // include auto-generated app components SCSS
   @include app_components;
 
-  @include kz_uco_tsadv-helium-ext;
+  @include kz_uco_kzm-helium-ext;
   @include timeline;
   @include uactivity;
   @include tsadv;

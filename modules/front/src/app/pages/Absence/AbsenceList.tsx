@@ -1,12 +1,9 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
 import {Link, RouteComponentProps} from "react-router-dom";
-
 import {observable} from "mobx";
-
 import {Tabs} from "antd";
-
-import {collection, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {collection,injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
@@ -21,15 +18,24 @@ import {link} from "../../util/util";
 import {VacationScheduleRequestManagement} from "../VacationScheduleRequest/VacationScheduleRequestManagement";
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import DataTableFormat from "../../components/DataTable/intex";
+import {AbsenceBalance} from "../../../cuba/entities/base/tsadv$AbsenceBalance";
+import {restServices} from "../../../cuba/services";
+//@ts-ignore
+import ReactHTMLTableToExcel from 'react-html-table-to-excel'
+
+
+
 
 const {TabPane} = Tabs;
 
 type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
-
+interface IState {
+  data: number;
+}
 @injectMainStore
 @inject("rootStore")
 @observer
-class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>> {
+class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>, IState> {
 
   dataCollection = collection<AllAbsenceRequest>(AllAbsenceRequest.NAME, {
     view: "allAbsenceRequest-view",
@@ -46,13 +52,23 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
   });
-
+  dataCollectionAbsenceBalance = collection<AbsenceBalance>(AbsenceBalance.NAME, {
+    view: "_local",
+    sort: "-dateFrom",
+    filter: {
+      conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
+    }
+  });
   absenceFields = [
     "type",
 
     "dateFrom",
 
     "dateTo",
+
+    "projectStartDate",
+
+    "projectEndDate",
 
     "absenceDays"
   ];
@@ -80,6 +96,32 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
     "status",
   ];
+
+  AbsenceBalanceFields = [
+    "dateFrom",
+
+    "dateTo",
+
+    "balanceDays",
+
+    "additionalBalanceDays",
+
+    "daysLeft",
+
+    "extraDaysLeft",
+
+  ];
+  constructor(props:any) {
+    super(props);
+    this.state={
+      data:0
+    }
+  }
+  componentDidMount() {
+    restServices.absenceBalanceService.getAbsenceBalance({absenceDate:new Date(),personGroupId:this.props.rootStore!.userInfo.personGroupId!}).then(result=> this.setState({
+      data: result
+    }))
+  }
 
   @observable selectedRowKey: string | undefined;
 
@@ -117,7 +159,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
     const {activeTab} = this.props.match.params;
     const defaultActiveKey = activeTab ? activeTab : "1";
-
     return (
       <Page pageName={this.props.intl.formatMessage({id: this.pageName})}>
         <Section size="large">
@@ -149,11 +190,41 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                 />
               </div>
             </TabPane>
+            <TabPane tab={this.props.intl.formatMessage({id: "absenceBalance"})} key="4">
+              <h2 style={{color:"deepskyblue"}}>{this.props.intl.formatMessage({id: "currentAbsenceBalance"}) +" " + this.state.data}</h2>
+              <div >
+                <ReactHTMLTableToExcel id="test-table-xls-button"
+                                       className="ant-btn ant-btn-lg"
+                                       table="table-to-xls"
+                                       filename={new Date().toDateString()}
+                                       sheet="tablexls"
+                                       buttonText="Excel"
+                >
+                </ReactHTMLTableToExcel>
+              </div>
+              <table id={"table-to-xls"}>
+                <DataTableFormat
+                  dataCollection={this.dataCollectionAbsenceBalance}
+                  fields={this.AbsenceBalanceFields}
+                  hideSelectionColumn={true}
+                  render={[{
+                    column:this.AbsenceBalanceFields[4],
+                    render:(text, record) =>Number(record.daysLeft).toFixed(3)
+                  },
+                    {
+                      column:this.AbsenceBalanceFields[5],
+                      render:(text, record) =>Number(record.daysLeft).toFixed(3)
+                    }]}
+                />
+              </table>
+            </TabPane>
           </Tabs>
         </Section>
       </Page>
     );
   }
+
+
 
   getAbsenceById(id: string): SerializedEntity<Absence> {
     const record:

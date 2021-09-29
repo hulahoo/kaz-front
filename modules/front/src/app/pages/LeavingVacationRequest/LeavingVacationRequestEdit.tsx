@@ -36,6 +36,8 @@ import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 import {ChangeAbsenceDaysRequest} from "../../../cuba/entities/base/tsadv_ChangeAbsenceDaysRequest";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import {goBackOrHomePage} from "../../util/util";
+import {restServices} from "../../../cuba/services";
+import {DicAbsenceType} from "../../../cuba/entities/base/tsadv$DicAbsenceType";
 
 type EditorProps = {
   entityId: string;
@@ -57,6 +59,9 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
   @observable
   person: PersonExt;
+
+  @observable
+  dicAbsenceType: SerializedEntity<DicAbsenceType> | undefined;
 
   fields = [
     "requestNumber",
@@ -103,6 +108,13 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
     this.isLessThan30Days = !(isValid === true);
     return plannedStartDate !== null && plannedStartDate !== undefined;
+  }
+
+  dateValidator2 = (rule: any, value: any, callback: any) => {
+    const requestDate = this.props.form.getFieldValue('requestDate');
+    if (requestDate && requestDate > value) {
+      callback(this.props.intl.formatMessage({id: "plannedStartDateValidateMessage"}));
+    } else callback();
   }
 
   render() {
@@ -212,6 +224,8 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                       required: true,
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.plannedStartDate']}),
                       validator: this.dateValidator
+                    }, {
+                      validator: this.dateValidator2
                     }]
                   }}
                 />
@@ -220,7 +234,12 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                 <div className={"ant-row ant-form-item"} style={{marginBottom: "12px"}}>
                   {createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "comment"})}
                   <Form.Item>
-                    {getFieldDecorator("comment")(
+                    {getFieldDecorator("comment", {
+                      rules: [{
+                        required: !!(this.dicAbsenceType && this.dicAbsenceType.isJustRequired && !isNotDraft),
+                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.comment']})
+                      }]
+                    })(
                       <TextArea
                         disabled={isNotDraft}
                         rows={4}/>
@@ -234,6 +253,12 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
                   form={this.props.form}
                   disabled={isNotDraft}
                   formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    rules: [{
+                      required: !!(this.dicAbsenceType && this.dicAbsenceType.isFileRequired && !isNotDraft),
+                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.attachment']})
+                    }]
+                  }}
                 />
 
                 {this.takCard()}
@@ -245,6 +270,19 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
         </Section>
       </Page>
     );
+  }
+
+  componentDidMount() {
+    restServices.portalHelperService.getConfig({
+      classFQN: "kz.uco.tsadv.config.AbsenceConfig",
+      methodName: "getLeavingVacationRequest"
+    })
+      .then(absenceTypeId => {
+        if (absenceTypeId)
+          getCubaREST()!.loadEntity<DicAbsenceType>(DicAbsenceType.NAME, absenceTypeId, {view: '_local'})
+            .then(value => this.dicAbsenceType = value);
+      });
+    super.componentDidMount();
   }
 
   setReactionDisposer = () => {

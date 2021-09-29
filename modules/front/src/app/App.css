@@ -140,3 +140,9 @@ span .ant-checkbox-disabled .ant-checkbox-inner{
 .DragLayer.vertical {
   cursor: col-resize;
 }
+.main-layout.ant-layout{
+  height: auto;
+}
+div.ant-card-body{
+ overflow: hidden;
+}

@@ -30,7 +30,7 @@ export class PositionSaveModel {
 
 export interface EditorProps {
   row: OrgRequestRow | null,
-  isCbCompany: boolean,
+  availableSalary: boolean,
   requestId: string,
   treeData: OrgRequestRow[],
   isNew: boolean,
@@ -64,7 +64,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
   locale = this.props.mainStore!.locale!;
 
   @observable
-  isCbCompany: boolean = false;
+  availableSalary: boolean = false;
 
   save = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -89,7 +89,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       posSaveModel.gradeGroupId = formData.gradeGroupId;
       posSaveModel.headCount = formData.headCount;
 
-      if (this.isCbCompany) {
+      if (this.availableSalary) {
         posSaveModel.maxSalary = formData.baseSalary;
         posSaveModel.minSalary = formData.mtPayrollPer;
       }
@@ -241,11 +241,11 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
           </Form.Item>
 
           <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='minSalary'/>}
-                     style={this.isCbCompany ? {} : {display: 'none'}}
+                     style={this.availableSalary ? {} : {display: 'none'}}
                      key="baseSalary">
             {getFieldDecorator('baseSalary', {
               rules: [{
-                required: this.isCbCompany,
+                required: this.availableSalary,
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'minSalary']})
               }]
             })(
@@ -254,11 +254,11 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
           </Form.Item>
 
           <Form.Item label={<Msg entityName={OrgStructureRequestDetail.NAME} propertyName='maxSalary'/>}
-                     style={this.isCbCompany ? {} : {display: 'none'}}
+                     style={this.availableSalary ? {} : {display: 'none'}}
                      key="mtPayrollPer">
             {getFieldDecorator('mtPayrollPer', {
               rules: [{
-                required: this.isCbCompany,
+                required: this.availableSalary,
                 message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[OrgStructureRequestDetail.NAME + '.' + 'maxSalary']})
               }]
             })(
@@ -305,7 +305,7 @@ class PositionEditor extends React.Component<Props & MainStoreInjected & RootSto
       }
     }
     this.props.form.setFieldsValue(model);
-    this.isCbCompany = this.props.isCbCompany;
+    this.availableSalary = this.props.availableSalary;
   }
 }
 

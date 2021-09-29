@@ -1,10 +1,12 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { Question } from "./tsadv$Question";
+import {FileDescriptor} from "./sys$FileDescriptor";
 export class Answer extends AbstractParentEntity {
   static NAME = "tsadv$Answer";
   answer?: string | null;
   correct?: boolean | null;
   question?: Question | null;
+  image?: FileDescriptor | null;
 }
 export type AnswerViewName = "_base" | "_local" | "_minimal" | "answer.edit";
 export type AnswerView<V extends AnswerViewName> = V extends "_base"

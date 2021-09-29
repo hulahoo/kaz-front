@@ -1,21 +1,26 @@
 package kz.uco.kzm.listener;
 
 
+import com.haulmont.cuba.core.global.DataManager;
+import com.haulmont.cuba.core.global.PersistenceHelper;
+import com.haulmont.cuba.core.global.View;
 import kz.uco.mobile.service.FirebasePushNotificationService;
 import kz.uco.tsadv.listener.ExtActivityListener;
 import kz.uco.uactivity.entity.Activity;
 import kz.uco.uactivity.entity.ActivityType;
 import kz.uco.uactivity.entity.WindowProperty;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.inject.Inject;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class ExtActivityListenerKzm extends ExtActivityListener {
-    @Autowired
+    @Inject
     protected FirebasePushNotificationService firebasePushNotificationService;
+    @Inject
+    protected DataManager dataManager;
 
     @Override
     public void onAfterInsert(Activity entity, Connection connection) {
@@ -25,7 +30,17 @@ public class ExtActivityListenerKzm extends ExtActivityListener {
                 put("entityName", entity.getName());
                 put("entityId", String.valueOf(entity.getId()));
                 put("referenceId", String.valueOf(entity.getReferenceId()));
-                put("windowPropertyName", Optional.ofNullable(entity.getType()).map(ActivityType::getWindowProperty).map(WindowProperty::getEntityName).orElse(null));
+                ActivityType type = entity.getType();
+                if (type != null
+                        && (!PersistenceHelper.isLoaded(type, "windowProperty")
+                        || type.getWindowProperty() != null
+                        && !PersistenceHelper.isLoaded(type.getWindowProperty(), "entityName"))) {
+                    type = dataManager.reload(type, new View(ActivityType.class)
+                            .addProperty("windowProperty", new View(WindowProperty.class).addProperty("entityName")));
+                }
+                put("windowPropertyName", Optional.ofNullable(type)
+                        .map(ActivityType::getWindowProperty)
+                        .map(WindowProperty::getEntityName).orElse(null));
             }
         };
 
