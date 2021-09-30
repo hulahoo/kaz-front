@@ -75,6 +75,10 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
 
     "dateTo",
 
+    "projectStartDate",
+
+    "projectEndDate",
+
     "absenceDays"
   ];
 

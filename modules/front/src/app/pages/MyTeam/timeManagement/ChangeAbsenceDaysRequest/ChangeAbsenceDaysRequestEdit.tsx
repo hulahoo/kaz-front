@@ -82,6 +82,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
     "scheduleEndDate",
 
+    "projectStartDate",
+
+    "projectEndDate",
+
     "purpose",
 
     "purposeText",
@@ -200,15 +204,10 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         personGroupId: personGroupId,
         absenceTypeId: this.absence.type!.id
       }).then(countDay => {
-        restServices.absenceService.countDays({
-          dateFrom: scheduleStartDate,
-          dateTo: scheduleEndDate,
-          personGroupId: personGroupId,
-          absenceTypeId: this.absence.type!.id
-        }).then(countScheduleDay => {
-          this.validatedDatesSuccess = countDay <= countScheduleDay + (this.absence.type!.daysAdvance || 0);
-          this.props.form.validateFields(['newStartDate'], {force: true});
-        });
+        if (this.balance) {
+          this.validatedDatesSuccess = countDay <= this.balance
+        }
+        this.props.form.validateFields(['newStartDate'], {force: true});
       })
     }
   }
@@ -360,7 +359,20 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                   disabled={true}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
-
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectStartDate"
+                  disabled={true}
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectEndDate"
+                  disabled={true}
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                />
                 <ReadonlyField
                   entityName={this.dataInstance.entityName}
                   propertyName="purpose"
@@ -419,20 +431,17 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
                       message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.newStartDate']}),
                     }, {
                       validator: (rule, value, callback) => {
-                        const scheduleStartDate = this.props.form.getFieldValue('scheduleStartDate');
                         const requestDate = this.props.form.getFieldValue('requestDate');
                         this.props.form.validateFields(['newEndDate', 'periodStartDate'], {force: true});
-                        if (value && scheduleStartDate && scheduleStartDate.clone().startOf('day') > value.clone().startOf('day'))
-                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
-                            startDate: messages[this.dataInstance.entityName + '.newStartDate'],
-                            endDate: messages[this.dataInstance.entityName + '.scheduleStartDate']
-                          }));
-                        else if (!this.validatedBalanceSuccess)
+                        if (!this.validatedBalanceSuccess)
                           return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
                         else if (!this.validatedDatesSuccess)
                           return callback(this.props.intl.formatMessage({id: 'new.annual.days.not.correct'}));
                         else if (requestDate && requestDate > value) {
-                          return callback(this.props.intl.formatMessage({id: "dateFromMustBeAfterRequestDate"}));
+                          return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                            startDate: messages[this.dataInstance.entityName + '.requestDate'],
+                            endDate: messages[this.dataInstance.entityName + '.newStartDate']
+                          }));
                         } else return callback();
                       }
                     }],
@@ -591,7 +600,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
         .then(absence => {
           this.props.form.setFieldsValue({
             scheduleStartDate: moment(absence.dateFrom),
-            scheduleEndDate: moment(absence.dateTo)
+            scheduleEndDate: moment(absence.dateTo),
+            projectStartDate: moment(absence.projectStartDate),
+            projectEndDate: moment(absence.projectEndDate)
           });
           this.initDictionaries(absence.personGroup!.id!);
           this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
@@ -633,7 +644,9 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
             .then(absence => {
               this.props.form.setFieldsValue({
                 scheduleStartDate: moment(absence.dateFrom),
-                scheduleEndDate: moment(absence.dateTo)
+                scheduleEndDate: moment(absence.dateTo),
+                projectStartDate: moment(absence.projectStartDate),
+                projectEndDate: moment(absence.projectEndDate)
               });
               this.initDictionaries(absence.personGroup!.id!);
               this.loadPerson(absence.personGroup!.id!).then(value => this.person = value);
