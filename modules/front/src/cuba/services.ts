@@ -40,6 +40,8 @@ import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleReq
 import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
 import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
 import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
+import {AbstractBprocRequest} from "./entities/base/AbstractBprocRequest";
+import {toJS} from "mobx";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -412,11 +414,12 @@ export const restServices = {
       employeePersonGroupId: string,
       bpmRolesDefiner: BpmRolesDefiner,
       isAssistant: boolean,
+      request: AbstractBprocRequest
     }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
         "getNotPersisitBprocActors",
-        {...param}
+        {...param, request: toJS(param.request)}
       ).then((value: string) => {
         return JSON.parse(value);
       })

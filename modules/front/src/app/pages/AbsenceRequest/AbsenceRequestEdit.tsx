@@ -147,16 +147,16 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
   assignmentGroupId: string;
 
-  update = () => {
+  getUpdateEntityData(): any {
     if (this.isNotDraft())
-      return this.dataInstance.update(this.getUpdateEntityData());
-    return this.dataInstance.update({
+      return super.getUpdateEntityData();
+    return {
       personGroup: {
         id: this.personGroupId
       },
-      ...this.getUpdateEntityData()
-    });
-  };
+      ...super.getUpdateEntityData()
+    };
+  }
 
   processDefinitionKey = "absenceRequest";
 

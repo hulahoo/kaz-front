@@ -235,7 +235,7 @@ class ChangeAbsenceDaysRequestEdit extends AbstractBprocEdit<ChangeAbsenceDaysRe
 
   isUpdateBeforeOutcome = true;
 
-  getUpdateEntityData = (): any => {
+  getUpdateEntityData(): any{
     if (this.isNotDraft())
       return {
         ...this.props.form.getFieldsValue(this.fields),

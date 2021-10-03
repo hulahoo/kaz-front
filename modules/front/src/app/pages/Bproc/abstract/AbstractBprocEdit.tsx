@@ -18,7 +18,7 @@ import Notification from "../../../util/Notification/Notification";
 import moment from "moment/moment";
 import {TsadvUser} from "../../../../cuba/entities/base/tsadv$UserExt";
 import {parseToFieldValueFromDataInstanceValue, parseToJsonFromFieldValue} from "../../../components/MultiFileUpload";
-import {goBackOrHomePage} from "../../../util/util";
+import {goBackOrHomePage, setItemPropertiesValue} from "../../../util/util";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -135,7 +135,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return new Promise(resolve => resolve(isValidatedSuccess));
   };
 
-  getUpdateEntityData = (): any => {
+  getUpdateEntityData(): any {
     const obj = {
       ...this.props.form.getFieldsValue(this.fields),
     };
@@ -156,8 +156,13 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
     return obj;
   };
 
-  update = () => {
-    return this.dataInstance.update(this.getUpdateEntityData());
+  updateItemValue = (): void => {
+    this.dataInstance.setItem(setItemPropertiesValue(this.props.mainStore!, this.dataInstance.entityName, this.dataInstance.item, this.getUpdateEntityData()));
+  }
+
+  updateAndCommit = (): Promise<void> => {
+    this.updateItemValue();
+    return this.dataInstance.commit();
   };
 
   saveRequest = (e: React.MouseEvent) => {
@@ -173,7 +178,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
         });
         return;
       }
-      this.update().then(value => this.props.history.push(this.path + "/" + this.dataInstance.item!.id));
+      this.updateAndCommit().then(value => this.props.history.push(this.path + "/" + this.dataInstance.item!.id));
     });
   }
 
@@ -233,7 +238,7 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         validate={this.validate}
                         beforeCompletePredicate={this.beforeCompletePredicate}
                         employeePersonGroupId={() => this.employeePersonGroupId ? this.employeePersonGroupId : this.props.rootStore!.userInfo.personGroupId!}
-                        update={this.update}
+                        update={this.updateAndCommit}
                         processInstanceData={this.processInstanceData}
                         afterSendOnApprove={this.afterSendOnApprove}
                         isStartForm={this.isStartForm}
@@ -243,13 +248,17 @@ abstract class AbstractBprocEdit<T extends AbstractBprocRequest, K> extends Reac
                         commentRequiredOutcomes={this.commentRequiredOutcomes}
                         isStartCommentVisible={this.isStartCommentVisible}
                         isUserInitiator={this.isUserInitiator}
+                        getRequest={() => {
+                          this.updateItemValue();
+                          return this.dataInstance.item as AbstractBprocRequest;
+                        }}
                         task={this.activeTask}/>
         : <Button
           buttonType={ButtonType.PRIMARY}
           onClick={() => {
             this.validate().then(isValid => {
               if (isValid) {
-                this.update().then(() => this.updated = true)
+                this.updateAndCommit().then(() => this.updated = true)
                   .catch((e: any) => {
                     Notification.error({
                       message: this.props.intl.formatMessage({id: "management.editor.error"})

@@ -86,7 +86,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
   @observable
   isCompanyVcm = this.props.rootStore!.userInfo!.companyCode === 'VCM';
 
-  getUpdateEntityData = (): any => {
+  getUpdateEntityData(): any {
     return {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
@@ -284,7 +284,7 @@ class CertificateRequestEditComponent extends AbstractBprocEdit<CertificateReque
 
   onReactionDisposerEffect = (item: CertificateRequest | undefined) => {
     if (item) {
-      restServices.employeeService.personProfile(item.personGroup!.id)
+      restServices.employeeService.personProfile(item.personGroup ? item.personGroup!.id : this.props.rootStore!.userInfo.personGroupId)
         .then(value => this.isCompanyVcm = value.companyCode === 'VCM');
     }
   }

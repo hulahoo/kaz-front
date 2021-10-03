@@ -21,6 +21,7 @@ import {RouteComponentProps, withRouter} from "react-router-dom";
 import Candidate from "../component/Candidate";
 import {catchException, getBusinessKey} from "../../../util/util";
 import TextArea from "antd/es/input/TextArea";
+import {AbstractBprocRequest} from "../../../../cuba/entities/base/AbstractBprocRequest";
 
 type StartBproc = {
   processDefinitionKey: string;
@@ -33,6 +34,7 @@ type StartBproc = {
   isStartCommentVisible?: boolean,
   commentRequiredOutcomes?: string[],
   beforeCompletePredicate?: (outcome: string) => Promise<boolean>;
+  getRequest: () => AbstractBprocRequest
 }
 
 @inject("rootStore")
@@ -78,7 +80,8 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
           catchException(restServices.startBprocService.getNotPersisitBprocActors({
             employeePersonGroupId: this.props.employeePersonGroupId(),
             bpmRolesDefiner: value,
-            isAssistant: this.props.rootStore!.assistantTeamInfo.active
+            isAssistant: this.props.rootStore!.assistantTeamInfo.active,
+            request: this.props.getRequest()
           }).then(notPersisitBprocActors => {
             this.items = notPersisitBprocActors.filter(actors => actors.users && actors.users.length > 0);
           })).catch((reason: Error) => {
@@ -130,7 +133,6 @@ class StartBprocModal extends React.Component<StartBproc & MainStoreInjected & R
           });
         }
       })
-
 
     return isValidateSuccess;
   }

@@ -105,7 +105,7 @@ class AbsenceForRecallEdit extends AbstractAgreedBprocEdit<AbsenceForRecall, Edi
 
   calledFrom?: string;
 
-  getUpdateEntityData = (): any => {
+  getUpdateEntityData(): any{
     const json = {
       ...this.props.form.getFieldsValue(this.fields),
       files: parseToJsonFromFieldValue(this.props.form.getFieldValue('files')),
