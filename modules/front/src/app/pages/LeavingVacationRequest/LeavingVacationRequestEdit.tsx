@@ -83,7 +83,7 @@ class LeavingVacationRequestEditComponent extends AbstractBprocEdit<LeavingVacat
 
   assignmentGroupId: string;
 
-  getUpdateEntityData = (): any => {
+  getUpdateEntityData(): any{
     return {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId

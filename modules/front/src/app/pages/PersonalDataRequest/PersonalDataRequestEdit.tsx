@@ -80,14 +80,14 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
 
   ];
 
-  update = () => {
+  getUpdateEntityData(): any {
     if (this.isNotDraft())
-      return this.dataInstance.update(this.getUpdateEntityData());
-    return this.dataInstance.update({
+      return super.getUpdateEntityData();
+    return {
       personGroup: this.props.rootStore!.userInfo!.personGroupId,
-      ...this.getUpdateEntityData()
-    });
-  };
+      ...super.getUpdateEntityData()
+    };
+  }
 
   render() {
     const isNotDraft = this.isNotDraft();

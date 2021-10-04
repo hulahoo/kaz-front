@@ -101,15 +101,15 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumen
 
   isUpdateBeforeOutcome = true;
 
-  update = () => {
+  getUpdateEntityData(): any {
     if (this.isNotDraft())
-      return this.dataInstance.update(this.getUpdateEntityData());
-    return this.dataInstance.update({
+      return super.getUpdateEntityData();
+    return {
       personGroup: this.personGroupId,
       editedPersonDocument: this.editDocument ? this.editDocument.id : undefined,
-      ...this.getUpdateEntityData()
-    });
-  };
+      ...super.getUpdateEntityData()
+    };
+  }
 
   render() {
 

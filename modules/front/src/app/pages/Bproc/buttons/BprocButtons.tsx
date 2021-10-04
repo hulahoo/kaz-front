@@ -29,7 +29,8 @@ type TaskProps = {
   isUpdateBeforeOutcome?: boolean,
   commentRequiredOutcomes?: string[],
   isStartCommentVisible?: boolean,
-  isUserInitiator:boolean
+  isUserInitiator: boolean,
+  getRequest: () => AbstractBprocRequest
 };
 
 @inject("rootStore")
@@ -51,7 +52,8 @@ class BprocButtons extends React.Component<TaskProps & WrappedComponentProps & F
       isStartCommentVisible={this.props.isStartCommentVisible}
       afterSendOnApprove={this.props.afterSendOnApprove}
       commentRequiredOutcomes={this.props.commentRequiredOutcomes}
-      processDefinitionKey={this.props.processDefinitionKey}/>
+      processDefinitionKey={this.props.processDefinitionKey}
+      getRequest={this.props.getRequest}/>
   };
 
   render() {
