@@ -459,7 +459,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     }).then(value => this.assignmentSchedule = value);
   };
 
-  checkMinDayVacation = async (startDate?: moment.Moment) => {
+  checkMinDayVacation = async (startDate: moment.Moment = moment(this.dataInstance.item!.startDate)) => {
     if (this.laborLeave && this.laborLeave.minDay && startDate) {
       const year = parseInt(startDate.format('YYYY'));
 
@@ -484,9 +484,6 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
       }, {
         limit: 1
       }).then(value => this.hasMinDayVacation = (value.count > 0))
-        .then(value => {
-          console.log(this.hasMinDayVacation)
-        })
         .then(value => this.callForceAbsenceDayValidator());
     }
   }
