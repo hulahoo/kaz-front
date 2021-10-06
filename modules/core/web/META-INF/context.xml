@@ -18,9 +18,9 @@
               maxTotal="20"
               maxWaitMillis="5000"
               name="jdbc/CubaDS"
-              password="tal"
+              password="1"
               type="javax.sql.DataSource"
-              url="jdbc:postgresql://localhost/tsadv_master7"
+              url="jdbc:postgresql://localhost/fron_module"
               username="tal"/>
 
 </Context>

@@ -12,6 +12,11 @@ import {
   WrappedComponentProps
 } from "react-intl";
 
+import { Row, Col } from 'antd';
+import ReactDOM from 'react-dom';
+import 'antd/dist/antd.css';
+
+
 import {
   Field,
   instance,
@@ -45,7 +50,7 @@ class ConcourseEditComponent extends React.Component<
   updated = false;
   reactionDisposer: IReactionDisposer;
 
-  fields = ["description", "nameRu", "nameEn"];
+  fields = ["description", "nameRu", "nameEn", "startVoting", "endVoting", "year", "banner", "requestTemplate", "judgeInstruction"];
 
   @observable
   globalErrors: string[] = [];
@@ -69,40 +74,43 @@ class ConcourseEditComponent extends React.Component<
           );
           this.updated = true;
         })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
+        .catch((e: any)  => {
+          console.log(e)
+          e.response.json().then((res: any) => console.log(res))
 
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                );
-              } else {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                );
-              }
-            });
-          } else {
-            message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
-            );
-          }
+//           if (e.response) {
+//             e.response.json().then((response: any) => {
+//               clearFieldErrors(this.props.form);
+//               const {
+//                 globalErrors,
+//                 fieldErrors
+//               } = extractServerValidationErrors(response);
+//               this.globalErrors = globalErrors;
+//               if (fieldErrors.size > 0) {
+//                 this.props.form.setFields(
+//                   constructFieldsWithErrors(fieldErrors, this.props.form)
+//                 );
+//               }
+//
+//               if (fieldErrors.size > 0 || globalErrors.length > 0) {
+//                 message.error(
+//                   this.props.intl.formatMessage({
+//                     id: "management.editor.validationError"
+//                   })
+//                 );
+//               } else {
+//                 message.error(
+//                   this.props.intl.formatMessage({
+//                     id: "management.editor.error"
+//                   })
+//                 );
+//               }
+//             });
+//           } else {
+//             message.error(
+//               this.props.intl.formatMessage({ id: "management.editor.error" })
+//             );
+//           }
         });
     });
   };
@@ -137,6 +145,64 @@ class ConcourseEditComponent extends React.Component<
             }}
           />
 
+
+          <Field
+            entityName={Concourse.NAME}
+            propertyName="startVoting"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px" } }}
+            getFieldDecoratorOpts={{
+              rules: [{ required: true }]
+            }}
+          />
+
+          <Field
+            entityName={Concourse.NAME}
+            propertyName="judgeInstruction"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px" } }}
+            getFieldDecoratorOpts={{
+              rules: [{ required: true }]
+            }}
+          />
+
+          <Field
+            entityName={Concourse.NAME}
+            propertyName="endVoting"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px" } }}
+            getFieldDecoratorOpts={{
+              rules: [{ required: true }]
+            }}
+          />
+          <Field
+            entityName={Concourse.NAME}
+            propertyName="banner"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px" } }}
+            getFieldDecoratorOpts={{
+              rules: [{ required: true }]
+            }}
+          />
+          <Field
+            entityName={Concourse.NAME}
+            propertyName="requestTemplate"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px" } }}
+            getFieldDecoratorOpts={{
+              rules: [{ required: true }]
+            }}
+          />
+
+          <Field
+            entityName={Concourse.NAME}
+            propertyName="year"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px" } }}
+            getFieldDecoratorOpts={{
+              rules: [{ required: true }]
+            }}
+          />
           <Field
             entityName={Concourse.NAME}
             propertyName="nameEn"
@@ -147,13 +213,15 @@ class ConcourseEditComponent extends React.Component<
             }}
           />
 
-          {this.globalErrors.length > 0 && (
-            <Alert
-              message={<MultilineText lines={toJS(this.globalErrors)} />}
-              type="error"
-              style={{ marginBottom: "24px" }}
-            />
-          )}
+           {
+              this.globalErrors.length > 0 && (
+                  <Alert
+                      message={<MultilineText lines={toJS(this.globalErrors)} />}
+                      type="error"
+                      style={{marginBottom: "24px"}}
+                  />
+              )
+          }
 
           <Form.Item style={{ textAlign: "center" }}>
             <Link to={ConcourseComponent.PATH}>

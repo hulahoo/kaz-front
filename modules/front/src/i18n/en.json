@@ -167,6 +167,8 @@
   "menu.temporary-transfer-day": "Temporary transfer to day/night shift",
   "menu.c-b": "C&B",
   "menu.incentive": "Incentive",
+  "menu.concourse": "Concourse projects",
+  "menu.concourse-menu": "Concourse projects",
   "absenceRequest": "Absence request",
   "absenceBalance": "Absence Balance",
   "currentAbsenceBalance": "Current Absence Balance : ",

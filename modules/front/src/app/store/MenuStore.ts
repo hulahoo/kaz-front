@@ -27,12 +27,14 @@ export default class MenuStore {
 
   @action
   loadUserMenuCustomization = async () => {
-    return await this.root.cubaRest!.invokeService<string>(
+    debugger
+    await this.root.cubaRest!.invokeService<string>(
       "tsadv_PortalHelperService",
       "getPortalMenu",
       {menuType: 'P'}
     ).then(value => JSON.parse(value))
       .then(value => this.menuCustomization = value)
+    return null
   }
 
   @action
@@ -112,6 +114,13 @@ export default class MenuStore {
           component: null,
         }],
       },
+
+      {
+        id: "concourse-menu",
+        caption: "Конкурс проектов",
+        items: [{id: "concourse", caption: "Конкурс проектов", menuLink: "/concourse", pathPattern: "/concourse", component: null}]
+      },
+
       {
         id: "position-hierarchy", caption: "Штатное расписание",
         menuLink: "/position-hierarchy",

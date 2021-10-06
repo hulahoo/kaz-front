@@ -57,6 +57,7 @@ import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
 import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHierarchyManagement";
 import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveApproveManagement";
+import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
 
 @injectMainStore
 @inject("rootStore")
@@ -187,6 +188,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={BpmUserSubstitutionManagement.PATH + "/:entityId?"}
                        component={BpmUserSubstitutionManagement}/>
+                <Route exact={true}
+                        path={ConcourseComponent.PATH + "/:entityId?"}
+                        component={ConcourseComponent}/>
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}
                 {/*  }*/}
