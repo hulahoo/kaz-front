@@ -481,4 +481,20 @@
   "absenceRequestAlert": "You are on paid annual labor leave. Specify the conditions for the transfer of vacation dates",
   "validation.absenceRequest.validate": "There are {days} days left until the end of the vacation. Specify the correct dates for the transfer of vacation dates",
   "originalSheetFieldValidate": "I undertake to provide the original sheet of temporary incapacity for work - required field"
+  "assignment": "Punishments",
+  "punishmentRequest": "Punishment Request",
+  "PunishmentRequest": "Punishment Request",
+  "PunishmentRemovalRequest": "Punishment Removal Request",
+  "punishment": "Punishment",
+  "punishmentDismiss": "Punishment dismiss request",
+  "PunishmentAssignmentRequest.offenceType": "Offence Type",
+  "PunishmentAssignmentRequest": "Punishment Assignment Request",
+  "PunishmentAssignmentRequest.punishmentType": "Punishment Type",
+  "employee.name": "Employee name",
+  "punishmentRequest.create": "Create punishment request",
+  "punishmentRequest.assignment": "Assignment",
+  "punishmentRequest.removal": "Removal",
+  "employee.positionName": "Position name",
+  "employee.organizationName": "Organization name",
+  "employee.hireDate": "Hire date"
 }

@@ -470,4 +470,18 @@
   "absenceRequestAlert": "Вы находитесь в оплачиваемом ежегодном трудовом отпуске. Укажите условия переноса дат отпуска",
   "validation.absenceRequest.validate": "До окончания отпуска осталось {days} дней. Укажите корректные даты переноса дат отпуска",
   "originalSheetFieldValidate": "Обязуюсь предоставить оригинал листа временной нетрудоспособности -обязательное поле"
+  "punishmentRequest": "Служебные записки",
+  "PunishmentRequest": "Служебные записки",
+  "PunishmentRemovalRequest": "Снятие Дисциплинарного взыскания",
+  "punishment": "Дисциплинарные взыскания",
+  "punishmentDismiss": "Снятие Дисциплинарного взыскания",
+  "punishmentRequest.create": "Дисциплинарное взыскание",
+  "punishmentRequest.assignment" : "Назначение",
+  "assignment" : "Назначение",
+  "punishmentRequest.removal" : "Снятие",
+  "employee.name": "ФИО работника",
+  "PunishmentAssignmentRequest": "Дисциплинарные взыскания",
+  "employee.positionName": "Должность",
+  "employee.organizationName": "Подразделение",
+  "employee.hireDate": "Дата приема"
 }

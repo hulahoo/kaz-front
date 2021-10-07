@@ -55,6 +55,8 @@ import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationSched
 import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
+import {PunishmentAssignmentRequestManagement} from "./pages/MyTeam/assignment/punishmentAssignmentRequest/PunishmentAssignmentRequestManagement"
+import {PunishmentRemovalRequestManagement} from "./pages/MyTeam/assignment/punishmentRemovalRequest/punishmentRemovalRequestManagement";
 import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHierarchyManagement";
 import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveApproveManagement";
 
@@ -184,6 +186,12 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={IncentiveApproveManagement.PATH + "/:entityId"}
                        component={IncentiveApproveManagement}/>
+                <Route exact={true}
+                       path={PunishmentAssignmentRequestManagement.PATH_WITH_PARAMS}
+                       component={PunishmentAssignmentRequestManagement}/>
+                <Route exact={true}
+                       path={PunishmentRemovalRequestManagement.PATH_WITH_PARAMS}
+                       component={PunishmentRemovalRequestManagement}/>
                 <Route exact={true}
                        path={BpmUserSubstitutionManagement.PATH + "/:entityId?"}
                        component={BpmUserSubstitutionManagement}/>
