@@ -42,6 +42,7 @@ import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
 import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
 import {AbstractBprocRequest} from "./entities/base/AbstractBprocRequest";
 import {toJS} from "mobx";
+import {Punishment} from "./entities/base/tsadv$Punishment";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -928,6 +929,15 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     },
+  },
+  punishmentService: {
+    getPunishmentByPersonGroup: (param: { personGroupId: string }): Promise<Array<Punishment>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PunishmentService",
+        "getPunishmentByPersonGroup",
+        {...param}
+      ).then(r => JSON.parse(r))
+    }
   }
 };
 

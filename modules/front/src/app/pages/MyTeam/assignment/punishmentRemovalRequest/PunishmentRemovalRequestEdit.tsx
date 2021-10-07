@@ -2,27 +2,26 @@ import * as React from "react";
 import {createElement} from "react";
 import {Alert, Card, Form, Input} from "antd";
 import {inject, observer} from "mobx-react";
-import { PunishmentRemovalRequestManagement } from "./punishmentRemovalRequestManagement";
-import { FormComponentProps } from "antd/lib/form";
-import { Redirect } from "react-router-dom";
-import { observable, toJS } from "mobx";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {PunishmentRemovalRequestManagement} from "./punishmentRemovalRequestManagement";
+import {FormComponentProps} from "antd/lib/form";
+import {Redirect} from "react-router-dom";
+import {observable, toJS} from "mobx";
+import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   collection,
-  Field,
+  getCubaREST,
+  injectMainStore,
   instance,
-  withLocalizedForm,
-  MultilineText, injectMainStore, getCubaREST, MainStoreInjected, Msg
+  MainStoreInjected,
+  Msg,
+  MultilineText,
+  withLocalizedForm
 } from "@cuba-platform/react";
 
 import "../../../../App.css";
 
-import { DicRequestStatus } from "../../../../../cuba/entities/base/tsadv$DicRequestStatus";
+import {DicRequestStatus} from "../../../../../cuba/entities/base/tsadv$DicRequestStatus";
 import AbstractBprocEdit from "../../../Bproc/abstract/AbstractBprocEdit";
 import Section from "../../../../hoc/Section";
 import Page from "../../../../hoc/PageContentHoc";
@@ -31,7 +30,6 @@ import Button, {ButtonType} from "../../../../components/Button/Button";
 import {goBackOrHomePage} from "../../../../util/util";
 import {runReport} from "../../../../util/reportUtil";
 import moment from "moment";
-import {parseToJsonFromFieldValue} from "../../../../components/MultiFileUpload";
 import {ExecutiveAssistantsManagement} from "../../../ExecutiveAssistants/ExecutiveAssistantsManagement";
 import {MyTeamStructureManagement} from "../../MyTeamStructureManagement";
 import Notification from "../../../../util/Notification/Notification";
@@ -42,6 +40,7 @@ import DefaultDatePicker from "../../../../components/Datepicker";
 import {restServices} from "../../../../../cuba/services";
 import {PunishmentRequestType} from "../../../../../cuba/enums/enums";
 import {PunishmentRemovalRequest} from "../../../../../cuba/entities/base/tsadv$PunishmentRemovalRequest";
+import {serviceCollection} from "../../../../util/ServiceDataCollectionStore";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -84,6 +83,14 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
     view: "_local"
   });
 
+
+  @observable
+  punishmentsDc = serviceCollection(
+    (pagination) => restServices.punishmentService.getPunishmentByPersonGroup({
+      personGroupId: this.personGroupId
+    }));
+
+
   @observable
   updated = false;
 
@@ -92,7 +99,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
     "requestDate",
     "status",
     "earlyTerminationReason",
-    "removingOrderNum",
+    "removingOrderPunishment",
     "removingOrderDate",
     "removingFile",
   ];
@@ -131,7 +138,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
       .then(value => this.person = value);
     this.setEmployee(this.personGroupId);
     this.loadPersonProfile();
-
+    this.punishmentsDc.load()
   }
 
   getUpdateEntityData = (): any => {
@@ -145,7 +152,6 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
       ...this.props.form.getFieldsValue(this.fields),
     }
   };
-
 
 
   report = () => {
@@ -209,7 +215,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
 
   render() {
     if (this.updated) {
-      return <Redirect to={PunishmentRemovalRequestManagement.PATH} />;
+      return <Redirect to={PunishmentRemovalRequestManagement.PATH}/>;
     }
     const messages = this.mainStore.messages!;
     const {getFieldDecorator} = this.props.form;
@@ -221,13 +227,13 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 bordered={false}>
             <Form layout="vertical">
 
-              {getFieldDecorator('requestType', )(<Input type="hidden"/>)}
+              {getFieldDecorator('requestType',)(<Input type="hidden"/>)}
 
               <ReadonlyField
                 entityName={PunishmentRemovalRequest.NAME}
                 propertyName="requestNumber"
                 form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                formItemOpts={{style: {marginBottom: "12px"}}}
                 disabled
                 getFieldDecoratorOpts={{
                   rules: [{
@@ -241,7 +247,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 entityName={PunishmentRemovalRequest.NAME}
                 propertyName="requestDate"
                 form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                formItemOpts={{style: {marginBottom: "12px"}}}
                 disabled
                 getFieldDecoratorOpts={{
                   rules: [{
@@ -255,11 +261,11 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 entityName={PunishmentRemovalRequest.NAME}
                 propertyName="status"
                 form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                formItemOpts={{style: {marginBottom: "12px"}}}
                 optionsContainer={this.statusesDc}
                 disabled
                 getFieldDecoratorOpts={{
-                  rules: [{ required: true }]
+                  rules: [{required: true}],
                 }}
               />
 
@@ -292,15 +298,16 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
               </div>
 
               <ReadonlyField
-                entityName={PunishmentRemovalRequest.NAME}
-                propertyName="removingOrderNum"
+                entityName={this.dataInstance.entityName}
+                propertyName="removingOrderPunishment"
                 form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                optionsContainer={this.punishmentsDc}
+                formItemOpts={{style: {marginBottom: "12px"}}}
                 disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.removingOrderNum']}),
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.removingOrderPunishment']}),
                   }]
                 }}
               />
@@ -309,7 +316,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 entityName={PunishmentRemovalRequest.NAME}
                 propertyName="earlyTerminationReason"
                 form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                formItemOpts={{style: {marginBottom: "12px"}}}
                 disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
                   rules: [{
@@ -324,7 +331,7 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
                 propertyName="removingFile"
                 form={this.props.form}
                 disabled={!this.isDraft() && !this.isRevise()}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                formItemOpts={{style: {marginBottom: "12px"}}}
                 getFieldDecoratorOpts={{
                   rules: [{
                     required: true,
@@ -335,9 +342,9 @@ class PunishmentRemovalRequestEditComponent extends AbstractBprocEdit<Punishment
 
               {this.globalErrors.length > 0 && (
                 <Alert
-                  message={<MultilineText lines={toJS(this.globalErrors)} />}
+                  message={<MultilineText lines={toJS(this.globalErrors)}/>}
                   type="error"
-                  style={{ marginBottom: "24px" }}
+                  style={{marginBottom: "24px"}}
                 />
               )}
 

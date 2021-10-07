@@ -480,7 +480,7 @@
   "absenceDays": "Days",
   "absenceRequestAlert": "You are on paid annual labor leave. Specify the conditions for the transfer of vacation dates",
   "validation.absenceRequest.validate": "There are {days} days left until the end of the vacation. Specify the correct dates for the transfer of vacation dates",
-  "originalSheetFieldValidate": "I undertake to provide the original sheet of temporary incapacity for work - required field"
+  "originalSheetFieldValidate": "I undertake to provide the original sheet of temporary incapacity for work - required field",
   "assignment": "Punishments",
   "punishmentRequest": "Punishment Request",
   "PunishmentRequest": "Punishment Request",
