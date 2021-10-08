@@ -1,31 +1,43 @@
 import * as React from "react";
-import {inject, observer} from "mobx-react";
-import {Link} from "react-router-dom";
+import { inject, observer } from "mobx-react";
+import { Link } from "react-router-dom";
 
-import {observable} from "mobx";
+import { observable } from "mobx";
 
-import {collection, DataTable, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
-import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
-import Button, {ButtonType} from "../../components/Button/Button";
-import {RootStoreProp} from "../../store";
-import {PersonEducationManagement} from "./PersonEducationManagement";
-import {PersonEducation} from "../../../cuba/entities/base/tsadv$PersonEducation";
+import {
+  collection,
+  DataTable,
+  injectMainStore,
+  MainStoreInjected
+} from "@cuba-platform/react";
+import {
+  FormattedMessage,
+  injectIntl,
+  WrappedComponentProps
+} from "react-intl";
+import Button, { ButtonType } from "../../components/Button/Button";
+import { RootStoreProp } from "../../store";
+import { PersonEducationManagement } from "./PersonEducationManagement";
+import { PersonEducation } from "../../../cuba/entities/base/tsadv$PersonEducation";
 import DataTableFormat from "../../components/DataTable/intex";
 
 @injectMainStore
 @inject("rootStore")
 @observer
-class PersonEducationListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & RootStoreProp> {
-
+class PersonEducationListComponent extends React.Component<
+  MainStoreInjected & WrappedComponentProps & RootStoreProp
+> {
   dataCollection = collection<PersonEducation>(PersonEducation.NAME, {
     view: "portal.my-profile",
     sort: "-updateTs",
     filter: {
-      conditions: [{
-        property: "personGroup.id",
-        operator: "=",
-        value: this.props.rootStore!.userInfo.personGroupId!
-      }]
+      conditions: [
+        {
+          property: "personGroup.id",
+          operator: "=",
+          value: this.props.rootStore!.userInfo.personGroupId!
+        }
+      ]
     }
   });
 
@@ -38,7 +50,7 @@ class PersonEducationListComponent extends React.Component<MainStoreInjected & W
 
     "specialization",
 
-    "diplomaNumber",
+    "diplomaNumber"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -53,11 +65,12 @@ class PersonEducationListComponent extends React.Component<MainStoreInjected & W
         }
         key="create"
       >
-        <Button buttonType={ButtonType.PRIMARY}
-                style={{margin: "0 12px 12px 0"}}
+        <Button
+          buttonType={ButtonType.PRIMARY}
+          style={{ margin: "0 12px 12px 0" }}
         >
           <span>
-            <FormattedMessage id="management.browser.create"/>
+            <FormattedMessage id="management.browser.create" />
           </span>
         </Button>
       </Link>,
@@ -65,11 +78,12 @@ class PersonEducationListComponent extends React.Component<MainStoreInjected & W
         to={PersonEducationManagement.PATH + "/" + this.selectedRowKey}
         key="edit"
       >
-        <Button buttonType={ButtonType.FOLLOW}
-                style={{margin: "0 12px 12px 0"}}
-                disabled={!this.selectedRowKey}
+        <Button
+          buttonType={ButtonType.FOLLOW}
+          style={{ margin: "0 12px 12px 0" }}
+          disabled={!this.selectedRowKey}
         >
-          <FormattedMessage id="management.browser.edit"/>
+          <FormattedMessage id="management.browser.edit" />
         </Button>
       </Link>
     ];
@@ -88,7 +102,6 @@ class PersonEducationListComponent extends React.Component<MainStoreInjected & W
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
     this.selectedRowKey = selectedRowKeys[0];
   };
-
 }
 
 const PersonEducationList = injectIntl(PersonEducationListComponent);

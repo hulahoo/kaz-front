@@ -20,7 +20,7 @@
               name="jdbc/CubaDS"
               password="1"
               type="javax.sql.DataSource"
-              url="jdbc:postgresql://localhost/kazmin_front"
-              username="tof"/>
+              url="jdbc:postgresql://localhost/kazmin"
+              username="tal"/>
 
 </Context>
