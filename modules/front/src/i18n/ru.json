@@ -457,5 +457,10 @@
   "exitInterview.modal.title": "Спасибо что ответили на вопросы!",
   "exitInterview.modal.error.title": "Пожалуйста заполните все поля",
   "dismissal.closeInterview": "Окей",
+  "dismissalRequest.position":"Должность",
+  "dismissalRequest.subdivision":"Подразделение",
+  "dismissalRequest.staffUnit":"Штатная единица",
+  "dismissalRequest.employeeName":"ФИО работника",
+  "dismissalRequest.dateOfReceipt":"Дата приема",
   "result.SEND_FOR_APPROVAL": "Отправлено на согласование"
 }

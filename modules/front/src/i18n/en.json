@@ -468,5 +468,10 @@
   "formJD": "Job description form",
   "jobResponsibilities": "Job responsibilities",
   "dismissal.closeInterview": "Okay",
+  "dismissalRequest.employeeName":"Employee name",
+  "dismissalRequest.staffUnit":"Staff Unit",
+  "dismissalRequest.position":"Position",
+  "dismissalRequest.subdivision":"Subdivision",
+  "dismissalRequest.dateOfReceipt":"Date Of Receipt",
   "result.SEND_FOR_APPROVAL": "Send for Approval"
 }

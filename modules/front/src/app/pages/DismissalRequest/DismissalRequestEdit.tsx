@@ -1,6 +1,6 @@
 import * as React from "react";
-import { FormEvent } from "react";
-import { Alert, Button, Card, Form, message } from "antd";
+import { createElement, FormEvent } from "react";
+import { Alert, Button, Card, Form, Input, message } from "antd";
 import { inject, observer } from "mobx-react";
 import { DismissalRequestManagement } from "./DismissalRequestManagement";
 import { Redirect, withRouter } from "react-router-dom";
@@ -18,7 +18,8 @@ import {
   extractServerValidationErrors,
   constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText
+  MultilineText,
+  Msg
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
@@ -37,6 +38,7 @@ import { restServices } from "../../../cuba/services";
 import { PersonProfile } from "../MyTeam/MyTeamCard";
 import { DicRequestStatus } from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import { runReport } from '../../util/reportUtil';
+import DefaultDatePicker from "../../components/Datepicker";
 
 type EditorProps = {
   entityId: string;
@@ -76,7 +78,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
   });
 
   employeeFileDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "dismissalRequestEdit"
+    view: "_minimal"
   });
 
   @observable
@@ -258,7 +260,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
             /> */}
 
             {
-              this.renderDissimalRequestFields()
+              this.renderEditDissimalFields()
             }
 
             <ReadonlyField
@@ -362,61 +364,46 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
     )
   }
 
-  // renderEditDissimalFields = () => {
-  //   return (
-  //     <>
-  //       <Form.Item
-  //         label={createElement(Msg, { entityName: DismissalApplication.NAME, propertyName: "employeeName" })}>
-  //         <Input
-  //           value={
-  //             this.editDismissal
-  //               ? this.editDismissal.employeeName || ''
-  //               : this.person && this.person.fullName || ""}
-  //           disabled />
-  //       </Form.Item>
+  renderEditDissimalFields = () => {
+    return (
+      <>
+        <Form.Item
+          label={createElement(Msg, { entityName: DismissalRequest.NAME, propertyName: this.props.intl.formatMessage({ id: "dismissalRequest.employeeName" }) })}>
+          <Input
+            value={ this.person ? this.person.fullName || '' : "" }
+            disabled />
+        </Form.Item>
 
-  //       <Form.Item
-  //         label={createElement(Msg, { entityName: DismissalApplication.NAME, propertyName: "staffUnit" })}>
-  //         <Input
-  //           value={
-  //             this.editDismissal
-  //               ? this.editDismissal.staffUnit || ''
-  //               : this.person && this.person.positionName || ""}
-  //           disabled />
-  //       </Form.Item>
+        <Form.Item
+          label={createElement(Msg, { entityName: DismissalRequest.NAME, propertyName: this.props.intl.formatMessage({ id: "dismissalRequest.staffUnit" }) })}>
+          <Input
+            value={this.person ? this.person.positionName || '' : ""}
+            disabled />
+        </Form.Item>
 
-  //       <Form.Item
-  //         label={createElement(Msg, { entityName: DismissalApplication.NAME, propertyName: "position" })}>
-  //         <Input
-  //           value={
-  //             this.editDismissal
-  //               ? this.editDismissal.position || ''
-  //               : this.person && this.person.positionName || ""}
-  //           disabled />
-  //       </Form.Item>
+        <Form.Item
+          label={createElement(Msg, { entityName: DismissalRequest.NAME, propertyName: this.props.intl.formatMessage({ id: "dismissalRequest.position" }) })}>
+          <Input
+            value={this.person ? this.person.positionName || '' : ""}
+            disabled />
+        </Form.Item>
 
-  //       <Form.Item
-  //         label={createElement(Msg, { entityName: DismissalApplication.NAME, propertyName: "subdivision" })}>
-  //         <Input
-  //           value={
-  //             this.editDismissal
-  //               ? this.editDismissal.subdivision || ''
-  //               : this.person && this.person.organizationName || ""}
-  //           disabled />
-  //       </Form.Item>
+        <Form.Item
+          label={createElement(Msg, { entityName: DismissalRequest.NAME, propertyName: this.props.intl.formatMessage({ id: "dismissalRequest.subdivision" }) })}>
+          <Input
+            value={this.person ? this.person.organizationName || '' : ""}
+            disabled />
+        </Form.Item>
 
-  //       <Form.Item
-  //         label={createElement(Msg, { entityName: DismissalApplication.NAME, propertyName: "dateOfReceipt" })}>
-  //         <DefaultDatePicker
-  //           value={
-  //             this.editDismissal
-  //               ? moment(this.editDismissal.dateOfReceipt) || ''
-  //               : moment()}
-  //           disabled />
-  //       </Form.Item>
-  //     </>
-  //   )
-  // }
+        <Form.Item
+          label={createElement(Msg, { entityName: DismissalRequest.NAME, propertyName: this.props.intl.formatMessage({ id: "dismissalRequest.dateOfReceipt" }) })}>
+          <DefaultDatePicker
+            value={this.person ? moment(this.person.hireDate) || '' : moment()}
+            disabled />
+        </Form.Item>
+      </>
+    )
+  }
 
   onReactionDisposerEffect = (item: DismissalRequest | undefined) => {
     this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;
@@ -442,14 +429,25 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
     restServices.employeeService.personProfile(this.personGroupId)
       .then(value => {
         this.person = value;
-        this.props.form.setFields({
-          employeeName: { value: value.fullName },
-          staffUnit: { value: value.positionName },
-          position: { value: value.positionName },
-          subdivision: { value: value.organizationName },
-          dateOfReceipt: { value: moment(value.hireDate) }
-        });
-      })
+        // if (dismissalId === DismissalRequestManagement.NEW_SUBPATH) {
+          this.props.form.setFields({
+            employeeName: { value: value.fullName },
+            staffUnit: { value: value.positionName },
+            position: { value: value.positionName },
+            subdivision: { value: value.organizationName },
+            dateOfReceipt: { value: moment(value.hireDate) }
+          });
+        // }
+        // if (this.person != null) {
+        //   this.props.form.setFields({
+        //     employeeName: { value: this.person && this.person.fullName || '' },
+        //     staffUnit: { value: this.person.positionName },
+        //     position: { value: this.person.positionName },
+        //     subdivision: { value: this.person.organizationName },
+        //     dateOfReceipt: { value: moment(this.person.hireDate) }
+        //   });
+        // }
+      });
   }
 
   // afterSendOnApprove = () => {
