@@ -82,6 +82,8 @@ class IncentiveListComponent extends React.Component<MainStoreInjected & Wrapped
   }
 
   componentDidMount() {
+    this.dataCollection.offset = 1;
+    this.dataCollection.limit = 10;
     this.dataCollection.load();
   }
 }

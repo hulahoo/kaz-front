@@ -15,7 +15,7 @@ import {RootStoreProp} from "../../store";
 import {OrganizationIncentiveResult} from "../../../cuba/entities/base/tsadv_OrganizationIncentiveResult";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
-import {Card, Input, Table} from "antd";
+import {Card, InputNumber, Table} from "antd";
 import Column from "antd/es/table/Column";
 import LoadingPage from "../LoadingPage";
 import Button, {ButtonType} from "../../components/Button/Button";
@@ -101,14 +101,13 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
                       render={(text, record: OrganizationIncentiveIndicators) => {
                         if (record.indicatorType !== 'PLAN_FACT') return '';
                         const result = this.getResult(record);
-                        return <Input type={'number'}
-                                      value={result.plan || 0}
-                                      onChange={async (event) => {
-                                        result.plan = event.currentTarget.value || 0;
-                                        this.calcAndSaveResult(record, result);
-                                        return event;
-                                      }
-                                      }/>;
+                        return <InputNumber value={result.plan || 0}
+                                            onChange={async (event) => {
+                                              result.plan = event || 0;
+                                              this.calcAndSaveResult(record, result);
+                                              return event;
+                                            }
+                                            }/>;
                       }}
               />
               <Column title={messages[OrganizationIncentiveResult.NAME + '.fact']}
@@ -117,13 +116,12 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
                       render={(text, record: OrganizationIncentiveIndicators) => {
                         if (record.indicatorType !== 'PLAN_FACT') return '';
                         const result = this.getResult(record);
-                        return <Input type={'number'}
-                                      value={result.fact || 0}
-                                      onChange={event => {
-                                        result.fact = event.currentTarget.value || 0;
-                                        this.calcAndSaveResult(record, result);
-                                        return event;
-                                      }}
+                        return <InputNumber value={result.fact || 0}
+                                            onChange={event => {
+                                              result.fact = event || 0;
+                                              this.calcAndSaveResult(record, result);
+                                              return event;
+                                            }}
                         />;
                       }}/>
               <Column title={messages[OrganizationIncentiveResult.NAME + '.result']}
@@ -131,14 +129,13 @@ class IncentiveEditComponent extends React.Component<Props & MainStoreInjected &
                       key="result"
                       render={(text, record: OrganizationIncentiveIndicators) => {
                         const result = this.getResult(record);
-                        return <Input type={'number'}
-                                      disabled={record.indicatorType !== 'RESULT'}
-                                      value={result.result || 0}
-                                      onChange={async event => {
-                                        result.result = event.currentTarget.value;
-                                        await this.calcAndSaveResult(record, result);
-                                        return event;
-                                      }}
+                        return <InputNumber disabled={record.indicatorType !== 'RESULT'}
+                                            value={result.result || 0}
+                                            onChange={async event => {
+                                              result.result = event;
+                                              await this.calcAndSaveResult(record, result);
+                                              return event;
+                                            }}
                         />;
                       }}/>
               <Column title={messages[OrganizationIncentiveResult.NAME + '.weight']}
