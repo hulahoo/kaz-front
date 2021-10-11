@@ -100,21 +100,23 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
   person: PersonProfile;
 
   fields = [
-    "employeeName",
+    //"employeeName",
 
-    "staffUnit",
+    //"staffUnit",
 
-    "position",
+    //"position",
 
-    "subdivision",
+    //"subdivision",
 
-    "dateOfReceipt",
+    //"dateOfReceipt",
 
     "reasonForDismissal",
 
     "dateOfDismissal",
 
-    "employeeFile"
+    "employeeFile",
+
+    "personGroup"
 
   ];
 
@@ -250,14 +252,14 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
           ]}>
 
           <Form onSubmit={this.handleSubmit} layout="vertical">
-            {/* <ReadonlyField
+            <ReadonlyField
               disabled
-              entityName={DismissalApplication.NAME}
-              propertyName="employeeName"
+              entityName={DismissalRequest.NAME}
+              propertyName="personGroup"
               form={this.props.form}
-              formItemOpts={{ style: { marginBottom: "12px" } }}
+              formItemOpts={{ style: { marginBottom: "12px", visibility: "hidden" } }}
               getFieldDecoratorOpts={{}}
-            /> */}
+            />
 
             {
               this.renderEditDissimalFields()
@@ -435,7 +437,8 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
             staffUnit: { value: value.positionName },
             position: { value: value.positionName },
             subdivision: { value: value.organizationName },
-            dateOfReceipt: { value: moment(value.hireDate) }
+            dateOfReceipt: { value: moment(value.hireDate) },
+            personGroup: { value: value.groupId}
           });
         // }
         // if (this.person != null) {
