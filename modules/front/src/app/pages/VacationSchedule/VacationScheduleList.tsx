@@ -219,9 +219,9 @@ class VacationScheduleListComponent extends React.Component<VacationScheduleList
             style={{margin: "0 12px 12px 0"}}
             onClick={this.approve}
             key="approve"
-            disabled={this.onRunningReport}
+            disabled={this.onRunningApprove}
             type="default">
-            {this.onRunningReport
+            {this.onRunningApprove
               ? <Spin/>
               : <></>}
             <FormattedMessage id="vacationSchedule.btn.approve"/>
