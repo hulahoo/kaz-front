@@ -14,11 +14,21 @@ import {
 } from "react-intl";
 import DataTableFormat from "../../../../components/DataTable/intex";
 import { observable } from "mobx";
+import {MyTeamCardProps} from "../../MyTeamCard";
 
 @injectMainStore
 @observer
-class PunishmentListComponent extends React.Component<MainStoreInjected & WrappedComponentProps> {
+class PunishmentListComponent extends React.Component<MainStoreInjected & WrappedComponentProps & MyTeamCardProps> {
   dataCollection = collection<Punishment>(Punishment.NAME, {
+    filter: {
+      conditions: [
+        {
+          property: "responsibleEmployee",
+          operator: '=',
+          value: this.props.personGroupId
+        }
+      ]
+    },
     view: "punishment.all",
     sort: "-updateTs"
   });

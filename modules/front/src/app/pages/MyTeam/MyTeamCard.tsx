@@ -13,7 +13,7 @@ import MyTeamAbsence from "./timeManagement/MyTeamAbsence/MyTeamAbsence";
 import MyTeamPersonRvd from "./timeManagement/rvd/MyTeamPersonRvd/MyTeamPersonRvd";
 // import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
 import AbsenceRvdRequestList from "./timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
-import {rootStore, RootStoreProp} from "../../store";
+import {RootStoreProp} from "../../store";
 import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 import MyTeamAbsenceRequest from "./timeManagement/MyTeamAbsenceRequest/MyTeamAbsenceRequest";
@@ -94,7 +94,7 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
       case 'punishmentRequest':
         return <PunishmentRequestList personGroupId={this.person!.groupId}/>
       case 'punishment':
-        return <PunishmentList />
+        return <PunishmentList personGroupId={this.person!.groupId}/>
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -133,8 +133,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           id: 'punishmentRequest'
         },
           {
-          id: 'punishment'
-        }]
+            id: 'punishment'
+          }]
     }
     return [{
       id: 'personalData'
