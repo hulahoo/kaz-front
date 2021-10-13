@@ -209,6 +209,24 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
     this.props.setIsCanViewInterview(null);
   }
 
+  existExitInterviewDownload = () => {
+      let isOnApproved = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "APPROVED" : false;
+      let isOnREVISION = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "TO_BE_REVISED" : false;
+      let isOnApproving = this.isOnApproving();
+      let isOnCANCELED = this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.code === "CANCELED_BY_INITIATOR" : false;
+
+    return this.isUserInitiator ?
+    <Button
+     disabled={!isOnApproved && this.isUserInitiator || !this.isUserInitiator || isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION}
+     type="primary"
+     htmlType="button"
+     onClick={this.handleOpenInterview()}
+     style={{ marginLeft: "8px" }}
+     >
+     <FormattedMessage id="dismissal.downloadExitInterview" />
+    </Button> : <></>;
+  }
+
   render() {
 
     // let isNotDraft = this.isNotDraft();
@@ -236,15 +254,7 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
           className="narrow-layout card-actions-container"
           bordered={false}
           actions={[
-            <Button
-              disabled={!isOnApproved && this.isUserInitiator || !this.isUserInitiator || isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION}
-              type="primary"
-              htmlType="button"
-              onClick={this.handleOpenInterview()}
-              style={{ marginLeft: "8px" }}
-            >
-              <FormattedMessage id="dismissal.downloadExitInterview" />
-            </Button>,
+            this.existExitInterviewDownload(),
             <Buttonv2
               buttonType={ButtonType.FOLLOW}
               onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({ id: "close" })}</Buttonv2>,
