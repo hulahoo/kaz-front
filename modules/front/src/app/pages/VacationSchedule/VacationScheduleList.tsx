@@ -226,7 +226,7 @@ class VacationScheduleListComponent extends React.Component<VacationScheduleList
               : <></>}
             <FormattedMessage id="vacationSchedule.btn.approve"/>
           </Button>
-          <div style={{display:'inline'}}>
+          <div style={{display: 'inline'}}>
             <ReactHTMLTableToExcel id="test-table-xls-button"
                                    className="ant-btn ant-btn-default"
                                    table="table-to-xls"
@@ -378,7 +378,7 @@ class VacationScheduleListComponent extends React.Component<VacationScheduleList
           value: organization
         }, {
           name: 'dat',
-          value: moment().format(JSON_DATE_TIME_FORMAT),
+          value: moment().format("YYYY") + "-01-01",
         }]
       },
       this.props.intl);
