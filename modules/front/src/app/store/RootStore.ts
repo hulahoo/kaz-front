@@ -11,6 +11,7 @@ import DefaultGoalStore from "./DefaultGoalStore";
 import CourseCatalogStore from "./CourseCatalogStore";
 import MyTeamStore from "./MyTeamStore";
 import AssistantTeamStore from "./AssistantTeamStore";
+import VacationRequestStore from "./VacationRequestStore";
 
 export default class RootStore {
   cubaRest: CubaApp;
@@ -26,6 +27,8 @@ export default class RootStore {
   @observable kpiEditStore: KpiStore;
   @observable goalStore: DefaultGoalStore;
 
+  vacationRequestStore: VacationRequestStore;
+
   constructor(cubaRest: CubaApp) {
     this.cubaRest = cubaRest;
     this.menu = new MenuStore(this);
@@ -35,6 +38,7 @@ export default class RootStore {
     this.bellNotification = new BellNotificationStore(this);
     this.myTeamInfo = new MyTeamStore(this);
     this.assistantTeamInfo = new AssistantTeamStore(this);
+    this.vacationRequestStore = new VacationRequestStore();
     this.createDefaultGoalStore();
   }
 
@@ -56,7 +60,10 @@ export default class RootStore {
 
   clearStores = () => {
     this.courseCatalogStore = undefined;
+    this.userInfo.clearUserInfo();
+    this.login.clearCredentials();
     this.myTeamInfo.clearMyTeamInfo();
     this.assistantTeamInfo.clearAssistantTeamInfo();
+    this.vacationRequestStore.clear();
   }
 }

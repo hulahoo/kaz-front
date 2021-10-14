@@ -1,16 +1,21 @@
 import * as React from 'react';
 
-import {observer} from "mobx-react";
+import {inject, observer} from "mobx-react";
 import * as am4core from "@amcharts/amcharts4/core";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 import * as am4charts from "@amcharts/amcharts4/charts";
+import {CategoryAxisDataItem} from "@amcharts/amcharts4/charts";
 import am4lang_ru_RU from "@amcharts/amcharts4/lang/ru_RU";
 import {getCubaREST} from "@cuba-platform/react";
 import {observable} from "mobx";
+import {RootStoreProp} from "../../store";
+import {Tooltip} from "@amcharts/amcharts4/core";
 
 export type GanttChartVacationScheduleData = {
   personGroupId: string;
   personFullName: string;
+  positionName: string;
+  personNameWithPosition: string;
   startDate: string;
   endDate: string;
   absenceType: string;
@@ -23,8 +28,9 @@ export type Props = {
   endDate: string,
 }
 
+@inject("rootStore")
 @observer
-export class VacationGanttChart extends React.Component<Props> {
+export class VacationGanttChart extends React.Component<Props & RootStoreProp> {
 
   gantData: Array<GanttChartVacationScheduleData> = [];
 
@@ -50,6 +56,9 @@ export class VacationGanttChart extends React.Component<Props> {
       "tsadv_VacationScheduleRequestService",
       "ganttChart",
       {
+        personGroupId: this.props.rootStore!.assistantTeamInfo!.active
+          ? this.props.rootStore!.assistantTeamInfo!.selectedManager!.groupId
+          : this.props.rootStore!.userInfo.personGroupId!,
         startDate: startDate,
         endDate: endDate,
       }
@@ -79,7 +88,7 @@ export class VacationGanttChart extends React.Component<Props> {
 
     chart.data = this.gantData.map(value => {
       return {
-        "category": value.personFullName,
+        "category": value.personGroupId,
         "start": value.startDate,
         "end": value.endDate,
         "color": colorSet.getIndex(value.colorIndex).brighten(value.brighten),
@@ -94,6 +103,19 @@ export class VacationGanttChart extends React.Component<Props> {
     categoryAxis.dataFields.category = "category";
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.inversed = true;
+
+    categoryAxis.renderer.labels.template.align = 'left';
+    categoryAxis.renderer.labels.template.wrap = true;
+    categoryAxis.renderer.labels.template.maxWidth = 450;
+
+    categoryAxis.adapter.add('dataContextValue', (value, target) => {
+      const gantData = this.gantData.find(data => data.personGroupId === value.value);
+      if (gantData) {
+        const dataItem = value.dataItem as unknown as CategoryAxisDataItem;
+        dataItem.label.html = this.getCategory(gantData);
+      }
+      return value;
+    })
 
     var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.renderer.minGridDistance = 70;
@@ -112,5 +134,9 @@ export class VacationGanttChart extends React.Component<Props> {
     series1.columns.template.strokeOpacity = 1;
 
     chart.scrollbarX = new am4core.Scrollbar();
+  }
+
+  getCategory = (gantData: GanttChartVacationScheduleData): string => {
+    return `<div><p style="margin: 0">${gantData.personFullName}</p><p style="margin: 0; font-size: smaller">${gantData.positionName}</p></div>`;
   }
 }
