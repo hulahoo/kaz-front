@@ -56,21 +56,17 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
   )
 
   @observable
-  currentOrganization: string | undefined | null
-
   positionGroupDc = collection<PositionGroupExt>(
     PositionGroupExt.NAME,
     {
+      view: "position.group.company",
       filter: {
         conditions: [
           {
-            property: "organizationGroupExt",
-            operator: "=",
-            value: this.currentOrganization ? this.currentOrganization : null
+            property: "company.code", operator: "=", value: this.props.rootStore!.userInfo.companyCode!
           }
         ]
-      },
-      view: "_minimal"
+      }
     }
   )
 
@@ -234,7 +230,29 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
                     {fieldName: messages[PositionOverlappingRequest.NAME + '.department']})
                 }],
                 getValueFromEvent: organizationId => {
-                  this.currentOrganization = organizationId
+                  if (organizationId) {
+                    this.positionGroupDc.filter = {
+                      conditions: [
+                        {
+                          property: "company.code", operator: "=", value: this.props.rootStore!.userInfo.companyCode!
+                        },
+                        {
+                          property: "organizationGroup.id",
+                          operator: "=",
+                          value: organizationId
+                        }
+                      ]
+                    };
+                  } else {
+                    this.positionGroupDc.filter = {
+                      conditions: [
+                        {
+                          property: "company.code", operator: "=", value: this.props.rootStore!.userInfo.companyCode!
+                        }
+                      ]
+                    };
+                  }
+                  this.positionGroupDc.load()
                   return organizationId
                 }
               }}
@@ -315,10 +333,6 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
   }
 
   onReactionDisposerEffect = (item: PositionOverlappingRequest | undefined) => {
-    const organizationId = this.props.form.getFieldValue("department");
-    if (organizationId) {
-      this.currentOrganization = organizationId
-    }
     const personGroupId = item && item.personGroup ? item.personGroup.id! : this.props!.personGroupId!;
     const requestDate = item && item.requestDate ? item.requestDate : moment().toISOString();
     getCubaREST()!.searchEntities<PersonExt>(PersonExt.NAME, {
@@ -339,8 +353,31 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
       view: 'person-edit'
     }).then(value => value[0])
       .then(value => this.person = value)
-  }
 
+    const organizationId = item!.department!.id;
+    console.log('organizationId2', organizationId);
+    if (organizationId) {
+      console.log('test');
+      this.positionGroupDc = collection<PositionGroupExt>(
+        PositionGroupExt.NAME,
+        {
+          view: "position.group.company",
+          filter: {
+            conditions: [
+              {
+                property: "company.code", operator: "=", value: this.props.rootStore!.userInfo.companyCode!
+              },
+              {
+                property: "organizationGroup.id",
+                operator: "=",
+                value: organizationId
+              }
+            ]
+          }
+        }
+      );
+    }
+  }
 }
 
 
