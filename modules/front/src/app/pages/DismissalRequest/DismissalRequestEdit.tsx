@@ -306,6 +306,9 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
               propertyName="employeeFile"
               form={this.props.form}
               formItemOpts={{ style: { marginBottom: "12px" } }}
+              getFieldDecoratorOpts={{
+                rules: [{ required: true }]
+              }}
             />
 
             {this.takCard()}
