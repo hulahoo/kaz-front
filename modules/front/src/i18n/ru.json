@@ -279,6 +279,7 @@
   "bproc.SEND_FOR_APPROVAL.success": "Форма отправлена на утверждение",
   "bproc.START.success": "Форма отправлена на утверждение",
   "candidates": "Кандидаты",
+  "employees": "Работники",
   "APPROVE": "Утвердить",
   "REJECT": "Отклонить",
   "REVISION": "На доработку",

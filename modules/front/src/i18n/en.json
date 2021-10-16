@@ -293,6 +293,7 @@
   "bproc.SEND_FOR_APPROVAL.success": "Form sent for approval",
   "bproc.START.success": "Form sent for approval",
   "candidates": "Candidates",
+  "employees": "Employees",
   "APPROVE": "Approve",
   "REJECT": "Reject",
   "CANCEL": "Cancel process",
