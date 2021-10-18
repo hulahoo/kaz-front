@@ -433,6 +433,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
           startDate: dateFrom.format(JSON_DATE_TIME_FORMAT)
         }
       })
+        .then(value => Math.floor(value))
         .then(value => {
           this.props.form.setFieldsValue({"balance": value});
           this.callForceAbsenceDayValidator();
