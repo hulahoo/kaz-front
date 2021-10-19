@@ -943,7 +943,7 @@ export const restServices = {
         "tsadv_IncentiveService",
         "getIncentiveList",
         {
-          paginationPojo: pagination
+          querySettings: pagination
         }
       ).then(value => {
         const parse = JSON.parse(value);
