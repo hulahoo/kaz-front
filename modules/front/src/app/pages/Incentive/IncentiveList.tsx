@@ -56,6 +56,7 @@ class IncentiveListComponent extends React.Component<MainStoreInjected & Wrapped
                    showSizeChanger: true,
                    total: this.dataCollection.count,
                  }}
+                 loading={this.dataCollection.status!=="DONE"}
                  rowKey="id">
             <Column title={<>{this.props.intl.formatMessage({id: "period"})}</>}
                     dataIndex="date"
