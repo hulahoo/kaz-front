@@ -44,6 +44,7 @@ import {JSON_DATE_TIME_FORMAT} from "../../util/Date/Date";
 import {instanceStore} from "../../util/InstanceStore";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {SerializedEntity} from "@cuba-platform/rest";
+import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 
 export type VacationPojo = {
   id?: string,
@@ -464,28 +465,57 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     if (this.laborLeave && this.laborLeave.minDay && startDate) {
       const year = parseInt(startDate.format('YYYY'));
 
-      await getCubaREST()!.searchEntitiesWithCount(VacationScheduleRequest.NAME, {
+      let hasMinDayVacation = false;
+
+      await getCubaREST()!.searchEntitiesWithCount(Absence.NAME, {
         conditions: [{
           property: 'personGroup.id',
           operator: '=',
-          value: this.personGroupId
+          value: this.personGroupId!
+        }, {
+          property: 'type.id',
+          operator: '=',
+          value: this.laborLeave.id
         }, {
           property: 'absenceDays',
           operator: '>=',
           value: this.laborLeave.minDay
         }, {
-          property: 'startDate',
+          property: 'dateFrom',
           operator: '>',
           value: (year - 1) + '-12-31'
         }, {
-          property: 'endDate',
+          property: 'dateFrom',
           operator: '<',
           value: (year + 1) + '-01-01'
         }]
-      }, {
-        limit: 1
-      }).then(value => this.hasMinDayVacation = (value.count > 0))
-        .then(value => this.callForceAbsenceDayValidator());
+      }).then(value => hasMinDayVacation = (value.count > 0));
+
+      if (!hasMinDayVacation)
+        await getCubaREST()!.searchEntitiesWithCount(VacationScheduleRequest.NAME, {
+          conditions: [{
+            property: 'personGroup.id',
+            operator: '=',
+            value: this.personGroupId
+          }, {
+            property: 'absenceDays',
+            operator: '>=',
+            value: this.laborLeave.minDay
+          }, {
+            property: 'startDate',
+            operator: '>',
+            value: (year - 1) + '-12-31'
+          }, {
+            property: 'endDate',
+            operator: '<',
+            value: (year + 1) + '-01-01'
+          }]
+        }, {
+          limit: 1
+        }).then(value => hasMinDayVacation = (value.count > 0));
+      this.hasMinDayVacation = hasMinDayVacation;
+      console.log(this.hasMinDayVacation);
+      this.callForceAbsenceDayValidator();
     }
   }
 
