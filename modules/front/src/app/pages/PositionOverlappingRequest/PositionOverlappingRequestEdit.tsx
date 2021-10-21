@@ -130,6 +130,9 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.langValue3 !== "Draft" : true;
   };
 
+  constructor(props:any) {
+    super(props);
+  }
 
   render() {
     if (!this.dataInstance) {
