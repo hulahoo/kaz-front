@@ -181,6 +181,7 @@
   "placeholder.manager": "Введите руководителя",
   "kpi.edit.startDate": "Сроки формы KPI c",
   "placeholder.date": "Введите дату",
+  "personInfo.phone": "тел",
   "kpi.edit.endDate": "Сроки формы KPI по",
   "kpi.edit.tabs.ratingForm": "Форма оценки",
   "kpi.edit.tabs.approvers": "Согласующие",

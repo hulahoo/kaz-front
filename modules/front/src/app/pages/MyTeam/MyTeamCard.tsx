@@ -1,7 +1,7 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
 
-import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {collection, getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {Card, List, Tabs} from "antd";
 import Meta from "antd/lib/card/Meta";
@@ -18,6 +18,7 @@ import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 import MyTeamAbsenceRequest from "./timeManagement/MyTeamAbsenceRequest/MyTeamAbsenceRequest";
 import {MyTeamData} from "./MyTeamComponent";
+import {PersonContact} from "../../../cuba/entities/base/tsadv$PersonContact";
 
 const {TabPane} = Tabs;
 
@@ -43,7 +44,11 @@ export type PersonProfile = {
   phone?: string,
   companyCode?: string,
 }
-
+export type PersonContact= {
+  id:string,
+  type: any,
+  contactValue: any
+}
 export type MyTeamCardProps = {
   personGroupId: string,
   selectedData?: MyTeamData,
@@ -64,9 +69,11 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
 
   @observable person?: PersonProfile;
   @observable urlImg?: string;
-
+  @observable type: Array<PersonContact>
   @observable selectedTab: string = this.props.selectedTab || 'personalData';
   @observable selectedLeftMenu: string = this.props.selectedLeftMenu || 'personalData';
+
+
 
   callSetSelectedTabOrLeftMenu = () => {
     if (this.props.onChangeSelectedInfo)
@@ -127,10 +134,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
   }
 
   render() {
-
+    const arr = (this.type && this.type!.map(item=>item))
     if (!this.person) return <></>;
-
     return (
+
       <div style={{height: '100%', overflowY: 'auto'}}>
         <div style={{
           float: 'left', marginTop: '40px',
@@ -153,11 +160,22 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
                   title={this.person.positionName || ''}>
             <Meta title={<span style={{fontSize: 10}}>{this.person.positionName || ''}</span>}/>
             </span>
-            <Meta title={<span style={{fontSize: 10}}><span>e-mail: </span>
-              {(this.person.email ?
-                <a href={'mailto:' + this.person.email}>{this.person.email}</a> : <></>)}
-        </span>}/>
-            <Meta title={<span style={{fontSize: 9}}>{"тел: " + (this.person.phone || '')}</span>}/>
+              {typeof arr != "undefined" && arr != null && arr.length > 0 ?
+                  arr && arr.filter((item) =>item!.type!.code === "email" || item!.type!.code ==="person email"
+                ).map(item=><Meta title={<span style={{fontSize: 10}}><span>e-mail: </span>
+                <a href={'mailto:' + item.contactValue}>{item.contactValue}</a>
+                </span>}/>)
+                  :<Meta title={<span style={{fontSize: 10}}><span>e-mail: </span>
+                    <a href={'mailto:' }></a>
+                </span>}/>
+              }
+              {typeof arr != "undefined" && arr != null && arr.length > 0 ?
+                arr && arr.filter(item=> {
+                  return item!.type!.code === "M" || item!.type!.code ==="W1" || item!.type!.code ==="H1"|| item!.type!.code === "mobile"
+                }).map(item=> <Meta title={<span style={{fontSize: 9}}> <FormattedMessage id={"personInfo.phone"}/> {": " + item.contactValue }</span>}/>)
+                : <Meta title={<span style={{fontSize: 9}}>{"тел: "  }</span>}/>
+              }
+
           </Card>
           <List style={{fontSize: 'smaller'}}>
             {this.getLeftMenu().map((menu: Menu) => <List.Item
@@ -195,6 +213,15 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
     restServices.employeeService.personProfile(this.props.personGroupId)
       .then(value => {
         this.person = value;
+        getCubaREST()!.searchEntities<PersonContact>(PersonContact.NAME,{
+          conditions:[{
+            property:"personGroup.id",
+            operator:"=",
+            value:this.person.groupId
+          }]
+          },{view:"personContact.full"})
+          .then(value=> this.type = value)
+          .catch(() => {})
         if (this.person && this.person.imageId)
           getCubaREST()!.getFile(this.person.imageId).then((value: Blob) => this.urlImg = URL.createObjectURL(value));
       })
@@ -204,7 +231,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           });
         }
       )
+    console.log(this.person)
+
   }
+
 }
 
 export default injectIntl(MyTeamCard);
