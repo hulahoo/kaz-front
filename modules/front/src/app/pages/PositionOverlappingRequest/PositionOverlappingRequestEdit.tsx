@@ -222,6 +222,7 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
               form={this.props.form}
               formItemOpts={{style: {marginBottom: "12px"}}}
               optionsContainer={this.organizationGroupDc}
+              disabled={this.isNotDraft()!}
               getFieldDecoratorOpts={{
                 rules: [{
                   required: true,
