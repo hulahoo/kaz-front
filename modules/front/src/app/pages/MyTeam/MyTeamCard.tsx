@@ -1,7 +1,7 @@
 import * as React from "react";
 import {inject, observer} from "mobx-react";
 
-import {collection, getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {getCubaREST, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {Card, List, Tabs} from "antd";
 import Meta from "antd/lib/card/Meta";
@@ -231,7 +231,6 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
           });
         }
       )
-    console.log(this.person)
 
   }
 
