@@ -110,6 +110,11 @@ export type AssignmentGroupExtView<
       | "integrationUserLogin"
       | "list"
       | "assignment"
+      | "personGroup"
+      | "jobGroup"
+      | "gradeGroup"
+      | "organizationGroup"
+      | "positionGroup"
       | "analytics"
     >
   : V extends "assignmentGroupExt-with-employee-number"

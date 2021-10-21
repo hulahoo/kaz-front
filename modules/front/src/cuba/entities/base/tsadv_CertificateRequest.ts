@@ -30,12 +30,12 @@ export type CertificateRequestView<
       | "requestNumber"
       | "showSalary"
       | "numberOfCopy"
+      | "placeOfDelivery"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestDate"
       | "comment"
-      | "placeOfDelivery"
     >
   : V extends "_local"
   ? Pick<
@@ -43,13 +43,13 @@ export type CertificateRequestView<
       | "id"
       | "showSalary"
       | "numberOfCopy"
+      | "placeOfDelivery"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
       | "comment"
-      | "placeOfDelivery"
     >
   : V extends "_minimal"
   ? Pick<CertificateRequest, "id" | "requestNumber">
@@ -59,6 +59,7 @@ export type CertificateRequestView<
       | "id"
       | "showSalary"
       | "numberOfCopy"
+      | "placeOfDelivery"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -71,7 +72,6 @@ export type CertificateRequestView<
       | "file"
       | "language"
       | "certificateType"
-      | "placeOfDelivery"
     >
   : V extends "portal.certificateRequest-edit"
   ? Pick<
@@ -79,6 +79,7 @@ export type CertificateRequestView<
       | "id"
       | "showSalary"
       | "numberOfCopy"
+      | "placeOfDelivery"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -91,6 +92,5 @@ export type CertificateRequestView<
       | "file"
       | "language"
       | "certificateType"
-      | "placeOfDelivery"
     >
   : never;

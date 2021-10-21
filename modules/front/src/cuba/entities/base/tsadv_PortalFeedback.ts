@@ -18,15 +18,22 @@ export type PortalFeedbackView<
 > = V extends "_base"
   ? Pick<
       PortalFeedback,
-      "id" | "email" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "category"
+      | "email"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : V extends "_local"
   ? Pick<
       PortalFeedback,
       "id" | "email" | "legacyId" | "organizationBin" | "integrationUserLogin"
     >
-  : V extends "portalFeedback-portal"
+  : V extends "_minimal"
   ? Pick<PortalFeedback, "id" | "category">
+  : V extends "portalFeedback-portal"
+  ? Pick<PortalFeedback, "id" | "category" | "category">
   : V extends "portalFeedback.edit"
   ? Pick<
       PortalFeedback,

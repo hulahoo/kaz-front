@@ -122,6 +122,8 @@ export type HierarchyElementExtView<
       | "positionGroup"
       | "organizationGroup"
       | "parent"
+      | "parentGroup"
+      | "group"
       | "hierarchy"
     >
   : V extends "hierarchyElement.full"
@@ -238,6 +240,7 @@ export type HierarchyElementExtView<
       | "parentGroup"
       | "group"
       | "hierarchy"
+      | "parent"
     >
   : V extends "new.hierarchyElement.browse"
   ? Pick<

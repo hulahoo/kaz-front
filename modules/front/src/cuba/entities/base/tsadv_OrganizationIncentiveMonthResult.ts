@@ -1,6 +1,5 @@
 import { StandardEntity } from "./sys$StandardEntity";
 import { DicCompany } from "./base_DicCompany";
-import { OrganizationGroupExt } from "./base$OrganizationGroupExt";
 import { OrganizationIncentiveResult } from "./tsadv_OrganizationIncentiveResult";
 import { DicIncentiveResultStatus } from "./tsadv_DicIncentiveResultStatus";
 export class OrganizationIncentiveMonthResult extends StandardEntity {
@@ -16,7 +15,10 @@ export type OrganizationIncentiveMonthResultViewName =
   | "_local"
   | "_minimal"
   | "organizationIncentiveMonthResult.browse"
-  | "organizationIncentiveMonthResult.edit";
+  | "organizationIncentiveMonthResult.edit"
+  | "organizationIncentiveMonthResult.integration"
+  | "organizationIncentiveMonthResult.integration.full"
+  | "portal-organizationIncentiveMonthResult-view";
 export type OrganizationIncentiveMonthResultView<
   V extends OrganizationIncentiveMonthResultViewName
 > = V extends "_base"
@@ -32,5 +34,20 @@ export type OrganizationIncentiveMonthResultView<
   ? Pick<
       OrganizationIncentiveMonthResult,
       "id" | "period" | "comment" | "status"
+    >
+  : V extends "organizationIncentiveMonthResult.integration"
+  ? Pick<
+      OrganizationIncentiveMonthResult,
+      "id" | "period" | "comment" | "status"
+    >
+  : V extends "organizationIncentiveMonthResult.integration.full"
+  ? Pick<
+      OrganizationIncentiveMonthResult,
+      "id" | "period" | "comment" | "incentiveResults"
+    >
+  : V extends "portal-organizationIncentiveMonthResult-view"
+  ? Pick<
+      OrganizationIncentiveMonthResult,
+      "id" | "period" | "comment" | "incentiveResults" | "status"
     >
   : never;

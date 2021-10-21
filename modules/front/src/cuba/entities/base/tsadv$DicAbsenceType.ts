@@ -3,6 +3,7 @@ import { DicAbsenceCategory } from "./tsadv$DicAbsenceCategory";
 export class DicAbsenceType extends AbstractDictionary {
   static NAME = "tsadv$DicAbsenceType";
   useInSelfService?: boolean | null;
+  isEcologicalAbsence?: boolean | null;
   availableToManager?: boolean | null;
   vacationDurationType?: any | null;
   elmaTransfer?: boolean | null;
@@ -34,9 +35,8 @@ export class DicAbsenceType extends AbstractDictionary {
   temporaryTransfer?: boolean | null;
   overtimeWork?: boolean | null;
   numDaysCalendarYear?: number | null;
-  isEcologicalAbsence?: number | null;
-  isFileRequired?: number | null;
-  isScheduleOffsetsRequest?: number | null;
+  isFileRequired?: boolean | null;
+  isScheduleOffsetsRequest?: boolean | null;
 }
 export type DicAbsenceTypeViewName =
   | "_base"
@@ -52,6 +52,7 @@ export type DicAbsenceTypeView<
       | "langValue"
       | "description"
       | "useInSelfService"
+      | "isEcologicalAbsence"
       | "availableToManager"
       | "vacationDurationType"
       | "elmaTransfer"
@@ -81,6 +82,9 @@ export type DicAbsenceTypeView<
       | "workOnWeekend"
       | "temporaryTransfer"
       | "overtimeWork"
+      | "numDaysCalendarYear"
+      | "isFileRequired"
+      | "isScheduleOffsetsRequest"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -101,16 +105,13 @@ export type DicAbsenceTypeView<
       | "active"
       | "isDefault"
       | "order"
-      | "numDaysCalendarYear"
-      | "isEcologicalAbsence"
-      | "isFileRequired"
-      | "isScheduleOffsetsRequest"
     >
   : V extends "_local"
   ? Pick<
       DicAbsenceType,
       | "id"
       | "useInSelfService"
+      | "isEcologicalAbsence"
       | "availableToManager"
       | "vacationDurationType"
       | "elmaTransfer"
@@ -140,6 +141,9 @@ export type DicAbsenceTypeView<
       | "workOnWeekend"
       | "temporaryTransfer"
       | "overtimeWork"
+      | "numDaysCalendarYear"
+      | "isFileRequired"
+      | "isScheduleOffsetsRequest"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -160,10 +164,6 @@ export type DicAbsenceTypeView<
       | "active"
       | "isDefault"
       | "order"
-      | "numDaysCalendarYear"
-      | "isEcologicalAbsence"
-      | "isFileRequired"
-      | "isScheduleOffsetsRequest"
     >
   : V extends "_minimal"
   ? Pick<DicAbsenceType, "id" | "langValue" | "description">
@@ -172,6 +172,7 @@ export type DicAbsenceTypeView<
       DicAbsenceType,
       | "id"
       | "useInSelfService"
+      | "isEcologicalAbsence"
       | "availableToManager"
       | "vacationDurationType"
       | "elmaTransfer"
@@ -201,6 +202,9 @@ export type DicAbsenceTypeView<
       | "workOnWeekend"
       | "temporaryTransfer"
       | "overtimeWork"
+      | "numDaysCalendarYear"
+      | "isFileRequired"
+      | "isScheduleOffsetsRequest"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -223,9 +227,5 @@ export type DicAbsenceTypeView<
       | "order"
       | "absenceCategory"
       | "company"
-      | "numDaysCalendarYear"
-      | "isEcologicalAbsence"
-      | "isFileRequired"
-      | "isScheduleOffsetsRequest"
     >
   : never;

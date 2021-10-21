@@ -47,6 +47,7 @@ export type OrganizationGroupExtViewName =
   | "organizationGroup.list"
   | "organizationGroup.lookup"
   | "organizationGroupExt-for-integration-rest"
+  | "organizationGroupExt-for-struct-path"
   | "organizationGroupExt-receptionAssignment"
   | "organizationGroupExt-view-for-requisition"
   | "organizationGroupExt.for.attestation.lookup";
@@ -193,6 +194,21 @@ export type OrganizationGroupExtView<
       | "organizationNameLang4"
       | "organizationNameLang5"
       | "analytics"
+    >
+  : V extends "organizationGroupExt-for-struct-path"
+  ? Pick<
+      OrganizationGroupExt,
+      | "id"
+      | "is_internal"
+      | "organizationNameLang1"
+      | "organizationNameLang2"
+      | "organizationNameLang3"
+      | "organizationNameLang4"
+      | "organizationNameLang5"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "list"
     >
   : V extends "organizationGroupExt-receptionAssignment"
   ? Pick<

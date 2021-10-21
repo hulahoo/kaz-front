@@ -35,7 +35,12 @@ export class Address extends AbstractParentEntity {
   addressKazakh?: string | null;
   addressEnglish?: string | null;
 }
-export type AddressViewName = "_base" | "_local" | "_minimal" | "address.view";
+export type AddressViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "address.view"
+  | "portal.my-profile";
 export type AddressView<V extends AddressViewName> = V extends "_base"
   ? Pick<
       Address,
@@ -116,6 +121,37 @@ export type AddressView<V extends AddressViewName> = V extends "_base"
       | "addressType"
       | "country"
       | "city"
+      | "kato"
+      | "streetType"
+    >
+  : V extends "portal.my-profile"
+  ? Pick<
+      Address,
+      | "id"
+      | "address"
+      | "postalCode"
+      | "cityName"
+      | "factAddress"
+      | "registrationAddress"
+      | "factAddressKATOCode"
+      | "registrationAddressKATOCode"
+      | "startDate"
+      | "endDate"
+      | "streetName"
+      | "building"
+      | "block"
+      | "flat"
+      | "addressForExpats"
+      | "notes"
+      | "addressKazakh"
+      | "addressEnglish"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "addressType"
+      | "country"
+      | "attachments"
+      | "personGroup"
       | "kato"
       | "streetType"
     >

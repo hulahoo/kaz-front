@@ -1,11 +1,11 @@
 import { StandardEntity } from "./sys$StandardEntity";
 import { DicHrRole } from "./tsadv$DicHrRole";
-import { BaseUserExt } from "./base$UserExt";
+import { UserExt } from "./base$UserExt";
 export class BprocActors extends StandardEntity {
   static NAME = "tsadv_BprocActors";
   entityId?: any | null;
   hrRole?: DicHrRole | null;
-  user?: BaseUserExt | null;
+  user?: UserExt | null;
   bprocUserTaskCode?: string | null;
 }
 export type BprocActorsViewName = "_base" | "_local" | "_minimal";

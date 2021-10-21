@@ -8,9 +8,8 @@ import { JobGroup } from "./tsadv$JobGroup";
 import { DicSex } from "./base$DicSex";
 import { DicDocumentType } from "./tsadv$DicDocumentType";
 import { DicRegion } from "./base$DicRegion";
-import { Address } from "./tsadv$Address";
+import { DicAddressType } from "./tsadv$DicAddressType";
 import { FileDescriptor } from "./sys$FileDescriptor";
-import {DicAddressType} from "./tsadv$DicAddressType";
 export class InsuredPerson extends StandardEntity {
   static NAME = "tsadv$InsuredPerson";
   attachDate?: any | null;

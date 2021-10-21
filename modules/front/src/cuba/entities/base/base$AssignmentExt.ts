@@ -44,6 +44,7 @@ export type AssignmentExtViewName =
   | "assignment.card"
   | "assignment.edit"
   | "assignment.full"
+  | "assignment.gradeGroup"
   | "assignment.historyEdit"
   | "assignment.isManager"
   | "assignment.match"
@@ -54,13 +55,13 @@ export type AssignmentExtViewName =
   | "assignment.schedule"
   | "assignment.view"
   | "assignmentBrowse.view"
+  | "assignmentExt-for-integration"
   | "assignmentExt-view"
   | "assignmentExt-with-type"
   | "assignmentExt.bpm.view"
   | "assignmentExtBrowse.view"
   | "assignmentForManger.browse"
   | "assignmentRequisitionEdit"
-  | "portal-assignment-group"
   | "portal-assignment-group";
 export type AssignmentExtView<
   V extends AssignmentExtViewName
@@ -126,10 +127,12 @@ export type AssignmentExtView<
       | "group"
       | "endDate"
       | "startDate"
-      | "personGroup"
       | "jobGroup"
       | "organizationGroup"
       | "positionGroup"
+      | "primaryFlag"
+      | "startDate"
+      | "endDate"
     >
   : V extends "assignmanetExt.view.for.positionEdit"
   ? Pick<
@@ -338,6 +341,18 @@ export type AssignmentExtView<
       | "location"
       | "positionGroup"
       | "assignmentStatus"
+    >
+  : V extends "assignment.gradeGroup"
+  ? Pick<
+      AssignmentExt,
+      | "id"
+      | "organizationGroup"
+      | "jobGroup"
+      | "group"
+      | "endDate"
+      | "startDate"
+      | "positionGroup"
+      | "gradeGroup"
     >
   : V extends "assignment.historyEdit"
   ? Pick<
@@ -551,6 +566,18 @@ export type AssignmentExtView<
       | "group"
       | "organizationGroup"
     >
+  : V extends "assignmentExt-for-integration"
+  ? Pick<
+      AssignmentExt,
+      | "id"
+      | "organizationGroup"
+      | "jobGroup"
+      | "group"
+      | "endDate"
+      | "startDate"
+      | "personGroup"
+      | "group"
+    >
   : V extends "assignmentExt-view"
   ? Pick<
       AssignmentExt,
@@ -707,28 +734,6 @@ export type AssignmentExtView<
       | "endDate"
       | "writeHistory"
       | "assignDate"
-      | "personGroup"
-    >
-  : V extends "portal-assignment-group"
-  ? Pick<
-      AssignmentExt,
-      | "id"
-      | "orderNumber"
-      | "orderDate"
-      | "durationProbationPeriod"
-      | "unit"
-      | "probationEndDate"
-      | "primaryFlag"
-      | "fte"
-      | "temporaryEndDate"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "startDate"
-      | "endDate"
-      | "writeHistory"
-      | "assignDate"
-      | "group"
       | "personGroup"
     >
   : V extends "portal-assignment-group"

@@ -1,6 +1,7 @@
-import {getMenuItems} from "@cuba-platform/react";
-import {rootStore} from "./app/store";
-import {MenuRouteItem, MenuSubMenu} from "./app/store/MenuStore";
+import { ConcourseManagement } from "./app/pages/Concourse/ConcourseManagement";
+import { getMenuItems } from "@cuba-platform/react";
+import { rootStore } from "./app/store";
+import { MenuRouteItem, MenuSubMenu } from "./app/store/MenuStore";
 
 export const menuItems = getMenuItems();
 
@@ -28,3 +29,10 @@ function flattenRoutes(
 export function getRouteList() {
   return flattenRoutes(rootStore.menu.menuList);
 }
+
+menuItems.push({
+  pathPattern: "/concourseManagement/:entityId?",
+  menuLink: "/concourseManagement",
+  component: ConcourseManagement,
+  caption: "ConcourseManagement"
+});

@@ -2,11 +2,9 @@ import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PerformancePlan } from "./tsadv$PerformancePlan";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
-import {DicPerformanceStage} from "./tsadv_DicPerformanceStage";
+import { DicPerformanceStage } from "./tsadv_DicPerformanceStage";
 export class AssignedPerformancePlan extends AbstractBprocRequest {
   static NAME = "tsadv$AssignedPerformancePlan";
-  static PROCESS_DEFINITION_KEY = "kpi";
-
   performancePlan?: PerformancePlan | null;
   result?: any | null;
   gzp?: any | null;
@@ -132,12 +130,13 @@ export type AssignedPerformancePlanView<
       | "requestNumber"
       | "stepStageStatus"
       | "performancePlan"
-      | "stepStageStatus"
+      | "assignedPerson"
       | "extraPoint"
       | "finalScore"
       | "purpose"
       | "file"
-      | "assignedPerson"
+      | "lineManager"
+      | "stage"
       | "status"
     >
   : V extends "assignedPerformancePlan.browse"
@@ -169,6 +168,7 @@ export type AssignedPerformancePlanView<
       | "performancePlan"
       | "assignedPerson"
       | "assigned_by"
+      | "stage"
       | "status"
     >
   : never;

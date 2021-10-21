@@ -57,7 +57,8 @@ import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
 import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHierarchyManagement";
 import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveApproveManagement";
-import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
+// import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
+import { ConcourseRequestManagement } from "./pages/ConcourseRequest/ConcourseRequestManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -173,9 +174,12 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 {/*<Route exact={true}*/}
                 {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
                 {/*       component={CurrentScheduleRequestManagement}/>*/}
+                {/*<Route exact={true}*/}
+                {/*                        path={ConcourseComponent.PATH + "/:entityId?"}*/}
+                {/*                        component={ConcourseComponent}/>*/}
                 <Route exact={true}
-                                        path={ConcourseComponent.PATH + "/:entityId?"}
-                                        component={ConcourseComponent}/>
+                       path={ConcourseRequestManagement.PATH + "/:entityId?"}
+                       component={ConcourseRequestManagement}/>
                 <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>

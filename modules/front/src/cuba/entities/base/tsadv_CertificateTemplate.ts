@@ -15,7 +15,11 @@ export class CertificateTemplate extends AbstractParentEntity {
   signer?: PersonGroupExt | null;
   report?: Report | null;
 }
-export type CertificateTemplateViewName = "_base" | "_local" | "_minimal";
+export type CertificateTemplateViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "portal-certificateTemplate";
 export type CertificateTemplateView<
   V extends CertificateTemplateViewName
 > = V extends "_base"
@@ -35,5 +39,19 @@ export type CertificateTemplateView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "portal-certificateTemplate"
+  ? Pick<
+      CertificateTemplate,
+      | "id"
+      | "showSalary"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "receivingType"
+      | "language"
+      | "report"
+      | "organization"
+      | "certificateType"
     >
   : never;

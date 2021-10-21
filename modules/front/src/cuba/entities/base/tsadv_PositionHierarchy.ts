@@ -3,7 +3,7 @@ export class PositionHierarchy extends BaseUuidEntity {
   static NAME = "tsadv_PositionHierarchy";
   positionName?: string | null;
   haveChildren?: boolean | null;
-  children?: PositionHierarchy[] | null;
+  children?: PositionHierarchy | null;
   parent?: PositionHierarchy | null;
 }
 export type PositionHierarchyViewName = "_base" | "_local" | "_minimal";

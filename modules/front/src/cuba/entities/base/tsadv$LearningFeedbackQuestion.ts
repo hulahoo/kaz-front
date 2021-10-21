@@ -27,13 +27,13 @@ export type LearningFeedbackQuestionView<
   ? Pick<
       LearningFeedbackQuestion,
       | "id"
+      | "questionLangValue"
       | "questionLangValue1"
       | "questionLangValue2"
       | "questionLangValue3"
       | "questionLangValue4"
       | "questionLangValue5"
       | "questionType"
-      | "questionLangValue"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -53,6 +53,8 @@ export type LearningFeedbackQuestionView<
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_minimal"
+  ? Pick<LearningFeedbackQuestion, "id" | "questionLangValue">
   : V extends "course.feedback"
   ? Pick<
       LearningFeedbackQuestion,
@@ -72,6 +74,7 @@ export type LearningFeedbackQuestionView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "answers"
     >
   : V extends "learningFeedbackQuestion.edit"
   ? Pick<

@@ -5,6 +5,7 @@ import { DicAddressType } from "./tsadv$DicAddressType";
 import { ContractConditions } from "./tsadv$ContractConditions";
 import { InsuranceContractAdministrator } from "./tsadv$InsuranceContractAdministrator";
 import { Attachment } from "./tsadv$Attachment";
+import { InsuredPerson } from "./tsadv$InsuredPerson";
 export class InsuranceContract extends StandardEntity {
   static NAME = "tsadv$InsuranceContract";
   policyName?: string | null;
@@ -28,6 +29,7 @@ export class InsuranceContract extends StandardEntity {
   programConditions?: ContractConditions[] | null;
   contractAdministrator?: InsuranceContractAdministrator[] | null;
   attachments?: Attachment[] | null;
+  insuredPersons?: InsuredPerson[] | null;
 }
 export type InsuranceContractViewName =
   | "_base"

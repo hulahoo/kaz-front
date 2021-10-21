@@ -6,6 +6,7 @@ export class GradeGroup extends AbstractGroup {
   list?: Grade[] | null;
   company?: DicCompany | null;
   grade?: Grade | null;
+  availableSalary?: boolean | null;
 }
 export type GradeGroupViewName =
   | "_base"
@@ -16,12 +17,21 @@ export type GradeGroupViewName =
 export type GradeGroupView<V extends GradeGroupViewName> = V extends "_base"
   ? Pick<
       GradeGroup,
-      "id" | "grade" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "grade"
+      | "availableSalary"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : V extends "_local"
   ? Pick<
       GradeGroup,
-      "id" | "legacyId" | "organizationBin" | "integrationUserLogin"
+      | "id"
+      | "availableSalary"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
     >
   : V extends "_minimal"
   ? Pick<GradeGroup, "id" | "grade">
@@ -29,6 +39,7 @@ export type GradeGroupView<V extends GradeGroupViewName> = V extends "_base"
   ? Pick<
       GradeGroup,
       | "id"
+      | "availableSalary"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -39,6 +50,7 @@ export type GradeGroupView<V extends GradeGroupViewName> = V extends "_base"
   ? Pick<
       GradeGroup,
       | "id"
+      | "availableSalary"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

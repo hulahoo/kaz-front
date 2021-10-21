@@ -14,6 +14,7 @@ export type JobDescriptionRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "jobDescriptionRequest-browse"
   | "jobDescriptionRequest-edit";
 export type JobDescriptionRequestView<
   V extends JobDescriptionRequestViewName
@@ -49,6 +50,23 @@ export type JobDescriptionRequestView<
     >
   : V extends "_minimal"
   ? Pick<JobDescriptionRequest, "id" | "requestNumber">
+  : V extends "jobDescriptionRequest-browse"
+  ? Pick<
+      JobDescriptionRequest,
+      | "id"
+      | "basicInteractionsAtWork"
+      | "positionDuties"
+      | "generalAdditionalRequirements"
+      | "compulsoryQualificationRequirements"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "positionGroup"
+      | "status"
+    >
   : V extends "jobDescriptionRequest-edit"
   ? Pick<
       JobDescriptionRequest,

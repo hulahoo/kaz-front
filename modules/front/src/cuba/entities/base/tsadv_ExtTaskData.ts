@@ -3,7 +3,7 @@ import { TsadvUser } from "./tsadv$UserExt";
 import { DicHrRole } from "./tsadv$DicHrRole";
 export class ExtTaskData extends TaskData {
   static NAME = "tsadv_ExtTaskData";
-  assigneeOrCandidates?: TsadvUser[] | null;
+  assigneeOrCandidates?: TsadvUser | null;
   outcome?: string | null;
   hrRole?: DicHrRole | null;
   comment?: string | null;

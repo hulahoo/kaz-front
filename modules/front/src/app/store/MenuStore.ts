@@ -127,6 +127,12 @@ export default class MenuStore {
         pathPattern: "/position-hierarchy",
         component: null
       },
+      {
+        id: "concourse-request", caption: "Штатное расписание",
+        menuLink: "/concourse-request",
+        pathPattern: "/concourse-request",
+        component: null
+      },
       // {
       //   id: "my-rating",
       //   caption: "Моя оценка",

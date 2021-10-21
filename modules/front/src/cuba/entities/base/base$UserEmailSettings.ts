@@ -1,8 +1,8 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { BaseUserExt } from "./base$UserExt";
+import { UserExt } from "./base$UserExt";
 export class UserEmailSettings extends StandardEntity {
   static NAME = "base$UserEmailSettings";
-  user?: BaseUserExt | null;
+  user?: UserExt | null;
   email?: string | null;
   password?: string | null;
   leaveMessageCopyOnServer?: boolean | null;

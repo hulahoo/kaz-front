@@ -1,7 +1,6 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { DicCompany } from "./base_DicCompany";
-import {ICompanyEntity} from "../interface/ICompanyEntity";
-export class AbstractDictionary extends AbstractParentEntity implements ICompanyEntity{
+export class AbstractDictionary extends AbstractParentEntity {
   company?: DicCompany | null;
   langValue1?: string | null;
   description1?: string | null;

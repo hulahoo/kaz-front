@@ -20,8 +20,6 @@ export class ChangeAbsenceDaysRequest extends AbstractBprocRequest {
   files?: FileDescriptor[] | null;
   purposeText?: string | null;
   purpose?: DicPurposeAbsence | null;
-  projectStartDate?: any | null;
-  projectEndDate?: any | null;
 }
 export type ChangeAbsenceDaysRequestViewName =
   | "_base"
@@ -45,8 +43,6 @@ export type ChangeAbsenceDaysRequestView<
       | "agree"
       | "familiarization"
       | "purposeText"
-      | "projectStartDate"
-      | "projectEndDate"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -65,8 +61,6 @@ export type ChangeAbsenceDaysRequestView<
       | "agree"
       | "familiarization"
       | "purposeText"
-      | "projectStartDate"
-      | "projectEndDate"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -89,8 +83,6 @@ export type ChangeAbsenceDaysRequestView<
       | "agree"
       | "familiarization"
       | "purposeText"
-      | "projectStartDate"
-      | "projectEndDate"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

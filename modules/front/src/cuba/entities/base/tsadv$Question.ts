@@ -1,7 +1,7 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { QuestionBank } from "./tsadv$QuestionBank";
 import { Answer } from "./tsadv$Answer";
-import {FileDescriptor} from "./sys$FileDescriptor";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class Question extends AbstractParentEntity {
   static NAME = "tsadv$Question";
   bank?: QuestionBank | null;
@@ -40,7 +40,7 @@ export type QuestionView<V extends QuestionViewName> = V extends "_base"
       | "integrationUserLogin"
     >
   : V extends "question.edit"
-  ? Pick<Question, "id" | "text" | "type" | "score" | "answers">
+  ? Pick<Question, "id" | "text" | "type" | "score" | "image" | "answers">
   : V extends "question.for.test.online"
   ? Pick<Question, "id" | "bank" | "text" | "type" | "answers">
   : never;

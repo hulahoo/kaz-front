@@ -1,9 +1,8 @@
-import {User} from "./sec$User";
-import {FileDescriptor} from "./sys$FileDescriptor";
-import {UserEmailSettings} from "./base$UserEmailSettings";
-import {AddressBook} from "./base$AddressBook";
-
-export class BaseUserExt extends User {
+import { User } from "./sec$User";
+import { FileDescriptor } from "./sys$FileDescriptor";
+import { UserEmailSettings } from "./base$UserEmailSettings";
+import { AddressBook } from "./base$AddressBook";
+export class UserExt extends User {
   static NAME = "base$UserExt";
   image?: FileDescriptor | null;
   atsCode?: string | null;
@@ -18,7 +17,6 @@ export class BaseUserExt extends User {
   shortName?: string | null;
   fullName?: string | null;
 }
-
 export type UserExtViewName =
   | "_base"
   | "_local"
@@ -27,37 +25,40 @@ export type UserExtViewName =
   | "user.edit"
   | "user.receiveAndSendEmails";
 export type UserExtView<V extends UserExtViewName> = V extends "_base"
-  ? Pick<BaseUserExt,
-    | "id"
-    | "shortName"
-    | "atsCode"
-    | "innerNumber"
-    | "availability"
-    | "mobilePhone"
-    | "telegramCode"
-    | "telegramChatId"
-    | "passwordChangeDate"
-    | "fullName"
-    | "login"
-    | "loginLowerCase"
-    | "password"
-    | "passwordEncryption"
-    | "name"
-    | "firstName"
-    | "lastName"
-    | "middleName"
-    | "position"
-    | "email"
-    | "language"
-    | "timeZone"
-    | "timeZoneAuto"
-    | "active"
-    | "changePasswordAtNextLogon"
-    | "groupNames"
-    | "ipMask"
-    | "sysTenantId">
+  ? Pick<
+      UserExt,
+      | "id"
+      | "shortName"
+      | "atsCode"
+      | "innerNumber"
+      | "availability"
+      | "mobilePhone"
+      | "telegramCode"
+      | "telegramChatId"
+      | "passwordChangeDate"
+      | "fullName"
+      | "login"
+      | "loginLowerCase"
+      | "password"
+      | "passwordEncryption"
+      | "name"
+      | "firstName"
+      | "lastName"
+      | "middleName"
+      | "position"
+      | "email"
+      | "language"
+      | "timeZone"
+      | "timeZoneAuto"
+      | "active"
+      | "changePasswordAtNextLogon"
+      | "groupNames"
+      | "ipMask"
+      | "sysTenantId"
+    >
   : V extends "_local"
-    ? Pick<BaseUserExt,
+  ? Pick<
+      UserExt,
       | "id"
       | "atsCode"
       | "innerNumber"
@@ -85,68 +86,73 @@ export type UserExtView<V extends UserExtViewName> = V extends "_base"
       | "changePasswordAtNextLogon"
       | "groupNames"
       | "ipMask"
-      | "sysTenantId">
-    : V extends "_minimal"
-      ? Pick<BaseUserExt, "id" | "shortName">
-      : V extends "user.browse"
-        ? Pick<BaseUserExt,
-          | "id"
-          | "version"
-          | "createTs"
-          | "createdBy"
-          | "updateTs"
-          | "updatedBy"
-          | "deleteTs"
-          | "deletedBy"
-          | "login"
-          | "loginLowerCase"
-          | "password"
-          | "passwordEncryption"
-          | "name"
-          | "firstName"
-          | "lastName"
-          | "middleName"
-          | "position"
-          | "email"
-          | "language"
-          | "timeZone"
-          | "timeZoneAuto"
-          | "active"
-          | "changePasswordAtNextLogon"
-          | "groupNames"
-          | "ipMask"
-          | "sysTenantId"
-          | "group"
-          | "image">
-        : V extends "user.edit"
-          ? Pick<BaseUserExt,
-            | "id"
-            | "login"
-            | "loginLowerCase"
-            | "password"
-            | "passwordEncryption"
-            | "name"
-            | "firstName"
-            | "lastName"
-            | "middleName"
-            | "position"
-            | "email"
-            | "language"
-            | "timeZone"
-            | "timeZoneAuto"
-            | "active"
-            | "changePasswordAtNextLogon"
-            | "groupNames"
-            | "ipMask"
-            | "sysTenantId"
-            | "group"
-            | "userRoles"
-            | "substitutions"
-            | "image"
-            | "addressBookEntries"
-            | "availability"
-            | "innerNumber"
-            | "atsCode">
-          : V extends "user.receiveAndSendEmails"
-            ? Pick<BaseUserExt, "id" | "shortName" | "emailSettings" | "email">
-            : never;
+      | "sysTenantId"
+    >
+  : V extends "_minimal"
+  ? Pick<UserExt, "id" | "shortName">
+  : V extends "user.browse"
+  ? Pick<
+      UserExt,
+      | "id"
+      | "version"
+      | "createTs"
+      | "createdBy"
+      | "updateTs"
+      | "updatedBy"
+      | "deleteTs"
+      | "deletedBy"
+      | "login"
+      | "loginLowerCase"
+      | "password"
+      | "passwordEncryption"
+      | "name"
+      | "firstName"
+      | "lastName"
+      | "middleName"
+      | "position"
+      | "email"
+      | "language"
+      | "timeZone"
+      | "timeZoneAuto"
+      | "active"
+      | "changePasswordAtNextLogon"
+      | "groupNames"
+      | "ipMask"
+      | "sysTenantId"
+      | "group"
+      | "image"
+    >
+  : V extends "user.edit"
+  ? Pick<
+      UserExt,
+      | "id"
+      | "login"
+      | "loginLowerCase"
+      | "password"
+      | "passwordEncryption"
+      | "name"
+      | "firstName"
+      | "lastName"
+      | "middleName"
+      | "position"
+      | "email"
+      | "language"
+      | "timeZone"
+      | "timeZoneAuto"
+      | "active"
+      | "changePasswordAtNextLogon"
+      | "groupNames"
+      | "ipMask"
+      | "sysTenantId"
+      | "group"
+      | "userRoles"
+      | "substitutions"
+      | "image"
+      | "addressBookEntries"
+      | "availability"
+      | "innerNumber"
+      | "atsCode"
+    >
+  : V extends "user.receiveAndSendEmails"
+  ? Pick<UserExt, "id" | "shortName" | "emailSettings" | "email">
+  : never;

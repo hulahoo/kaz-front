@@ -25,7 +25,9 @@ export type PersonalDataRequestViewName =
   | "_local"
   | "_minimal"
   | "personalDataRequest-edit"
-  | "personalDataRequest-view";
+  | "personalDataRequest-for-integration"
+  | "personalDataRequest-view"
+  | "portal.my-profile";
 export type PersonalDataRequestView<
   V extends PersonalDataRequestViewName
 > = V extends "_base"
@@ -93,6 +95,30 @@ export type PersonalDataRequestView<
       | "citizenship"
       | "attachments"
     >
+  : V extends "personalDataRequest-for-integration"
+  ? Pick<
+      PersonalDataRequest,
+      | "id"
+      | "lastName"
+      | "firstName"
+      | "middleName"
+      | "lastNameLatin"
+      | "firstNameLatin"
+      | "middleNameLatin"
+      | "dateOfBirth"
+      | "nationalIdentifier"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "maritalStatus"
+      | "personGroup"
+      | "nationality"
+      | "citizenship"
+      | "status"
+    >
   : V extends "personalDataRequest-view"
   ? Pick<
       PersonalDataRequest,
@@ -122,5 +148,27 @@ export type PersonalDataRequestView<
       | "status"
       | "personGroup"
       | "attachments"
+    >
+  : V extends "portal.my-profile"
+  ? Pick<
+      PersonalDataRequest,
+      | "id"
+      | "lastName"
+      | "firstName"
+      | "middleName"
+      | "lastNameLatin"
+      | "firstNameLatin"
+      | "middleNameLatin"
+      | "dateOfBirth"
+      | "nationalIdentifier"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "status"
+      | "attachments"
+      | "personGroup"
     >
   : never;

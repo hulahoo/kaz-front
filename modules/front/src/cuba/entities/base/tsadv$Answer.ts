@@ -1,6 +1,6 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { Question } from "./tsadv$Question";
-import {FileDescriptor} from "./sys$FileDescriptor";
+import { FileDescriptor } from "./sys$FileDescriptor";
 export class Answer extends AbstractParentEntity {
   static NAME = "tsadv$Answer";
   answer?: string | null;
@@ -30,5 +30,5 @@ export type AnswerView<V extends AnswerViewName> = V extends "_base"
       | "integrationUserLogin"
     >
   : V extends "answer.edit"
-  ? Pick<Answer, "id" | "answer" | "correct">
+  ? Pick<Answer, "id" | "answer" | "correct" | "image">
   : never;

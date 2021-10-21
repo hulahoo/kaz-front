@@ -2,9 +2,8 @@ import { AbstractParentEntity } from "./AbstractParentEntity";
 import { Calendar } from "./tsadv$Calendar";
 import { StandardOffset } from "./tsadv$StandardOffset";
 import { StandardShift } from "./tsadv$StandardShift";
-import {DicCompany} from "./base_DicCompany";
-import {ICompanyEntity} from "../interface/ICompanyEntity";
-export class StandardSchedule extends AbstractParentEntity implements ICompanyEntity{
+import { DicCompany } from "./base_DicCompany";
+export class StandardSchedule extends AbstractParentEntity {
   static NAME = "tsadv$StandardSchedule";
   scheduleName?: string | null;
   description?: string | null;
@@ -30,9 +29,9 @@ export type StandardScheduleView<
 > = V extends "_base"
   ? Pick<
       StandardSchedule,
+      | "scheduleName"
       | "id"
       | "legacyId"
-      | "scheduleName"
       | "description"
       | "startDate"
       | "endDate"
@@ -58,7 +57,7 @@ export type StandardScheduleView<
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<StandardSchedule, "id" | "legacyId">
+  ? Pick<StandardSchedule, "scheduleName" | "id" | "legacyId">
   : V extends "schedule.view"
   ? Pick<
       StandardSchedule,
@@ -73,10 +72,11 @@ export type StandardScheduleView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "calendar"
-      | "standardShifts"
-      | "standardOffsets"
       | "baseStandardSchedule"
+      | "calendar"
+      | "standardOffsets"
+      | "standardShifts"
+      | "company"
     >
   : V extends "standardSchedule-for-my-team"
   ? Pick<

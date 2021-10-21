@@ -4,6 +4,7 @@ import { Enrollment } from "./tsadv$Enrollment";
 import { CourseTrainer } from "./tsadv$CourseTrainer";
 import { CourseFeedbackTemplate } from "./tsadv$CourseFeedbackTemplate";
 import { PartyExt } from "./base$PartyExt";
+import { FileDescriptor } from "./sys$FileDescriptor";
 import { DicCategory } from "./tsadv$DicCategory";
 import { CourseSection } from "./tsadv$CourseSection";
 import { CourseCompetence } from "./tsadv$CourseCompetence";
@@ -12,9 +13,14 @@ import { DicLearningType } from "./tsadv$DicLearningType";
 import { CourseReview } from "./tsadv$CourseReview";
 import { CourseSchedule } from "./tsadv_CourseSchedule";
 import { DicLearningProof } from "./tsadv_DicLearningProof";
+import { DicTypeOfTraining } from "./tsadv_DicTypeOfTraining";
+import { DicProgrammCode } from "./tsadv_DicProgrammCode";
+import { DicAssessmentMethod } from "./tsadv_DicAssessmentMethod";
 export class Course extends AbstractParentEntity {
   static NAME = "tsadv$Course";
   name?: string | null;
+  nameLang2?: string | null;
+  nameLang3?: string | null;
   certificate?: CourseCertificate[] | null;
   isIssuedCertificate?: boolean | null;
   enrollments?: Enrollment[] | null;
@@ -22,7 +28,7 @@ export class Course extends AbstractParentEntity {
   feedbackTemplates?: CourseFeedbackTemplate[] | null;
   party?: PartyExt | null;
   description?: string | null;
-  logo?: any | null;
+  logo?: FileDescriptor | null;
   category?: DicCategory | null;
   targetAudience?: string | null;
   activeFlag?: boolean | null;
@@ -42,6 +48,9 @@ export class Course extends AbstractParentEntity {
   learningProof?: DicLearningProof | null;
   commentCount?: number | null;
   rating?: any | null;
+  typeOfTraining?: DicTypeOfTraining | null;
+  programmCode?: DicProgrammCode | null;
+  assessmentMethod?: DicAssessmentMethod | null;
 }
 export type CourseViewName =
   | "_base"
@@ -53,16 +62,19 @@ export type CourseViewName =
   | "course.browse"
   | "course.edit"
   | "course.edit.new"
+  | "course.list"
   | "course.tree"
+  | "course.with.logo"
   | "portal-course-edit";
 export type CourseView<V extends CourseViewName> = V extends "_base"
   ? Pick<
       Course,
       | "id"
       | "name"
+      | "nameLang2"
+      | "nameLang3"
       | "isIssuedCertificate"
       | "description"
-      | "logo"
       | "targetAudience"
       | "activeFlag"
       | "shortDescription"
@@ -81,9 +93,10 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       Course,
       | "id"
       | "name"
+      | "nameLang2"
+      | "nameLang3"
       | "isIssuedCertificate"
       | "description"
-      | "logo"
       | "targetAudience"
       | "activeFlag"
       | "shortDescription"
@@ -104,9 +117,10 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       Course,
       | "id"
       | "name"
+      | "nameLang2"
+      | "nameLang3"
       | "isIssuedCertificate"
       | "description"
-      | "logo"
       | "targetAudience"
       | "activeFlag"
       | "shortDescription"
@@ -174,9 +188,10 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       Course,
       | "id"
       | "name"
+      | "nameLang2"
+      | "nameLang3"
       | "isIssuedCertificate"
       | "description"
-      | "logo"
       | "targetAudience"
       | "activeFlag"
       | "shortDescription"
@@ -194,6 +209,7 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "courseTrainers"
       | "feedbackTemplates"
       | "party"
+      | "logo"
       | "category"
       | "sections"
       | "competences"
@@ -203,7 +219,12 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "reviews"
       | "courseSchedule"
       | "learningProof"
+      | "typeOfTraining"
+      | "programmCode"
+      | "assessmentMethod"
     >
+  : V extends "course.list"
+  ? Pick<Course, "id" | "name" | "logo" | "category" | "isOnline" | "createTs">
   : V extends "course.tree"
   ? Pick<
       Course,
@@ -219,24 +240,48 @@ export type CourseView<V extends CourseViewName> = V extends "_base"
       | "competences"
       | "selfEnrollment"
     >
+  : V extends "course.with.logo"
+  ? Pick<
+      Course,
+      | "id"
+      | "name"
+      | "nameLang2"
+      | "nameLang3"
+      | "isIssuedCertificate"
+      | "description"
+      | "targetAudience"
+      | "activeFlag"
+      | "shortDescription"
+      | "selfEnrollment"
+      | "isOnline"
+      | "educationPeriod"
+      | "educationDuration"
+      | "commentCount"
+      | "rating"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "logo"
+    >
   : V extends "portal-course-edit"
   ? Pick<
       Course,
       | "id"
       | "name"
       | "name"
-      | "description"
-      | "educationDuration"
-      | "educationPeriod"
-      | "avgRate"
-      | "preRequisition"
-      | "courseTrainers"
-      | "sections"
-      | "logo"
       | "isIssuedCertificate"
-      | "reviews"
       | "enrollments"
+      | "courseTrainers"
+      | "feedbackTemplates"
+      | "description"
+      | "logo"
+      | "sections"
+      | "preRequisition"
+      | "avgRate"
       | "selfEnrollment"
+      | "reviews"
+      | "educationPeriod"
+      | "educationDuration"
       | "learningProof"
     >
   : never;

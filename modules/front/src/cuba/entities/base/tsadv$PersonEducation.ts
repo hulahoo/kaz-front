@@ -6,6 +6,7 @@ import { DicEducationDegree } from "./tsadv$DicEducationDegree";
 import { DicEducationLevel } from "./tsadv$DicEducationLevel";
 import { DicFormStudy } from "./tsadv_DicFormStudy";
 import { FileDescriptor } from "./sys$FileDescriptor";
+import { DicLanguage } from "./base$DicLanguage";
 export class PersonEducation extends AbstractParentEntity {
   static NAME = "tsadv$PersonEducation";
   personGroup?: PersonGroupExt | null;
@@ -27,13 +28,20 @@ export class PersonEducation extends AbstractParentEntity {
   startDateHistory?: any | null;
   endDateHistory?: any | null;
   attachments?: FileDescriptor[] | null;
+  shlTest?: number | null;
+  city?: string | null;
+  entExamScore?: number | null;
+  learningLanguage?: DicLanguage | null;
+  gra?: any | null;
+  specialtyCode?: string | null;
 }
 export type PersonEducationViewName =
   | "_base"
   | "_local"
   | "_minimal"
   | "personEducation.full"
-  | "personEducation.view";
+  | "personEducation.view"
+  | "portal.my-profile";
 export type PersonEducationView<
   V extends PersonEducationViewName
 > = V extends "_base"
@@ -52,6 +60,11 @@ export type PersonEducationView<
       | "qualification"
       | "startDateHistory"
       | "endDateHistory"
+      | "shlTest"
+      | "city"
+      | "entExamScore"
+      | "gra"
+      | "specialtyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -72,6 +85,11 @@ export type PersonEducationView<
       | "qualification"
       | "startDateHistory"
       | "endDateHistory"
+      | "shlTest"
+      | "city"
+      | "entExamScore"
+      | "gra"
+      | "specialtyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -94,6 +112,11 @@ export type PersonEducationView<
       | "qualification"
       | "startDateHistory"
       | "endDateHistory"
+      | "shlTest"
+      | "city"
+      | "entExamScore"
+      | "gra"
+      | "specialtyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -118,11 +141,43 @@ export type PersonEducationView<
       | "qualification"
       | "startDateHistory"
       | "endDateHistory"
+      | "shlTest"
+      | "city"
+      | "entExamScore"
+      | "gra"
+      | "specialtyCode"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "personGroup"
       | "degree"
       | "level"
+      | "learningLanguage"
+    >
+  : V extends "portal.my-profile"
+  ? Pick<
+      PersonEducation,
+      | "id"
+      | "diplomaNumber"
+      | "graduationDate"
+      | "foreignEducation"
+      | "school"
+      | "startYear"
+      | "endYear"
+      | "specialization"
+      | "location"
+      | "faculty"
+      | "qualification"
+      | "startDateHistory"
+      | "endDateHistory"
+      | "shlTest"
+      | "city"
+      | "entExamScore"
+      | "gra"
+      | "specialtyCode"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "educationType"
     >
   : never;

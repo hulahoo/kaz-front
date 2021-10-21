@@ -9,8 +9,6 @@ export class AllAbsenceRequest extends AbstractBprocRequest {
   startDate?: any | null;
   endDate?: any | null;
   absenceDays?: number | null;
-  projectStartDate?: any | null;
-  projectEndDate?: any | null;
 }
 export type AllAbsenceRequestViewName =
   | "_base"
@@ -29,8 +27,6 @@ export type AllAbsenceRequestView<
       | "startDate"
       | "endDate"
       | "absenceDays"
-      | "projectStartDate"
-      | "projectEndDate"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -44,8 +40,6 @@ export type AllAbsenceRequestView<
       | "startDate"
       | "endDate"
       | "absenceDays"
-      | "projectStartDate"
-      | "projectEndDate"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -63,8 +57,6 @@ export type AllAbsenceRequestView<
       | "startDate"
       | "endDate"
       | "absenceDays"
-      | "projectStartDate"
-      | "projectEndDate"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

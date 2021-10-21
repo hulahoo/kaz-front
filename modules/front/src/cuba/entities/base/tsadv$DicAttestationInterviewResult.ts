@@ -7,7 +7,6 @@ export type DicAttestationInterviewResultViewName =
   | "_local"
   | "_minimal"
   | "dicAttestationInterviewResult-browse"
-  | "dicAttestationInterviewResult-edit"
   | "dicAttestationInterviewResult-edit";
 export type DicAttestationInterviewResultView<
   V extends DicAttestationInterviewResultViewName
@@ -74,32 +73,6 @@ export type DicAttestationInterviewResultView<
       | "langValue5"
     >
   : V extends "dicAttestationInterviewResult-browse"
-  ? Pick<
-      DicAttestationInterviewResult,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "langValue1"
-      | "description1"
-      | "langValue2"
-      | "description2"
-      | "langValue3"
-      | "description3"
-      | "langValue4"
-      | "description4"
-      | "langValue5"
-      | "description5"
-      | "startDate"
-      | "endDate"
-      | "code"
-      | "isSystemRecord"
-      | "active"
-      | "isDefault"
-      | "order"
-      | "company"
-    >
-  : V extends "dicAttestationInterviewResult-edit"
   ? Pick<
       DicAttestationInterviewResult,
       | "id"

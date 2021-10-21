@@ -1,32 +1,38 @@
-import {AbstractParentEntity} from "./AbstractParentEntity";
-import {PositionGroupExt} from "./base$PositionGroupExt";
-
-export class ExecutiveAssistants extends AbstractParentEntity {
+import { StandardEntity } from "./sys$StandardEntity";
+import { PositionGroupExt } from "./base$PositionGroupExt";
+export class ExecutiveAssistants extends StandardEntity {
   static NAME = "tsadv_ExecutiveAssistants";
   managerPositionGroup?: PositionGroupExt | null;
   assistancePositionGroup?: PositionGroupExt | null;
   startDate?: any | null;
   endDate?: any | null;
 }
-
-export type StudentHomeworkViewName =
+export type ExecutiveAssistantsViewName =
   | "_base"
   | "_local"
   | "_minimal"
   | "executiveAssistants-browseView";
-export type StudentHomeworkView<V extends StudentHomeworkViewName> = V extends "_base"
-  ? Pick<ExecutiveAssistants,
-    | "startDate"
-    | "endDate"
-    | "managerPositionGroup">
+export type ExecutiveAssistantsView<
+  V extends ExecutiveAssistantsViewName
+> = V extends "_base"
+  ? Pick<
+      ExecutiveAssistants,
+      "id" | "startDate" | "endDate" | "managerPositionGroup"
+    >
   : V extends "_local"
-    ? Pick<ExecutiveAssistants,
+  ? Pick<ExecutiveAssistants, "id" | "startDate" | "endDate">
+  : V extends "_minimal"
+  ? Pick<
+      ExecutiveAssistants,
+      "id" | "startDate" | "endDate" | "managerPositionGroup"
+    >
+  : V extends "executiveAssistants-browseView"
+  ? Pick<
+      ExecutiveAssistants,
+      | "id"
+      | "managerPositionGroup"
+      | "assistancePositionGroup"
       | "startDate"
-      | "endDate">
-    : V extends "executiveAssistants-browseView"
-      ? Pick<ExecutiveAssistants,
-        | "startDate"
-        | "endDate"
-        | "managerPositionGroup"
-        | "assistancePositionGroup">
-      : never;
+      | "endDate"
+    >
+  : never;

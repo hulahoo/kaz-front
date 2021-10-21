@@ -9,6 +9,7 @@ export class LearningObject extends AbstractParentEntity {
   file?: FileDescriptor | null;
   html?: string | null;
   text?: string | null;
+  passingScore?: any | null;
 }
 export type LearningObjectViewName =
   | "_base"
@@ -27,6 +28,7 @@ export type LearningObjectView<
       | "contentType"
       | "html"
       | "text"
+      | "passingScore"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -41,10 +43,13 @@ export type LearningObjectView<
       | "contentType"
       | "html"
       | "text"
+      | "passingScore"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "_minimal"
+  ? Pick<LearningObject, "id" | "objectName">
   : V extends "learningObject.browse"
   ? Pick<
       LearningObject,
@@ -55,6 +60,7 @@ export type LearningObjectView<
       | "contentType"
       | "html"
       | "text"
+      | "passingScore"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

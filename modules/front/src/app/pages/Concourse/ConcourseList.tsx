@@ -13,9 +13,9 @@ import {
   DataTable
 } from "@cuba-platform/react";
 
-import { Concourse } from "../../../cuba/entities/kzm_Concourse";
+import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
 import { SerializedEntity } from "@cuba-platform/rest";
-import { ConcourseComponent } from "./ConcourseComponent";
+import { ConcourseManagement } from "./ConcourseManagement";
 import {
   FormattedMessage,
   injectIntl,
@@ -28,11 +28,35 @@ class ConcourseListComponent extends React.Component<
   MainStoreInjected & WrappedComponentProps
 > {
   dataCollection = collection<Concourse>(Concourse.NAME, {
-    view: "_base",
+    view: "_local",
     sort: "-updateTs"
   });
 
-  fields = ["description", "nameRu", "nameEn"];
+  fields = [
+    "name_ru",
+
+    "concourseStatus",
+
+    "category",
+
+    "judgeInsturction",
+
+    "name_en",
+
+    "year",
+
+    "startVoting",
+
+    "endVoting",
+
+    "description",
+
+    "legacyId",
+
+    "organizationBin",
+
+    "integrationUserLogin"
+  ];
 
   @observable selectedRowKey: string | undefined;
 
@@ -59,7 +83,7 @@ class ConcourseListComponent extends React.Component<
   render() {
     const buttons = [
       <Link
-        to={ConcourseComponent.PATH + "/" + ConcourseComponent.NEW_SUBPATH}
+        to={ConcourseManagement.PATH + "/" + ConcourseManagement.NEW_SUBPATH}
         key="create"
       >
         <Button
@@ -73,7 +97,10 @@ class ConcourseListComponent extends React.Component<
           </span>
         </Button>
       </Link>,
-      <Link to={ConcourseComponent.PATH + "/" + this.selectedRowKey} key="edit">
+      <Link
+        to={ConcourseManagement.PATH + "/" + this.selectedRowKey}
+        key="edit"
+      >
         <Button
           htmlType="button"
           style={{ margin: "0 12px 12px 0" }}

@@ -7,7 +7,11 @@ export class AbsPurposeSetting extends AbstractParentEntity {
   absencePurpose?: DicAbsencePurpose | null;
   orderNumber?: number | null;
 }
-export type AbsPurposeSettingViewName = "_base" | "_local" | "_minimal";
+export type AbsPurposeSettingViewName =
+  | "_base"
+  | "_local"
+  | "_minimal"
+  | "absPurposeSetting-absence";
 export type AbsPurposeSettingView<
   V extends AbsPurposeSettingViewName
 > = V extends "_base"
@@ -33,5 +37,8 @@ export type AbsPurposeSettingView<
   : V extends "_minimal"
   ? Pick<AbsPurposeSetting, "id" | "absenceType" | "absencePurpose">
   : V extends "absPurposeSetting-absence"
-  ? Pick<AbsPurposeSetting, "id" | "absenceType" | "absencePurpose">
+  ? Pick<
+      AbsPurposeSetting,
+      "id" | "absenceType" | "absencePurpose" | "absenceType" | "absencePurpose"
+    >
   : never;

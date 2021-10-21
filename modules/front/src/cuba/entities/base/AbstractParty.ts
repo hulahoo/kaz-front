@@ -1,5 +1,5 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
-import { BaseUserExt } from "./base$UserExt";
+import { UserExt } from "./base$UserExt";
 export class AbstractParty extends AbstractParentEntity {
-  responsible?: BaseUserExt | null;
+  responsible?: UserExt | null;
 }

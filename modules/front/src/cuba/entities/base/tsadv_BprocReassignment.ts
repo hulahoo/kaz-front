@@ -3,6 +3,7 @@ import { TsadvUser } from "./tsadv$UserExt";
 export class BprocReassignment extends StandardEntity {
   static NAME = "tsadv_BprocReassignment";
   executionId?: string | null;
+  taskDefinitionKey?: string | null;
   startTime?: any | null;
   endTime?: any | null;
   comment?: string | null;
@@ -19,6 +20,7 @@ export type BprocReassignmentView<
       BprocReassignment,
       | "id"
       | "executionId"
+      | "taskDefinitionKey"
       | "startTime"
       | "endTime"
       | "comment"
@@ -31,6 +33,7 @@ export type BprocReassignmentView<
       BprocReassignment,
       | "id"
       | "executionId"
+      | "taskDefinitionKey"
       | "startTime"
       | "endTime"
       | "comment"
