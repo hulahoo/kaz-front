@@ -113,18 +113,14 @@ class PositionOverlappingRequestEditComponent extends AbstractBprocEdit<Position
 
   isUpdateBeforeOutcome = true;
 
-  update = () => {
-
+  getUpdateEntityData(): any {
     if (this.isNotDraft())
-      return this.dataInstance.update(this.getUpdateEntityData());
-    return this.dataInstance.update({
-      personGroup: {
-        id: this.props!.personGroupId
-      },
-      basePositionOverlappingRequest: this.editedPositionOverlappingRequest ? this.editPositionOverlappingRequest.id : undefined,
-      ...this.getUpdateEntityData()
-    });
-  };
+      return super.getUpdateEntityData();
+    return {
+      personGroup: this.props.personGroupId,
+      ...super.getUpdateEntityData()
+    };
+  }
 
   isNotDraft = () => {
     return this.dataInstance.item && this.dataInstance.item.status ? this.dataInstance.item.status.langValue3 !== "Draft" : true;
