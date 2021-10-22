@@ -45,6 +45,7 @@ import {PunishmentRequestType} from "../../../../../cuba/enums/enums";
 import {PunishmentAssignmentRequest} from "../../../../../cuba/entities/base/tsadv$PunishmentAssignmentRequest";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {dictionaryCollection} from "../../../../util/DictionaryDataCollectionStore";
+import TextArea from "antd/es/input/TextArea";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -317,7 +318,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 entityName={PunishmentAssignmentRequest.NAME}
                 propertyName="offenceType"
                 form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                formItemOpts={{ style: { marginBottom: "12px" } , label: this.props.intl.formatMessage({id: "PunishmentAssignmentRequest.offenceType"})}}
                 optionsContainer={this.offenceTypesDc}
                 disabled={!this.isDraft() && !this.isRevise()}
                 getFieldDecoratorOpts={{
@@ -342,20 +343,20 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 }}
               />
 
-              <ReadonlyField
-                entityName={PunishmentAssignmentRequest.NAME}
-                propertyName="accident"
-                form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled={!this.isDraft() && !this.isRevise()}
-                getFieldDecoratorOpts={{
+              <Form.Item
+                style={{width: '100%'}}
+                label={this.props.intl.formatMessage({id: "PunishmentAssignmentRequest.accident"})}>
+                {getFieldDecorator("accident", {
                   rules: [{
                     required: true,
-                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.accident']}),
+                    message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.accident']})
                   }]
-                }}
-              />
-
+                })(
+                  <TextArea
+                    disabled={!this.isDraft() && !this.isRevise()}
+                    rows={4}/>
+                )}
+              </Form.Item>
               <ReadonlyField
                 entityName={PunishmentAssignmentRequest.NAME}
                 propertyName="hasDeclaratory"
@@ -372,7 +373,7 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="declaratoryFile"
                 form={this.props.form}
                 disabled={(!this.isDraft() && !this.isRevise()) || this.isApproved() || !this.props.form.getFieldValue('hasDeclaratory') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
-                formItemOpts={{style: {marginBottom: "12px"}}}/>
+                formItemOpts={{style: {marginBottom: "12px"}, label: this.props.intl.formatMessage({id: "PunishmentAssignmentRequest.declaratoryFile"})}}/>
 
               <ReadonlyField
                 entityName={PunishmentAssignmentRequest.NAME}
@@ -390,13 +391,13 @@ class PunishmentAssignmentRequestEditComponent extends AbstractBprocEdit<Punishm
                 propertyName="refusalFile"
                 form={this.props.form}
                 disabled={(!this.isDraft() && !this.isRevise()) || this.isApproved() || !this.props.form.getFieldValue('hasRefusal') || this.approverHrRoleCode === 'ORG_MANGER' || this.approverHrRoleCode === 'IER_COMPANY'}
-                formItemOpts={{style: {marginBottom: "12px"}}}/>
+                formItemOpts={{style: {marginBottom: "12px"}, label: this.props.intl.formatMessage({id: "PunishmentAssignmentRequest.refusalFile"})}}/>
 
               <ReadonlyField
                 entityName={PunishmentAssignmentRequest.NAME}
                 propertyName="punishmentType"
                 form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
+                formItemOpts={{ style: { marginBottom: "12px" }, label: this.props.intl.formatMessage({id: "PunishmentAssignmentRequest.punishmentType"}) }}
                 optionsContainer={this.typesDc}
                 disabled={(!this.isDraft() && !this.isRevise()) && this.approverHrRoleCode != 'ORG_MANGER' && this.approverHrRoleCode != 'IER_COMPANY'}
                 getFieldDecoratorOpts={{
