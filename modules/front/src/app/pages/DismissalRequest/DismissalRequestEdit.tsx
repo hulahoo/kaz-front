@@ -276,17 +276,6 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
             }
 
             <ReadonlyField
-              entityName={DismissalRequest.NAME}
-              propertyName="reasonForDismissal"
-              form={this.props.form}
-              formItemOpts={{ style: { marginBottom: "12px" } }}
-              getFieldDecoratorOpts={{
-                rules: [{ required: true }]
-              }}
-              disabled={isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION || isOnApproved}
-            />
-
-            <ReadonlyField
               disabled={isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION || isOnApproved}
               entityName={DismissalRequest.NAME}
               propertyName="dateOfDismissal"
@@ -309,6 +298,14 @@ class DismissalRequestEditComponent extends AbstractBprocEdit<DismissalRequest, 
               getFieldDecoratorOpts={{
                 rules: [{ required: true }]
               }}
+            />
+
+            <ReadonlyField
+              entityName={DismissalRequest.NAME}
+              propertyName="reasonForDismissal"
+              form={this.props.form}
+              formItemOpts={{ style: { marginBottom: "12px" } }}
+              disabled={isOnApproving || isOnCANCELED || !this.isUserInitiator && isOnREVISION || isOnApproved}
             />
 
             {this.takCard()}

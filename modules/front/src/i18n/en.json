@@ -472,6 +472,6 @@
   "dismissalRequest.staffUnit":"Staff Unit",
   "dismissalRequest.position":"Position",
   "dismissalRequest.subdivision":"Subdivision",
-  "dismissalRequest.dateOfReceipt":"Date Of Receipt",
+  "dismissalRequest.dateOfReceipt":"Hire date",
   "result.SEND_FOR_APPROVAL": "Send for Approval"
 }
