@@ -1,19 +1,28 @@
-import { AbstractBprocRequest } from "./AbstractBprocRequest";
+import { StandardEntity } from "./sys$StandardEntity";
 import { TsadvUser } from "./tsadv$UserExt";
-export class ProcInstanceV extends AbstractBprocRequest {
+import { PersonGroupExt } from "./base$PersonGroupExt";
+import { BaseUuidEntity } from "./sys$BaseUuidEntity";
+export class ProcInstanceV extends StandardEntity {
   static NAME = "tsadv$ProcInstanceV";
-  process?: string | null;
+  requestType?: string | null;
   processRu?: string | null;
-  processKz?: string | null;
   processEn?: string | null;
   entityName?: string | null;
-  businessKey?: string | null;
   entityId?: any | null;
+  requestNumber?: string | null;
   active?: boolean | null;
-  startUser?: TsadvUser | null;
-  startTime?: any | null;
-  endTime?: any | null;
-  entity?: AbstractBprocRequest | null;
+  startedBy?: TsadvUser | null;
+  startedByPersonGroup?: PersonGroupExt | null;
+  startDate?: any | null;
+  endDate?: any | null;
+  effectiveDate?: any | null;
+  cancelled?: boolean | null;
+  entity?: BaseUuidEntity | null;
+  personGroup?: PersonGroupExt | null;
+  currentApprover?: TsadvUser | null;
+  detailRu?: string | null;
+  detailEn?: string | null;
+  detail?: string | null;
 }
 export type ProcInstanceVViewName =
   | "_base"
@@ -26,65 +35,56 @@ export type ProcInstanceVView<
   ? Pick<
       ProcInstanceV,
       | "id"
-      | "process"
+      | "requestType"
       | "requestNumber"
       | "processRu"
-      | "processKz"
       | "processEn"
       | "entityName"
-      | "businessKey"
       | "entityId"
       | "active"
-      | "startTime"
-      | "endTime"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestDate"
-      | "comment"
+      | "startDate"
+      | "endDate"
+      | "effectiveDate"
+      | "cancelled"
+      | "detailRu"
+      | "detailEn"
     >
   : V extends "_local"
   ? Pick<
       ProcInstanceV,
       | "id"
       | "processRu"
-      | "processKz"
       | "processEn"
       | "entityName"
-      | "businessKey"
       | "entityId"
-      | "active"
-      | "startTime"
-      | "endTime"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
       | "requestNumber"
-      | "requestDate"
-      | "comment"
+      | "active"
+      | "startDate"
+      | "endDate"
+      | "effectiveDate"
+      | "cancelled"
+      | "detailRu"
+      | "detailEn"
     >
   : V extends "_minimal"
-  ? Pick<ProcInstanceV, "id" | "process" | "requestNumber">
+  ? Pick<ProcInstanceV, "id" | "requestType" | "requestNumber">
   : V extends "procInstanceV-view"
   ? Pick<
       ProcInstanceV,
       | "id"
-      | "process"
+      | "requestType"
       | "requestNumber"
       | "processRu"
-      | "processKz"
       | "processEn"
       | "entityName"
-      | "businessKey"
       | "entityId"
       | "active"
-      | "startTime"
-      | "endTime"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestDate"
-      | "comment"
-      | "startUser"
+      | "startDate"
+      | "endDate"
+      | "effectiveDate"
+      | "cancelled"
+      | "detailRu"
+      | "detailEn"
+      | "startedBy"
     >
   : never;

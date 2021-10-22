@@ -13,11 +13,7 @@ export class CourseSectionScormResult extends StandardEntity {
   minScore?: any | null;
   comment?: string | null;
 }
-export type CourseSectionScormResultViewName =
-  | "_base"
-  | "_local"
-  | "_minimal"
-  | "courseSectionScormResult-view";
+export type CourseSectionScormResultViewName = "_base" | "_local" | "_minimal";
 export type CourseSectionScormResultView<
   V extends CourseSectionScormResultViewName
 > = V extends "_base"
@@ -30,7 +26,6 @@ export type CourseSectionScormResultView<
       | "score"
       | "maxScore"
       | "minScore"
-      | "comment"
     >
   : V extends "_local"
   ? Pick<
@@ -42,20 +37,5 @@ export type CourseSectionScormResultView<
       | "score"
       | "maxScore"
       | "minScore"
-      | "comment"
-    >
-  : V extends "courseSectionScormResult-view"
-  ? Pick<
-      CourseSectionScormResult,
-      | "id"
-      | "answerTimeStamp"
-      | "answer"
-      | "isCorrect"
-      | "score"
-      | "maxScore"
-      | "minScore"
-      | "comment"
-      | "courseSectionAttempt"
-      | "question"
     >
   : never;

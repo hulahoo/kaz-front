@@ -12,12 +12,10 @@ export class OrganizationIncentiveMonthResultView extends StandardEntity {
   weight?: any | null;
   plan?: any | null;
   fact?: any | null;
-  result?: any | null;
   premiumPercent?: any | null;
   totalPremiumPercent?: any | null;
   status?: DicIncentiveResultStatus | null;
   comment?: string | null;
-  parent?: OrganizationIncentiveMonthResultView | null;
 }
 export type OrganizationIncentiveMonthResultViewViewName =
   | "_base"
@@ -34,7 +32,6 @@ export type OrganizationIncentiveMonthResultViewView<
       | "weight"
       | "plan"
       | "fact"
-      | "result"
       | "premiumPercent"
       | "totalPremiumPercent"
       | "comment"
@@ -47,7 +44,6 @@ export type OrganizationIncentiveMonthResultViewView<
       | "weight"
       | "plan"
       | "fact"
-      | "result"
       | "premiumPercent"
       | "totalPremiumPercent"
       | "comment"
@@ -60,13 +56,11 @@ export type OrganizationIncentiveMonthResultViewView<
       | "weight"
       | "plan"
       | "fact"
-      | "result"
       | "premiumPercent"
       | "totalPremiumPercent"
       | "comment"
       | "company"
       | "department"
-      | "parent"
       | "status"
       | "indicator"
     >

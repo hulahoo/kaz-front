@@ -15,7 +15,6 @@ import { FlySurCharge } from "./tsadv$FlySurCharge";
 import { PositionGroupGoalLink } from "./tsadv$PositionGroupGoalLink";
 import { PerformancePlan } from "./tsadv$PerformancePlan";
 import { DicHrRole } from "./tsadv$DicHrRole";
-import { JobDescription } from "./tsadv_JobDescription";
 export class PositionGroupExt extends PositionGroup {
   static NAME = "base$PositionGroupExt";
   list?: PositionExt[] | null;
@@ -35,8 +34,6 @@ export class PositionGroupExt extends PositionGroup {
   goals?: PositionGroupGoalLink[] | null;
   performancePlans?: PerformancePlan[] | null;
   adminApprove?: DicHrRole | null;
-  functionalManagerPositionGroup?: PositionGroupExt | null;
-  jobDescription?: JobDescription | null;
   positionName?: string | null;
   fullName?: string | null;
 }
@@ -45,7 +42,6 @@ export type PositionGroupExtViewName =
   | "_local"
   | "_minimal"
   | "assigned-goal-cascade-positionGroupExt-view"
-  | "executiveAssistants-browseView"
   | "position.analytic.update"
   | "positionExt-receptionAssignment"
   | "positionGroup.browse"
@@ -56,10 +52,7 @@ export type PositionGroupExtViewName =
   | "positionGroup.list"
   | "positionGroup.scheduleView"
   | "positionGroup.timecard"
-  | "positionGroupExt-course-matrix"
-  | "positionGroupExt-for-cousre-matrix-browse"
   | "positionGroupExt-for-integration-rest"
-  | "positionGroupExt-for-position-details"
   | "positionGroupExt-view"
   | "positionGroupExt.admin.approve"
   | "positionGroupExt.for.requisition"
@@ -90,17 +83,6 @@ export type PositionGroupExtView<
       | "organizationBin"
       | "integrationUserLogin"
       | "fullName"
-    >
-  : V extends "executiveAssistants-browseView"
-  ? Pick<
-      PositionGroupExt,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "list"
-      | "position"
-      | "company"
     >
   : V extends "position.analytic.update"
   ? Pick<PositionGroupExt, "id" | "position" | "analytics">
@@ -139,12 +121,7 @@ export type PositionGroupExtView<
   : V extends "positionGroup.list"
   ? Pick<
       PositionGroupExt,
-      | "id"
-      | "list"
-      | "vacationConditionsList"
-      | "analytics"
-      | "position"
-      | "jobDescription"
+      "id" | "list" | "vacationConditionsList" | "analytics" | "position"
     >
   : V extends "positionGroup.scheduleView"
   ? Pick<PositionGroupExt, "id" | "position" | "list" | "assignments">
@@ -158,35 +135,7 @@ export type PositionGroupExtView<
       | "position"
       | "assignments"
     >
-  : V extends "positionGroupExt-course-matrix"
-  ? Pick<
-      PositionGroupExt,
-      "id" | "position" | "list" | "organizationGroup" | "company"
-    >
-  : V extends "positionGroupExt-for-cousre-matrix-browse"
-  ? Pick<
-      PositionGroupExt,
-      | "id"
-      | "position"
-      | "list"
-      | "organizationGroup"
-      | "gradeGroup"
-      | "company"
-    >
   : V extends "positionGroupExt-for-integration-rest"
-  ? Pick<
-      PositionGroupExt,
-      | "id"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "list"
-      | "company"
-      | "organizationGroup"
-      | "jobGroup"
-      | "gradeGroup"
-    >
-  : V extends "positionGroupExt-for-position-details"
   ? Pick<
       PositionGroupExt,
       "id" | "legacyId" | "organizationBin" | "integrationUserLogin" | "list"
@@ -219,8 +168,6 @@ export type PositionGroupExtView<
       | "integrationUserLogin"
       | "list"
       | "position"
-      | "jobDescription"
-      | "functionalManagerPositionGroup"
     >
   : V extends "positionGroupExtReqLookupPickerField"
   ? Pick<

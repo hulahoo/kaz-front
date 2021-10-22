@@ -1,11 +1,12 @@
-import { AbstractBprocRequest } from "./AbstractBprocRequest";
-import { DicAddressType } from "./tsadv$DicAddressType";
-import { DicCountry } from "./base$DicCountry";
-import { Address } from "./tsadv$Address";
-import { PersonGroupExt } from "./base$PersonGroupExt";
-import { FileDescriptor } from "./sys$FileDescriptor";
-import { DicKato } from "./tsadv_DicKato";
-import { DicStreetType } from "./tsadv_DicStreetType";
+import {AbstractBprocRequest} from "./AbstractBprocRequest";
+import {DicAddressType} from "./tsadv$DicAddressType";
+import {DicCountry} from "./base$DicCountry";
+import {Address} from "./tsadv$Address";
+import {PersonGroupExt} from "./base$PersonGroupExt";
+import {FileDescriptor} from "./sys$FileDescriptor";
+import {DicKato} from "./tsadv_DicKato";
+import {DicStreetType} from "./tsadv_DicStreetType";
+
 export class AddressRequest extends AbstractBprocRequest {
   static NAME = "tsadv$AddressRequest";
   addressType?: DicAddressType | null;
@@ -25,39 +26,38 @@ export class AddressRequest extends AbstractBprocRequest {
   block?: string | null;
   flat?: string | null;
   addressForExpats?: string | null;
+  notes?: string | null;
   addressKazakh?: string | null;
   addressEnglish?: string | null;
 }
+
 export type AddressRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
   | "addressRequest-view"
   | "portal.my-profile";
-export type AddressRequestView<
-  V extends AddressRequestViewName
-> = V extends "_base"
-  ? Pick<
-      AddressRequest,
-      | "id"
-      | "address"
-      | "postalCode"
-      | "city"
-      | "startDate"
-      | "endDate"
-      | "streetName"
-      | "building"
-      | "block"
-      | "flat"
-      | "addressForExpats"
-      | "addressKazakh"
-      | "addressEnglish"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
-      | "comment"
+export type AddressRequestView<V extends AddressRequestViewName> = V extends "_base"
+  ? Pick<AddressRequest,
+    | "id"
+    | "address"
+    | "postalCode"
+    | "city"
+    | "startDate"
+    | "endDate"
+    | "legacyId"
+    | "organizationBin"
+    | "integrationUserLogin"
+    | "requestNumber"
+    | "requestDate"
+    | "comment"
+    | "streetName"
+    | "building"
+    | "block"
+    | "flat"
+    | "addressForExpats"
+    | "addressKazakh"
+    | "addressEnglish"
     >
   : V extends "_local"
   ? Pick<
@@ -68,82 +68,75 @@ export type AddressRequestView<
       | "city"
       | "startDate"
       | "endDate"
-      | "streetName"
-      | "building"
-      | "block"
-      | "flat"
-      | "addressForExpats"
-      | "addressKazakh"
-      | "addressEnglish"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "requestNumber"
       | "requestDate"
       | "comment"
-    >
-  : V extends "_minimal"
-  ? Pick<AddressRequest, "id" | "address">
-  : V extends "addressRequest-view"
-  ? Pick<
-      AddressRequest,
-      | "id"
-      | "address"
-      | "postalCode"
-      | "city"
-      | "startDate"
-      | "endDate"
       | "streetName"
       | "building"
       | "block"
       | "flat"
       | "addressForExpats"
       | "addressKazakh"
-      | "addressEnglish"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
-      | "comment"
-      | "addressType"
-      | "country"
-      | "baseAddress"
-      | "personGroup"
-      | "attachments"
-      | "kato"
-      | "streetType"
-      | "status"
-    >
-  : V extends "portal.my-profile"
-  ? Pick<
-      AddressRequest,
-      | "id"
-      | "address"
-      | "postalCode"
-      | "city"
-      | "startDate"
-      | "endDate"
-      | "streetName"
-      | "building"
-      | "block"
-      | "flat"
-      | "addressForExpats"
-      | "addressKazakh"
-      | "addressEnglish"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
-      | "comment"
-      | "addressType"
-      | "country"
-      | "attachments"
-      | "status"
-      | "personGroup"
-      | "baseAddress"
-      | "kato"
-      | "streetType"
-    >
-  : never;
+      | "addressEnglish">
+    : V extends "_minimal"
+      ? Pick<AddressRequest, "id" | "address">
+      : V extends "addressRequest-view"
+        ? Pick<AddressRequest,
+          | "id"
+          | "address"
+          | "postalCode"
+          | "city"
+          | "startDate"
+          | "endDate"
+          | "legacyId"
+          | "organizationBin"
+          | "integrationUserLogin"
+          | "requestNumber"
+          | "requestDate"
+          | "comment"
+          | "addressType"
+          | "country"
+          | "attachments"
+          | "status"
+          | "baseAddress"
+          | "personGroup"
+          | "streetName"
+          | "building"
+          | "block"
+          | "flat"
+          | "addressForExpats"
+          | "addressKazakh"
+          | "addressEnglish">
+        : V extends "portal.my-profile"
+          ? Pick<AddressRequest,
+            | "id"
+            | "address"
+            | "postalCode"
+            | "city"
+            | "startDate"
+            | "endDate"
+            | "legacyId"
+            | "organizationBin"
+            | "integrationUserLogin"
+            | "requestNumber"
+            | "requestDate"
+            | "comment"
+            | "addressType"
+            | "country"
+            | "attachments"
+            | "status"
+            | "personGroup"
+            | "baseAddress"
+            | "kato"
+            | "streetType"
+            | "streetName"
+            | "building"
+            | "block"
+            | "flat"
+            | "addressForExpats"
+            | "addressKazakh"
+            | "addressEnglish">
+          : never;

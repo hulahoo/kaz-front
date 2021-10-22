@@ -16,18 +16,17 @@ export type VacationScheduleRequestViewName =
   | "_local"
   | "_minimal"
   | "vacation-request-view"
-  | "vacationScheduleRequest-edit"
-  | "vacationScheduleRequest-for-integration";
+  | "vacationScheduleRequest-edit";
 export type VacationScheduleRequestView<
   V extends VacationScheduleRequestViewName
 > = V extends "_base"
   ? Pick<
       VacationScheduleRequest,
       | "id"
-      | "startDate"
-      | "endDate"
       | "personGroup"
       | "absenceDays"
+      | "startDate"
+      | "endDate"
       | "balance"
       | "sentToOracle"
       | "legacyId"
@@ -54,10 +53,7 @@ export type VacationScheduleRequestView<
       | "comment"
     >
   : V extends "_minimal"
-  ? Pick<
-      VacationScheduleRequest,
-      "id" | "startDate" | "endDate" | "personGroup"
-    >
+  ? Pick<VacationScheduleRequest, "id" | "personGroup" | "absenceDays">
   : V extends "vacation-request-view"
   ? Pick<
       VacationScheduleRequest,
@@ -93,23 +89,5 @@ export type VacationScheduleRequestView<
       | "comment"
       | "personGroup"
       | "attachment"
-    >
-  : V extends "vacationScheduleRequest-for-integration"
-  ? Pick<
-      VacationScheduleRequest,
-      | "id"
-      | "startDate"
-      | "endDate"
-      | "absenceDays"
-      | "balance"
-      | "sentToOracle"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "requestNumber"
-      | "requestDate"
-      | "comment"
-      | "personGroup"
-      | "status"
     >
   : never;

@@ -16,8 +16,6 @@ export class Goal extends AbstractParentEntity {
   goalNameLang3?: string | null;
   successCriteriaLang2?: string | null;
   successCriteriaLang3?: string | null;
-  goalLang?: string | null;
-  successCriteriaLang?: string | null;
 }
 export type GoalViewName =
   | "_base"
@@ -25,13 +23,11 @@ export type GoalViewName =
   | "_minimal"
   | "assigned-goal-cascade-position-group"
   | "goal.browse"
-  | "goal.edit"
-  | "goal.with.successCriteriaLang";
+  | "goal.edit";
 export type GoalView<V extends GoalViewName> = V extends "_base"
   ? Pick<
       Goal,
       | "id"
-      | "goalLang"
       | "goalName"
       | "successCriteria"
       | "startDate"
@@ -61,30 +57,20 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "integrationUserLogin"
     >
   : V extends "_minimal"
-  ? Pick<Goal, "id" | "goalLang">
+  ? Pick<Goal, "id" | "goalName">
   : V extends "assigned-goal-cascade-position-group"
-  ? Pick<
-      Goal,
-      "id" | "goalLang" | "library" | "successCriteria" | "successCriteriaLang"
-    >
+  ? Pick<Goal, "id" | "goalName" | "library" | "successCriteria">
   : V extends "goal.browse"
   ? Pick<
       Goal,
       | "id"
       | "goalName"
       | "successCriteria"
-      | "startDate"
-      | "endDate"
-      | "goalNameLang2"
-      | "goalNameLang3"
-      | "successCriteriaLang2"
-      | "successCriteriaLang3"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
       | "library"
       | "measureType"
       | "uom"
+      | "startDate"
+      | "endDate"
       | "parentGoal"
     >
   : V extends "goal.edit"
@@ -103,22 +89,5 @@ export type GoalView<V extends GoalViewName> = V extends "_base"
       | "goalNameLang3"
       | "successCriteriaLang2"
       | "successCriteriaLang3"
-    >
-  : V extends "goal.with.successCriteriaLang"
-  ? Pick<
-      Goal,
-      | "id"
-      | "goalName"
-      | "successCriteria"
-      | "startDate"
-      | "endDate"
-      | "goalNameLang2"
-      | "goalNameLang3"
-      | "successCriteriaLang2"
-      | "successCriteriaLang3"
-      | "legacyId"
-      | "organizationBin"
-      | "integrationUserLogin"
-      | "successCriteriaLang"
     >
   : never;

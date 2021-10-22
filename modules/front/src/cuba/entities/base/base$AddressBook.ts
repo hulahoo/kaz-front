@@ -1,5 +1,5 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
-import { UserExt } from "./base$UserExt";
+import { BaseUserExt } from "./base$UserExt";
 import { ContactInfo } from "./base$ContactInfo";
 export class AddressBook extends AbstractParentEntity {
   static NAME = "base$AddressBook";
@@ -8,7 +8,7 @@ export class AddressBook extends AbstractParentEntity {
   address?: string | null;
   description?: string | null;
   fullAddress?: string | null;
-  user?: UserExt | null;
+  user?: BaseUserExt | null;
   partyContactInfo?: ContactInfo | null;
 }
 export type AddressBookViewName =

@@ -76,10 +76,8 @@ export type AssignmentScheduleView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "assignmentGroup"
       | "schedule"
-      | "offset"
-      | "name"
+      | "assignmentGroup"
     >
   : V extends "assignmentSchedule.view"
   ? Pick<

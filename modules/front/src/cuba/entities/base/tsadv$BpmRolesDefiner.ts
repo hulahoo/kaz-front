@@ -6,8 +6,6 @@ export class BpmRolesDefiner extends StandardEntity {
   processDefinitionKey?: string | null;
   company?: DicCompany | null;
   links?: BpmRolesLink[] | null;
-  managerLaunches?: boolean | null;
-  activeSupManagerExclusion?: boolean | null;
 }
 export type BpmRolesDefinerViewName =
   | "_base"
@@ -17,31 +15,11 @@ export type BpmRolesDefinerViewName =
 export type BpmRolesDefinerView<
   V extends BpmRolesDefinerViewName
 > = V extends "_base"
-  ? Pick<
-      BpmRolesDefiner,
-      | "id"
-      | "processDefinitionKey"
-      | "managerLaunches"
-      | "activeSupManagerExclusion"
-    >
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
   : V extends "_local"
-  ? Pick<
-      BpmRolesDefiner,
-      | "id"
-      | "processDefinitionKey"
-      | "managerLaunches"
-      | "activeSupManagerExclusion"
-    >
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
   : V extends "_minimal"
   ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey">
   : V extends "bpmRolesDefiner-view"
-  ? Pick<
-      BpmRolesDefiner,
-      | "id"
-      | "processDefinitionKey"
-      | "managerLaunches"
-      | "activeSupManagerExclusion"
-      | "company"
-      | "links"
-    >
+  ? Pick<BpmRolesDefiner, "id" | "processDefinitionKey" | "company" | "links">
   : never;

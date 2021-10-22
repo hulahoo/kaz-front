@@ -9,6 +9,7 @@ export type DicCityDistrictViewName =
   | "_local"
   | "_minimal"
   | "dicCityDistrict-edit"
+  | "dicCityDistrict-edit"
   | "dicCityDistrict-for-addres-settings-edit"
   | "dicCityDistrict.full";
 export type DicCityDistrictView<
@@ -75,6 +76,33 @@ export type DicCityDistrictView<
       | "langValue3"
       | "langValue4"
       | "langValue5"
+    >
+  : V extends "dicCityDistrict-edit"
+  ? Pick<
+      DicCityDistrict,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "languageValue"
+      | "company"
     >
   : V extends "dicCityDistrict-edit"
   ? Pick<

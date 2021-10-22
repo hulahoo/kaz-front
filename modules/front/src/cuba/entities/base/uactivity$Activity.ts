@@ -324,8 +324,6 @@ export type ActivityView<V extends ActivityViewName> = V extends "_base"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "notificationBody"
-      | "notificationHeader"
       | "type"
     >
   : V extends "portal.notification"

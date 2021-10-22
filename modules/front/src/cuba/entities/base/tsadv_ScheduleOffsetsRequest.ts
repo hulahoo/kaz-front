@@ -3,9 +3,11 @@ import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicSchedulePurpose } from "./tsadv_DicSchedulePurpose";
 import { StandardSchedule } from "./tsadv$StandardSchedule";
 import { DicEarningPolicy } from "./tsadv_DicEarningPolicy";
-import { FileDescriptor } from "./sys$FileDescriptor";
+import {FileDescriptor} from "./sys$FileDescriptor";
 export class ScheduleOffsetsRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ScheduleOffsetsRequest";
+  static PROCESS_DEFINITION_KEY = "scheduleOffsetsRequest";
+
   personGroup?: PersonGroupExt | null;
   purpose?: DicSchedulePurpose | null;
   purposeText?: string | null;
@@ -83,7 +85,6 @@ export type ScheduleOffsetsRequestView<
       | "currentSchedule"
       | "newSchedule"
       | "status"
-      | "earningPolicy"
       | "files"
     >
   : never;

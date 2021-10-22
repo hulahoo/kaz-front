@@ -1,5 +1,4 @@
 import { StandardEntity } from "./sys$StandardEntity";
-import { DicCompany } from "./base_DicCompany";
 export class PortalMenuCustomization extends StandardEntity {
   static NAME = "tsadv_PortalMenuCustomization";
   menuItem?: string | null;
@@ -10,7 +9,6 @@ export class PortalMenuCustomization extends StandardEntity {
   name2?: string | null;
   name3?: string | null;
   portalAvailability?: any | null;
-  companies?: DicCompany[] | null;
   name?: string | null;
 }
 export type PortalMenuCustomizationViewName = "_base" | "_local" | "_minimal";

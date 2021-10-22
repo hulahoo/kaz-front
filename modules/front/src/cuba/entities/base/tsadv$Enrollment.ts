@@ -23,6 +23,7 @@ export type EnrollmentViewName =
   | "_local"
   | "_minimal"
   | "enrollment-course"
+  | "enrollment-course"
   | "enrollment-view"
   | "enrollment.browse"
   | "enrollment.course.schedule"
@@ -69,6 +70,19 @@ export type EnrollmentView<V extends EnrollmentViewName> = V extends "_base"
   ? Pick<Enrollment, "id" | "course">
   : V extends "enrollment-course"
   ? Pick<Enrollment, "id" | "course" | "course">
+  : V extends "enrollment-course"
+  ? Pick<
+      Enrollment,
+      | "id"
+      | "status"
+      | "date"
+      | "reason"
+      | "moneyInBudget"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "course"
+    >
   : V extends "enrollment-view"
   ? Pick<
       Enrollment,

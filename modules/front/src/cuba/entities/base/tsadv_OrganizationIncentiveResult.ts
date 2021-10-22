@@ -13,7 +13,6 @@ export class OrganizationIncentiveResult extends StandardEntity {
   weight?: any | null;
   premiumPercent?: any | null;
   result?: any | null;
-  score?: any | null;
 }
 export type OrganizationIncentiveResultViewName =
   | "_base"
@@ -21,7 +20,6 @@ export type OrganizationIncentiveResultViewName =
   | "_minimal"
   | "organizationIncentiveResults-edit-view"
   | "organizationIncentiveResults-for-incentiveMonthResult"
-  | "organizationIncentiveResults-notification-view"
   | "portal-organizationIncentiveResult-view";
 export type OrganizationIncentiveResultView<
   V extends OrganizationIncentiveResultViewName
@@ -35,7 +33,6 @@ export type OrganizationIncentiveResultView<
       | "weight"
       | "premiumPercent"
       | "result"
-      | "score"
     >
   : V extends "_local"
   ? Pick<
@@ -47,7 +44,6 @@ export type OrganizationIncentiveResultView<
       | "weight"
       | "premiumPercent"
       | "result"
-      | "score"
     >
   : V extends "organizationIncentiveResults-edit-view"
   ? Pick<
@@ -59,7 +55,6 @@ export type OrganizationIncentiveResultView<
       | "weight"
       | "premiumPercent"
       | "result"
-      | "score"
       | "indicator"
     >
   : V extends "organizationIncentiveResults-for-incentiveMonthResult"
@@ -72,22 +67,8 @@ export type OrganizationIncentiveResultView<
       | "weight"
       | "premiumPercent"
       | "result"
-      | "score"
       | "indicator"
       | "organizationGroup"
-      | "organizationIncentiveMonthResult"
-    >
-  : V extends "organizationIncentiveResults-notification-view"
-  ? Pick<
-      OrganizationIncentiveResult,
-      | "id"
-      | "periodDate"
-      | "plan"
-      | "fact"
-      | "weight"
-      | "premiumPercent"
-      | "result"
-      | "score"
       | "organizationIncentiveMonthResult"
     >
   : V extends "portal-organizationIncentiveResult-view"
@@ -100,8 +81,6 @@ export type OrganizationIncentiveResultView<
       | "weight"
       | "premiumPercent"
       | "result"
-      | "score"
-      | "organizationGroup"
       | "indicator"
     >
   : never;

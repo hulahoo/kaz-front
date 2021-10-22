@@ -7,6 +7,7 @@ export type DicAssignmentStatusViewName =
   | "_local"
   | "_minimal"
   | "dicAssignmentStatus-browse"
+  | "dicAssignmentStatus-edit"
   | "dicAssignmentStatus-edit";
 export type DicAssignmentStatusView<
   V extends DicAssignmentStatusViewName
@@ -64,6 +65,32 @@ export type DicAssignmentStatusView<
   : V extends "_minimal"
   ? Pick<DicAssignmentStatus, "id" | "langValue">
   : V extends "dicAssignmentStatus-browse"
+  ? Pick<
+      DicAssignmentStatus,
+      | "id"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "langValue1"
+      | "description1"
+      | "langValue2"
+      | "description2"
+      | "langValue3"
+      | "description3"
+      | "langValue4"
+      | "description4"
+      | "langValue5"
+      | "description5"
+      | "startDate"
+      | "endDate"
+      | "code"
+      | "isSystemRecord"
+      | "active"
+      | "isDefault"
+      | "order"
+      | "company"
+    >
+  : V extends "dicAssignmentStatus-edit"
   ? Pick<
       DicAssignmentStatus,
       | "id"

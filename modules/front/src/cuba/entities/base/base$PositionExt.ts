@@ -11,7 +11,6 @@ import { DicEmployeeCategory } from "./tsadv$DicEmployeeCategory";
 export class PositionExt extends Position {
   static NAME = "base$PositionExt";
   costCenter?: DicCostCenter | null;
-  supManagerExclusion?: boolean | null;
   candidateRequirementsLang1?: string | null;
   candidateRequirementsLang2?: string | null;
   candidateRequirementsLang3?: string | null;
@@ -33,7 +32,6 @@ export class PositionExt extends Position {
   gradeRule?: GradeRule | null;
   organizationGroupExt?: OrganizationGroupExt | null;
   employeeCategory?: DicEmployeeCategory | null;
-  functionalManagerPositionGroup?: PositionGroupExt | null;
   positionNameLang1Reducted?: string | null;
   positionNameLang2Reducted?: string | null;
   positionNameLang3Reducted?: string | null;
@@ -65,7 +63,6 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
       | "positionFullNameLang2"
       | "positionFullNameLang4"
       | "positionFullNameLang5"
-      | "supManagerExclusion"
       | "candidateRequirementsLang1"
       | "candidateRequirementsLang2"
       | "candidateRequirementsLang3"
@@ -90,7 +87,6 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
   ? Pick<
       PositionExt,
       | "id"
-      | "supManagerExclusion"
       | "candidateRequirementsLang1"
       | "candidateRequirementsLang2"
       | "candidateRequirementsLang3"
@@ -145,7 +141,6 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
   ? Pick<
       PositionExt,
       | "id"
-      | "supManagerExclusion"
       | "candidateRequirementsLang1"
       | "candidateRequirementsLang2"
       | "candidateRequirementsLang3"
@@ -177,17 +172,17 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
       | "managerFlag"
       | "fte"
       | "maxPersons"
-      | "costCenter"
-      | "positionFullName"
-      | "jobGroup"
-      | "gradeGroup"
-      | "group"
       | "payroll"
       | "positionStatus"
-      | "gradeRule"
-      | "organizationGroupExt"
-      | "functionalManagerPositionGroup"
+      | "jobGroup"
+      | "gradeGroup"
       | "location"
+      | "group"
+      | "updatedBy"
+      | "gradeRule"
+      | "costCenter"
+      | "positionFullName"
+      | "organizationGroupExt"
     >
   : V extends "position.attestation.participant"
   ? Pick<
@@ -219,7 +214,6 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
   ? Pick<
       PositionExt,
       | "id"
-      | "supManagerExclusion"
       | "candidateRequirementsLang1"
       | "candidateRequirementsLang2"
       | "candidateRequirementsLang3"
@@ -257,7 +251,6 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
   ? Pick<
       PositionExt,
       | "id"
-      | "supManagerExclusion"
       | "candidateRequirementsLang1"
       | "candidateRequirementsLang2"
       | "candidateRequirementsLang3"
@@ -311,7 +304,6 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
       | "updatedBy"
       | "deleteTs"
       | "deletedBy"
-      | "supManagerExclusion"
       | "candidateRequirementsLang1"
       | "candidateRequirementsLang2"
       | "candidateRequirementsLang3"
@@ -352,7 +344,6 @@ export type PositionExtView<V extends PositionExtViewName> = V extends "_base"
   ? Pick<
       PositionExt,
       | "id"
-      | "supManagerExclusion"
       | "candidateRequirementsLang1"
       | "candidateRequirementsLang2"
       | "candidateRequirementsLang3"

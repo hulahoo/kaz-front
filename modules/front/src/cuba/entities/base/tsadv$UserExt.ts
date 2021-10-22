@@ -1,17 +1,14 @@
-import { UserExt } from "./base$UserExt";
+import { BaseUserExt } from "./base$UserExt";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-import { Concourse } from "./tsadv_Concourse";
-export class TsadvUser extends UserExt {
+export class TsadvUser extends BaseUserExt {
   static NAME = "tsadv$UserExt";
   personGroup?: PersonGroupExt | null;
-  concourse?: Concourse | null;
   fullNameWithLogin?: string | null;
 }
 export type TsadvUserViewName =
   | "_base"
   | "_local"
   | "_minimal"
-  | "myTsadv_view"
   | "portal-bproc-users"
   | "tsadvUserExt-view"
   | "user-fioWithLogin"
@@ -88,45 +85,8 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
     >
   : V extends "_minimal"
   ? Pick<TsadvUser, "id" | "shortName" | "login">
-  : V extends "myTsadv_view"
-  ? Pick<
-      TsadvUser,
-      | "id"
-      | "fullNameWithLogin"
-      | "login"
-      | "loginLowerCase"
-      | "password"
-      | "passwordEncryption"
-      | "name"
-      | "firstName"
-      | "lastName"
-      | "middleName"
-      | "position"
-      | "email"
-      | "language"
-      | "timeZone"
-      | "timeZoneAuto"
-      | "active"
-      | "changePasswordAtNextLogon"
-      | "groupNames"
-      | "ipMask"
-      | "sysTenantId"
-      | "atsCode"
-      | "innerNumber"
-      | "availability"
-      | "mobilePhone"
-      | "telegramCode"
-      | "telegramChatId"
-      | "passwordChangeDate"
-      | "shortName"
-      | "fullName"
-      | "personGroup"
-    >
   : V extends "portal-bproc-users"
-  ? Pick<
-      TsadvUser,
-      "id" | "shortName" | "login" | "fullNameWithLogin" | "personGroup"
-    >
+  ? Pick<TsadvUser, "id" | "shortName" | "login" | "fullNameWithLogin">
   : V extends "tsadvUserExt-view"
   ? Pick<
       TsadvUser,
@@ -231,7 +191,6 @@ export type TsadvUserView<V extends TsadvUserViewName> = V extends "_base"
       | "group"
       | "image"
       | "image"
-      | "personGroup"
     >
   : V extends "user.edit"
   ? Pick<

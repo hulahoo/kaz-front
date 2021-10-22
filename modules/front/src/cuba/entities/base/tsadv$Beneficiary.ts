@@ -2,11 +2,6 @@ import { AbstractParentEntity } from "./AbstractParentEntity";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { DicRelationshipType } from "./tsadv$DicRelationshipType";
 import { RelationshipTypeBeneficiary } from "./tsadv$RelationshipTypeBeneficiary";
-import { DicSocStatus } from "./tsadv_DicSocStatus";
-import { DicAddressType } from "./tsadv$DicAddressType";
-import { DicCountry } from "./base$DicCountry";
-import { DicKato } from "./tsadv_DicKato";
-import { DicStreetType } from "./tsadv_DicStreetType";
 export class Beneficiary extends AbstractParentEntity {
   static NAME = "tsadv$Beneficiary";
   personGroupParent?: PersonGroupExt | null;
@@ -27,20 +22,6 @@ export class Beneficiary extends AbstractParentEntity {
   personGroup?: PersonGroupExt | null;
   relatedPersonGroup?: PersonGroupExt | null;
   relationDegree?: RelationshipTypeBeneficiary | null;
-  socStatus?: DicSocStatus | null;
-  beneficiaryAddress?: string | null;
-  beneficiaryPlaceOfWork?: string | null;
-  beneficiaryJob?: string | null;
-  addressType?: DicAddressType | null;
-  postalCode?: string | null;
-  country?: DicCountry | null;
-  addressKATOCode?: DicKato | null;
-  streetType?: DicStreetType | null;
-  streetName?: string | null;
-  building?: string | null;
-  block?: string | null;
-  flat?: string | null;
-  addressForExpats?: string | null;
 }
 export type BeneficiaryViewName =
   | "_base"
@@ -65,15 +46,6 @@ export type BeneficiaryView<V extends BeneficiaryViewName> = V extends "_base"
       | "additionalContact"
       | "startDateHistory"
       | "endDateHistory"
-      | "beneficiaryAddress"
-      | "beneficiaryPlaceOfWork"
-      | "beneficiaryJob"
-      | "postalCode"
-      | "streetName"
-      | "building"
-      | "block"
-      | "flat"
-      | "addressForExpats"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -94,15 +66,6 @@ export type BeneficiaryView<V extends BeneficiaryViewName> = V extends "_base"
       | "additionalContact"
       | "startDateHistory"
       | "endDateHistory"
-      | "beneficiaryAddress"
-      | "beneficiaryPlaceOfWork"
-      | "beneficiaryJob"
-      | "postalCode"
-      | "streetName"
-      | "building"
-      | "block"
-      | "flat"
-      | "addressForExpats"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -125,25 +88,11 @@ export type BeneficiaryView<V extends BeneficiaryViewName> = V extends "_base"
       | "additionalContact"
       | "startDateHistory"
       | "endDateHistory"
-      | "beneficiaryAddress"
-      | "beneficiaryPlaceOfWork"
-      | "beneficiaryJob"
-      | "postalCode"
-      | "streetName"
-      | "building"
-      | "block"
-      | "flat"
-      | "addressForExpats"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "streetType"
-      | "addressKATOCode"
-      | "country"
-      | "addressType"
       | "personGroupParent"
       | "personGroupChild"
       | "relationshipType"
-      | "socStatus"
     >
   : never;

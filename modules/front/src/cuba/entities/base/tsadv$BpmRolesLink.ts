@@ -11,7 +11,6 @@ export class BpmRolesLink extends StandardEntity {
   isAddableApprover?: boolean | null;
   priority?: number | null;
   findByCounter?: boolean | null;
-  forAssistant?: boolean | null;
 }
 export type BpmRolesLinkViewName =
   | "_base"
@@ -26,9 +25,7 @@ export type BpmRolesLinkView<V extends BpmRolesLinkViewName> = V extends "_base"
       | "order"
       | "required"
       | "isAddableApprover"
-      | "priority"
       | "findByCounter"
-      | "forAssistant"
     >
   : V extends "_local"
   ? Pick<
@@ -38,9 +35,7 @@ export type BpmRolesLinkView<V extends BpmRolesLinkViewName> = V extends "_base"
       | "order"
       | "required"
       | "isAddableApprover"
-      | "priority"
       | "findByCounter"
-      | "forAssistant"
     >
   : V extends "bpmRolesLink-view"
   ? Pick<
@@ -50,9 +45,7 @@ export type BpmRolesLinkView<V extends BpmRolesLinkViewName> = V extends "_base"
       | "order"
       | "required"
       | "isAddableApprover"
-      | "priority"
       | "findByCounter"
-      | "forAssistant"
       | "hrRole"
       | "bpmRolesDefiner"
     >

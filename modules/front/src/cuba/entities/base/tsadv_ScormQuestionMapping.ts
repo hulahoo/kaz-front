@@ -5,7 +5,6 @@ export class ScormQuestionMapping extends AbstractParentEntity {
   learningObject?: LearningObject | null;
   code?: string | null;
   question?: string | null;
-  serialNumber?: number | null;
 }
 export type ScormQuestionMappingViewName =
   | "_base"
@@ -20,7 +19,6 @@ export type ScormQuestionMappingView<
       | "id"
       | "code"
       | "question"
-      | "serialNumber"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -31,7 +29,6 @@ export type ScormQuestionMappingView<
       | "id"
       | "code"
       | "question"
-      | "serialNumber"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -42,7 +39,6 @@ export type ScormQuestionMappingView<
       | "id"
       | "code"
       | "question"
-      | "serialNumber"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"

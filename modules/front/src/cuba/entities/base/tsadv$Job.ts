@@ -42,8 +42,6 @@ export type JobView<V extends JobViewName> = V extends "_base"
       Job,
       | "id"
       | "jobName"
-      | "startDate"
-      | "endDate"
       | "jobNameLang1"
       | "jobNameLang2"
       | "jobNameLang3"
@@ -66,6 +64,8 @@ export type JobView<V extends JobViewName> = V extends "_base"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "startDate"
+      | "endDate"
       | "writeHistory"
     >
   : V extends "_local"
@@ -99,7 +99,7 @@ export type JobView<V extends JobViewName> = V extends "_base"
       | "writeHistory"
     >
   : V extends "_minimal"
-  ? Pick<Job, "id" | "jobName" | "startDate" | "endDate">
+  ? Pick<Job, "id" | "jobName">
   : V extends "job.edit"
   ? Pick<
       Job,
@@ -139,13 +139,6 @@ export type JobView<V extends JobViewName> = V extends "_base"
   : V extends "job.view"
   ? Pick<
       Job,
-      | "id"
-      | "jobName"
-      | "startDate"
-      | "endDate"
-      | "startDate"
-      | "endDate"
-      | "employeeCategory"
-      | "group"
+      "id" | "jobName" | "startDate" | "endDate" | "employeeCategory" | "group"
     >
   : never;

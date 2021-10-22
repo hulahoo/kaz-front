@@ -47,7 +47,6 @@ export type OrganizationIncentiveIndicatorsView<
       | "indicatorType"
       | "weight"
       | "indicator"
-      | "organizationGroup"
       | "responsiblePosition"
       | "approvingPosition"
     >

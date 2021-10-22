@@ -18,9 +18,6 @@ export class OrgStructureRequestDetail extends StandardEntity {
   elementType?: any | null;
   gradeGroup?: GradeGroup | null;
   headCount?: any | null;
-  minSalary?: any | null;
-  maxSalary?: any | null;
-  children?: OrgStructureRequestDetail[] | null;
 }
 export type OrgStructureRequestDetailViewName = "_base" | "_local" | "_minimal";
 export type OrgStructureRequestDetailView<
@@ -36,8 +33,6 @@ export type OrgStructureRequestDetailView<
       | "positionNameEn"
       | "elementType"
       | "headCount"
-      | "minSalary"
-      | "maxSalary"
     >
   : V extends "_local"
   ? Pick<
@@ -50,7 +45,5 @@ export type OrgStructureRequestDetailView<
       | "positionNameEn"
       | "elementType"
       | "headCount"
-      | "minSalary"
-      | "maxSalary"
     >
   : never;

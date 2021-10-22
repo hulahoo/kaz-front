@@ -28,7 +28,6 @@ export type CourseSectionViewName =
   | "courseSection.for.status"
   | "courseSection.minimal"
   | "courseSection.object"
-  | "courseSection.with.learningObject"
   | "enrollment-course-section";
 export type CourseSectionView<
   V extends CourseSectionViewName
@@ -91,22 +90,19 @@ export type CourseSectionView<
       | "course"
     >
   : V extends "courseSection.course.sections"
-  ? Pick<
-      CourseSection,
-      "id" | "sectionName" | "course" | "mandatory" | "description"
-    >
+  ? Pick<CourseSection, "id" | "sectionName" | "course">
   : V extends "courseSection.edit"
   ? Pick<
       CourseSection,
       | "id"
-      | "course"
-      | "mandatory"
       | "sectionName"
       | "order"
-      | "sectionObject"
       | "format"
       | "description"
+      | "sectionObject"
       | "session"
+      | "course"
+      | "mandatory"
     >
   : V extends "courseSection.for.status"
   ? Pick<CourseSection, "id" | "course" | "courseSectionAttempts">
@@ -114,8 +110,6 @@ export type CourseSectionView<
   ? Pick<CourseSection, "id" | "course" | "format">
   : V extends "courseSection.object"
   ? Pick<CourseSection, "id" | "sectionObject">
-  : V extends "courseSection.with.learningObject"
-  ? Pick<CourseSection, "id" | "sectionName" | "course" | "sectionObject">
   : V extends "enrollment-course-section"
   ? Pick<
       CourseSection,
@@ -129,6 +123,5 @@ export type CourseSectionView<
       | "integrationUserLogin"
       | "courseSectionAttempts"
       | "format"
-      | "sectionObject"
     >
   : never;

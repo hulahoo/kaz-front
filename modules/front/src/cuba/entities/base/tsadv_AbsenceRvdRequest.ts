@@ -123,7 +123,6 @@ export type AbsenceRvdRequestView<
       | "type"
       | "purpose"
       | "status"
-      | "shift"
       | "files"
     >
   : never;
