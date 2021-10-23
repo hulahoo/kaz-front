@@ -38,6 +38,7 @@ export default class {
         this.assignmentGroupId = personProfile.assignmentGroupId;
         this.positionId = personProfile.positionId;
         this.positionGroupId = personProfile.positionGroupId;
+        this.position = personProfile.positionName;
         this.companyCode = personProfile.companyCode;
         this.firstLastName = personProfile.firstLastName;
       }

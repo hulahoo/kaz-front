@@ -126,6 +126,11 @@ export default class MenuStore {
         menuLink: "/position-hierarchy",
         pathPattern: "/position-hierarchy",
         component: null
+      },{
+        id: "concourseRequest", caption: "Конкурсы",
+        menuLink: "/concourseRequest",
+        pathPattern: "/concourseRequest",
+        component: null
       },
       // {
       //   id: "my-rating",
