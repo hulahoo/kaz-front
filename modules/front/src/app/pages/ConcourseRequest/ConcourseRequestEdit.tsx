@@ -27,7 +27,7 @@ import {
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
-
+import {restServices} from "../../../cuba/services";
 import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseRequest";
 import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt";
 import { FileDescriptor } from "../../../cuba/entities/base/sys$FileDescriptor";
@@ -37,6 +37,7 @@ import {withRouter} from "react-router";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import "antd/dist/antd.css";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
+import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
 
 type EditorProps = {
   entityId: string;
@@ -54,11 +55,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
   });
 
   projectManagersDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal"
+    view: "_base"
   });
 
   projectExpertsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal"
+    view: "_base"
   });
 
   requestTemplatesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
@@ -71,13 +72,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
   personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_minimal",
-    filter: {
-      conditions: [{
-        property: 'id',
-        operator: '=',
-        value: this.props.rootStore!.userInfo!.personGroupId!
-      }]
-    },
   });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
@@ -216,7 +210,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     }
     const entityName = this.dataInstance.entityName;
     const { status } = this.dataInstance;
-
+    const isNotDraft = this.isNotDraft();
     const buttons = [
       <Button
         htmlType="button"
@@ -402,30 +396,38 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
               <Row type="flex" align="middle" justify={"space-between"} style={{
                 marginBottom: "12px",
                 marginTop: "8px",}}>
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="projectManager"
                   form={this.props.form}
+                  disabled={isNotDraft}
                   formItemOpts={{ style: { minWidth:"25%", marginBottom: "12px" } }}
                   optionsContainer={this.projectManagersDc}
-                  getFieldDecoratorOpts={{}}
+                  getFieldDecoratorOpts={{
+                    getValueFromEvent: (personGroupId, val) =>{
+                      const manager = this.projectManagersDc.items.find(person=>person.id===personGroupId) as PersonExt;
+                      this.getUserRecordById(personGroupId, manager["list"][0]!.id).then(data=>console.log("Hello"))
+                      console.log(manager, val)
+                      return personGroupId;
+                    }
+                  }}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="managerPosition"
                   form={this.props.form}
                   formItemOpts={{ style: {minWidth:"25%", marginBottom: "12px" } }}
-
+                  disabled={true}
                   getFieldDecoratorOpts={{}}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="managerCompany"
                   form={this.props.form}
                   formItemOpts={{ style: {minWidth:"10%", marginBottom: "12px" } }}
-
+                  disabled={true}
                   getFieldDecoratorOpts={{
 
                   }}
@@ -635,6 +637,29 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
       personGroup: this.personGroupId,
       ...updateEntityData});
   };
+
+  async getUserRecordById(id: string, groupId: string){
+    // @ts-ignore
+    const pos = await restServices.employeeService.personProfile(id).then(
+      data=>{
+        if(data){
+          this.dataInstance.update({
+            managerCompany: data.organizationName,
+            managerPosition: data.positionName
+          })
+        }
+      }
+    )
+
+    console.log(pos, groupId)
+
+    // await this.dataInstance.update(
+    //   {
+    //     initiatorCompany: cmp
+    //   }
+    // )
+
+  }
 
 
   componentDidMount() {
