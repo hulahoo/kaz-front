@@ -1,1 +1,1 @@
-alter table kzm_dic_positions_overlapping_type rename to KZM_DIC_POSITIONS_OVERLAPPING_TYPE__U00433 ;
+alter table if exists kzm_dic_positions_overlapping_type rename to KZM_DIC_POSITIONS_OVERLAPPING_TYPE__U00433 ;
