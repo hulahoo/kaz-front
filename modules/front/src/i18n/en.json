@@ -11,6 +11,8 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.ConcourseManagement": "ConcourseManagement",
+  "router.ConcourseRequestDocumentManagement": "ConcourseRequestDocumentManagement",
   "update.menu.list": "Update menu list",
   "router.AbsenceRvdRequestManagement": "AbsenceRvdRequestManagement",
   "router.AbsenceManagement": "AbsenceManagement",

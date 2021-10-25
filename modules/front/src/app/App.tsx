@@ -57,8 +57,10 @@ import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
 import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHierarchyManagement";
 import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveApproveManagement";
-import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
+// import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
 import {ConcourseRequestManagement} from "./pages/ConcourseRequest/ConcourseRequestManagement";
+import {ConcourseRequestDocumentManagement} from "./pages/ConcourseRequest/ConcourseRequestDocument/ConcourseRequestDocumentManagement";
+import {ConcourseManagement} from "./pages/Concourse/ConcourseManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -175,11 +177,12 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
                 {/*       component={CurrentScheduleRequestManagement}/>*/}
                 <Route exact={true}
-                                        path={ConcourseComponent.PATH + "/:entityId?"}
-                                        component={ConcourseComponent}/>
+                                        path={ConcourseManagement.PATH + "/:entityId?"}
+                                        component={ConcourseManagement}/>
                 <Route exact={true}
                        path={ConcourseRequestManagement.PATH + "/:entityId?"}
                        component={ConcourseRequestManagement}/>
+                <Route exact={true} path={ConcourseRequestDocumentManagement.PATH+"/:entityId?"} component={ConcourseRequestDocumentManagement}/>
                 <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>
