@@ -147,6 +147,9 @@ export type PersonGroupExtView<
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+      | "fullName"
+      | "competenceElements"
+      | "company"
     >
   : V extends "_local"
   ? Pick<

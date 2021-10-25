@@ -1,30 +1,37 @@
 import * as React from "react";
-import {createElement} from "react";
-import {Card, Col, Form, Input, Row} from "antd";
-import {inject, observer} from "mobx-react";
-import {FormattedMessage, injectIntl} from "react-intl";
+import { createElement } from "react";
+import { Card, Col, Form, Input, Row } from "antd";
+import { inject, observer } from "mobx-react";
+import { FormattedMessage, injectIntl } from "react-intl";
 
-import {collection, getCubaREST, injectMainStore, instance, Msg, withLocalizedForm} from "@cuba-platform/react";
+import {
+  collection,
+  getCubaREST,
+  injectMainStore,
+  instance,
+  Msg,
+  withLocalizedForm
+} from "@cuba-platform/react";
 
 import "../../../app/App.css";
-import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
-import {PersonalDataRequest} from "../../../cuba/entities/base/tsadv$PersonalDataRequest";
+import { PersonExt } from "../../../cuba/entities/base/base$PersonExt";
+import { PersonalDataRequest } from "../../../cuba/entities/base/tsadv$PersonalDataRequest";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import {observable} from "mobx";
-import {ReadonlyField} from "../../components/ReadonlyField";
+import { observable } from "mobx";
+import { ReadonlyField } from "../../components/ReadonlyField";
 import moment from "moment";
 import DefaultDatePicker from "../../components/Datepicker";
-import Button, {ButtonType} from "../../components/Button/Button";
-import {withRouter} from "react-router";
+import Button, { ButtonType } from "../../components/Button/Button";
+import { withRouter } from "react-router";
 import Section from "../../hoc/Section";
 import Page from "../../hoc/PageContentHoc";
 import MsgEntity from "../../components/MsgEntity";
-import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
-import {PersonalDataRequestManagement} from "./PersonalDataRequestManagement";
-import {goBackOrHomePage} from "../../util/util";
-import {restServices} from "../../../cuba/services";
+import { DicRequestStatus } from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import { PersonalDataRequestManagement } from "./PersonalDataRequestManagement";
+import { goBackOrHomePage } from "../../util/util";
+import { restServices } from "../../../cuba/services";
 import Notification from "../../util/Notification/Notification";
-import {PersonProfile} from "../MyTeam/MyTeamCard";
+import { PersonProfile } from "../MyTeam/MyTeamCard";
 
 type EditorProps = {
   entityId: string;
@@ -33,8 +40,10 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataRequest, EditorProps> {
-
+class PersonalDataRequestEditComponent extends AbstractBprocEdit<
+  PersonalDataRequest,
+  EditorProps
+> {
   processDefinitionKey = "personalDataRequest";
 
   dataInstance = instance<PersonalDataRequest>(PersonalDataRequest.NAME, {
@@ -76,8 +85,7 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
 
     "status",
 
-    "attachments",
-
+    "attachments"
   ];
 
   update = () => {
@@ -92,26 +100,31 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
   render() {
     const isNotDraft = this.isNotDraft();
     return (
-      <Page pageName={<MsgEntity entityName={PersonalDataRequest.NAME}/>}>
+      <Page pageName={<MsgEntity entityName={PersonalDataRequest.NAME} />}>
         <Section size="large">
-          <Card className="narrow-layout card-actions-container"
-                bordered={false}
-                actions={[
-                  <Button buttonType={ButtonType.FOLLOW}
-                          onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
-                  this.getOutcomeBtns()]}>
+          <Card
+            className="narrow-layout card-actions-container"
+            bordered={false}
+            actions={[
+              <Button
+                buttonType={ButtonType.FOLLOW}
+                onClick={() => goBackOrHomePage(this.props.history!)}
+              >
+                {this.props.intl.formatMessage({ id: "close" })}
+              </Button>,
+              this.getOutcomeBtns()
+            ]}
+          >
             <Form>
               {/*<div className={"section-header-container"}><FormattedMessage id={'additionalInformation'}/></div>*/}
 
               <Row type={"flex"} className={"data-form"}>
-
                 <Col md={24} sm={24} lg={12}>
-
                   <ReadonlyField
                     entityName={this.dataInstance.entityName}
                     propertyName="requestNumber"
                     form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    formItemOpts={{ style: { marginBottom: "12px" } }}
                     disabled={true}
                   />
 
@@ -119,143 +132,215 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                     entityName={this.dataInstance.entityName}
                     propertyName="status"
                     form={this.props.form}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    formItemOpts={{ style: { marginBottom: "12px" } }}
                     optionsContainer={this.statusesDc}
                     disabled={true}
                   />
 
                   <Form.Item
-                    label={<Msg entityName={PersonExt.NAME} propertyName={'sex'}/>}>
-                    <Input value={this.person && this.person.sex ? this.person.sex['_instanceName'] || '' : undefined}
-                           disabled/>
+                    label={
+                      <Msg entityName={PersonExt.NAME} propertyName={"sex"} />
+                    }
+                  >
+                    <Input
+                      value={
+                        this.person && this.person.sex
+                          ? this.person.sex["_instanceName"] || ""
+                          : undefined
+                      }
+                      disabled
+                    />
                   </Form.Item>
 
                   <Form.Item
                     label={createElement(Msg, {
                       entityName: this.dataInstance.entityName,
                       propertyName: "dateOfBirth"
-                    })}>
-                    <DefaultDatePicker value={this.person ? moment(this.person.dateOfBirth) : null}
-                                       disabled/>
+                    })}
+                  >
+                    <DefaultDatePicker
+                      value={
+                        this.person ? moment(this.person.dateOfBirth) : null
+                      }
+                      disabled
+                    />
                   </Form.Item>
-
                 </Col>
 
                 <Col md={24} sm={24} lg={12}>
-
                   <ReadonlyField
                     entityName={this.dataInstance.entityName}
                     propertyName="requestDate"
                     form={this.props.form}
                     disabled={true}
-                    formItemOpts={{style: {marginBottom: "12px"}}}
+                    formItemOpts={{ style: { marginBottom: "12px" } }}
                   />
 
                   <Form.Item
-                    label={<Msg entityName={PersonExt.NAME} propertyName={'nationalIdentifier'}/>}>
+                    label={
+                      <Msg
+                        entityName={PersonExt.NAME}
+                        propertyName={"nationalIdentifier"}
+                      />
+                    }
+                  >
                     <Input
-                      value={this.person && this.person.nationalIdentifier ? this.person.nationalIdentifier || '' : undefined}
-                      disabled/>
+                      value={
+                        this.person && this.person.nationalIdentifier
+                          ? this.person.nationalIdentifier || ""
+                          : undefined
+                      }
+                      disabled
+                    />
                   </Form.Item>
 
                   <Form.Item
-                    label={<Msg entityName={PersonExt.NAME} propertyName={'nationality'}/>}>
+                    label={
+                      <Msg
+                        entityName={PersonExt.NAME}
+                        propertyName={"nationality"}
+                      />
+                    }
+                  >
                     <Input
-                      value={this.person && this.person.nationality ? this.person.nationality['_instanceName'] || '' : undefined}
-                      disabled/>
+                      value={
+                        this.person && this.person.nationality
+                          ? this.person.nationality["_instanceName"] || ""
+                          : undefined
+                      }
+                      disabled
+                    />
                   </Form.Item>
 
-                  <Form.Item label={<FormattedMessage id={'cityOfResidence'}/>}>
-                    <Input value={this.personInfo && this.personInfo.cityOfResidence}
-                           disabled/>
+                  <Form.Item
+                    label={<FormattedMessage id={"cityOfResidence"} />}
+                  >
+                    <Input
+                      value={this.personInfo && this.personInfo.cityOfResidence}
+                      disabled
+                    />
                   </Form.Item>
                 </Col>
-
               </Row>
 
               <Row type={"flex"} className={"data-form"}>
                 <Col md={24} sm={24} lg={12}>
-
-                  <div className={"section-header-container"}><FormattedMessage id={'currentValue'}/></div>
+                  <div className={"section-header-container"}>
+                    <FormattedMessage id={"currentValue"} />
+                  </div>
 
                   <Form.Item
-                    label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "lastName"})}>
+                    label={createElement(Msg, {
+                      entityName: this.dataInstance.entityName,
+                      propertyName: "lastName"
+                    })}
+                  >
                     <Input
-                      value={this.person ? this.person.lastName || '' : ''}
-                      disabled/>
+                      value={this.person ? this.person.lastName || "" : ""}
+                      disabled
+                    />
                   </Form.Item>
 
                   <Form.Item
-                    label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "firstName"})}>
+                    label={createElement(Msg, {
+                      entityName: this.dataInstance.entityName,
+                      propertyName: "firstName"
+                    })}
+                  >
                     <Input
-                      value={this.person ? this.person.firstName || '' : ''}
-                      disabled/>
+                      value={this.person ? this.person.firstName || "" : ""}
+                      disabled
+                    />
                   </Form.Item>
 
                   <Form.Item
                     label={createElement(Msg, {
                       entityName: this.dataInstance.entityName,
                       propertyName: "middleName"
-                    })}>
+                    })}
+                  >
                     <Input
-                      value={this.person ? this.person.middleName || '' : ''}
-                      disabled/>
+                      value={this.person ? this.person.middleName || "" : ""}
+                      disabled
+                    />
                   </Form.Item>
 
                   <Form.Item
                     label={createElement(Msg, {
                       entityName: this.dataInstance.entityName,
                       propertyName: "lastNameLatin"
-                    })}>
+                    })}
+                  >
                     <Input
-                      value={this.person ? this.person.lastNameLatin || '' : ''}
-                      disabled/>
+                      value={this.person ? this.person.lastNameLatin || "" : ""}
+                      disabled
+                    />
                   </Form.Item>
 
                   <Form.Item
                     label={createElement(Msg, {
                       entityName: this.dataInstance.entityName,
                       propertyName: "firstNameLatin"
-                    })}>
+                    })}
+                  >
                     <Input
-                      value={this.person ? this.person.firstNameLatin || '' : ''}
-                      disabled/>
+                      value={
+                        this.person ? this.person.firstNameLatin || "" : ""
+                      }
+                      disabled
+                    />
                   </Form.Item>
 
                   <Form.Item
                     label={createElement(Msg, {
                       entityName: this.dataInstance.entityName,
                       propertyName: "middleNameLatin"
-                    })}>
+                    })}
+                  >
                     <Input
-                      value={this.person ? this.person.middleNameLatin || '' : ''}
-                      disabled/>
+                      value={
+                        this.person ? this.person.middleNameLatin || "" : ""
+                      }
+                      disabled
+                    />
                   </Form.Item>
-
                 </Col>
                 <Col md={24} sm={24} lg={12}>
-
-                  <div className={"section-header-container"}><FormattedMessage id={'newValue'}/></div>
+                  <div className={"section-header-container"}>
+                    <FormattedMessage id={"newValue"} />
+                  </div>
 
                   <ReadonlyField
                     entityName={PersonExt.NAME}
                     propertyName="lastName"
                     disabled={isNotDraft}
                     getFieldDecoratorOpts={{
-                      rules: [{
-                        required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.lastName']})
-                      }],
+                      rules: [
+                        {
+                          required: true,
+                          message: this.props.intl.formatMessage(
+                            { id: "form.validation.required" },
+                            {
+                              fieldName: this.mainStore.messages![
+                                this.dataInstance.entityName + ".lastName"
+                              ]
+                            }
+                          )
+                        }
+                      ],
                       getValueFromEvent: args => {
                         if (!args) return args;
                         const value = args.currentTarget.value;
-                        this.changedMap.set('lastName', value !== this.person.lastName);
+                        this.changedMap.set(
+                          "lastName",
+                          value !== this.person.lastName
+                        );
                         return value;
                       }
                     }}
                     form={this.props.form}
                     formItemOpts={{
-                      hasFeedback: this.changedMap.get('lastName'),
+                      hasFeedback: this.changedMap.get("lastName")
                     }}
                   />
                   <ReadonlyField
@@ -263,20 +348,32 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                     propertyName="firstName"
                     form={this.props.form}
                     getFieldDecoratorOpts={{
-                      rules: [{
-                        required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.firstName']})
-                      }],
+                      rules: [
+                        {
+                          required: true,
+                          message: this.props.intl.formatMessage(
+                            { id: "form.validation.required" },
+                            {
+                              fieldName: this.mainStore.messages![
+                                this.dataInstance.entityName + ".firstName"
+                              ]
+                            }
+                          )
+                        }
+                      ],
                       getValueFromEvent: args => {
                         if (!args) return args;
                         const value = args.currentTarget.value;
-                        this.changedMap.set('firstName', value !== this.person.firstName);
+                        this.changedMap.set(
+                          "firstName",
+                          value !== this.person.firstName
+                        );
                         return value;
                       }
                     }}
                     disabled={isNotDraft}
                     formItemOpts={{
-                      hasFeedback: this.changedMap.get('firstName'),
+                      hasFeedback: this.changedMap.get("firstName")
                     }}
                   />
                   <ReadonlyField
@@ -288,13 +385,16 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                       getValueFromEvent: args => {
                         if (!args) return args;
                         const value = args.currentTarget.value;
-                        this.changedMap.set('middleName', value !== this.person.middleName);
+                        this.changedMap.set(
+                          "middleName",
+                          value !== this.person.middleName
+                        );
                         return value;
                       }
                     }}
                     formItemOpts={{
-                      hasFeedback: this.changedMap.get('middleName'),
-                      validateStatus: "success",
+                      hasFeedback: this.changedMap.get("middleName"),
+                      validateStatus: "success"
                     }}
                   />
                   <ReadonlyField
@@ -303,19 +403,31 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                     disabled={isNotDraft}
                     form={this.props.form}
                     getFieldDecoratorOpts={{
-                      rules: [{
-                        required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.lastNameLatin']})
-                      }],
+                      rules: [
+                        {
+                          required: true,
+                          message: this.props.intl.formatMessage(
+                            { id: "form.validation.required" },
+                            {
+                              fieldName: this.mainStore.messages![
+                                this.dataInstance.entityName + ".lastNameLatin"
+                              ]
+                            }
+                          )
+                        }
+                      ],
                       getValueFromEvent: args => {
                         if (!args) return args;
                         const value = args.currentTarget.value;
-                        this.changedMap.set('lastNameLatin', value !== this.person.lastNameLatin);
+                        this.changedMap.set(
+                          "lastNameLatin",
+                          value !== this.person.lastNameLatin
+                        );
                         return value;
                       }
                     }}
                     formItemOpts={{
-                      hasFeedback: this.changedMap.get('lastNameLatin'),
+                      hasFeedback: this.changedMap.get("lastNameLatin")
                     }}
                   />
                   <ReadonlyField
@@ -324,19 +436,31 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                     disabled={isNotDraft}
                     form={this.props.form}
                     getFieldDecoratorOpts={{
-                      rules: [{
-                        required: true,
-                        message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.firstNameLatin']})
-                      }],
+                      rules: [
+                        {
+                          required: true,
+                          message: this.props.intl.formatMessage(
+                            { id: "form.validation.required" },
+                            {
+                              fieldName: this.mainStore.messages![
+                                this.dataInstance.entityName + ".firstNameLatin"
+                              ]
+                            }
+                          )
+                        }
+                      ],
                       getValueFromEvent: args => {
                         if (!args) return args;
                         const value = args.currentTarget.value;
-                        this.changedMap.set('firstNameLatin', value !== this.person.firstNameLatin);
+                        this.changedMap.set(
+                          "firstNameLatin",
+                          value !== this.person.firstNameLatin
+                        );
                         return value;
                       }
                     }}
                     formItemOpts={{
-                      hasFeedback: this.changedMap.get('firstNameLatin'),
+                      hasFeedback: this.changedMap.get("firstNameLatin")
                     }}
                   />
 
@@ -349,16 +473,18 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                       getValueFromEvent: args => {
                         if (!args) return args;
                         const value = args.currentTarget.value;
-                        this.changedMap.set('middleNameLatin', value !== this.person.middleNameLatin);
+                        this.changedMap.set(
+                          "middleNameLatin",
+                          value !== this.person.middleNameLatin
+                        );
                         return value;
                       }
                     }}
                     formItemOpts={{
-                      hasFeedback: this.changedMap.get('middleNameLatin'),
-                      validateStatus: "success",
+                      hasFeedback: this.changedMap.get("middleNameLatin"),
+                      validateStatus: "success"
                     }}
                   />
-
                 </Col>
 
                 <ReadonlyField
@@ -367,18 +493,25 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
                   form={this.props.form}
                   disabled={isNotDraft}
                   getFieldDecoratorOpts={{
-                    rules: [{
-                      required: true,
-                      message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: this.mainStore.messages![this.dataInstance.entityName + '.attachments']})
-                    }],
+                    rules: [
+                      {
+                        required: true,
+                        message: this.props.intl.formatMessage(
+                          { id: "form.validation.required" },
+                          {
+                            fieldName: this.mainStore.messages![
+                              this.dataInstance.entityName + ".attachments"
+                            ]
+                          }
+                        )
+                      }
+                    ]
                   }}
                 />
               </Row>
-
             </Form>
 
             {this.takCard()}
-
           </Card>
         </Section>
       </Page>
@@ -386,57 +519,91 @@ class PersonalDataRequestEditComponent extends AbstractBprocEdit<PersonalDataReq
   }
 
   onReactionDisposerEffect = (item: PersonalDataRequest | undefined) => {
-    const requestDate = item && item.requestDate ? item.requestDate : moment().toISOString();
-    getCubaREST()!.searchEntities<PersonExt>(PersonExt.NAME, {
-      conditions: [{
-        property: "group.id",
-        operator: '=',
-        value: item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!
-      }, {
-        property: 'startDate',
-        operator: '<=',
-        value: requestDate,
-      }, {
-        property: 'endDate',
-        operator: '>=',
-        value: requestDate,
-      }]
-    }, {
-      view: 'person-edit'
-    }).then(value => value[0])
-      .then(value => this.person = value)
+    const requestDate =
+      item && item.requestDate ? item.requestDate : moment().toISOString();
+    getCubaREST()!
+      .searchEntities<PersonExt>(
+        PersonExt.NAME,
+        {
+          conditions: [
+            {
+              property: "group.id",
+              operator: "=",
+              value:
+                item && item.personGroup
+                  ? item.personGroup.id!
+                  : this.props.rootStore!.userInfo!.personGroupId!
+            },
+            {
+              property: "startDate",
+              operator: "<=",
+              value: requestDate
+            },
+            {
+              property: "endDate",
+              operator: ">=",
+              value: requestDate
+            }
+          ]
+        },
+        {
+          view: "person-edit"
+        }
+      )
+      .then(value => value[0])
+      .then(value => (this.person = value))
       .then(value => {
-        if (value && this.props.entityId === PersonalDataRequestManagement.NEW_SUBPATH) {
+        if (
+          value &&
+          this.props.entityId === PersonalDataRequestManagement.NEW_SUBPATH
+        ) {
           this.props.form.setFieldsValue({
             lastName: value.lastName,
             firstName: value.firstName,
             middleName: value.middleName,
             lastNameLatin: value.lastNameLatin,
             firstNameLatin: value.firstNameLatin,
-            middleNameLatin: value.middleNameLatin,
-          })
+            middleNameLatin: value.middleNameLatin
+          });
         } else if (item && value) {
-          this.changedMap.set('lastName', item.lastName !== value.lastName);
-          this.changedMap.set('firstName', item.firstName !== value.firstName);
-          this.changedMap.set('middleName', item.middleName !== value.middleName);
-          this.changedMap.set('lastNameLatin', item.lastNameLatin !== value.lastNameLatin);
-          this.changedMap.set('firstNameLatin', item.firstNameLatin !== value.firstNameLatin);
-          this.changedMap.set('middleNameLatin', item.middleNameLatin !== value.middleNameLatin);
+          this.changedMap.set("lastName", item.lastName !== value.lastName);
+          this.changedMap.set("firstName", item.firstName !== value.firstName);
+          this.changedMap.set(
+            "middleName",
+            item.middleName !== value.middleName
+          );
+          this.changedMap.set(
+            "lastNameLatin",
+            item.lastNameLatin !== value.lastNameLatin
+          );
+          this.changedMap.set(
+            "firstNameLatin",
+            item.firstNameLatin !== value.firstNameLatin
+          );
+          this.changedMap.set(
+            "middleNameLatin",
+            item.middleNameLatin !== value.middleNameLatin
+          );
         }
       });
 
-    restServices.employeeService.personProfile(item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!)
+    restServices.employeeService
+      .personProfile(
+        item && item.personGroup
+          ? item.personGroup.id!
+          : this.props.rootStore!.userInfo!.personGroupId!
+      )
       .then(value => {
         this.personInfo = value;
       })
       .catch(() => {
-          Notification.error({
-            message: this.props.intl.formatMessage({id: "management.editor.error"})
-          });
-        }
-      )
-  }
-
+        Notification.error({
+          message: this.props.intl.formatMessage({
+            id: "management.editor.error"
+          })
+        });
+      });
+  };
 }
 
 export default injectIntl(
