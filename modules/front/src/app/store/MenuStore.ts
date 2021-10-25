@@ -115,10 +115,19 @@ export default class MenuStore {
         }],
       },
 
+//       {
+//         id: "concourse-menu",
+//         caption: "Конкурс проектов",
+//         items: [{id: "concourse", caption: "Конкурс проектов", menuLink: "/concourse", pathPattern: "/concourse", component: null}]
+//       },
+
+
       {
-        id: "concourse-menu",
-        caption: "Конкурс проектов",
-        items: [{id: "concourse", caption: "Конкурс проектов", menuLink: "/concourse", pathPattern: "/concourse", component: null}]
+      id: "concourses",
+      caption: "Конкурс проектов",
+      menuLink: "/concourses",
+      pathPattern: "/concourses",
+      component: null
       },
 
       {
@@ -126,7 +135,8 @@ export default class MenuStore {
         menuLink: "/position-hierarchy",
         pathPattern: "/position-hierarchy",
         component: null
-      },{
+      },
+      {
         id: "concourseRequest", caption: "Конкурсы",
         menuLink: "/concourseRequest",
         pathPattern: "/concourseRequest",

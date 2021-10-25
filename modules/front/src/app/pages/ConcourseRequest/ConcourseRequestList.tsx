@@ -33,47 +33,15 @@ class ConcourseRequestListComponent extends React.Component<
   });
 
   fields = [
-    "endDate",
-
-    "scaleOfDistrubution",
-
-    "managerContactInfo",
-
-    "managerPosition",
-
-    "managerCompany",
-
-    "expertPosition",
-
-    "expertCompany",
-
-    "expertContanctInfo",
-
-    "shortProjectDescriptionRu",
-
-    "shortProjectDescriptionEn",
-
-    "initiatorCompany",
-
-    "initiatorPosition",
-
-    "requestNameRu",
-
-    "requestNameEn",
-
-    "startDate",
-
-    "legacyId",
-
-    "organizationBin",
-
-    "integrationUserLogin",
 
     "requestNumber",
 
     "requestDate",
 
-    "comment"
+    "requestNameRu",
+
+    "status",
+
   ];
 
   @observable selectedRowKey: string | undefined;

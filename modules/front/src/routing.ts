@@ -1,4 +1,4 @@
-import { ConcourseRequestManagement } from "./app/pages/ConcourseRequest/ConcourseRequestManagement";
+// import { ConcourseRequestManagement } from "./app/pages/ConcourseRequest/ConcourseRequestManagement";
 import { getMenuItems } from "@cuba-platform/react";
 import { rootStore } from "./app/store";
 import { MenuRouteItem, MenuSubMenu } from "./app/store/MenuStore";
@@ -30,9 +30,9 @@ export function getRouteList() {
   return flattenRoutes(rootStore.menu.menuList);
 }
 
-menuItems.push({
-  pathPattern: "/concourseRequest/:entityId?",
-  menuLink: "/concourseRequest",
-  component: ConcourseRequestManagement,
-  caption: "Concourse"
-});
+// menuItems.push({
+//   pathPattern: "/concourseRequest/:entityId?",
+//   menuLink: "/concourseRequest",
+//   component: ConcourseRequestManagement,
+//   caption: "Concourse"
+// });

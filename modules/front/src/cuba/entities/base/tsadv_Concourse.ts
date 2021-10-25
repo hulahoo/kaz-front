@@ -2,6 +2,8 @@ import { AbstractParentEntity } from "./AbstractParentEntity";
 import { TsadvUser } from "./tsadv$UserExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
 import { MarkCriteria } from "./tsadv_MarkCriteria";
+
+
 export class Concourse extends AbstractParentEntity {
   static NAME = "tsadv_Concourse";
   name_ru?: string | null;
