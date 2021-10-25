@@ -15,6 +15,10 @@
   "management.editor.error": "Ошибка",
   "management.editor.cancel": "Отмена",
   "management.editor.submit": "Сохранить",
+  "management.browser.exclude.areYouSure": "Вы действительно хотите упразднить {type} \"{name}\"?",
+  "management.browser.exclude.ok": "Упразднить",
+  "management.browser.exclude.cancel": "Отмена",
+  "management.browser.refresh": "Обновить",
   "update.menu.list": "Обновить список меню",
   "common.alt.logo": "Лого",
   "home.welcome": "Добро пожаловать в",
@@ -477,5 +481,7 @@
   "absenceDays": "Дней",
   "absenceRequestAlert": "Вы находитесь в оплачиваемом ежегодном трудовом отпуске. Укажите условия переноса дат отпуска",
   "validation.absenceRequest.validate": "До окончания отпуска осталось {days} дней. Укажите корректные даты переноса дат отпуска",
-  "originalSheetFieldValidate": "Обязуюсь предоставить оригинал листа временной нетрудоспособности -обязательное поле"
+  "originalSheetFieldValidate": "Обязуюсь предоставить оригинал листа временной нетрудоспособности -обязательное поле",
+  "menu.position-overlapping-request": "Запрос на совмещение позиций",
+  "positionOverlappingRequest": "Изменение условий труда работника"
 }

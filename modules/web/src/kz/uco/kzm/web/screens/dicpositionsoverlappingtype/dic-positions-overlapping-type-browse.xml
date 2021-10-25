@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://dicPositionsOverlappingTypeBrowse.caption"
+        focusComponent="dicPositionsOverlappingTypesTable"
+        messagesPack="kz.uco.kzm.web.screens.dicpositionsoverlappingtype">
+    <data readOnly="true">
+        <collection id="dicPositionsOverlappingTypesDc"
+                    class="kz.uco.kzm.entity.DicPositionsOverlappingType">
+            <view extends="_local">
+                <property name="company" view="_minimal"/>
+            </view>
+            <loader id="dicPositionsOverlappingTypesDl">
+                <query>
+                    <![CDATA[select e from kzm$DicPositionsOverlappingType e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="dicPositionsOverlappingTypesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="dicPositionsOverlappingTypesTable"
+                dataLoader="dicPositionsOverlappingTypesDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="dicPositionsOverlappingTypesTable"
+                    width="100%"
+                    dataContainer="dicPositionsOverlappingTypesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="langValue1"/>
+                <column id="langValue2"/>
+                <column id="langValue3"/>
+                <column id="langValue4"/>
+                <column id="langValue5"/>
+                <column id="startDate"/>
+                <column id="endDate"/>
+                <column id="code"/>
+                <column id="company"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="dicPositionsOverlappingTypesTable.create"/>
+                <button id="editBtn" action="dicPositionsOverlappingTypesTable.edit"/>
+                <button id="removeBtn" action="dicPositionsOverlappingTypesTable.remove"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

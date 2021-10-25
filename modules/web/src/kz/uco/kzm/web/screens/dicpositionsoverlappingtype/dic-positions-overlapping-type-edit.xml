@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://dicPositionsOverlappingTypeEdit.caption"
+        focusComponent="form"
+        messagesPack="kz.uco.kzm.web.screens.dicpositionsoverlappingtype">
+    <data>
+        <instance id="dicPositionsOverlappingTypeDc"
+                  class="kz.uco.kzm.entity.DicPositionsOverlappingType">
+            <view extends="_local">
+                <property name="company" view="_minimal"/>
+            </view>
+            <loader/>
+        </instance>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="scrollBox" spacing="true">
+        <scrollBox id="scrollBox" spacing="true">
+            <form id="form" dataContainer="dicPositionsOverlappingTypeDc">
+                <column width="350px">
+                <field property="langValue1"/>
+                <field property="langValue2"/>
+                <field property="langValue3"/>
+                <field property="langValue4"/>
+                <field property="langValue5"/>
+                <field property="startDate"/>
+                <field property="endDate"/>
+                <field property="code"/>
+                <field property="company"/>
+                </column>
+
+            </form>
+        </scrollBox>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

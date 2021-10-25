@@ -18,9 +18,9 @@
               maxTotal="20"
               maxWaitMillis="5000"
               name="jdbc/CubaDS"
-              password="tal"
+              password="postgres"
               type="javax.sql.DataSource"
-              url="jdbc:postgresql://localhost/tsadv_master7"
-              username="tal"/>
+              url="jdbc:postgresql://localhost:5433/kzm"
+              username="postgres"/>
 
 </Context>
