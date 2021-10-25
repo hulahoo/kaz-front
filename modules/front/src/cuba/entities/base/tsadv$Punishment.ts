@@ -37,6 +37,7 @@ export type PunishmentViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "punishment-for-removal-edit"
   | "punishment.all";
 export type PunishmentView<V extends PunishmentViewName> = V extends "_base"
   ? Pick<
@@ -83,6 +84,17 @@ export type PunishmentView<V extends PunishmentViewName> = V extends "_base"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
+    >
+  : V extends "punishment-for-removal-edit"
+  ? Pick<
+      Punishment,
+      | "id"
+      | "date"
+      | "responsibleEmployee"
+      | "type"
+      | "orderNumber"
+      | "orderDate"
+      | "legacyId"
     >
   : V extends "punishment.all"
   ? Pick<

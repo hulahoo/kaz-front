@@ -447,3 +447,8 @@ export enum TimecardHeaderTypeEnum {
   PLAN = "PLAN",
   BASE = "BASE"
 }
+
+export enum PunishmentRequestType {
+  ASSIGNMENT = "ASSIGNMENT",
+  REMOVAL = "REMOVAL"
+}

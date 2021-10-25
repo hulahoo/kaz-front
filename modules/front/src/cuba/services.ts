@@ -49,6 +49,7 @@ import {VacationPojo} from "../app/pages/VacationScheduleRequest/VacationSchedul
 import {EntitiesResult, QuerySettings} from "../app/components/querySettings";
 import {OrganizationGroupExt} from "./entities/base/base$OrganizationGroupExt";
 import {DismissalRequest} from "./entities/base/tsadv_DismissalRequest";
+import {Punishment} from "./entities/base/tsadv$Punishment";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -992,6 +993,15 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     },
+  },
+  punishmentService: {
+    getPunishmentByPersonGroup: (param: { personGroupId: string }): Promise<Array<Punishment>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PunishmentService",
+        "getPunishmentByPersonGroup",
+        {...param}
+      ).then(r => JSON.parse(r))
+    }
   },
   assignmentScheduleService: {
     getAssignmentSchedule: (param: { personGroupId: string, date: string, view: string }): Promise<SerializedEntity<AssignmentSchedule>> => {

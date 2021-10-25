@@ -14,12 +14,14 @@ import MyTeamPersonRvd from "./timeManagement/rvd/MyTeamPersonRvd/MyTeamPersonRv
 import PositionOverlappingRequestListComponent from "../PositionOverlappingRequest/PositionOverlappingRequestList";
 // import CurrentSchedule from "./shiftSchedules/MyTeamCurrentSchedule/CurrentSchedule";
 import AbsenceRvdRequestList from "./timeManagement/rvd/MyTeamPersonRvdRequest/AbsenceRvdRequestList";
-import {rootStore, RootStoreProp} from "../../store";
+import {RootStoreProp} from "../../store";
 import AssignmentScheduleStandard from "./AssignmentScheduleStandard";
 import MyTeamScheduleOffsetRequestList from "./MyTeamScheduleOffsetRequestList";
 import MyTeamAbsenceRequest from "./timeManagement/MyTeamAbsenceRequest/MyTeamAbsenceRequest";
 import {MyTeamData} from "./MyTeamComponent";
 import {PersonContact} from "../../../cuba/entities/base/tsadv$PersonContact";
+import PunishmentRequestList from "./assignment/PunishmentRequestList";
+import PunishmentList from "./assignment/punishment/PunishmentList";
 
 const {TabPane} = Tabs;
 
@@ -100,6 +102,10 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         return <MyTeamScheduleOffsetRequestList personGroupId={this.person!.groupId}/>
       case 'positionOverlappingRequest':
         return <PositionOverlappingRequestListComponent person={this.person} />
+      case 'punishmentRequest':
+        return <PunishmentRequestList personGroupId={this.person!.groupId}/>
+      case 'punishment':
+        return <PunishmentList personGroupId={this.person!.groupId}/>
     }
     return <div>
       Here is {this.selectedLeftMenu}
@@ -111,6 +117,8 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
       id: 'personalData'
     }, {
       id: 'timeManagement'
+    }, {
+      id: 'assignment'
     },{
       id: 'positionOverlappingRequest'
     },]
@@ -134,6 +142,13 @@ class MyTeamCard extends React.Component<MyTeamCardProps & MainStoreInjected & W
         }]
       case 'positionOverlappingRequest':
         return [{id: 'positionOverlappingRequest'}]
+      case 'assignment':
+        return [{
+          id: 'punishmentRequest'
+        },
+          {
+            id: 'punishment'
+          }]
     }
     return [{
       id: 'personalData'
