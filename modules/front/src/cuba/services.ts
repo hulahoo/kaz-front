@@ -10,7 +10,7 @@ import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
-import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
+import {AnsweredQuestion, AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
@@ -48,6 +48,7 @@ import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
 import {VacationPojo} from "../app/pages/VacationScheduleRequest/VacationScheduleRequestEdit";
 import {EntitiesResult, QuerySettings} from "../app/components/querySettings";
 import {OrganizationGroupExt} from "./entities/base/base$OrganizationGroupExt";
+import {DismissalRequest} from "./entities/base/tsadv_DismissalRequest";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -1038,6 +1039,30 @@ export const restServices = {
         "isHr",
         {}
       ).then(r => JSON.parse(r));
+    },
+  },
+  dismissalService: {
+    saveUserFeedback: (params: { templateId: string, personGroupId: string, questionsAndAnswers: AnsweredQuestion[] }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DismissalService",
+        "saveUserFeedback",
+        {...params},
+        fetchOpts
+      );
+    },
+    getDismissalRequest: (params: {personGroupId: string}): Promise<DismissalRequest> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_DismissalService",
+        "getDismissalRequest",
+        {...params}
+        ).then(r => JSON.parse(r));
+    },
+    existExitInterview: (params: {personGroupId: string}): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_DismissalService",
+        "existExitInterview",
+        {...params}
+        ).then((r: string) => r);
     },
   }
 };

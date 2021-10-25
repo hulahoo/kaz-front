@@ -193,7 +193,7 @@ export default class MenuStore {
         menuLink: "/incentive",
         pathPattern: "/incentive",
         component: null,
-      }
+      },
     ]
   }
 }
