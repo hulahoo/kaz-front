@@ -178,62 +178,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
   modalFields = ["comment", "attachment", "requestDate", "personGroup"];
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    this.props.form.validateFields(this.modalFields, (err, values) => {
-      if (err) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
-        );
-        return;
-      }
-      this.dataInstance
-        .update(this.props.form.getFieldsValue(this.modalFields))
-        .then(() => {
-          message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
-          );
-          this.updated = true;
-        })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
-
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                );
-              } else {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                );
-              }
-            });
-          } else {
-            message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
-            );
-          }
-        });
-    });
-  };
 
   showDeletionDialog = (e: SerializedEntity<FileDescriptor>) => {
     Modal.confirm({
@@ -457,19 +401,21 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                 />
               </Row>
               <Row type="flex" align="middle" justify={"space-between"}>
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="startDate"
                   form={this.props.form}
+                  format={DEFAULT_DATE_PATTERN}
                   formItemOpts={{ style: {minWidth:"30%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
                   }}
                 />
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="endDate"
                   form={this.props.form}
+                  format={DEFAULT_DATE_PATTERN}
                   formItemOpts={{ style: {minWidth:"30%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
@@ -714,9 +660,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
           </Form>
 
           <Card title="Приложения" className="generalInfo" size="small" style={{marginTop:"12px"}}>
-            <Row style={{marginTop:"12px"}}>
-              <ConcourseRequestDocumentList handleSubmit={this.handleSubmit} personGroupId={this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH?this.personGroupId:"new"} />
-            </Row>
+            {/*<Row style={{marginTop:"12px"}}>*/}
+            {/*  <ConcourseRequestDocumentList personGroupId={this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH?this.personGroupId:"new"} />*/}
+            {/*</Row>*/}
 
             {/*<DataTable*/}
             {/*  dataCollection={this.requestAttachmentssDc}*/}
@@ -848,9 +794,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     this.loadBpmProcessData()
   }
 
-  // protected initItem(request: ConcourseRequest):void {
-  //   super.initItem(request);
-  // }
+  protected initItem(request: ConcourseRequest):void {
+    super.initItem(request);
+  }
 
   componentWillUnmount() {
     this.reactionDisposer();

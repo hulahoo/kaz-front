@@ -52,7 +52,6 @@ export type ConcourseView<V extends ConcourseViewName> = V extends "_base"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
-      | "banner"
     >
   : V extends "_minimal"
   ? Pick<Concourse, "id" | "description">

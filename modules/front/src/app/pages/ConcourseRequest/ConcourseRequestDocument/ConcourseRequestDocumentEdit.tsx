@@ -69,6 +69,63 @@ class ConcourseRequestDocumentEditComponent extends AbstractBprocEdit<ConcourseR
   @observable
   globalErrors: string[] = [];
 
+  handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    this.props.form.validateFields(this.modalFields, (err, values) => {
+      if (err) {
+        message.error(
+          this.props.intl.formatMessage({
+            id: "management.editor.validationError"
+          })
+        );
+        return;
+      }
+      this.dataInstance
+        .update(this.props.form.getFieldsValue(this.modalFields))
+        .then(() => {
+          message.success(
+            this.props.intl.formatMessage({ id: "management.editor.success" })
+          );
+          this.updated = true;
+        })
+        .catch((e: any) => {
+          if (e.response && typeof e.response.json === "function") {
+            e.response.json().then((response: any) => {
+              clearFieldErrors(this.props.form);
+              const {
+                globalErrors,
+                fieldErrors
+              } = extractServerValidationErrors(response);
+              this.globalErrors = globalErrors;
+              if (fieldErrors.size > 0) {
+                this.props.form.setFields(
+                  constructFieldsWithErrors(fieldErrors, this.props.form)
+                );
+              }
+
+              if (fieldErrors.size > 0 || globalErrors.length > 0) {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.validationError"
+                  })
+                );
+              } else {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.error"
+                  })
+                );
+              }
+            });
+          } else {
+            message.error(
+              this.props.intl.formatMessage({ id: "management.editor.error" })
+            );
+          }
+        });
+    });
+  };
+
 
 
   getUpdateEntityData = (): any => {
@@ -98,7 +155,7 @@ class ConcourseRequestDocumentEditComponent extends AbstractBprocEdit<ConcourseR
 
     return (
       <Modal footer={null} visible={this.visibleModal} style={{padding:"10px 20px"}}>
-          <Form onSubmit={this.props.handleSubmit!} layout="vertical" >
+          <Form onSubmit={this.handleSubmit} layout="vertical" >
             <ReadonlyField
               entityName={ConcourseRequestDocument.NAME}
               propertyName="attachment"
@@ -198,7 +255,7 @@ class ConcourseRequestDocumentEditComponent extends AbstractBprocEdit<ConcourseR
           )
           .then(value => value[0])
           .then(value => (this.person = value));
-        this.loadData()
+
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.modalFields)
         );
