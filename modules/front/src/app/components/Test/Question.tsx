@@ -1,5 +1,5 @@
 import React from "react";
-import {AnsweredQuestion} from "./TestComponent";
+import { AnsweredQuestion } from "./TestComponent";
 import Answer from "./Answer";
 import {observer} from "mobx-react";
 import {observable} from "mobx";
@@ -19,9 +19,16 @@ export type AnswerModel = {
   imageId?: string,
 }
 
+export type QuestionError = {
+  message: string,
+  questionId: string,
+}
+
+
 export interface TestComponentProps {
   question: QuestionModel,
-  testSectionId: string
+  testSectionId: string,
+  error?: QuestionError
 }
 
 export interface TestComponentHandlers {
@@ -37,7 +44,11 @@ class Question extends React.Component<TestComponentProps & TestComponentHandler
   render() {
     return (
       <div className={"question-block"} style={{overflowY: 'auto'}}>
-        <div className={"question-title"}>{this.props.question.text}</div>
+        <div
+          style={{
+            color: this.props.error ? 'red' : 'inherit'
+          }}
+        className={"question-title"}>{this.props.question.text}</div>
         {
           this.imgUrl
             ? <div className={"question-image"}>
@@ -52,6 +63,7 @@ class Question extends React.Component<TestComponentProps & TestComponentHandler
           <Answer answers={this.props.question.answers} type={this.props.question.type}
                   addRemoveAnswer={this.props.addRemoveAnswer} questionId={this.props.question.id}
                   testSectionId={this.props.testSectionId}/>
+            addRemoveAnswer={this.props.addRemoveAnswer} questionId={this.props.question.id} testSectionId={this.props.testSectionId} />
         </div>
       </div>);
   }

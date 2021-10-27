@@ -22,6 +22,7 @@ export default class {
   assignmentGroupId?: string;
   positionId?: string;
   positionGroupId?: string;
+  organizationGroupId?: string;
   companyCode?: string;
   @observable firstLastName?: string;
   @observable initialized: boolean = false;
@@ -39,6 +40,7 @@ export default class {
         this.positionId = personProfile.positionId;
         this.positionGroupId = personProfile.positionGroupId;
         this.position = personProfile.positionName;
+        this.organizationGroupId = personProfile.organizationGroupId;
         this.companyCode = personProfile.companyCode;
         this.firstLastName = personProfile.firstLastName;
       }
@@ -65,6 +67,7 @@ export default class {
     this.personGroupId = undefined;
     this.assignmentGroupId = undefined;
     this.positionGroupId = undefined;
+    this.organizationGroupId = undefined;
     this.companyCode = undefined;
   };
 

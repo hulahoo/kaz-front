@@ -10,11 +10,11 @@ import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 
 import {
   clearFieldErrors,
+  collection,
   constructFieldsWithErrors,
   extractServerValidationErrors,
   getCubaREST,
   injectMainStore,
-  instance,
   MainStoreInjected,
   Msg,
   MultilineText,
@@ -24,7 +24,7 @@ import {
 import "../../../app/App.css";
 
 import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
-import {rootStore, RootStoreProp} from "../../store";
+import {RootStoreProp} from "../../store";
 import {restServices} from "../../../cuba/services";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import Button, {ButtonType} from "../../components/Button/Button";
@@ -36,6 +36,21 @@ import Page from "../../hoc/PageContentHoc";
 import moment from "moment/moment";
 import {isNumber} from "../../util/util";
 import {VacationGanttChart} from "../../components/VacationGanttChart";
+import {PersonGroup} from "../../../cuba/entities/base/base$PersonGroup";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {AssignmentSchedule} from "../../../cuba/entities/base/tsadv$AssignmentSchedule";
+import {serviceCollection} from "../../util/ServiceDataCollectionStore";
+import {JSON_DATE_TIME_FORMAT} from "../../util/Date/Date";
+import {instanceStore} from "../../util/InstanceStore";
+import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
+import {SerializedEntity} from "@cuba-platform/rest";
+import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
+
+export type VacationPojo = {
+  id?: string,
+  personGroupId: string,
+  startDate: string
+}
 
 type Props = FormComponentProps & EditorProps;
 
@@ -48,13 +63,25 @@ type EditorProps = {
 @inject("rootStore")
 @observer
 class VacationScheduleRequestEditComponent extends React.Component<Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
-  dataInstance = instance<VacationScheduleRequest>(
+  dataInstance = instanceStore<VacationScheduleRequest>(
     VacationScheduleRequest.NAME,
     {view: "vacationScheduleRequest-edit"}
   );
 
   @observable
+  personGroupDc: DataCollectionStore<PersonGroup>;
+
+  @observable
+  assignmentSchedule?: SerializedEntity<AssignmentSchedule>;
+
+  @observable
   updated = false;
+
+  @observable
+  isNew = true;
+
+  @observable
+  isMy = true;
 
   reactionDisposer: IReactionDisposer;
 
@@ -62,6 +89,8 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
     "requestNumber",
 
     "requestDate",
+
+    "personGroup",
 
     "startDate",
 
@@ -73,6 +102,8 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
     "comment",
 
+    "approved",
+
     "sentToOracle",
 
     "attachment"
@@ -82,6 +113,10 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
   globalErrors: string[] = [];
 
   personGroupId: string;
+
+  laborLeave: DicAbsenceType;
+
+  hasMinDayVacation = false;
 
   handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -96,9 +131,7 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
       }
       this.dataInstance
         .update({
-          personGroup: {
-            id: this.props.rootStore!.userInfo.personGroupId
-          },
+          assignmentSchedule: this.assignmentSchedule,
           ...this.props.form.getFieldsValue(this.fields)
         })
         .then(() => {
@@ -147,15 +180,15 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
   render() {
     if (this.updated) {
-      return <Redirect to={"/absence/2"}/>;
+      return <Redirect to={"/vacationSchedule/" + this.props.rootStore!.vacationRequestStore.type}/>;
     }
 
     const {getFieldDecorator} = this.props.form;
     const messages = this.props.mainStore!.messages!;
 
-    const {status} = this.dataInstance;
+    const {status, item} = this.dataInstance;
 
-    const readonly = this.props.ganttChartVisible;
+    const readonly = !!(item && item.approved && !item.sentToOracle);
 
     return (
       <Page pageName={this.props.intl.formatMessage({id: "vacationScheduleRequest"})}>
@@ -194,18 +227,46 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
                 <ReadonlyField
                   entityName={VacationScheduleRequest.NAME}
+                  propertyName="personGroup"
+                  form={this.props.form}
+                  optionsContainer={this.personGroupDc}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  getFieldDecoratorOpts={{
+                    getValueFromEvent: args => {
+                      this.onChangePersonGroupOrDate(args);
+                      return args;
+                    }
+                  }}
+                  disabled={!this.isNew || this.isMy}
+                />
+
+                <Form.Item label={createElement(Msg, {
+                  entityName: this.dataInstance.entityName,
+                  propertyName: "assignmentSchedule"
+                })}>
+                  <input
+                    style={{width: '100%'}}
+                    disabled={true}
+                    value={this.assignmentSchedule && this.assignmentSchedule._instanceName}/>
+                </Form.Item>
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
                   propertyName="startDate"
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                   getFieldDecoratorOpts={{
                     getValueFromEvent: args => {
+                      this.getAssignmentSchedule(args);
                       this.getAbsenceBalance(args);
                       this.getAbsenceDays(args);
+                      this.checkMinDayVacation(args);
                       return args
                     },
                     rules: [{
                       required: true,
                       validator: (rule, value, callback) => {
+                        if (readonly) return callback();
                         if (!value) return callback(this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[this.dataInstance.entityName + '.startDate']}));
 
                         const requestDate = this.props.form.getFieldValue('requestDate');
@@ -248,10 +309,22 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                     rules: [
                       {
                         validator: (rule, value, callback) => {
+                          if (readonly) return callback();
                           const balance = this.props.form.getFieldValue('balance');
                           if (!isNumber(value) || !isNumber(balance)) return callback();
-                          if (balance < parseInt(value)) {
+                          const absenceDays = parseInt(value);
+                          if (balance < absenceDays) {
                             return callback(this.props.intl.formatMessage({id: 'validation.balance'}));
+                          } else if (this.laborLeave && this.laborLeave.minDay) {
+                            const minDay = this.laborLeave.minDay;
+                            if (minDay > absenceDays && !this.hasMinDayVacation) {
+                              return callback(
+                                this.props.intl.formatMessage({id: 'vacationRequest.validation.minDay'},
+                                  {days: this.laborLeave.minDay})
+                              );
+                            } /*else if ( minDay >= absenceDays && this.hasMinDayVacation) {
+
+                            }*/
                           }
                           return callback();
                         }
@@ -283,8 +356,17 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
                 <ReadonlyField
                   entityName={VacationScheduleRequest.NAME}
                   propertyName="attachment"
+                  disabled={readonly}
                   form={this.props.form}
                   formItemOpts={{style: {marginBottom: "12px"}}}
+                />
+
+                <ReadonlyField
+                  entityName={VacationScheduleRequest.NAME}
+                  propertyName="approved"
+                  form={this.props.form}
+                  formItemOpts={{style: {marginBottom: "12px"}}}
+                  disabled={true}
                 />
 
                 <ReadonlyField
@@ -320,32 +402,22 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
   }
 
   getAbsenceDays = (startDate?: any, endDate?: any) => {
-    if (rootStore && rootStore.userInfo && rootStore.userInfo.personGroupId) {
+    if (this.personGroupId) {
 
       startDate = startDate || this.props.form.getFieldValue(`startDate`);
       endDate = endDate || this.props.form.getFieldValue(`endDate`);
 
-      const personGroupId = rootStore.userInfo.personGroupId;
+      const personGroupId = this.personGroupId;
 
       if (endDate && startDate && personGroupId) {
-        getCubaREST()!.searchEntities(DicAbsenceType.NAME, {
-          conditions: [{property: "isVacationDate", operator: "=", value: 'TRUE'},
-            {property: "availableForChangeDate", operator: "=", value: 'TRUE'},
-            {property: "availableForRecallAbsence", operator: "=", value: 'TRUE'},
-            {property: "useInSelfService", operator: "=", value: 'TRUE'}]
-        }, {
-          view: "_minimal",
-          limit: 1,
-        }).then((value) => {
-          if (value.length === 1)
-            restServices.absenceService.countDays({
-              dateFrom: startDate,
-              dateTo: endDate,
-              absenceTypeId: (value[0] as DicAbsenceType).id,
-              personGroupId: personGroupId
-            }).then(value => {
-              this.props.form.setFields({"absenceDays": {value: value}});
-            })
+        restServices.absenceService.countDays({
+          dateFrom: startDate,
+          dateTo: endDate,
+          absenceTypeId: this.laborLeave.id,
+          personGroupId: personGroupId
+        }).then(value => {
+          this.props.form.setFields({"absenceDays": {value: value}});
+          this.callForceAbsenceDayValidator();
         })
       }
     }
@@ -354,11 +426,15 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
   getAbsenceBalance = (dateFrom?: moment.Moment) => {
     dateFrom = dateFrom || this.props.form.getFieldValue("dateFrom");
 
-    if (dateFrom) {
-      restServices.absenceBalanceService.getAbsenceBalance({
-        personGroupId: this.personGroupId,
-        absenceDate: dateFrom
+    if (dateFrom && this.personGroupId) {
+      restServices.vacationScheduleRequestService.getVacationScheduleBalanceDays({
+        vacation: {
+          id: this.props.entityId !== VacationScheduleRequestManagement.NEW_SUBPATH ? this.props.entityId : undefined,
+          personGroupId: this.personGroupId,
+          startDate: dateFrom.format(JSON_DATE_TIME_FORMAT)
+        }
       })
+        .then(value => Math.floor(value))
         .then(value => {
           this.props.form.setFieldsValue({"balance": value});
           this.callForceAbsenceDayValidator();
@@ -368,27 +444,166 @@ class VacationScheduleRequestEditComponent extends React.Component<Props & Wrapp
 
   callForceAbsenceDayValidator = () => this.props.form.validateFields(['absenceDays'], {force: true});
 
-  componentDidMount() {
-    if (this.props.entityId !== VacationScheduleRequestManagement.NEW_SUBPATH) {
-      this.dataInstance.load(this.props.entityId);
-    } else {
-      restServices.portalHelperService.newEntity({entityName: this.dataInstance.entityName}).then((response: VacationScheduleRequest) => {
-        this.dataInstance.setItem(response)
-      });
+  onChangePersonGroupOrDate = (personGroupId: string | undefined = this.props.form.getFieldValue('personGroup'),
+                               date: string = this.getDate()) => {
+    this.personGroupId = personGroupId;
+
+    this.getAssignmentSchedule();
+    this.getAbsenceBalance(undefined);
+    this.getAbsenceDays(undefined, undefined);
+  }
+
+  getAssignmentSchedule = (date: string = this.getDate()) => {
+    restServices.assignmentScheduleService.getAssignmentSchedule({
+      personGroupId: this.personGroupId,
+      date: date,
+      view: '_minimal'
+    }).then(value => this.assignmentSchedule = value);
+  };
+
+  checkMinDayVacation = async (startDate: moment.Moment = moment(this.dataInstance.item!.startDate)) => {
+    if (this.laborLeave && this.laborLeave.minDay && startDate) {
+      const year = parseInt(startDate.format('YYYY'));
+
+      let hasMinDayVacation = false;
+
+      await getCubaREST()!.searchEntitiesWithCount(Absence.NAME, {
+        conditions: [{
+          property: 'personGroup.id',
+          operator: '=',
+          value: this.personGroupId!
+        }, {
+          property: 'type.id',
+          operator: '=',
+          value: this.laborLeave.id
+        }, {
+          property: 'absenceDays',
+          operator: '>=',
+          value: this.laborLeave.minDay
+        }, {
+          property: 'dateFrom',
+          operator: '>',
+          value: (year - 1) + '-12-31'
+        }, {
+          property: 'dateFrom',
+          operator: '<',
+          value: (year + 1) + '-01-01'
+        }]
+      }).then(value => hasMinDayVacation = (value.count > 0));
+
+      if (!hasMinDayVacation)
+        await getCubaREST()!.searchEntitiesWithCount(VacationScheduleRequest.NAME, {
+          conditions: [{
+            property: 'personGroup.id',
+            operator: '=',
+            value: this.personGroupId
+          }, {
+            property: 'absenceDays',
+            operator: '>=',
+            value: this.laborLeave.minDay
+          }, {
+            property: 'startDate',
+            operator: '>',
+            value: (year - 1) + '-12-31'
+          }, {
+            property: 'endDate',
+            operator: '<',
+            value: (year + 1) + '-01-01'
+          }]
+        }, {
+          limit: 1
+        }).then(value => hasMinDayVacation = (value.count > 0));
+      this.hasMinDayVacation = hasMinDayVacation;
+      console.log(this.hasMinDayVacation);
+      this.callForceAbsenceDayValidator();
     }
+  }
+
+  componentDidMount() {
+    (async () => {
+      restServices.absenceService.getLaborLeave().then(value => this.laborLeave = value);
+      this.isNew = this.props.entityId === VacationScheduleRequestManagement.NEW_SUBPATH;
+      this.isMy = !this.props.rootStore!.vacationRequestStore.type
+        || this.props.rootStore!.vacationRequestStore.type === 'my';
+
+      if (!this.isNew) {
+        await this.dataInstance.load(this.props.entityId);
+      } else {
+        await restServices.portalHelperService.newEntity({entityName: this.dataInstance.entityName})
+          .then((response: VacationScheduleRequest) => this.dataInstance.setItem(response));
+      }
+
+      this.initPersonGroupDc();
+
+      this.checkMinDayVacation();
+
+    })()
+
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
       (item) => {
 
-        this.personGroupId = item && item.personGroup ? item.personGroup.id : this.props.rootStore!.userInfo.personGroupId!;
-
         this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
+          {
+            ...this.dataInstance.getFieldValues(this.fields),
+          }
         );
       }
     );
+  }
+
+  initPersonGroupDc = async () => {
+    if (!this.isNew || this.isMy) {
+      const item = this.dataInstance.item!;
+
+      this.personGroupId = item.personGroup ? item.personGroup.id : this.props.rootStore!.userInfo.personGroupId!;
+
+      this.personGroupDc = collection(PersonGroup.NAME, {
+        view: '_minimal',
+        filter: {
+          conditions: [{
+            property: 'id',
+            operator: '=',
+            value: this.personGroupId
+          }]
+        },
+      })
+
+      if (this.isNew) this.props.form.setFieldsValue({personGroup: this.personGroupId});
+
+      this.onChangePersonGroupOrDate(this.personGroupId, moment().format(JSON_DATE_TIME_FORMAT));
+
+    } else {
+      let isHr = false;
+      await restServices.hrService.isHr().then(value => isHr = value);
+
+      if (isHr) {
+        this.personGroupDc = serviceCollection<SerializedEntity<PersonGroupExt>>(
+          Pagination => restServices.hrService.getEmployers(),
+          PersonGroupExt.NAME);
+      } else {
+        const isManager = this.props.rootStore!.vacationRequestStore.type === 'manager';
+        const positionGroupId = isManager
+          ? this.props.rootStore!.userInfo.positionGroupId!
+          : this.props.rootStore!.assistantTeamInfo!.selectedManager!.positionGroupId!;
+        this.personGroupDc = serviceCollection<SerializedEntity<PersonGroupExt>>(
+          Pagination => restServices.employeeHierarchyService.getChildEmployees({
+            positionGroupId: positionGroupId,
+            date: moment().format(JSON_DATE_TIME_FORMAT),
+            view: '_minimal'
+          }),
+          PersonGroupExt.NAME);
+      }
+    }
+
+    this.personGroupDc.load();
+  }
+
+  getDate = () => {
+    const startDate = this.props.form.getFieldValue('startDate');
+    return (startDate ? moment(startDate) : moment()).format(JSON_DATE_TIME_FORMAT);
   }
 
   componentWillUnmount() {

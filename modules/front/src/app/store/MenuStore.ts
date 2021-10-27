@@ -70,11 +70,31 @@ export default class MenuStore {
         component: null
       },
       {
-        id: "vacationSchedule",
-        caption: "vacationSchedule",
-        menuLink: "/vacationSchedule",
-        pathPattern: "/vacationSchedule",
-        component: null
+        id: "vacationScheduleMenu",
+        caption: "vacationScheduleMenu",
+        items: [
+          {
+            id: "vacationSchedule.my",
+            caption: "vacationSchedule.my",
+            menuLink: "/vacationSchedule/my",
+            pathPattern: "/vacationSchedule/my",
+            component: null
+          },
+          {
+            id: "vacationSchedule.manager",
+            caption: "vacationSchedule.manager",
+            menuLink: "/vacationSchedule/manager",
+            pathPattern: "/vacationSchedule/manager",
+            component: null
+          },
+          {
+            id: "vacationSchedule.assistant",
+            caption: "vacationSchedule.assistant",
+            menuLink: "/vacationSchedule/assistant",
+            pathPattern: "/vacationSchedule/assistant",
+            component: null
+          },
+        ],
       },
       {
         id: "dmc-my",
@@ -187,7 +207,7 @@ export default class MenuStore {
         menuLink: "/incentive",
         pathPattern: "/incentive",
         component: null,
-      }
+      },
     ]
   }
 }

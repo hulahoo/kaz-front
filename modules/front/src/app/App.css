@@ -3,6 +3,10 @@
   height: 100%;
 }
 
+.selected-column-invisible .ant-table-selection-column{
+  display: none;
+}
+
 /*.narrow-layout {*/
 /*  max-width: 1024px;*/
 /*  margin: auto;*/
@@ -138,4 +142,7 @@ span .ant-checkbox-disabled .ant-checkbox-inner{
 }
 .main-layout.ant-layout{
   height: auto;
+}
+div.ant-card-body{
+ overflow: hidden;
 }

@@ -1,6 +1,7 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
+import {AssignmentSchedule} from "./tsadv$AssignmentSchedule";
 export class VacationScheduleRequest extends AbstractBprocRequest {
   static NAME = "tsadv_VacationScheduleRequest";
   personGroup?: PersonGroupExt | null;
@@ -8,6 +9,8 @@ export class VacationScheduleRequest extends AbstractBprocRequest {
   endDate?: any | null;
   absenceDays?: number | null;
   balance?: number | null;
+  assignmentSchedule?: AssignmentSchedule | null;
+  approved?: boolean | null;
   sentToOracle?: any | null;
   attachment?: FileDescriptor | null;
 }

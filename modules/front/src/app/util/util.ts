@@ -1,10 +1,22 @@
-import {getCubaREST} from "@cuba-platform/react";
+import {
+  getCubaREST,
+  getPropertyInfo,
+  isDateProperty,
+  isDateTimeProperty,
+  isTimeProperty,
+  isToManyRelation,
+  isToOneRelation,
+  MainStore
+} from "@cuba-platform/react";
 import Notification from "./Notification/Notification";
 import {AbstractDictionary} from "../../cuba/entities/base/AbstractDictionary";
 import {AbstractBprocRequest} from "../../cuba/entities/base/AbstractBprocRequest";
 import {AssignedPerformancePlan} from "../../cuba/entities/base/tsadv$AssignedPerformancePlan";
 import {PersonExt} from "../../cuba/entities/base/base$PersonExt";
 import {History} from "history";
+import {toJS} from "mobx";
+import moment__default from "moment";
+import {SerializedEntity} from "@cuba-platform/rest";
 
 export const getBlobUrl = (fileId: string): Promise<string> => {
   return getCubaREST()!.getFile(fileId).then(responseBlob => URL.createObjectURL(responseBlob));
@@ -139,4 +151,32 @@ export const goBackOrHomePage = (history: History) => {
 
 export const capitalizeFirstLetter = (word: string): string => {
   return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
+export function setItemPropertiesValue<T extends SerializedEntity<any>>(mainStore: MainStore, entityName: string, item: T, entityPatch: any) {
+  const metadata = toJS(mainStore.metadata)!;
+  const normalizedPatch = Object.assign({}, entityPatch);
+  Object.entries(entityPatch).forEach(([key, value]) => {
+    const propInfo = getPropertyInfo(metadata, entityName, key);
+    if (propInfo && isToOneRelation(propInfo)
+      && typeof value === 'string') {
+      normalizedPatch[key] = {id: value};
+    }
+    if (propInfo && isToManyRelation(propInfo) && Array.isArray(value)) {
+      normalizedPatch[key] = value.map(id => ({id}));
+    }
+    if (propInfo && isDateProperty(propInfo) && moment__default.isMoment(value)) {
+      normalizedPatch[key] = value.format('YYYY-MM-DD');
+    }
+    if (propInfo && isTimeProperty(propInfo) && moment__default.isMoment(value)) {
+      normalizedPatch[key] = value.format('HH:mm:ss');
+    }
+    if (propInfo && isDateTimeProperty(propInfo) && moment__default.isMoment(value)) {
+      normalizedPatch[key] = value.format('YYYY-MM-DD HH:mm:ss.SSS');
+    }
+    if (value === '' || value == null) {
+      normalizedPatch[key] = null;
+    }
+  });
+  return Object.assign(item, normalizedPatch);
 }

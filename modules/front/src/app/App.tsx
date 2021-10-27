@@ -55,8 +55,12 @@ import {VacationScheduleManagement} from "./pages/VacationSchedule/VacationSched
 import {PersonPayslipManagement} from "./pages/PersonPayslip/PersonPayslipManagement";
 import {IncentiveManagement} from "./pages/Incentive/IncentiveManagement";
 import {BpmUserSubstitutionManagement} from "./pages/BpmUserSubstitution/BpmUserSubstitutionManagement";
+import {PunishmentAssignmentRequestManagement} from "./pages/MyTeam/assignment/punishmentAssignmentRequest/PunishmentAssignmentRequestManagement"
+import {PunishmentRemovalRequestManagement} from "./pages/MyTeam/assignment/punishmentRemovalRequest/punishmentRemovalRequestManagement";
 import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHierarchyManagement";
 import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveApproveManagement";
+import {PositionOverlappingRequestManagement} from "./pages/PositionOverlappingRequest/PositionOverlappingRequestManagement";
+import {DismissalRequestManagement} from "./pages/DismissalRequest/DismissalRequestManagement";
 // import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
 import {ConcourseRequestManagement} from "./pages/ConcourseRequest/ConcourseRequestManagement";
 import {ConcourseRequestDocumentManagement} from "./pages/ConcourseRequest/ConcourseRequestDocument/ConcourseRequestDocumentManagement";
@@ -118,6 +122,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/" component={HomePage}/>
                 <Route exact={true} path="/user/settings" component={UserSettings}/>
                 <Route exact={true} path="/my-kpi" component={MyKpiPage}/>
+                <Route exact={true} path="/position-overlapping-request" component={PositionOverlappingRequestManagement}/>
+                <Route exact={true} path={PositionOverlappingRequestManagement.PATH + "/:entityId/:personGroupId?"}
+                       component={PositionOverlappingRequestManagement}/>
+                <Route path="/positionOverlappingRequest/:entityId" component={PositionOverlappingRequestManagement}/>
                 <Route exact={true} path={MyProfileManagement.PATH} component={MyProfileManagement}/>
                 <Route exact={true} path={AddressRequestManagement.PATH + '/:entityId/:addressId?'}
                        component={AddressRequestManagement}/>
@@ -165,7 +173,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true} path="/orgStructureRequest/:entityId?" component={OrgStructureRequestManagement}/>
                 <Route exact={true} path={MyTeamStructureManagement.PATH} component={MyTeamStructureManagement}/>
                 <Route exact={true} path={PositionHierarchyManagement.PATH} component={PositionHierarchyManagement}/>
-                <Route exact={true} path={VacationScheduleManagement.PATH} component={VacationScheduleManagement}/>
+                <Route exact={true} path={VacationScheduleManagement.PATH+'/:type'} component={VacationScheduleManagement}/>
                 <Route exact={true}
                        path={AbsenceRvdRequestManagement.PATH_WITH_PARAMS}
                        component={AbsenceRvdRequestManagement}/>
@@ -196,8 +204,16 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        path={IncentiveApproveManagement.PATH + "/:entityId"}
                        component={IncentiveApproveManagement}/>
                 <Route exact={true}
+                       path={PunishmentAssignmentRequestManagement.PATH_WITH_PARAMS}
+                       component={PunishmentAssignmentRequestManagement}/>
+                <Route exact={true}
+                       path={PunishmentRemovalRequestManagement.PATH_WITH_PARAMS}
+                       component={PunishmentRemovalRequestManagement}/>
+                <Route exact={true}
                        path={BpmUserSubstitutionManagement.PATH + "/:entityId?"}
                        component={BpmUserSubstitutionManagement}/>
+                <Route path={DismissalRequestManagement.PATH + "/:entityId?"}
+                       component={DismissalRequestManagement}/>
 
                 {/*{getRouteList().map((route) => {*/}
                 {/*    return <Route key={route.pathPattern} path={route.pathPattern} component={route.component}/>*/}

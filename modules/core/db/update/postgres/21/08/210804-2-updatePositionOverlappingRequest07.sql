@@ -1,0 +1,2 @@
+alter table KZM_POSITION_OVERLAPPING_REQUEST rename column work_completion_date to work_completion_date__u33011 ;
+alter table KZM_POSITION_OVERLAPPING_REQUEST add column WORK_COMPLETION_DATE timestamp ;

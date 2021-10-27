@@ -15,7 +15,7 @@ class Candidate extends React.Component<Candidates & WrappedComponentProps & Rou
 
   showModal = (candidates: TsadvUser[]) => {
     Modal.info({
-      title: this.props.intl.formatMessage({id: "candidates"}),
+      title: this.props.intl.formatMessage({id: "employees"}),
       content: (
         <Table dataSource={candidates}
                showHeader={false}

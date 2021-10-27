@@ -294,7 +294,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const {getFieldDecorator} = this.props.form;
 
-    const stepIndex = this.stageCollection.items.findIndex(value => isEquals(value,this.dataInstance.item && this.dataInstance.item.stage));
+    const stepIndex = this.stageCollection.items.findIndex(value => isEquals(value, this.dataInstance.item && this.dataInstance.item.stage));
 
     if (!stepIndex || stepIndex < 2 || this.approverHrRoleCode === 'INITIATOR') return <></>;
 
@@ -366,7 +366,7 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
 
     const statusesPerformancePlan = this.stageCollection.items;
 
-    const stepIndex = this.stageCollection.items.findIndex(value => isEquals(value,this.dataInstance.item && this.dataInstance.item.stage));
+    const stepIndex = this.stageCollection.items.findIndex(value => isEquals(value, this.dataInstance.item && this.dataInstance.item.stage));
 
     const statusSteps: StatusStepProp[] = statusesPerformancePlan.map((s, i) => {
       return {
@@ -600,8 +600,8 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
     this.cardStatusEnumValues = this.props.mainStore!.enums!.filter(e => e.name === "kz.uco.tsadv.modules.performance.enums.CardStatusEnum")[0].values;
   }
 
-  getUpdateEntityData = (): any => {
-    return {
+  getUpdateEntityData(): any {
+    const updateEntityData = {
       personGroup: {
         id: this.props.rootStore!.userInfo.personGroupId
       },
@@ -609,17 +609,18 @@ class AssignedPerformancePlanEditComponent extends AbstractBprocEdit<AssignedPer
       kpiScore: this.getPoint(this.totalResult),
       finalScore: this.getPoint(this.totalResult) + (this.props.form.getFieldValue("extraPoint") || 0),
       ...this.props.form.getFieldsValue(this.fields)
-    }
-  };
-
-  update = () => {
-    if (this.assignedGoalListUpdate) this.assignedGoalListUpdate();
-    const updateEntityData = this.getUpdateEntityData();
+    };
 
     if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
       updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
     }
-    return this.dataInstance.update(updateEntityData);
+    return updateEntityData;
+  }
+
+  updateAndCommit = () => {
+    if (this.assignedGoalListUpdate) this.assignedGoalListUpdate();
+    this.updateItemValue();
+    return this.dataInstance.commit();
   };
 
   setReactionDisposer = () => {

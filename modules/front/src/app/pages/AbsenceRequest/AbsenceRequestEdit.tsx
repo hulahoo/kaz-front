@@ -70,6 +70,9 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
   isJustRequired = false;
 
   @observable
+  isProjectDatesVisible = false;
+
+  @observable
   isOriginalSheet = false;
 
   @observable
@@ -142,21 +145,25 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
     "periodDateTo",
 
+    "projectStartDate",
+
+    "projectEndDate",
+
     "files"
   ];
 
   assignmentGroupId: string;
 
-  update = () => {
+  getUpdateEntityData(): any {
     if (this.isNotDraft())
-      return this.dataInstance.update(this.getUpdateEntityData());
-    return this.dataInstance.update({
+      return super.getUpdateEntityData();
+    return {
       personGroup: {
         id: this.personGroupId
       },
-      ...this.getUpdateEntityData()
-    });
-  };
+      ...super.getUpdateEntityData()
+    };
+  }
 
   processDefinitionKey = "absenceRequest";
 
@@ -320,6 +327,10 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                         && absenceType.availableForRecallAbsence
                         && absenceType.useInSelfService);
 
+                      this.isProjectDatesVisible = !!(absenceType.availableForChangeDate
+                        && absenceType.availableForRecallAbsence
+                        && absenceType.useInSelfService);
+
                       this.isCheckWork = !!absenceType.isCheckWork;
 
                       this.checkMinDayAbsence(absenceType);
@@ -473,24 +484,24 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
                   disabled={true}
                   formItemOpts={{style: {marginBottom: "12px"}}}
                 />
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="projectStartDate"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
-                <ReadonlyField
-                  entityName={this.dataInstance.entityName}
-                  propertyName="projectEndDate"
-                  form={this.props.form}
-                  formItemOpts={{style: {marginBottom: "12px"}}}
-                />
                 <div className={"ant-row ant-form-item"}
                      style={this.isLaborLeave ? {marginBottom: "12px"} : {display: 'none'}}>
                   <FormattedMessage id="balance"/>
                   <Input disabled={true}
                          value={this.balance}/>
                 </div>
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectStartDate"
+                  form={this.props.form}
+                  formItemOpts={{style: this.isProjectDatesVisible ? {marginBottom: "12px"} : {display: 'none'}}}
+                />
+                <ReadonlyField
+                  entityName={this.dataInstance.entityName}
+                  propertyName="projectEndDate"
+                  form={this.props.form}
+                  formItemOpts={{style: this.isProjectDatesVisible ? {marginBottom: "12px"} : {display: 'none'}}}
+                />
 
                 {this.originalSheetField(isNotDraft)}
 
@@ -851,6 +862,11 @@ class AbsenceRequestEditComponent extends AbstractBprocEdit<AbsenceRequest, Edit
 
         this.isLaborLeave = !!(item && item.type
           && item.type.isVacationDate
+          && item.type.availableForChangeDate
+          && item.type.availableForRecallAbsence
+          && item.type.useInSelfService);
+
+        this.isProjectDatesVisible = !!(item && item.type
           && item.type.availableForChangeDate
           && item.type.availableForRecallAbsence
           && item.type.useInSelfService);

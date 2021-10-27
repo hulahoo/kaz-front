@@ -102,12 +102,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
   @observable
   person: PersonExt | null;
 
+  @observable
   personGroupId: string;
 
   isUpdateBeforeOutcome = true;
-
-  initiatorCompanyName: string;
-  initiatorPositionValue: string;
+  @observable
+  initiatorCompanyName: string|undefined;
+  @observable
+  initiatorPositionValue: string|undefined;
   fields = [
     "status",
 
@@ -157,11 +159,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
     "requestAttachments",
 
-    "personGroup",
-
-    "initiatorCompany",
-
-    "initiatorPosition",
+    // "personGroup",
+    //
+    // "initiatorCompany",
+    //
+    // "initiatorPosition",
 
     "assignmentGroup"
   ];
@@ -200,8 +202,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
   };
 
 
-  getUpdateEntityData = (): any => {
-    return this.props.form.getFieldsValue(this.fields)
+  getUpdateEntityData(): any {
+    return {
+      personGroup: {
+        id: this.props.rootStore!.userInfo.personGroupId
+      },
+      ...this.props.form.getFieldsValue(this.fields)
+    }
   };
 
   update = () => {
@@ -274,7 +281,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
               >
                 {this.props.intl.formatMessage({ id: "close" })}
               </Button>,
-              saveButton ? this.getOutcomeBtns(isNeedBpm):<Button buttonType={ButtonType.PRIMARY}>Loading..</Button>
+              saveButton ? this.getOutcomeBtns(isNeedBpm):null
             ]}
             bordered={false} >
 
@@ -766,9 +773,15 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
         return this.dataInstance.item;
       },
       (item) => {
-        this.personGroupId = this.props.rootStore?this.props.rootStore!.userInfo!.personGroupId!:""
-        this.initiatorCompanyName = this.props.rootStore?this.props.rootStore!.userInfo!.companyCode!:""
-        this.initiatorPositionValue = this.props.rootStore!.userInfo!.position!
+        if (item){
+          this.personGroupId = item.personGroup ? item.personGroup!.id : this.props.rootStore!.userInfo.personGroupId
+          restServices.employeeService.personProfile(item.personGroup ? item.personGroup!.id : this.props.rootStore!.userInfo.personGroupId).then(data=>{
+            console.log(data)
+            this.initiatorCompanyName = data.organizationName
+            this.initiatorPositionValue = data.positionName
+          })
+        }
+
         getCubaREST()!
           .searchEntities<PersonExt>(
             PersonExt.NAME,
@@ -792,6 +805,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     );
     this.loadData()
     this.loadBpmProcessData()
+    // this.loadBpmProcessData()
   }
 
   protected initItem(request: ConcourseRequest):void {
