@@ -7,7 +7,7 @@ import {inject, observer} from "mobx-react";
 import {ConcourseRequestManagement} from "./ConcourseRequestManagement";
 import {FormComponentProps} from "antd/lib/form";
 import {Redirect} from "react-router-dom";
-import {IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {IReactionDisposer, observable, reaction, toJS, action} from "mobx";
 import {FormattedMessage, injectIntl} from "react-intl";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import TextArea from "antd/es/input/TextArea";
@@ -41,8 +41,8 @@ import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 import {goBackOrHomePage} from "../../util/util";
 import LoadingPage from "../LoadingPage";
 import {SerializedEntity} from "@cuba-platform/rest";
-import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
-import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
+// import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
+// import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
 import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
 
 type EditorProps = {
@@ -77,20 +77,20 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     view: "_minimal"
   });
 
-  requestAttachmentssDc = collection<ConcourseRequestDocument>(ConcourseRequestDocument.NAME, {
+  requestAttachmentssDc = collection<FileDescriptor>(FileDescriptor.NAME, {
     view: "_minimal",
     sort: "-updateTs"
   });
   //
-  // personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-  //   view: "_minimal",
-  // });
+  personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+    view: "_minimal",
+  });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
 
-  processDefinitionKey = "concourseRequest"
+  processDefinitionKey = "concourseRequest";
 
   @observable
   readonly: boolean = true;
@@ -145,12 +145,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
     "startDate",
 
-    "legacyId",
-
-    "organizationBin",
-
-    "integrationUserLogin",
-
     "requestNumber",
 
     "requestDate",
@@ -159,11 +153,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
     "requestAttachments",
 
-    // "personGroup",
-    //
-    // "initiatorCompany",
-    //
-    // "initiatorPosition",
+    "personGroup",
+
+    "initiatorCompany",
+
+    "initiatorPosition",
 
     "assignmentGroup"
   ];
@@ -203,24 +197,26 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
 
   getUpdateEntityData(): any {
+    if (this.isNotDraft())
+      return super.getUpdateEntityData();
     return {
       personGroup: {
-        id: this.props.rootStore!.userInfo.personGroupId
+        id: this.personGroupId
       },
-      ...this.props.form.getFieldsValue(this.fields)
-    }
+      ...super.getUpdateEntityData()
+    };
   };
 
-  update = () => {
-    const updateEntityData = this.getUpdateEntityData();
-    // if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
-    //   updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
-    // }
-
-    return this.dataInstance.update({
-      personGroup: this.personGroupId,
-      ...updateEntityData});
-  };
+  // update = () => {
+  //   const updateEntityData = this.getUpdateEntityData();
+  //   // if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
+  //   //   updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
+  //   // }
+  //
+  //   return this.dataInstance.update({
+  //     personGroup: this.personGroupId,
+  //     ...updateEntityData});
+  // };
 
 
   render() {
@@ -281,7 +277,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
               >
                 {this.props.intl.formatMessage({ id: "close" })}
               </Button>,
-              saveButton ? this.getOutcomeBtns(isNeedBpm):null
+              saveButton ? this.getOutcomeBtns():null
             ]}
             bordered={false} >
 
@@ -344,52 +340,84 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                 {/*  getFieldDecoratorOpts={{}}*/}
 
                 {/*/>*/}
-                <Form.Item
-                  label={createElement(Msg, {
-                    entityName: entityName,
-                    propertyName: "personGroup"
-                  })}
-                  required={true}
-                  style={{minWidth: "30%", marginBottom: "12px"}}
-                >
-                  <Input
-                    value={this.person ? this.person["_instanceName"] || "" : ""}
-                    disabled
-                  />
-                </Form.Item>
+                {/*<Form.Item*/}
+                {/*  label={createElement(Msg, {*/}
+                {/*    entityName: entityName,*/}
+                {/*    propertyName: "personGroup"*/}
+                {/*  })}*/}
+                {/*  required={true}*/}
+                {/*  style={{minWidth: "30%", marginBottom: "12px"}}*/}
+                {/*>*/}
+                {/*  <Input*/}
+                {/*    value={this.person ? this.person["_instanceName"] || "" : ""}*/}
+                {/*    disabled*/}
+                {/*  />*/}
+                {/*</Form.Item>*/}
 
-                <Form.Item
-                  label={createElement(Msg, {
-                    entityName: entityName,
-                    propertyName: "initiatorCompany"
-                  })}
-                  required={true}
-                  style={{minWidth: "30%", marginBottom: "12px"}}
-                >
-                  <Input
-                    value={this.initiatorCompanyName ? this.initiatorCompanyName || "" : ""}
-                    disabled
-                  />
-                </Form.Item>
+                <ReadonlyField
+                    entityName={entityName}
+                    propertyName="personGroup"
+                    form={this.props.form}
+                    disabled={true}
+                    formItemOpts={{ style: {minWidth: "30%", marginBottom: "12px" } }}
+                    optionsContainer={this.personGroupsDc}
+                    getFieldDecoratorOpts={{
+                      rules: [{ required: true }]
+                    }}
+                />
+                <ReadonlyField
+                  entityName={entityName}
+                  propertyName="initiatorCompany"
+                  form={this.props.form}
+                  disabled={true}
+                  formItemOpts={{ style: {minWidth: "30%", marginBottom: "12px" } }}
+                  getFieldDecoratorOpts={{
+                    rules: [{ required: true }]
+                  }}
+                />
+                <ReadonlyField
+                  entityName={entityName}
+                  propertyName="initiatorPosition"
+                  form={this.props.form}
+                  disabled={true}
+                  formItemOpts={{ style: {minWidth: "30%", marginBottom: "12px" } }}
+                  getFieldDecoratorOpts={{
+                    rules: [{ required: true }]
+                  }}
+                />
+                {/*<Form.Item*/}
+                {/*  label={createElement(Msg, {*/}
+                {/*    entityName: entityName,*/}
+                {/*    propertyName: "initiatorCompany"*/}
+                {/*  })}*/}
+                {/*  required={true}*/}
+                {/*  style={{minWidth: "30%", marginBottom: "12px"}}*/}
+                {/*>*/}
+                {/*  <Input*/}
+                {/*    // value={this.initiatorCompanyName ? this.initiatorCompanyName || "" : ""}*/}
+                {/*    disabled*/}
+                {/*  />*/}
+                {/*</Form.Item>*/}
 
-                <Form.Item
-                  label={createElement(Msg, {
-                    entityName: entityName,
-                    propertyName: "initiatorPosition"
-                  })}
-                  required={true}
-                  style={{minWidth: "30%", marginBottom: "12px"}}
-                >
-                  <Input
-                    value={this.initiatorPositionValue ? this.initiatorPositionValue || "" : ""}
-                    disabled
-                  />
-                </Form.Item>
+                {/*<Form.Item*/}
+                {/*  label={createElement(Msg, {*/}
+                {/*    entityName: entityName,*/}
+                {/*    propertyName: "initiatorPosition"*/}
+                {/*  })}*/}
+                {/*  required={true}*/}
+                {/*  style={{minWidth: "30%", marginBottom: "12px"}}*/}
+                {/*>*/}
+                {/*  <Input*/}
+                {/*    // value={this.initiatorPositionValue ? this.initiatorPositionValue || "" : ""}*/}
+                {/*    disabled*/}
+                {/*  />*/}
+                {/*</Form.Item>*/}
               </Row>
               <Row type="flex" align={"middle"} justify="space-between" style={{ width:"65%" }}>
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="requestNameRu"
+                  disabled={this.isNotDraft()}
                   form={this.props.form}
                   formItemOpts={{ style: {minWidth: "46%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
@@ -397,10 +425,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   }}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="requestNameEn"
                   form={this.props.form}
+                  disabled={this.isNotDraft()}
                   formItemOpts={{ style: {minWidth: "46%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
@@ -413,6 +442,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   propertyName="startDate"
                   form={this.props.form}
                   format={DEFAULT_DATE_PATTERN}
+                  disabled={this.isNotDraft()}
                   formItemOpts={{ style: {minWidth:"30%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
@@ -423,16 +453,18 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   propertyName="endDate"
                   form={this.props.form}
                   format={DEFAULT_DATE_PATTERN}
+                  disabled={this.isNotDraft()}
                   formItemOpts={{ style: {minWidth:"30%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
                   }}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="scaleOfDistrubution"
                   form={this.props.form}
+                  disabled={this.isNotDraft()}
                   formItemOpts={{ style: {minWidth:"30%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
@@ -449,6 +481,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   entityName={entityName}
                   propertyName="projectManager"
                   form={this.props.form}
+                  disabled={this.isNotDraft()}
                   // disabled={isNotDraft}
                   formItemOpts={{ style: { minWidth:"25%", marginBottom: "12px" } }}
                   optionsContainer={this.projectManagersDc}
@@ -477,6 +510,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                 <ReadonlyField
                   entityName={entityName}
                   propertyName="managerPosition"
+
                   form={this.props.form}
                   formItemOpts={{ style: {minWidth:"25%", marginBottom: "12px" } }}
                   disabled={true}
@@ -493,10 +527,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                     rules: [{ required: true }]
                   }}
                 />
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="managerContactInfo"
                   form={this.props.form}
+                  disabled={this.isNotDraft()}
                   formItemOpts={{ style: {minWidth:"33%", marginBottom: "12px" } }}
 
                   getFieldDecoratorOpts={{rules: [{ required: true }]}}
@@ -509,6 +544,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   propertyName="projectExpert"
                   form={this.props.form}
                   // disabled={isNotDraft}
+                  disabled={this.isNotDraft()}
                   formItemOpts={{ style: { minWidth:"25%", marginBottom: "12px" } }}
                   optionsContainer={this.projectExpertsDc}
                   getFieldDecoratorOpts={{
@@ -549,10 +585,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   getFieldDecoratorOpts={{rules: [{ required: true }]}}
                 />
 
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="expertContanctInfo"
                   form={this.props.form}
+                  disabled={this.isNotDraft()}
                   formItemOpts={{ style: {minWidth:"33%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{rules: [{ required: true }]}}
                 />
@@ -570,9 +607,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                     propertyName: "shortProjectDescriptionRu"
                   })}
                   required={true}
+
                 >
                   {this.props.form.getFieldDecorator("shortProjectDescriptionRu")(
-                    <TextArea rows={6}  />
+                    <TextArea rows={6}  disabled={this.isNotDraft()}/>
                   )}
                 </Form.Item>
                 <Form.Item
@@ -584,7 +622,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   required={true}
                 >
                   {this.props.form.getFieldDecorator("shortProjectDescriptionEn")(
-                    <TextArea rows={6}  />
+                    <TextArea rows={6}  disabled={this.isNotDraft()} />
                   )}
                 </Form.Item>
 
@@ -671,13 +709,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
             {/*  <ConcourseRequestDocumentList personGroupId={this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH?this.personGroupId:"new"} />*/}
             {/*</Row>*/}
 
-            {/*<DataTable*/}
-            {/*  dataCollection={this.requestAttachmentssDc}*/}
-            {/*  fields={this.attachmentFields}*/}
-            {/*  onRowSelectionChange={this.handleRowSelectionChange}*/}
-            {/*  hideSelectionColumn={true}*/}
-            {/*  buttons={buttons}*/}
-            {/*/>*/}
+            <DataTable
+              dataCollection={this.requestAttachmentssDc}
+              fields={this.attachmentFields}
+              onRowSelectionChange={this.handleRowSelectionChange}
+              hideSelectionColumn={true}
+              // buttons={buttons}
+            />
 
             {/*<Field*/}
             {/*  entityName={entityName}*/}
@@ -699,33 +737,33 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     );
   }
 
-  // @action
-  // setReadOnly = (): void => {
-  //   this.readonly = !(this.dataInstance.item
-  //     && !this.isNotDraft()
-  //     && (this.props.form.getFieldValue("status") === 'DRAFT' || this.props.form.getFieldValue("status") === 'COMPLETED')
-  //     && this.dataInstance.item.personGroup!.id! === this.props.rootStore!.userInfo.personGroupId!);
-  // };
+  @action
+  setReadOnly = (): void => {
+    this.readonly = !(this.dataInstance.item
+      && !this.isNotDraft()
+      && (this.props.form.getFieldValue("status") === 'DRAFT' || this.props.form.getFieldValue("status") === 'COMPLETED')
+      && this.dataInstance.item.personGroup!.id! === this.props.rootStore!.userInfo.personGroupId!);
+  };
 
-  // getRecordById(id: string): SerializedEntity<FileDescriptor> {
-  //   const record:
-  //     | SerializedEntity<FileDescriptor>
-  //     | undefined = this.requestAttachmentssDc.items.find(record => record.id === id);
-  //
-  //   if (!record) {
-  //     throw new Error("Cannot find entity with id " + id);
-  //   }
-  //
-  //   return record;
-  // }
-  //
-  // handleRowSelectionChange = (selectedRowKeys: string[]) => {
-  //   this.selectedRowKey = selectedRowKeys[0];
-  // };
-  //
-  // deleteSelectedRow = () => {
-  //   this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
-  // };
+  getRecordById(id: string): SerializedEntity<FileDescriptor> {
+    const record:
+      | SerializedEntity<FileDescriptor>
+      | undefined = this.requestAttachmentssDc.items.find(record => record.id === id);
+
+    if (!record) {
+      throw new Error("Cannot find entity with id " + id);
+    }
+
+    return record;
+  }
+
+  handleRowSelectionChange = (selectedRowKeys: string[]) => {
+    this.selectedRowKey = selectedRowKeys[0];
+  };
+
+  deleteSelectedRow = () => {
+    this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
+  };
 
   getExpertUserRecordById(id: string, groupId: string){
     // @ts-ignore
@@ -773,14 +811,22 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
         return this.dataInstance.item;
       },
       (item) => {
-        if (item){
-          this.personGroupId = item.personGroup ? item.personGroup!.id : this.props.rootStore!.userInfo.personGroupId
-          restServices.employeeService.personProfile(item.personGroup ? item.personGroup!.id : this.props.rootStore!.userInfo.personGroupId).then(data=>{
-            console.log(data)
-            this.initiatorCompanyName = data.organizationName
-            this.initiatorPositionValue = data.positionName
-          })
-        }
+          if (item && !this.isNotDraft()){
+            this.personGroupId = item.personGroup ? item.personGroup!.id : this.props.rootStore!.userInfo.personGroupId
+
+            restServices.employeeService.personProfile(item.personGroup ? item.personGroup!.id : this.props.rootStore!.userInfo.personGroupId).then(data=>{
+              console.log(this.props.form.getFieldValue("personGroup"))
+              console.log(data)
+              this.initiatorCompanyName = data.organizationName
+              this.initiatorPositionValue = data.positionName
+              this.props.form.setFieldsValue({
+                personGroup: this.personGroupId,
+                initiatorCompany: this.initiatorCompanyName,
+                initiatorPosition: this.initiatorPositionValue
+              })
+
+            })
+          }
 
         getCubaREST()!
           .searchEntities<PersonExt>(
@@ -808,9 +854,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     // this.loadBpmProcessData()
   }
 
-  protected initItem(request: ConcourseRequest):void {
-    super.initItem(request);
-  }
+  // protected initItem(request: ConcourseRequest):void {
+  //   super.initItem(request);
+  // }
 
   componentWillUnmount() {
     this.reactionDisposer();
