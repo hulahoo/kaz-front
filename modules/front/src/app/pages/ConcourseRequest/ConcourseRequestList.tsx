@@ -33,47 +33,10 @@ class ConcourseRequestListComponent extends React.Component<
   });
 
   fields = [
-    "endDate",
-
-    "scaleOfDistrubution",
-
-    "managerContactInfo",
-
-    "managerPosition",
-
-    "managerCompany",
-
-    "expertPosition",
-
-    "expertCompany",
-
-    "expertContanctInfo",
-
-    "shortProjectDescriptionRu",
-
-    "shortProjectDescriptionEn",
-
-    "initiatorCompany",
-
-    "initiatorPosition",
-
-    "requestNameRu",
-
-    "requestNameEn",
-
-    "startDate",
-
-    "legacyId",
-
-    "organizationBin",
-
-    "integrationUserLogin",
-
     "requestNumber",
-
     "requestDate",
-
-    "comment"
+    "status",
+    "requestNameRu"
   ];
 
   @observable selectedRowKey: string | undefined;
@@ -145,6 +108,7 @@ class ConcourseRequestListComponent extends React.Component<
     ];
 
     return (
+      <div className={"cardWrapper"}>
       <DataTable
         dataCollection={this.dataCollection}
         fields={this.fields}
@@ -152,6 +116,7 @@ class ConcourseRequestListComponent extends React.Component<
         hideSelectionColumn={true}
         buttons={buttons}
       />
+      </div>
     );
   }
 

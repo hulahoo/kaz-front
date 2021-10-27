@@ -16,7 +16,7 @@ export class ConcourseRequest extends AbstractBprocRequest {
   shortProjectDescriptionRu?: string | null;
   shortProjectDescriptionEn?: string | null;
   requestTemplate?: FileDescriptor | null;
-  requestAttachments?: FileDescriptor | null;
+  requestAttachments?: FileDescriptor[] | null;
   personGroup?: PersonGroupExt | null;
   initiatorCompany?: string | null;
   initiatorPosition?: string | null;
@@ -91,8 +91,16 @@ export type ConcourseRequestView<
       | "id"
       | "endDate"
       | "scaleOfDistrubution"
+      | "managerContactInfo"
+      | "managerPosition"
+      | "managerCompany"
+      | "expertPosition"
+      | "expertCompany"
+      | "expertContanctInfo"
       | "shortProjectDescriptionRu"
       | "shortProjectDescriptionEn"
+      | "initiatorCompany"
+      | "initiatorPosition"
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
@@ -103,18 +111,10 @@ export type ConcourseRequestView<
       | "requestDate"
       | "comment"
       | "projectManager"
-      | "managerContactInfo"
-      | "managerPosition"
-      | "managerCompany"
       | "projectExpert"
-      | "expertPosition"
-      | "expertCompany"
-      | "expertContanctInfo"
       | "requestTemplate"
       | "requestAttachments"
       | "personGroup"
-      | "initiatorCompany"
-      | "initiatorPosition"
       | "status"
     >
   : never;

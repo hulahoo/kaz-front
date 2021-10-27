@@ -1,43 +1,49 @@
 import * as React from "react";
 import {createElement, FormEvent} from "react";
-import {Alert, Button, Card, Form, Input, message, Row, Table} from "antd";
+import {Alert, Card, Form, Input, message, Modal, Row, Table} from "antd";
+import Button, {ButtonType} from "../../components/Button/Button";
+
 import {inject, observer} from "mobx-react";
-import { ConcourseRequestManagement } from "./ConcourseRequestManagement";
-import { FormComponentProps } from "antd/lib/form";
-import { Link, Redirect } from "react-router-dom";
-import {action, IReactionDisposer, observable, reaction, toJS} from "mobx";
-import {
-  FormattedMessage,
-  injectIntl,
-  WrappedComponentProps
-} from "react-intl";
+import {ConcourseRequestManagement} from "./ConcourseRequestManagement";
+import {FormComponentProps} from "antd/lib/form";
+import {Redirect} from "react-router-dom";
+import {IReactionDisposer, observable, reaction, toJS} from "mobx";
+import {FormattedMessage, injectIntl} from "react-intl";
 import {DEFAULT_DATE_PATTERN} from "../../util/Date/Date";
 import TextArea from "antd/es/input/TextArea";
 import Column from "antd/lib/table/Column";
 
 import {
-  collection,
-  Field,
-  instance,
-  withLocalizedForm,
-  extractServerValidationErrors,
-  constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText, injectMainStore, Msg, getCubaREST
+  collection,
+  constructFieldsWithErrors, DataTable,
+  extractServerValidationErrors,
+  Field,
+  getCubaREST,
+  injectMainStore,
+  instance,
+  Msg,
+  MultilineText,
+  withLocalizedForm
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
 import {restServices} from "../../../cuba/services";
-import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseRequest";
-import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt";
-import { FileDescriptor } from "../../../cuba/entities/base/sys$FileDescriptor";
-import { DicRequestStatus } from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
+import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
+import {FileDescriptor} from "../../../cuba/entities/base/sys$FileDescriptor";
+import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import {withRouter} from "react-router";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import "antd/dist/antd.css";
 import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
-import {SerializedEntity} from "@cuba-platform/rest/dist-node/model";
+import {goBackOrHomePage} from "../../util/util";
+import LoadingPage from "../LoadingPage";
+import {SerializedEntity} from "@cuba-platform/rest";
+import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
+import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
+import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
 
 type EditorProps = {
   entityId: string;
@@ -54,6 +60,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     loadImmediately: false
   });
 
+  dataCollection = collection<ConcourseRequestDocument>(ConcourseRequestDocument.NAME, {
+    view: "_local",
+    sort: "-updateTs",
+  });
+
   projectManagersDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_base"
   });
@@ -66,17 +77,20 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     view: "_minimal"
   });
 
-  requestAttachmentssDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
-  });
-
-  personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+  requestAttachmentssDc = collection<ConcourseRequestDocument>(ConcourseRequestDocument.NAME, {
     view: "_minimal",
+    sort: "-updateTs"
   });
+  //
+  // personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+  //   view: "_minimal",
+  // });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_minimal"
   });
+
+  processDefinitionKey = "concourseRequest"
 
   @observable
   readonly: boolean = true;
@@ -86,13 +100,17 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
   reactionDisposer: IReactionDisposer;
 
   @observable
-  person: PersonExt;
+  person: PersonExt | null;
 
   personGroupId: string;
+
+  isUpdateBeforeOutcome = true;
 
   initiatorCompanyName: string;
   initiatorPositionValue: string;
   fields = [
+    "status",
+
     "endDate",
 
     "scaleOfDistrubution",
@@ -104,6 +122,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     "managerCompany",
 
     "expertPosition",
+
+    "personGroup",
+
+    "projectManager",
+
+    "projectExpert",
 
     "expertCompany",
 
@@ -129,8 +153,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
     "requestDate",
 
-    "comment",
-
     "requestTemplate",
 
     "requestAttachments",
@@ -141,68 +163,58 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
 
     "initiatorPosition",
 
-    "status"
+    "assignmentGroup"
   ];
+
+  attachmentFields = [
+    'name',
+    'createDate'
+  ]
 
   @observable
   globalErrors: string[] = [];
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (err) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
-        );
-        return;
-      }
-      this.dataInstance
-        .update(this.props.form.getFieldsValue(this.fields))
-        .then(() => {
-          message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
-          );
-          this.updated = true;
-        })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
+  @observable selectedRowKey: string | undefined;
 
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                );
-              } else {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                );
-              }
-            });
-          } else {
-            message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
-            );
-          }
-        });
+  modalFields = ["comment", "attachment", "requestDate", "personGroup"];
+
+
+  showDeletionDialog = (e: SerializedEntity<FileDescriptor>) => {
+    Modal.confirm({
+      title: this.props.intl.formatMessage(
+        { id: "management.browser.delete.areYouSure" },
+        { instanceName: e._instanceName }
+      ),
+      okText: this.props.intl.formatMessage({
+        id: "management.browser.delete.ok"
+      }),
+      cancelText: this.props.intl.formatMessage({
+        id: "management.browser.delete.cancel"
+      }),
+      onOk: () => {
+        this.selectedRowKey = undefined;
+
+        return this.requestAttachmentssDc.delete(e);
+      }
     });
   };
+
+
+  getUpdateEntityData = (): any => {
+    return this.props.form.getFieldsValue(this.fields)
+  };
+
+  update = () => {
+    const updateEntityData = this.getUpdateEntityData();
+    // if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
+    //   updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
+    // }
+
+    return this.dataInstance.update({
+      personGroup: this.personGroupId,
+      ...updateEntityData});
+  };
+
 
   render() {
     if (this.updated) {
@@ -211,39 +223,63 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
     const entityName = this.dataInstance.entityName;
     const { status } = this.dataInstance;
     const isNotDraft = this.isNotDraft();
-    const buttons = [
-      <Button
-        htmlType="button"
-        style={{ margin: "12px" }}
-        type="primary"
-        key={"insurance"}
-      >
-        <FormattedMessage id="Добавить" />
-      </Button>,
-      <Button
-        htmlType="button"
-        style={{ margin: "12px" }}
-        type="primary"
-        key={"members"}
-      >
-        <FormattedMessage id="Изменить" />
-      </Button>,
-      <Button
-        htmlType="button"
-        style={{ margin: "12px" }}
-        type="primary"
-        key={"members"}
-      >
-        <FormattedMessage id="Удалить" />
-      </Button>
-    ];
-
+    const fieldValue = this.props.form.getFieldValue("projectManager");
+    const val = this.projectManagersDc.items.find(value => value.id === fieldValue)!;
+    const isNeedBpm = true;
+    // const buttons = [
+    //   <Button
+    //     htmlType="button"
+    //     style={{ margin: "12px" }}
+    //     type="primary"
+    //     key={"create"}
+    //     icon="plus"
+    //   >
+    //     <FormattedMessage id="management.browser.create" />
+    //   </Button>,
+    //   <Button
+    //     htmlType="button"
+    //     style={{ margin: "12px" }}
+    //     type="primary"
+    //     disabled={!this.selectedRowKey}
+    //     key={"edit"}
+    //   >
+    //     <FormattedMessage id="management.browser.edit" />
+    //   </Button>,
+    //   <Button
+    //     htmlType="button"
+    //     style={{ margin: "12px" }}
+    //     type="primary"
+    //     disabled={!this.selectedRowKey}
+    //     onClick={this.deleteSelectedRow}
+    //     key="remove"
+    //   >
+    //     <FormattedMessage id="management.browser.remove" />
+    //   </Button>
+    // ];
+    //
+    let saveButton = true
+    if (!this.dataInstance) {
+      return <LoadingPage/>
+    }
     return (
-      <Card className={`narrow-light`}>
-        <div className="cardWrapper">
-          <h1>{this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH?"Редактирование заявки":"Создание заявки"}</h1>
-          <Form onSubmit={this.handleSubmit} layout="vertical">
-            <Card title="Общие сведения" size="small" className="generalInfo">
+      <div>
+      <div className="cardWrapper" id="concourseRequest">
+        <h1>{this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH?"Редактирование заявки":"Создание заявки"}</h1>
+      <Card className={`narrow-layout card-actions-container`}
+            actions={[
+              <Button
+                buttonType={ButtonType.FOLLOW}
+                htmlType={"button"}
+                onClick={() => goBackOrHomePage(this.props.history!)}
+              >
+                {this.props.intl.formatMessage({ id: "close" })}
+              </Button>,
+              saveButton ? this.getOutcomeBtns(isNeedBpm):<Button buttonType={ButtonType.PRIMARY}>Loading..</Button>
+            ]}
+            bordered={false} >
+
+          <Form onSubmit={this.validate} layout="vertical">
+            <Card  title="Общие сведения" size="small" className="generalInfo">
               <Row type={"flex"} align="middle" style={{
                 marginTop: "8px",}}
                    justify={"space-between"}>
@@ -365,19 +401,21 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                 />
               </Row>
               <Row type="flex" align="middle" justify={"space-between"}>
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="startDate"
                   form={this.props.form}
+                  format={DEFAULT_DATE_PATTERN}
                   formItemOpts={{ style: {minWidth:"30%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
                   }}
                 />
-                <Field
+                <ReadonlyField
                   entityName={entityName}
                   propertyName="endDate"
                   form={this.props.form}
+                  format={DEFAULT_DATE_PATTERN}
                   formItemOpts={{ style: {minWidth:"30%", marginBottom: "12px" } }}
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }]
@@ -410,18 +448,20 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
                   getFieldDecoratorOpts={{
                     rules: [{ required: true }],
                     getValueFromEvent: (personGroupId, val) =>{
-                      if (personGroupId){
-                        const manager = this.projectManagersDc.items.find(person=>person.id===personGroupId) as PersonExt;
-                        this.getManagerUserRecordById(personGroupId, manager["list"][0]!.id)
-                        console.log(manager["list"][0], val)
-                        return personGroupId;
-                      }
-                      else{
-                        this.props.form.setFieldsValue({
-                          managerCompany: "",
-                          managerPosition: ""
-                        })
-                        return undefined;
+                      if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH){
+                        if (personGroupId){
+                          const manager = this.projectManagersDc.items.find(person=>person.id===personGroupId) as PersonExt;
+                          this.getManagerUserRecordById(personGroupId, manager["list"][0]!.id)
+                          console.log(manager["list"][0], val)
+                          return personGroupId;
+                        }
+                        else{
+                          this.props.form.setFieldsValue({
+                            managerCompany: "",
+                            managerPosition: ""
+                          })
+                          return undefined;
+                        }
                       }
                     }
                   }}
@@ -557,37 +597,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
               />
             </Card>
 
-            <Card title="Приложения" className="generalInfo" size="small">
-              {buttons}
-              <Table>
-                <Column
-                  title={<Msg entityName={ConcourseRequest.NAME} propertyName="Файл" />}
-                  dataIndex="insuranceContract.contract"
-                />
-
-                <Column
-                  title={<Msg entityName={ConcourseRequest.NAME} propertyName="Дата" />}
-                  dataIndex="insuranceContract.startDate"
-                />
-
-                <Column
-                  title={
-                    <Msg entityName={ConcourseRequest.NAME} propertyName="Комментарий" />
-                  }
-                  dataIndex="insuranceContract.expirationDate"
-                />
-
-              </Table>
-              <Field
-                entityName={entityName}
-                propertyName="requestAttachments"
-                form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
-                optionsContainer={this.requestAttachmentssDc}
-                getFieldDecoratorOpts={{}}
-              />
-
-            </Card>
             {/*<Field*/}
             {/*  entityName={entityName}*/}
             {/*  propertyName="legacyId"*/}
@@ -629,25 +638,57 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
               />
             )}
 
-            <Form.Item style={{ textAlign: "right" }}>
-              <Link to={ConcourseRequestManagement.PATH}>
-                <Button htmlType="button">
-                  <FormattedMessage id="management.editor.cancel" />
-                </Button>
-              </Link>
-              <Button
-                type="primary"
-                htmlType="submit"
-                disabled={status !== "DONE" && status !== "ERROR"}
-                loading={status === "LOADING"}
-                style={{ marginLeft: "8px" }}
-              >
-                <FormattedMessage id="management.editor.submit" />
-              </Button>
-            </Form.Item>
+
+            {/*<Form.Item style={{ textAlign: "right" }}>*/}
+            {/*  <Link to={ConcourseRequestManagement.PATH}>*/}
+            {/*    <Button htmlType="button">*/}
+            {/*      <FormattedMessage id="management.editor.cancel" />*/}
+            {/*    </Button>*/}
+            {/*  </Link>*/}
+
+            {/*  <Button*/}
+            {/*    type="primary"*/}
+            {/*    htmlType="submit"*/}
+            {/*    disabled={status !== "DONE" && status !== "ERROR"}*/}
+            {/*    loading={status === "LOADING"}*/}
+            {/*    style={{ marginLeft: "8px" }}*/}
+            {/*  >*/}
+            {/*    <FormattedMessage id="management.editor.submit" />*/}
+            {/*  </Button>*/}
+            {/*</Form.Item>*/}
+
           </Form>
-        </div>
-      </Card>
+
+          <Card title="Приложения" className="generalInfo" size="small" style={{marginTop:"12px"}}>
+            {/*<Row style={{marginTop:"12px"}}>*/}
+            {/*  <ConcourseRequestDocumentList personGroupId={this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH?this.personGroupId:"new"} />*/}
+            {/*</Row>*/}
+
+            {/*<DataTable*/}
+            {/*  dataCollection={this.requestAttachmentssDc}*/}
+            {/*  fields={this.attachmentFields}*/}
+            {/*  onRowSelectionChange={this.handleRowSelectionChange}*/}
+            {/*  hideSelectionColumn={true}*/}
+            {/*  buttons={buttons}*/}
+            {/*/>*/}
+
+            {/*<Field*/}
+            {/*  entityName={entityName}*/}
+            {/*  propertyName="requestAttachments"*/}
+            {/*  form={this.props.form}*/}
+            {/*  formItemOpts={{ style: { marginBottom: "12px" } }}*/}
+            {/*  optionsContainer={this.requestAttachmentssDc}*/}
+            {/*  getFieldDecoratorOpts={{}}*/}
+            {/*/>*/}
+
+          </Card>
+          {this.takCard()}
+
+        </Card>
+      </div>
+
+
+    </div>
     );
   }
 
@@ -659,20 +700,25 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
   //     && this.dataInstance.item.personGroup!.id! === this.props.rootStore!.userInfo.personGroupId!);
   // };
 
-  getUpdateEntityData = (): any => {
-    return this.props.form.getFieldsValue(this.fields)
-  };
-
-  update = () => {
-    const updateEntityData = this.getUpdateEntityData();
-    // if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
-    //   updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
-    // }
-
-    return this.dataInstance.update({
-      personGroup: this.personGroupId,
-      ...updateEntityData});
-  };
+  // getRecordById(id: string): SerializedEntity<FileDescriptor> {
+  //   const record:
+  //     | SerializedEntity<FileDescriptor>
+  //     | undefined = this.requestAttachmentssDc.items.find(record => record.id === id);
+  //
+  //   if (!record) {
+  //     throw new Error("Cannot find entity with id " + id);
+  //   }
+  //
+  //   return record;
+  // }
+  //
+  // handleRowSelectionChange = (selectedRowKeys: string[]) => {
+  //   this.selectedRowKey = selectedRowKeys[0];
+  // };
+  //
+  // deleteSelectedRow = () => {
+  //   this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
+  // };
 
   getExpertUserRecordById(id: string, groupId: string){
     // @ts-ignore
@@ -682,6 +728,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
           expertCompany: pos.organizationName,
           expertPosition: pos.positionName
         })
+
       })
       console.log(pos, groupId)
     }
@@ -744,12 +791,19 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<ConcourseRequest,P
       }
     );
     this.loadData()
+    this.loadBpmProcessData()
+  }
+
+  protected initItem(request: ConcourseRequest):void {
+    super.initItem(request);
   }
 
   componentWillUnmount() {
     this.reactionDisposer();
   }
 }
+
+
 
 export default injectIntl(
   withLocalizedForm<EditorProps>({
