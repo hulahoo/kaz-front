@@ -1,3 +1,4 @@
+import { ConcourseNewManagement } from "./app/pages/ConcourseNew/ConcourseNewManagement";
 import { ConcourseRequestAttachmentsManagement } from "./app/pages/ConcourseRequest/ConcourseRequestAttachments/ConcourseRequestAttachmentsManagement";
 import { ConcourseManagement } from "./app/pages/Concourse/ConcourseManagement";
 import { ConcourseRequestManagement } from "./app/pages/ConcourseRequest/ConcourseRequestManagement";
@@ -51,4 +52,11 @@ menuItems.push({
   menuLink: "/concourseRequestAttachmentsManagement",
   component: ConcourseRequestAttachmentsManagement,
   caption: "ConcourseRequestAttachmentsManagement"
+});
+
+menuItems.push({
+  pathPattern: "/concourseNewManagement/:entityId?",
+  menuLink: "/concourseNewManagement",
+  component: ConcourseNewManagement,
+  caption: "ConcourseNewManagement"
 });

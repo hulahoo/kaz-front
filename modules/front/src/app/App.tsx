@@ -65,6 +65,7 @@ import {DismissalRequestManagement} from "./pages/DismissalRequest/DismissalRequ
 import {ConcourseRequestManagement} from "./pages/ConcourseRequest/ConcourseRequestManagement";
 // import {ConcourseRequestDocumentManagement} from "./pages/ConcourseRequest/ConcourseRequestDocument/ConcourseRequestDocumentManagement";
 import {ConcourseManagement} from "./pages/Concourse/ConcourseManagement";
+import {ConcourseNewManagement} from "./pages/ConcourseNew/ConcourseNewManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -187,6 +188,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                                         path={ConcourseManagement.PATH + "/:entityId?"}
                                         component={ConcourseManagement}/>
+                <Route exact={true}
+                       path={ConcourseNewManagement.PATH + "/:entityId?"}
+                       component={ConcourseNewManagement}/>
                 <Route exact={true}
                        path={ConcourseRequestManagement.PATH + "/:entityId?"}
                        component={ConcourseRequestManagement}/>

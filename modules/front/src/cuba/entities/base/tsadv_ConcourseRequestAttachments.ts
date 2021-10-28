@@ -10,7 +10,8 @@ export type ConcourseRequestAttachmentsViewName =
   | "_base"
   | "_local"
   | "_minimal"
-  | "concourseRequestAttachments-view";
+  | "concourseRequestAttachments-view"
+  | "_attachments";
 export type ConcourseRequestAttachmentsView<
   V extends ConcourseRequestAttachmentsViewName
 > = V extends "_base"
@@ -38,10 +39,17 @@ export type ConcourseRequestAttachmentsView<
       ConcourseRequestAttachments,
       | "id"
       | "comments"
+      | "concourseRequestNumber"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
       | "attachment"
-      | "concourseRequestNumber"
-    >
+    >: V extends "_attachments"
+        ? Pick<
+          ConcourseRequestAttachments,
+          | "id"
+          | "comments"
+          | "concourseRequestNumber"
+          | "attachment"
+          >
   : never;

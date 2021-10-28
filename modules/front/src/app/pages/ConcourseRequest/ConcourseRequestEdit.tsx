@@ -904,18 +904,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     this.initDataCollection();
   };
 
-  @action
-  setReadOnly = (): void => {
-    this.readonly = !(
-      this.dataInstance.item &&
-      !this.isNotDraft() &&
-      (this.props.form.getFieldValue("status") === "DRAFT" ||
-        this.props.form.getFieldValue("status") === "COMPLETED") &&
-      this.dataInstance.item.personGroup!.id! ===
-        this.props.rootStore!.userInfo.personGroupId!
-    );
-  };
-
   getRecordById(id: string): SerializedEntity<FileDescriptor> {
     const record:
       | SerializedEntity<FileDescriptor>
@@ -1036,9 +1024,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     // this.loadBpmProcessData()
   }
 
-  // protected initItem(request: ConcourseRequest):void {
-  //   super.initItem(request);
-  // }
+  protected initItem(request: ConcourseRequest):void {
+    super.initItem(request);
+  }
 
   componentWillUnmount() {
     this.reactionDisposer();

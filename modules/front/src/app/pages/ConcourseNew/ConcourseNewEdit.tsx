@@ -2,7 +2,7 @@ import * as React from "react";
 import { FormEvent } from "react";
 import { Alert, Button, Card, Form, message } from "antd";
 import { observer } from "mobx-react";
-import { ConcourseManagement } from "./ConcourseManagement";
+import { ConcourseNewManagement } from "./ConcourseNewManagement";
 import { FormComponentProps } from "antd/lib/form";
 import { Link, Redirect } from "react-router-dom";
 import { IReactionDisposer, observable, reaction, toJS } from "mobx";
@@ -13,6 +13,7 @@ import {
 } from "react-intl";
 
 import {
+  collection,
   Field,
   instance,
   withLocalizedForm,
@@ -24,7 +25,8 @@ import {
 
 import "../../../app/App.css";
 
-import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
+import { ConcourseNew } from "../../../cuba/entities/base/tsadv_ConcourseNew";
+import { FileDescriptor } from "../../../cuba/entities/base/sys$FileDescriptor";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -33,12 +35,20 @@ type EditorProps = {
 };
 
 @observer
-class ConcourseEditComponent extends React.Component<
+class ConcourseNewEditComponent extends React.Component<
   Props & WrappedComponentProps
 > {
-  dataInstance = instance<Concourse>(Concourse.NAME, {
-    view: "concourse-view",
+  dataInstance = instance<ConcourseNew>(ConcourseNew.NAME, {
+    view: "concourseNew-view",
     loadImmediately: false
+  });
+
+  bannersDc = collection<FileDescriptor>(FileDescriptor.NAME, {
+    view: "_minimal"
+  });
+
+  requestTemplatesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
+    view: "_minimal"
   });
 
   @observable
@@ -46,31 +56,21 @@ class ConcourseEditComponent extends React.Component<
   reactionDisposer: IReactionDisposer;
 
   fields = [
-    "description",
-
     "name_ru",
-
-    "concourseStatus",
-
-    "category",
-
-    "judgeInsturction",
 
     "name_en",
 
-    "year",
-
-    "startVoting",
-
-    "endVoting",
+    "description",
 
     "legacyId",
 
-    "banner",
-
     "organizationBin",
 
-    "integrationUserLogin"
+    "integrationUserLogin",
+
+    "banner",
+
+    "requestTemplate"
   ];
 
   @observable
@@ -135,7 +135,7 @@ class ConcourseEditComponent extends React.Component<
 
   render() {
     if (this.updated) {
-      return <Redirect to={ConcourseManagement.PATH} />;
+      return <Redirect to={ConcourseNewManagement.PATH} />;
     }
 
     const { status } = this.dataInstance;
@@ -144,97 +144,31 @@ class ConcourseEditComponent extends React.Component<
       <Card className="narrow-layout">
         <Form onSubmit={this.handleSubmit} layout="vertical">
           <Field
-            entityName={Concourse.NAME}
-            propertyName="description"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
+            entityName={ConcourseNew.NAME}
             propertyName="name_ru"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
+            getFieldDecoratorOpts={{}}
           />
 
           <Field
-            entityName={Concourse.NAME}
-            propertyName="concourseStatus"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="category"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="judgeInsturction"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
+            entityName={ConcourseNew.NAME}
             propertyName="name_en"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
+            getFieldDecoratorOpts={{}}
           />
 
           <Field
-            entityName={Concourse.NAME}
-            propertyName="year"
+            entityName={ConcourseNew.NAME}
+            propertyName="description"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
+            getFieldDecoratorOpts={{}}
           />
 
           <Field
-            entityName={Concourse.NAME}
-            propertyName="startVoting"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="endVoting"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
+            entityName={ConcourseNew.NAME}
             propertyName="legacyId"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
@@ -242,7 +176,7 @@ class ConcourseEditComponent extends React.Component<
           />
 
           <Field
-            entityName={Concourse.NAME}
+            entityName={ConcourseNew.NAME}
             propertyName="organizationBin"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
@@ -250,7 +184,7 @@ class ConcourseEditComponent extends React.Component<
           />
 
           <Field
-            entityName={Concourse.NAME}
+            entityName={ConcourseNew.NAME}
             propertyName="integrationUserLogin"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
@@ -258,10 +192,20 @@ class ConcourseEditComponent extends React.Component<
           />
 
           <Field
-            entityName={Concourse.NAME}
+            entityName={ConcourseNew.NAME}
             propertyName="banner"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
+            optionsContainer={this.bannersDc}
+            getFieldDecoratorOpts={{}}
+          />
+
+          <Field
+            entityName={ConcourseNew.NAME}
+            propertyName="requestTemplate"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px" } }}
+            optionsContainer={this.requestTemplatesDc}
             getFieldDecoratorOpts={{}}
           />
 
@@ -274,7 +218,7 @@ class ConcourseEditComponent extends React.Component<
           )}
 
           <Form.Item style={{ textAlign: "center" }}>
-            <Link to={ConcourseManagement.PATH}>
+            <Link to={ConcourseNewManagement.PATH}>
               <Button htmlType="button">
                 <FormattedMessage id="management.editor.cancel" />
               </Button>
@@ -295,10 +239,10 @@ class ConcourseEditComponent extends React.Component<
   }
 
   componentDidMount() {
-    if (this.props.entityId !== ConcourseManagement.NEW_SUBPATH) {
+    if (this.props.entityId !== ConcourseNewManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
     } else {
-      this.dataInstance.setItem(new Concourse());
+      this.dataInstance.setItem(new ConcourseNew());
     }
     this.reactionDisposer = reaction(
       () => {
@@ -329,5 +273,5 @@ export default injectIntl(
         });
       });
     }
-  })(ConcourseEditComponent)
+  })(ConcourseNewEditComponent)
 );

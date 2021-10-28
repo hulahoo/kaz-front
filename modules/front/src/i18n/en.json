@@ -11,6 +11,7 @@
   "management.editor.error": "Error",
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
+  "router.ConcourseNewManagement": "ConcourseNewManagement",
   "router.ConcourseRequestAttachmentsManagement": "ConcourseRequestAttachmentsManagement",
   "router.ConcourseManagement": "ConcourseManagement",
   "router.ConcourseRequestDocumentManagement": "ConcourseRequestDocumentManagement",

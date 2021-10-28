@@ -1,7 +1,7 @@
 import * as React from "react";
 import { FormEvent } from "react";
 import { Alert, Button, Card, Form, message, Modal } from "antd";
-import { observer } from "mobx-react";
+import {inject, observer} from "mobx-react";
 import { ConcourseRequestAttachmentsManagement } from "./ConcourseRequestAttachmentsManagement";
 import { FormComponentProps } from "antd/lib/form";
 import { Link, Redirect } from "react-router-dom";
@@ -20,7 +20,7 @@ import {
   extractServerValidationErrors,
   constructFieldsWithErrors,
   clearFieldErrors,
-  MultilineText
+  MultilineText, injectMainStore, MainStoreInjected
 } from "@cuba-platform/react";
 
 import "../../../../app/App.css";
@@ -28,6 +28,9 @@ import "../../../../app/App.css";
 import { ConcourseRequestAttachments } from "../../../../cuba/entities/base/tsadv_ConcourseRequestAttachments";
 import { FileDescriptor } from "../../../../cuba/entities/base/sys$FileDescriptor";
 import { ConcourseRequest } from "../../../../cuba/entities/base/tsadv_ConcourseRequest";
+import {ReadonlyField} from "../../../components/ReadonlyField";
+import {RootStoreProp} from "../../../store";
+import {RouteComponentProps} from "react-router";
 
 type Props = FormComponentProps & EditorProps;
 
@@ -39,13 +42,14 @@ type EditorProps = {
   requestNum?: string;
 };
 
+@injectMainStore
+@inject("rootStore")
 @observer
 class ConcourseRequestAttachmentsEditComponent extends React.Component<
-  Props & WrappedComponentProps
-> {
+  Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
   dataInstance = instance<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
-    { view: "concourseRequestAttachments-view", loadImmediately: false }
+    { view: "_attachments", loadImmediately: false }
   );
 
   attachmentsDc = collection<FileDescriptor>(FileDescriptor.NAME, {
@@ -53,26 +57,26 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
   });
 
   concourseRequestsDc = collection<ConcourseRequest>(ConcourseRequest.NAME, {
-    view: "_minimal"
+    view: "_minimal",
   });
 
   @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
 
-  fields = ["comments", "attachment", "concourseRequestNumber"];
+  fields = ["comments", "attachment", "concourseRequestNumber", "id"];
 
   @observable
   globalErrors: string[] = [];
 
   @observable visibleModal = this.props.visible;
 
-  @observable concourseRequestNumber = this.props.requestNum
+  @observable concourseRequestNum : string;
 
   handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     this.props.form.setFieldsValue({
-      concourseRequestNumber: this.concourseRequestNumber
+      concourseRequestNumber: this.concourseRequestNum ? this.concourseRequestNum : this.props.requestNum
     })
     this.props.form.validateFields((err, values) => {
       if (err) {
@@ -83,6 +87,8 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
         );
         return;
       }
+
+      console.log(this.props.form.getFieldsValue(this.fields))
       this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
@@ -147,9 +153,7 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
         onCancel={this.props.onChangeVisible.bind(null, false)}
       >
         <Form onSubmit={this.handleSubmit} layout="vertical">
-
-
-          <Field
+          <ReadonlyField
             entityName={ConcourseRequestAttachments.NAME}
             propertyName="attachment"
             form={this.props.form}
@@ -158,14 +162,13 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
             getFieldDecoratorOpts={{}}
           />
 
-          <Field
+          <ReadonlyField
             entityName={ConcourseRequestAttachments.NAME}
             propertyName="comments"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
             getFieldDecoratorOpts={{}}
           />
-
           {this.globalErrors.length > 0 && (
             <Alert
               message={<MultilineText lines={toJS(this.globalErrors)} />}
@@ -173,8 +176,14 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
               style={{ marginBottom: "24px" }}
             />
           )}
-
-
+          <ReadonlyField
+            entityName={ConcourseRequestAttachments.NAME}
+            propertyName="concourseRequestNumber"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px", display:"none" } }}
+            optionsContainer={this.attachmentsDc}
+            getFieldDecoratorOpts={{}}
+          />
         </Form>
       </Modal>
     );
@@ -188,17 +197,19 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
     } else {
       this.dataInstance.setItem(new ConcourseRequestAttachments());
     }
+    this.concourseRequestNum = this.props.requestNum!
+
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
       (item) => {
-        if(item){
-
-            this.props.form.setFieldsValue(
-              this.dataInstance.getFieldValues(this.fields)
-            );
-
+        if (this.props.visible){
+          this.props.form.setFieldsValue({
+              concourseRequestNumber: this.props.requestNum,
+              ...this.dataInstance.getFieldValues(this.fields)
+            }
+          );
         }
 
       }
