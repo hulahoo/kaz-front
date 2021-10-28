@@ -13,55 +13,49 @@ import {
   DataTable
 } from "@cuba-platform/react";
 
-import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
+import { ConcourseRequestAttachments } from "../../../../cuba/entities/base/tsadv_ConcourseRequestAttachments";
 import { SerializedEntity } from "@cuba-platform/rest";
-import { ConcourseManagement } from "./ConcourseManagement";
+import { ConcourseRequestAttachmentsManagement } from "./ConcourseRequestAttachmentsManagement";
 import {
   FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
+import ConcourseRequestAttachmentsEdit from "./ConcourseRequestAttachmentsEdit";
+
+type EditorProps = {
+  entityId: string;
+};
 
 @injectMainStore
 @observer
-class ConcourseListComponent extends React.Component<
-  MainStoreInjected & WrappedComponentProps
+class ConcourseRequestAttachmentsListComponent extends React.Component<
+  MainStoreInjected & WrappedComponentProps & EditorProps
 > {
-  dataCollection = collection<Concourse>(Concourse.NAME, {
-    view: "_local",
-  });
+  dataCollection = collection<ConcourseRequestAttachments>(
+    ConcourseRequestAttachments.NAME,
+    { view: "concourseRequestAttachments-view", sort: "-updateTs" }
+  );
 
   fields = [
-    "description",
-
-    "name_ru",
-
-    "concourseStatus",
-
-    "category",
-
-    "banner",
-
-    "judgeInsturction",
-
-    "name_en",
-
-    "year",
-
-    "startVoting",
-
-    "endVoting",
+    "comments",
 
     "legacyId",
 
     "organizationBin",
 
-    "integrationUserLogin"
+    "integrationUserLogin",
+
+    "attachment",
+
+    "concourseRequest"
   ];
 
   @observable selectedRowKey: string | undefined;
 
-  showDeletionDialog = (e: SerializedEntity<Concourse>) => {
+  @observable isModalVisible = false;
+
+  showDeletionDialog = (e: SerializedEntity<ConcourseRequestAttachments>) => {
     Modal.confirm({
       title: this.props.intl.formatMessage(
         { id: "management.browser.delete.areYouSure" },
@@ -81,29 +75,24 @@ class ConcourseListComponent extends React.Component<
     });
   };
 
-  componentDidMount() {
-    console.log(this.dataCollection)
-  }
-
   render() {
     const buttons = [
-      <Link
-        to={ConcourseManagement.PATH + "/" + ConcourseManagement.NEW_SUBPATH}
+      <Button
         key="create"
+        htmlType="button"
+        style={{ margin: "0 12px 12px 0" }}
+        type="primary"
+        icon="plus"
+        onClick={() => (this.isModalVisible = true)}
       >
-        <Button
-          htmlType="button"
-          style={{ margin: "0 12px 12px 0" }}
-          type="primary"
-          icon="plus"
-        >
-          <span>
-            <FormattedMessage id="management.browser.create" />
-          </span>
-        </Button>
-      </Link>,
+        <span>
+          <FormattedMessage id="management.browser.create" />
+        </span>
+      </Button>,
       <Link
-        to={ConcourseManagement.PATH + "/" + this.selectedRowKey}
+        to={
+          ConcourseRequestAttachmentsManagement.PATH + "/" + this.selectedRowKey
+        }
         key="edit"
       >
         <Button
@@ -128,22 +117,24 @@ class ConcourseListComponent extends React.Component<
     ];
 
     return (
-      <div className={"cardWrapper"}>
-      <DataTable
-        dataCollection={this.dataCollection}
-        fields={this.fields}
-        onRowSelectionChange={this.handleRowSelectionChange}
-        hideSelectionColumn={true}
-        buttons={buttons}
-      />
+      <div>
+        <DataTable
+          dataCollection={this.dataCollection}
+          fields={this.fields}
+          onRowSelectionChange={this.handleRowSelectionChange}
+          hideSelectionColumn={true}
+          buttons={buttons}
+        />
+        {/*<ConcourseRequestAttachmentsEdit isModalVisible={this.isModalVisible} entityId={this.props.entityId} />*/}
       </div>
     );
   }
 
-  getRecordById(id: string): SerializedEntity<Concourse> {
+  getRecordById(id: string): SerializedEntity<ConcourseRequestAttachments> {
     const record:
-      | SerializedEntity<Concourse>
+      | SerializedEntity<ConcourseRequestAttachments>
       | undefined = this.dataCollection.items.find(record => record.id === id);
+
     if (!record) {
       throw new Error("Cannot find entity with id " + id);
     }
@@ -160,6 +151,8 @@ class ConcourseListComponent extends React.Component<
   };
 }
 
-const ConcourseList = injectIntl(ConcourseListComponent);
+const ConcourseRequestAttachmentsList = injectIntl(
+  ConcourseRequestAttachmentsListComponent
+);
 
-export default ConcourseList;
+export default ConcourseRequestAttachmentsList;

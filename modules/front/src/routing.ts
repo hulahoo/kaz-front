@@ -1,3 +1,4 @@
+import { ConcourseRequestAttachmentsManagement } from "./app/pages/ConcourseRequest/ConcourseRequestAttachments/ConcourseRequestAttachmentsManagement";
 import { ConcourseManagement } from "./app/pages/Concourse/ConcourseManagement";
 import { ConcourseRequestManagement } from "./app/pages/ConcourseRequest/ConcourseRequestManagement";
 import { getMenuItems } from "@cuba-platform/react";
@@ -43,4 +44,11 @@ menuItems.push({
   menuLink: "/concourseManagement",
   component: ConcourseManagement,
   caption: "ConcourseManagement"
+});
+
+menuItems.push({
+  pathPattern: "/concourseRequestAttachmentsManagement/:entityId?",
+  menuLink: "/concourseRequestAttachmentsManagement",
+  component: ConcourseRequestAttachmentsManagement,
+  caption: "ConcourseRequestAttachmentsManagement"
 });

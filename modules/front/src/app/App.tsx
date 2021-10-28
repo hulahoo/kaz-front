@@ -63,7 +63,7 @@ import {PositionOverlappingRequestManagement} from "./pages/PositionOverlappingR
 import {DismissalRequestManagement} from "./pages/DismissalRequest/DismissalRequestManagement";
 // import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
 import {ConcourseRequestManagement} from "./pages/ConcourseRequest/ConcourseRequestManagement";
-import {ConcourseRequestDocumentManagement} from "./pages/ConcourseRequest/ConcourseRequestDocument/ConcourseRequestDocumentManagement";
+// import {ConcourseRequestDocumentManagement} from "./pages/ConcourseRequest/ConcourseRequestDocument/ConcourseRequestDocumentManagement";
 import {ConcourseManagement} from "./pages/Concourse/ConcourseManagement";
 
 @injectMainStore
@@ -190,7 +190,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 <Route exact={true}
                        path={ConcourseRequestManagement.PATH + "/:entityId?"}
                        component={ConcourseRequestManagement}/>
-                <Route exact={true} path={ConcourseRequestDocumentManagement.PATH+"/:entityId?"} component={ConcourseRequestDocumentManagement}/>
+                {/*<Route exact={true} path={ConcourseRequestDocumentManagement.PATH+"/:entityId?"} component={ConcourseRequestDocumentManagement}/>*/}
                 <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>
