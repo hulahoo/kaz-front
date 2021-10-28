@@ -18,7 +18,7 @@ export class Concourse extends AbstractParentEntity {
   endVoting?: any | null;
   description?: string | null;
 }
-export type ConcourseViewName = "_base" | "_local" | "_minimal";
+export type ConcourseViewName = "_base" | "_local" | "_minimal" | "concourse-view";
 export type ConcourseView<V extends ConcourseViewName> = V extends "_base"
   ? Pick<
       Concourse,
@@ -53,6 +53,16 @@ export type ConcourseView<V extends ConcourseViewName> = V extends "_base"
       | "organizationBin"
       | "integrationUserLogin"
     >
+  : V extends "concourse-view"
+  ? Pick<
+      Concourse,
+      | "name_ru"
+      | "category"
+      | "year"
+      | "description"
+      | "organizationBin"
+      | "banner"
+  >
   : V extends "_minimal"
   ? Pick<Concourse, "id" | "description">
   : never;
