@@ -27,7 +27,6 @@ export default class MenuStore {
 
   @action
   loadUserMenuCustomization = async () => {
-    debugger
     await this.root.cubaRest!.invokeService<string>(
       "tsadv_PortalHelperService",
       "getPortalMenu",

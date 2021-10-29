@@ -63,7 +63,6 @@ import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveAppr
 import {PositionOverlappingRequestManagement} from "./pages/PositionOverlappingRequest/PositionOverlappingRequestManagement";
 import {DismissalRequestManagement} from "./pages/DismissalRequest/DismissalRequestManagement";
 import {ConcourseRequestManagement} from "./pages/ConcourseRequest/ConcourseRequestManagement";
-import {ConcourseRequestDocumentManagement} from "./pages/ConcourseRequest/ConcourseRequestDocument/ConcourseRequestDocumentManagement";
 import {ConcourseManagement} from "./pages/Concourse/ConcourseManagement";
 
 @injectMainStore
@@ -186,9 +185,6 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
                 {/*       component={CurrentScheduleRequestManagement}/>*/}
 
-{/*                 <Route exact={true} */}
-{/*                                         path={ConcourseManagement.PATH + "/:entityId?"} */}
-{/*                                         component={ConcourseManagement}/> */}
                 <Route exact={true}
                        path={ConcourseRequestManagement.PATH + "/:entityId?"}
                        component={ConcourseRequestManagement}/>

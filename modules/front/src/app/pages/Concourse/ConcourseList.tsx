@@ -10,13 +10,15 @@ import DataTableFormat from "../../components/DataTable/intex";
 import {link} from "../../util/util";
 import { observable } from "mobx";
 
-import { Modal } from "antd";
+import { Modal, Layout, Row, Col, Divider} from "antd";
+
+
 
 import {
   collection,
   injectMainStore,
   MainStoreInjected,
-  DataTable
+  DataTable, getCubaREST,
 } from "@cuba-platform/react";
 
 import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
@@ -24,12 +26,13 @@ import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseReq
 import { SerializedEntity } from "@cuba-platform/rest";
 import { ConcourseManagement } from "./ConcourseManagement";
 import { ConcourseRequestManagement } from "../ConcourseRequest/ConcourseRequestManagement";
+import {ConcourseImage} from "./ConcourseImage";
 import {
   FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
-
+const {Footer, Content, Sider } = Layout
 
 const {TabPane} = Tabs;
 
@@ -68,7 +71,6 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
     "name_ru",
     "category",
     "year",
-    "organizationBin",
   ]
 
   concourseRequestFields = [
@@ -109,6 +111,47 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
     });
   };
 
+  concourseComponent  = (imgUrl?:any, btnLink?:string, concourseDesc?:any) => {
+      return <Layout style={{marginTop:"30px"}} key={imgUrl}>
+                <Row>
+                  <Col span={19} className="concourse-image"><ConcourseImage imageId={imgUrl}/></Col>
+                  <Col span={5} className="concourse-button">
+                    <Link
+                          to={ConcourseRequestManagement.PATH + "/" + ConcourseRequestManagement.NEW_SUBPATH + "?concourseId="+btnLink}
+                          key="createConcourseRequest">
+                          <Button buttonType={ButtonType.PRIMARY} block>
+                            <span><FormattedMessage id="management.browser.create"/></span>
+
+                          </Button>
+                    </Link>
+                  </Col>
+                </Row>
+                <h3 style={{marginTop:"30px"}}>Description</h3>
+                 <Row style={{marginTop:"10px", border:"2px solid black", borderRadius:"8px", padding:" 10px 20px"}} >
+
+                    <Col style={{borderWidth:"2px"}} span={24} >{concourseDesc}</Col>
+                 </Row>
+                  <Divider />
+               </Layout>
+  }
+
+    bestConcourseComponent = (projectName?: any, index?: number, organizationBin?:any) => {
+
+      return  <Row style={{marginTop:"30px", border:"2px solid black", borderRadius:"8px", padding:" 10px 20px"}} key={projectName+index+projectName}>
+                      <Col span={20} className="best-concourse">
+                        <p>Место {index}</p>
+                        <h2><a href="#">{projectName}</a></h2>
+                        <Row style={{marginTop:"30px"}}>
+                            <Col span={4}><h4>Компания</h4></Col>
+                            <Col><h4>{organizationBin}</h4></Col>
+                        </Row>
+                      </Col>
+                  </Row>
+
+
+
+    }
+
   render() {
     const btns = [<Link
       to={ConcourseRequestManagement.PATH + "/" + ConcourseRequestManagement.NEW_SUBPATH}
@@ -122,6 +165,7 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
 
     const {activeTab} = this.props.match.params;
     const defaultActiveKey = activeTab ? activeTab : "1";
+    console.log(this.dataCollection);
     return (
       <Page pageName={this.props.intl.formatMessage({id: this.pageName})}>
         <Section size="large">
@@ -129,24 +173,33 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
                 onChange={activeKey => this.pageName = "concourse" + (activeKey === "1" ? "" : "Request")}>
             <TabPane tab={this.props.intl.formatMessage({id: "concourse"})} key="1">
               <div>
-                <div style={{marginBottom: 16}}>
-                  {btns}
-                </div>
-                <DataTableFormat
-                  dataCollection={this.dataCollection}
-                  onRowSelectionChange={selectedRowKeys => this.selectedRowKey = selectedRowKeys[0]}
-                  fields={this.concourseFields}
-                  hideSelectionColumn={true}
-                />
+
+                {
+                this.dataCollection.items.map((el)=>(
+                    el && this.concourseComponent(el!.banner!.id, el.id, el.description)
+                ))
+                }
+
+
               </div>
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "bestConcourse"})} key="3">
               <div>
-                <DataTableFormat
-                  dataCollection={this.dataCollectionConcourse}
-                  fields={this.bestConcourseFields}
-                  hideSelectionColumn={true}
-                />
+
+
+                  {
+
+                    this.dataCollectionConcourse.items.map((el, index) => (
+                        el && this.bestConcourseComponent(el!.name_ru, index+1, el!.organizationBin)
+
+                    ))
+
+                  }
+{/*                 <DataTableFormat */}
+{/*                   dataCollection={this.dataCollectionConcourse} */}
+{/*                   fields={this.bestConcourseFields} */}
+{/*                   hideSelectionColumn={true} */}
+{/*                 /> */}
               </div>
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "concourseRequest"})} key="4">
