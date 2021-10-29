@@ -76,6 +76,7 @@ class InsuredPersonMemberComponent extends React.Component<
         }
       ]
     }
+
   });
 
   sexsDc = collection<DicSex>(DicSex.NAME, { view: "_minimal" });
@@ -704,6 +705,7 @@ class InsuredPersonMemberComponent extends React.Component<
       },
       item => {
         if (this.props.visible)
+          console.log("DATASTORE:", this.dataInstance.getFieldValues(this.fields))
           this.props.form.setFieldsValue(
             this.dataInstance.getFieldValues(this.fields)
           );

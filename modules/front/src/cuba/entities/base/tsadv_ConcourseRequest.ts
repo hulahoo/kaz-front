@@ -4,6 +4,7 @@ import { FileDescriptor } from "./sys$FileDescriptor";
 export class ConcourseRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ConcourseRequest";
   endDate?: any | null;
+  concourseId?: any | null;
   scaleOfDistrubution?: any | null;
   projectManager?: PersonGroupExt | null;
   managerContactInfo?: string | null;
@@ -37,6 +38,7 @@ export type ConcourseRequestView<
       | "id"
       | "requestNumber"
       | "endDate"
+      | "concourseId"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -62,6 +64,7 @@ export type ConcourseRequestView<
       ConcourseRequest,
       | "id"
       | "endDate"
+      | "concourseId"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -90,6 +93,7 @@ export type ConcourseRequestView<
       ConcourseRequest,
       | "id"
       | "endDate"
+      | "concourseId"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"

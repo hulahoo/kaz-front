@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FormEvent } from "react";
-import { Alert, Button, Card, Form, message, Modal } from "antd";
+import { Alert, Button, Card, Form, message, Modal, Spin } from "antd";
 import {inject, observer} from "mobx-react";
 import { ConcourseRequestAttachmentsManagement } from "./ConcourseRequestAttachmentsManagement";
 import { FormComponentProps } from "antd/lib/form";
@@ -49,11 +49,12 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
   Props & WrappedComponentProps & RootStoreProp & MainStoreInjected & RouteComponentProps<any>> {
   dataInstance = instance<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
-    { view: "_attachments", loadImmediately: false }
+    { view: "concourseRequestAttachments-view", loadImmediately: false }
   );
 
   attachmentsDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
+    view: "_minimal",
+
   });
 
   concourseRequestsDc = collection<ConcourseRequest>(ConcourseRequest.NAME, {
@@ -64,7 +65,7 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
   updated = false;
   reactionDisposer: IReactionDisposer;
 
-  fields = ["comments", "attachment", "concourseRequestNumber", "id"];
+  modFields = [ "comments" , "concourseRequestNumber" , "attachment", "id"];
 
   @observable
   globalErrors: string[] = [];
@@ -76,7 +77,8 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
   handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     this.props.form.setFieldsValue({
-      concourseRequestNumber: this.concourseRequestNum ? this.concourseRequestNum : this.props.requestNum
+      concourseRequestNumber: this.concourseRequestNum ? this.concourseRequestNum.toString() : this.props.requestNum!.toString() ,
+      id: this.props.requestNum!.toString()+this.props.requestNum!.toString()
     })
     this.props.form.validateFields((err, values) => {
       if (err) {
@@ -88,52 +90,82 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
         return;
       }
 
-      console.log(this.props.form.getFieldsValue(this.fields))
-      this.dataInstance
-        .update(this.props.form.getFieldsValue(this.fields))
-        .then(() => {
-          message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
-          );
-          // this.updated = true;
+      console.log(this.props.form.getFieldsValue(this.modFields))
+
+      // this.dataInstance.setItem({
+      //   concourseRequestNumber: this.props.form.getFieldValue("concourseRequestNumber")
+      // })
+      // this.dataInstance.setItem({
+      //   id: this.props.form.getFieldValue("id")
+      // })
+      // this.dataInstance.setItem({
+      //   attachment: this.props.form.getFieldValue("attachment")
+      // })
+      // this.dataInstance.setItem({
+      //   comments: this.props.form.getFieldValue("comments")
+      // })
+      console.log(this.dataInstance.getFieldValues(this.modFields))
+      console.log(this.props.form.getFieldsValue(this.modFields))
+      if (this.props.entityId === ConcourseRequestAttachmentsManagement.NEW_SUBPATH){
+        this.dataInstance.item!.concourseRequestNumber = this.props.form.getFieldValue("concourseRequestNumber")
+        this.dataInstance.item!.comments = this.props.form.getFieldValue("comments")
+        this.dataInstance.item!.attachment = this.props.form.getFieldValue("attachment")
+        this.dataInstance.commit().then(data=> {
           this.props.refreshDs();
           this.props.onChangeVisible(false);
         })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
-
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                );
-              } else {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                );
-              }
-            });
-          } else {
-            message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
+      }
+      else{
+        this.dataInstance
+          .update(this.props.form.getFieldsValue(this.modFields))
+          .then((data) => {
+            console.log("After update:", data)
+            message.success(
+              this.props.intl.formatMessage({ id: "management.editor.success" })
             );
-          }
-        });
+            // this.updated = true;
+            this.props.refreshDs();
+            this.props.onChangeVisible(false);
+          })
+          .catch((e: any) => {
+            if (e.response && typeof e.response.json === "function") {
+              e.response.json().then((response: any) => {
+                clearFieldErrors(this.props.form);
+                const {
+                  globalErrors,
+                  fieldErrors
+                } = extractServerValidationErrors(response);
+                this.globalErrors = globalErrors;
+                if (fieldErrors.size > 0) {
+                  this.props.form.setFields(
+                    constructFieldsWithErrors(fieldErrors, this.props.form)
+                  );
+                }
+
+                if (fieldErrors.size > 0 || globalErrors.length > 0) {
+                  message.error(
+                    this.props.intl.formatMessage({
+                      id: "management.editor.validationError"
+                    })
+                  );
+                } else {
+                  message.error(
+                    this.props.intl.formatMessage({
+                      id: "management.editor.error"
+                    })
+                  );
+                }
+              });
+            } else {
+              message.error(
+                this.props.intl.formatMessage({ id: "management.editor.error" })
+              );
+            }
+            this.props.onChangeVisible(false);
+          });
+
+      }
+
     });
   };
 
@@ -148,17 +180,18 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
     return (
       <Modal
         visible={this.visibleModal}
-        destroyOnClose={true}
         onOk={this.handleSubmit}
         onCancel={this.props.onChangeVisible.bind(null, false)}
       >
+        <Spin spinning={status == "LOADING"}>
+
         <Form onSubmit={this.handleSubmit} layout="vertical">
           <ReadonlyField
             entityName={ConcourseRequestAttachments.NAME}
             propertyName="attachment"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
-            optionsContainer={this.attachmentsDc}
+            // optionsContainer={this.attachmentsDc}
             getFieldDecoratorOpts={{}}
           />
 
@@ -181,10 +214,19 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
             propertyName="concourseRequestNumber"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px", display:"none" } }}
-            optionsContainer={this.attachmentsDc}
+
+            getFieldDecoratorOpts={{}}
+          />
+          <ReadonlyField
+            entityName={ConcourseRequestAttachments.NAME}
+            propertyName="id"
+            form={this.props.form}
+            formItemOpts={{ style: { marginBottom: "12px", display:"none" } }}
+
             getFieldDecoratorOpts={{}}
           />
         </Form>
+        </Spin>
       </Modal>
     );
   }
@@ -198,20 +240,17 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
       this.dataInstance.setItem(new ConcourseRequestAttachments());
     }
     this.concourseRequestNum = this.props.requestNum!
-
+    console.log(this.dataInstance.getFieldValues(this.modFields))
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
       (item) => {
-        if (this.props.visible){
-          this.props.form.setFieldsValue({
-              concourseRequestNumber: this.props.requestNum,
-              ...this.dataInstance.getFieldValues(this.fields)
-            }
-          );
-        }
-
+          if(this.props.visible){
+            console.log("HERE IS ITEM: ",item)
+            console.log("MY COMPONENT DID MOUNT: ", this.dataInstance.getFieldValues(this.modFields))
+            this.props.form.setFieldsValue(this.dataInstance.getFieldValues(this.modFields));
+          }
       }
     );
   }

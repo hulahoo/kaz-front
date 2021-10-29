@@ -56,6 +56,7 @@ import { ConcourseRequestAttachments } from "../../../cuba/entities/base/tsadv_C
 import ConcourseRequestAttachmentsList from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsList";
 import DataTableFormat from "../../components/DataTable/intex";
 import ConcourseRequestAttachmentsEdit from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsEdit";
+import {ConcourseRequestAttachmentsManagement} from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsManagement";
 // import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
 // import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
 // import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
@@ -101,8 +102,17 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   requestAttachmentssDc = collection<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
     {
-      view: "concourseRequestAttachments-view",
-      sort: "-updateTs"
+      view: "_base",
+      filter: {
+        conditions: [
+          {
+            property: "concourseRequestNumber",
+            value: this.props.form.getFieldValue("requestNumber"),
+            operator: "="
+          }
+        ]
+      }
+
     }
   );
   //
@@ -179,6 +189,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     "personGroup",
 
+    "concourseId",
+
     "initiatorCompany",
 
     "initiatorPosition",
@@ -186,7 +198,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     "assignmentGroup"
   ];
 
-  attachmentFields = ["attachment", "comments"];
+  attachmentFields = ["attachment", "comments", ""];
 
   @observable
   globalErrors: string[] = [];
@@ -223,6 +235,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       personGroup: {
         id: this.personGroupId
       },
+      concourseId: this.props.entityId,
       ...super.getUpdateEntityData()
     };
   }
@@ -377,6 +390,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
 
     return (
+
       <Spin spinning={status == "LOADING"}>
         <div className="cardWrapper" id="concourseRequest">
           <h1>
@@ -874,13 +888,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
             {this.takCard()}
 
-            {this.visible && <ConcourseRequestAttachmentsEdit
-              entityId={this.isCreateMember ? undefined : this.selectedRowKey}
-              visible={this.visible}
+            <ConcourseRequestAttachmentsEdit
+              entityId={this.isCreateMember ? ConcourseRequestAttachmentsManagement.NEW_SUBPATH : this.selectedRowKey}
+              visible={this.visible }
               onChangeVisible={this.onChangeVisible}
               requestNum = {this.reqNumber}
               refreshDs={this.refreshDs}
-            />}
+            />
           </Card>
         </div>
       </Spin>
@@ -892,7 +906,16 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       ConcourseRequestAttachments.NAME,
       {
         view: "concourseRequestAttachments-view",
-        sort: "-updateTs"
+        sort: "-updateTs",
+        filter:{
+          conditions:[
+            {
+              property: "concourseRequestNumber",
+              value: this.props.form.getFieldValue("requestNumber"),
+              operator: "="
+            }
+          ]
+        }
       }
     );
     this.requestAttachmentssDc.clear();
@@ -969,6 +992,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       },
       item => {
         this.reqNumber = this.props.form.getFieldValue("requestNumber");
+
         console.log(this.reqNumber)
         if (item && !this.isNotDraft()) {
           this.personGroupId = item.personGroup
@@ -991,7 +1015,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               this.props.form.setFieldsValue({
                 personGroup: this.personGroupId,
                 initiatorCompany: this.initiatorCompanyName,
-                initiatorPosition: this.initiatorPositionValue
+                initiatorPosition: this.initiatorPositionValue,
+                concourseId: this.props.entityId
               });
             });
         }
@@ -1019,6 +1044,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
       }
     );
+    this.initDataCollection()
     this.loadData();
     this.loadBpmProcessData();
     // this.loadBpmProcessData()
