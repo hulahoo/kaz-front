@@ -22,7 +22,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import { DEFAULT_DATE_PATTERN } from "../../util/Date/Date";
 import TextArea from "antd/es/input/TextArea";
 import Column from "antd/lib/table/Column";
-
+import {Concourse } from '../../../cuba/entities/base/tsadv_Concourse'
 import {
   clearFieldErrors,
   collection,
@@ -56,7 +56,7 @@ import { ConcourseRequestAttachments } from "../../../cuba/entities/base/tsadv_C
 import ConcourseRequestAttachmentsList from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsList";
 import DataTableFormat from "../../components/DataTable/intex";
 import ConcourseRequestAttachmentsEdit from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsEdit";
-
+import {DownloadFile} from './DownloadFile'
 
 type EditorProps = {
   entityId: string;
@@ -93,8 +93,22 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   });
 
   requestTemplatesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
+    view: "_minimal",
+
   });
+
+  reqTemplate = collection<Concourse>(Concourse.NAME, {
+    view: "concourse-view",
+    filter: {
+          conditions: [
+            {
+              value: this.props.location!.search!.split("=")[1],
+              operator: "=",
+              property: "id"
+            }
+          ]
+        }
+  })
 
   requestAttachmentssDc = collection<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
@@ -181,7 +195,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     "initiatorPosition",
 
-    "assignmentGroup"
+    "assignmentGroup",
+
+    "concourseId"
   ];
 
   attachmentFields = ["attachment", "comments"];
@@ -192,6 +208,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   @observable selectedRowKey: string | undefined;
 
   @observable reqNumber: string;
+
+  @observable templateUrl: string;
 
   modalFields = ["comment", "attachment", "requestDate", "personGroup"];
 
@@ -221,6 +239,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       personGroup: {
         id: this.personGroupId
       },
+      concourseId: this.concourseUuid,
       ...super.getUpdateEntityData()
     };
   }
@@ -240,6 +259,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
   @observable
   isCreateMember: boolean = false;
+
+  @observable
+  concourseUuid:string = "";
 
   update = (): Promise<boolean> => {
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
@@ -372,8 +394,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     )!;
     const isNeedBpm = true;
 
-    const concourseId = this.props.location!.search!
-    console.log("Here:", concourseId)
+
 
     let saveButton = true;
     if (!this.dataInstance) {
@@ -819,18 +840,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   </Form.Item>
                 </Row>
               </Card>
+
               <Card title="Шаблон заявки" className="generalInfo" size="small">
                 <p className="text">Скачайте шаблон заявки для заполнения</p>
-                <Field
-                  entityName={entityName}
-                  propertyName="requestTemplate"
-                  form={this.props.form}
-                  formItemOpts={{ style: { marginBottom: "12px" } }}
-                  optionsContainer={this.requestTemplatesDc}
-                  getFieldDecoratorOpts={{
-                    rules: [{ required: true }]
-                  }}
-                />
+                <DownloadFile imageId={this.templateUrl} />
               </Card>
 
               <Card
@@ -966,6 +979,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       this.dataInstance.setItem(new ConcourseRequest());
     }
 
+    console.log(this.reqTemplate)
+
+//     this.templateUrl = this.reqTemplate.items[0]!.requestTemplate!.id
+
+    this.concourseUuid = this.props.location!.search!.split("=")[1]
+     console.log(this.concourseUuid)
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
@@ -994,7 +1013,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               this.props.form.setFieldsValue({
                 personGroup: this.personGroupId,
                 initiatorCompany: this.initiatorCompanyName,
-                initiatorPosition: this.initiatorPositionValue
+                initiatorPosition: this.initiatorPositionValue,
+                concourseId: this.concourseUuid
               });
             });
         }

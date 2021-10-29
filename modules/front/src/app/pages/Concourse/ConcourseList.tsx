@@ -91,6 +91,9 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
   @observable
   pageName = "concourse";
 
+  @observable
+  bestConcoursesList = this.dataCollectionConcourse;
+
   showDeletionDialog = (e: SerializedEntity<Concourse>) => {
     Modal.confirm({
       title: this.props.intl.formatMessage(
@@ -112,7 +115,7 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
   };
 
   concourseComponent  = (imgUrl?:any, btnLink?:string, concourseDesc?:any) => {
-      return <Layout style={{marginTop:"30px"}} key={imgUrl}>
+      return <Layout style={{marginTop:"30px", marginBottom:"30px"}} key={imgUrl}>
                 <Row>
                   <Col span={19} className="concourse-image"><ConcourseImage imageId={imgUrl}/></Col>
                   <Col span={5} className="concourse-button">
@@ -126,12 +129,14 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
                     </Link>
                   </Col>
                 </Row>
-                <h3 style={{marginTop:"30px"}}>Description</h3>
-                 <Row style={{marginTop:"10px", border:"2px solid black", borderRadius:"8px", padding:" 10px 20px"}} >
+
+
+                 <h3 style={{marginTop:"30px"}} id="concourseDesc"><FormattedMessage id="concourseDesc"/></h3>
+                 <Row style={{marginTop:"5px", border:"2px solid black", borderRadius:"8px", padding:" 10px 20px"}} >
 
                     <Col style={{borderWidth:"2px"}} span={24} >{concourseDesc}</Col>
                  </Row>
-                  <Divider />
+                  <Divider style={{marginTop:"30px"}}/>
                </Layout>
   }
 
@@ -139,10 +144,10 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
 
       return  <Row style={{marginTop:"30px", border:"2px solid black", borderRadius:"8px", padding:" 10px 20px"}} key={projectName+index+projectName}>
                       <Col span={20} className="best-concourse">
-                        <p>Место {index}</p>
+                        <p><FormattedMessage id="concoursePlace"/> {index}</p>
                         <h2><a href="#">{projectName}</a></h2>
                         <Row style={{marginTop:"30px"}}>
-                            <Col span={4}><h4>Компания</h4></Col>
+                            <Col span={4}><h4><FormattedMessage id="concourseCompany"/></h4></Col>
                             <Col><h4>{organizationBin}</h4></Col>
                         </Row>
                       </Col>
@@ -151,6 +156,12 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
 
 
     }
+
+  @observable
+  concourseYear:number
+
+  @observable
+  concourseCategory:string
 
   render() {
     const btns = [<Link
@@ -189,9 +200,8 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
 
                   {
 
-                    this.dataCollectionConcourse.items.map((el, index) => (
+                    this.bestConcoursesList.items.map((el, index) => (
                         el && this.bestConcourseComponent(el!.name_ru, index+1, el!.organizationBin)
-
                     ))
 
                   }
@@ -207,6 +217,12 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
                   dataCollection={this.dataCollectionConcourseRequest}
                   fields={this.concourseRequestFields}
                   hideSelectionColumn={true}
+                  render={[{
+                        column: this.concourseRequestFields[0],
+                        render: (text, record) => <Link
+                        to={ConcourseRequestManagement.PATH + "/" + (record as ConcourseRequest).id}
+                        >{text}</Link>
+                }]}
                 />
             </TabPane>
           </Tabs>
