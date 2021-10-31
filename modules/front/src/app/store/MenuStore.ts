@@ -27,7 +27,6 @@ export default class MenuStore {
 
   @action
   loadUserMenuCustomization = async () => {
-    debugger
     await this.root.cubaRest!.invokeService<string>(
       "tsadv_PortalHelperService",
       "getPortalMenu",
@@ -138,12 +137,7 @@ export default class MenuStore {
       {
         id: "concourse-menu",
         caption: "Конкурс проектов",
-        items: [{id: "concourseManagement", caption: "Конкурс проектов", menuLink: "/concourseManagement", pathPattern: "/concourseManagement", component: null}, {
-          id: "concourseRequest", caption: "Мои заявки",
-          menuLink: "/concourseRequest",
-          pathPattern: "/concourseRequest",
-          component: null
-        },]
+        items: [{id: "concourse", caption: "Конкурс проектов", menuLink: "/concourse", pathPattern: "/concourse", component: null}]
       },
 
       {
@@ -207,7 +201,7 @@ export default class MenuStore {
         menuLink: "/incentive",
         pathPattern: "/incentive",
         component: null,
-      },
+      }
     ]
   }
 }

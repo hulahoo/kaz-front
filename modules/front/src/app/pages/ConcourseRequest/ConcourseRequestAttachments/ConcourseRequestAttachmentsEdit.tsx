@@ -65,7 +65,7 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
   updated = false;
   reactionDisposer: IReactionDisposer;
 
-  modFields = [ "comments" , "concourseRequestNumber" , "attachment", "id"];
+  modFields = [ "comments" , "concourseRequestNumber" , "attachment"];
 
   @observable
   globalErrors: string[] = [];
@@ -76,10 +76,6 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
 
   handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    this.props.form.setFieldsValue({
-      concourseRequestNumber: this.concourseRequestNum ? this.concourseRequestNum.toString() : this.props.requestNum!.toString() ,
-      id: this.props.requestNum!.toString()+this.props.requestNum!.toString()
-    })
     this.props.form.validateFields((err, values) => {
       if (err) {
         message.error(
@@ -107,7 +103,7 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
       console.log(this.dataInstance.getFieldValues(this.modFields))
       console.log(this.props.form.getFieldsValue(this.modFields))
       if (this.props.entityId === ConcourseRequestAttachmentsManagement.NEW_SUBPATH){
-        this.dataInstance.item!.concourseRequestNumber = this.props.form.getFieldValue("concourseRequestNumber")
+        this.dataInstance.item!.concourseRequestNumber = this.props.requestNum!
         this.dataInstance.item!.comments = this.props.form.getFieldValue("comments")
         this.dataInstance.item!.attachment = this.props.form.getFieldValue("attachment")
         this.dataInstance.commit().then(data=> {
@@ -191,7 +187,7 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
             propertyName="attachment"
             form={this.props.form}
             formItemOpts={{ style: { marginBottom: "12px" } }}
-            // optionsContainer={this.attachmentsDc}
+            optionsContainer={this.attachmentsDc}
             getFieldDecoratorOpts={{}}
           />
 
@@ -238,9 +234,12 @@ class ConcourseRequestAttachmentsEditComponent extends React.Component<
       this.dataInstance.load(this.props.entityId!);
     } else {
       this.dataInstance.setItem(new ConcourseRequestAttachments());
+      this.dataInstance.setItem({
+        concourseRequestNumber:this.props.requestNum!
+      })
     }
     this.concourseRequestNum = this.props.requestNum!
-    console.log(this.dataInstance.getFieldValues(this.modFields))
+
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;

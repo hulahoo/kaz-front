@@ -33,6 +33,7 @@ import {CertificateRequestManagement} from "./pages/CertificateRequest/Certifica
 import {ActivityManagement} from "./pages/Activity/ActivityManagement";
 import {AbsenceRequestManagement} from "./pages/AbsenceRequest/AbsenceRequestManagement";
 import AbsenceList from "./pages/Absence/AbsenceList";
+import ConcourseList from "./pages/Concourse/ConcourseList";
 import {LeavingVacationRequestManagement} from "./pages/LeavingVacationRequest/LeavingVacationRequestManagement";
 import {CascadeGoalManagement} from "./pages/AssignedGoals/CascadeGoal/CascadeGoalManagement";
 import {VacationScheduleRequestManagement} from "./pages/VacationScheduleRequest/VacationScheduleRequestManagement";
@@ -61,11 +62,8 @@ import {PositionHierarchyManagement} from "./pages/PositionHierarchy/PositionHie
 import {IncentiveApproveManagement} from "./pages/IncentiveApprove/IncentiveApproveManagement";
 import {PositionOverlappingRequestManagement} from "./pages/PositionOverlappingRequest/PositionOverlappingRequestManagement";
 import {DismissalRequestManagement} from "./pages/DismissalRequest/DismissalRequestManagement";
-// import {ConcourseComponent} from "./pages/Concourse/ConcourseComponent";
 import {ConcourseRequestManagement} from "./pages/ConcourseRequest/ConcourseRequestManagement";
-// import {ConcourseRequestDocumentManagement} from "./pages/ConcourseRequest/ConcourseRequestDocument/ConcourseRequestDocumentManagement";
 import {ConcourseManagement} from "./pages/Concourse/ConcourseManagement";
-import {ConcourseNewManagement} from "./pages/ConcourseNew/ConcourseNewManagement";
 
 @injectMainStore
 @inject("rootStore")
@@ -162,6 +160,7 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        path={AbsenceRequestManagement.PATH + "/:entityId"}
                        component={AbsenceRequestManagement}/>
                 <Route exact={true} path="/absence/:activeTab?" component={AbsenceList}/>
+                <Route exact={true} path="/concourse/:activeTab?" component={ConcourseList}/>
                 <Route exact={true}
                        path={LeavingVacationRequestManagement.PATH + "/:entityId"}
                        component={LeavingVacationRequestManagement}/>
@@ -185,16 +184,10 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                 {/*<Route exact={true}*/}
                 {/*       path={CurrentScheduleRequestManagement.PATH + "/:entityId"}*/}
                 {/*       component={CurrentScheduleRequestManagement}/>*/}
-                <Route exact={true}
-                                        path={ConcourseManagement.PATH + "/:entityId?"}
-                                        component={ConcourseManagement}/>
-                <Route exact={true}
-                       path={ConcourseNewManagement.PATH + "/:entityId?"}
-                       component={ConcourseNewManagement}/>
+
                 <Route exact={true}
                        path={ConcourseRequestManagement.PATH + "/:entityId?"}
                        component={ConcourseRequestManagement}/>
-                {/*<Route exact={true} path={ConcourseRequestDocumentManagement.PATH+"/:entityId?"} component={ConcourseRequestDocumentManagement}/>*/}
                 <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>

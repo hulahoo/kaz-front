@@ -1,65 +1,93 @@
 import * as React from "react";
-import { observer } from "mobx-react";
-import { Link } from "react-router-dom";
-
+import { inject, observer } from "mobx-react";
+import { Link, RouteComponentProps } from "react-router-dom";
+import Button, { ButtonType } from "../../components/Button/Button";
+import { RootStoreProp } from "../../store";
+import Page from "../../hoc/PageContentHoc";
+import Section from "../../hoc/Section";
+import DataTableFormat from "../../components/DataTable/intex";
+import { link } from "../../util/util";
 import { observable } from "mobx";
 
-import { Modal, Button } from "antd";
+import { Modal, Tabs, Layout, Row, Col, Divider, Select } from "antd";
 
 import {
   collection,
   injectMainStore,
   MainStoreInjected,
-  DataTable
+  DataTable,
+  getCubaREST
 } from "@cuba-platform/react";
 
 import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
+import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseRequest";
 import { SerializedEntity } from "@cuba-platform/rest";
 import { ConcourseManagement } from "./ConcourseManagement";
+import { ConcourseRequestManagement } from "../ConcourseRequest/ConcourseRequestManagement";
+import { ConcourseImage } from "./ConcourseImage";
 import {
   FormattedMessage,
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
+const { Footer, Content, Sider } = Layout;
+const {Option} = Select;
+const { TabPane } = Tabs;
+
+type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
+interface IState {
+  data: number;
+}
 
 @injectMainStore
+@inject("rootStore")
 @observer
 class ConcourseListComponent extends React.Component<
-  MainStoreInjected & WrappedComponentProps
+  ActiveTabProps &
+    MainStoreInjected &
+    WrappedComponentProps &
+    RootStoreProp &
+    RouteComponentProps<any>,
+  IState
 > {
   dataCollection = collection<Concourse>(Concourse.NAME, {
-    view: "_local",
+    view: "concourse-view",
+    sort: "-updateTs"
   });
 
-  fields = [
-    "description",
+  dataCollectionConcourse = collection<Concourse>(Concourse.NAME, {
+    view: "concourse-view",
+    sort: "-updateTs"
+  });
 
-    "name_ru",
+  dataCollectionConcourseRequest = collection<ConcourseRequest>(
+    ConcourseRequest.NAME,
+    {
+      view: "concourseRequest-view",
+      sort: "-updateTs"
+    }
+  );
 
-    "concourseStatus",
+  concourseFields = ["description", "banner"];
 
-    "category",
+  bestConcourseFields = ["name_ru", "category", "year"];
 
-    "banner",
+  concourseRequestFields = ["requestNumber", "requestDate", "status"];
 
-    "judgeInsturction",
-
-    "name_en",
-
-    "year",
-
-    "startVoting",
-
-    "endVoting",
-
-    "legacyId",
-
-    "organizationBin",
-
-    "integrationUserLogin"
-  ];
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      data: 0
+    };
+  }
 
   @observable selectedRowKey: string | undefined;
+
+  @observable
+  pageName = "concourse";
+
+  @observable
+  bestConcoursesList = this.dataCollectionConcourse;
 
   showDeletionDialog = (e: SerializedEntity<Concourse>) => {
     Modal.confirm({
@@ -81,62 +109,252 @@ class ConcourseListComponent extends React.Component<
     });
   };
 
-  componentDidMount() {
-    console.log(this.dataCollection)
+  concourseComponent = (
+    imgUrl?: any,
+    btnLink?: string,
+    concourseDesc?: any
+  ) => {
+    return (
+      <Layout style={{ marginTop: "30px", marginBottom: "30px" }} key={imgUrl}>
+        <Row>
+          <Col span={19} className="concourse-image">
+            <ConcourseImage imageId={imgUrl} />
+          </Col>
+          <Col span={5} className="concourse-button">
+            <Link
+              to={
+                ConcourseRequestManagement.PATH +
+                "/" +
+                ConcourseRequestManagement.NEW_SUBPATH +
+                "?concourseId=" +
+                btnLink
+              }
+              key="createConcourseRequest"
+            >
+              <Button buttonType={ButtonType.PRIMARY} block>
+                <span>
+                  <FormattedMessage id="management.browser.create" />
+                </span>
+              </Button>
+            </Link>
+          </Col>
+        </Row>
+
+        <h3 style={{ marginTop: "30px" }} id="concourseDesc">
+          <FormattedMessage id="concourseDesc" />
+        </h3>
+        <Row
+          style={{
+            marginTop: "5px",
+            border: "2px solid black",
+            borderRadius: "8px",
+            padding: " 10px 20px"
+          }}
+        >
+          <Col style={{ borderWidth: "2px" }} span={24}>
+            {concourseDesc}
+          </Col>
+        </Row>
+        <Divider style={{ marginTop: "30px" }} />
+      </Layout>
+    );
+  };
+
+  bestConcourseComponent = (
+    projectName?: any,
+    index?: number,
+    organizationBin?: any
+  ) => {
+    return (
+      <Row
+        style={{
+          marginTop: "30px",
+          border: "2px solid black",
+          borderRadius: "8px",
+          padding: " 10px 20px"
+        }}
+        key={projectName + index + projectName}
+      >
+        <Col span={20} className="best-concourse">
+          <p>
+            <FormattedMessage id="concoursePlace" /> {index}
+          </p>
+          <h2>
+            <a href="#">{projectName}</a>
+          </h2>
+          <Row style={{ marginTop: "30px" }}>
+            <Col span={4}>
+              <h4>
+                <FormattedMessage id="concourseCompany" />
+              </h4>
+            </Col>
+            <Col>
+              <h4>{organizationBin}</h4>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    );
+  };
+
+  @observable
+  concourseYear: number;
+
+  @observable
+  concourseCategory: string;
+
+  @observable
+  filterCategoryValue:string = ""
+
+  @observable
+  filterYearValue:string = ""
+
+  handleChangeCategory = (name:string, value:string) =>{
+    this.filterCategoryValue = value
+    console.log("filteredValue", this.filterCategoryValue)
+  }
+  handleChangeYear= (name:string, value:string) =>{
+    this.filterYearValue = value
+    console.log("filteredValue", this.filterYearValue)
   }
 
   render() {
-    const buttons = [
+    const btns = [
       <Link
-        to={ConcourseManagement.PATH + "/" + ConcourseManagement.NEW_SUBPATH}
-        key="create"
+        to={
+          ConcourseRequestManagement.PATH +
+          "/" +
+          ConcourseRequestManagement.NEW_SUBPATH
+        }
+        key="createConcourseRequest"
       >
         <Button
-          htmlType="button"
+          buttonType={ButtonType.PRIMARY}
           style={{ margin: "0 12px 12px 0" }}
-          type="primary"
-          icon="plus"
         >
           <span>
             <FormattedMessage id="management.browser.create" />
           </span>
         </Button>
-      </Link>,
-      <Link
-        to={ConcourseManagement.PATH + "/" + this.selectedRowKey}
-        key="edit"
-      >
-        <Button
-          htmlType="button"
-          style={{ margin: "0 12px 12px 0" }}
-          disabled={!this.selectedRowKey}
-          type="default"
-        >
-          <FormattedMessage id="management.browser.edit" />
-        </Button>
-      </Link>,
-      <Button
-        htmlType="button"
-        style={{ margin: "0 12px 12px 0" }}
-        disabled={!this.selectedRowKey}
-        onClick={this.deleteSelectedRow}
-        key="remove"
-        type="default"
-      >
-        <FormattedMessage id="management.browser.remove" />
-      </Button>
+      </Link>
     ];
 
+    const { activeTab } = this.props.match.params;
+    const defaultActiveKey = activeTab ? activeTab : "1";
+    console.log(this.dataCollection);
     return (
-      <div className={"cardWrapper"}>
-      <DataTable
-        dataCollection={this.dataCollection}
-        fields={this.fields}
-        onRowSelectionChange={this.handleRowSelectionChange}
-        hideSelectionColumn={true}
-        buttons={buttons}
-      />
-      </div>
+      <Page pageName={this.props.intl.formatMessage({ id: this.pageName })}>
+        <Section size="large">
+          <Tabs
+            defaultActiveKey={defaultActiveKey}
+            onChange={activeKey =>
+              (this.pageName =
+                "concourse" + (activeKey === "1" ? "" : "Request"))
+            }
+          >
+            <TabPane
+              tab={this.props.intl.formatMessage({ id: "concourse" })}
+              key="1"
+            >
+              <div>
+                {this.dataCollection.items.map(
+                  el =>
+                    el &&
+                    this.concourseComponent(
+                      el!.banner!.id,
+                      el.id,
+                      el.description
+                    )
+                )}
+              </div>
+            </TabPane>
+            <TabPane
+              tab={this.props.intl.formatMessage({ id: "bestConcourse" })}
+              key="3"
+            >
+              <div style={{display:"flex", flexDirection:"row", width:"500px"}}>
+                <div style={{width:"200px", marginRight:"50px"}}>
+                  <Col  >{this.props.intl.formatMessage({id: "concourse.categories.year"})}</Col>
+                  <Col  >
+                    <Select allowClear={true} placeholder={"Select..."} onChange={value => this.handleChangeYear("name",value as string)} style={{width:"100%"}} >
+                      <Option value={"2018"}>2018</Option>
+                      <Option value={"2019"}>2019</Option>
+                      <Option value={"2020"}>2020</Option>
+                      <Option value={"2021"}>2021</Option>
+                    </Select>
+                  </Col>
+                </div>
+                <div style={{width:"200px", marginRight:"50px"}}>
+                  <Col  >{this.props.intl.formatMessage({id: "concourse.categories.project"})}</Col>
+                  <Col  >
+                    <Select allowClear={true} placeholder={"Select..."} onChange={value => this.handleChangeCategory("name",value as string)} style={{width:"100%"}} >
+                      <Option value={"PRODUCTIONPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.production.projects"})}</Option>
+                      <Option value={"SOCIALPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.social.projects"})}</Option>
+                      <Option value={"SAFETYPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.safety.projects"})}</Option>
+                    </Select>
+                  </Col>
+                </div>
+              </div>
+              <div>
+                {this.bestConcoursesList.items.map(
+                  (el, index) => {
+                    if (this.filterYearValue && this.filterCategoryValue){
+                      return (el.year!.toString()===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(el!.name_ru, index + 1, el!.organizationBin
+                      )
+                    }
+                    else if (this.filterYearValue && !this.filterCategoryValue){
+                      return el.year!.toString() === this.filterYearValue && this.bestConcourseComponent(
+                          el!.name_ru,
+                          index + 1,
+                          el!.organizationBin
+                        )
+                    }
+                    else if (!this.filterYearValue && this.filterCategoryValue){
+                      return el.category!.toString() === this.filterCategoryValue &&
+                        this.bestConcourseComponent(
+                          el!.name_ru,
+                          index + 1,
+                          el!.organizationBin
+                        )
+                    }
+                    return this.bestConcourseComponent( el!.name_ru,
+                      index + 1,
+                      el!.organizationBin)
+                  }
+
+                )}
+
+              </div>
+            </TabPane>
+            <TabPane
+              tab={this.props.intl.formatMessage({ id: "concourseRequest" })}
+              key="4"
+            >
+              <DataTableFormat
+                dataCollection={this.dataCollectionConcourseRequest}
+                fields={this.concourseRequestFields}
+                hideSelectionColumn={true}
+                render={[
+                  {
+                    column: this.concourseRequestFields[0],
+                    render: (text, record) => (
+                      <Link
+                        to={
+                          ConcourseRequestManagement.PATH +
+                          "/" +
+                          (record as ConcourseRequest).id
+                        }
+                      >
+                        {text}
+                      </Link>
+                    )
+                  }
+                ]}
+              />
+            </TabPane>
+          </Tabs>
+        </Section>
+      </Page>
     );
   }
 

@@ -82,8 +82,17 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   dataCollection = collection<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
     {
-      view: "_local",
-      sort: "-updateTs"
+      view: "concourseRequestAttachments-view",
+      sort: "-updateTs",
+      filter: {
+        conditions: [
+          {
+            value: this.props.form.getFieldValue("requestNumber"),
+            operator: "=",
+            property: "concourseRequestNumber"
+          }
+        ]
+      }
     }
   );
 
@@ -102,17 +111,17 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   requestAttachmentssDc = collection<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
     {
-      view: "_base",
+      view: "concourseRequestAttachments-view",
+      sort: "-updateTs",
       filter: {
         conditions: [
           {
-            property: "concourseRequestNumber",
             value: this.props.form.getFieldValue("requestNumber"),
-            operator: "="
+            operator: "=",
+            property: "concourseRequestNumber"
           }
         ]
       }
-
     }
   );
   //
@@ -139,11 +148,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   @observable
   personGroupId: string;
 
-  isUpdateBeforeOutcome = true;
   @observable
   initiatorCompanyName: string | undefined;
+
   @observable
   initiatorPositionValue: string | undefined;
+
   fields = [
     "status",
 
@@ -198,7 +208,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     "assignmentGroup"
   ];
 
-  attachmentFields = ["attachment", "comments", ""];
+  attachmentFields = ["attachment", "comments"];
 
   @observable
   globalErrors: string[] = [];
@@ -259,6 +269,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   update = (): Promise<boolean> => {
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     this.props.form.validateFields((err, values) => {
+
       if (err) {
         message.error(
           this.props.intl.formatMessage({
@@ -331,7 +342,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     if (this.updated) {
       return <Redirect to={ConcourseRequestManagement.PATH} />;
     }
-
+    const isNotDraft = this.isNotDraft();
     const buttons = [
       <Button
         htmlType="button"
@@ -339,6 +350,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         type="primary"
         icon={"plus"}
         key="create"
+        disabled={isNotDraft}
         onClick={() => {
           this.isCreateMember = true;
           this.showModal();
@@ -377,11 +389,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     const entityName = this.dataInstance.entityName;
     const { status } = this.dataInstance;
-    const isNotDraft = this.isNotDraft();
+
     const fieldValue = this.props.form.getFieldValue("projectManager");
-    const val = this.projectManagersDc.items.find(
-      value => value.id === fieldValue
-    )!;
+    // const val = this.projectManagersDc.items.find(
+    //   value => value.id === fieldValue
+    // )!;
     const isNeedBpm = true;
 
     let saveButton = true;
@@ -391,7 +403,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     return (
 
-      <Spin spinning={status == "LOADING"}>
+
         <div className="cardWrapper" id="concourseRequest">
           <h1>
             {this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH
@@ -413,7 +425,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             bordered={false}
           >
             <Form onSubmit={this.validate} layout="vertical">
-              <Card title="Общие сведения" size="small" className="generalInfo">
+
+                <Card title="Общие сведения" size="small" className="generalInfo">
+                  <Spin spinning={status == "LOADING"}>
                 <Row
                   type={"flex"}
                   align="middle"
@@ -570,7 +584,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   <ReadonlyField
                     entityName={entityName}
                     propertyName="requestNameRu"
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     form={this.props.form}
                     formItemOpts={{
                       style: { minWidth: "46%", marginBottom: "12px" }
@@ -584,7 +598,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     entityName={entityName}
                     propertyName="requestNameEn"
                     form={this.props.form}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "46%", marginBottom: "12px" }
                     }}
@@ -599,7 +613,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     propertyName="startDate"
                     form={this.props.form}
                     format={DEFAULT_DATE_PATTERN}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "30%", marginBottom: "12px" }
                     }}
@@ -612,7 +626,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     propertyName="endDate"
                     form={this.props.form}
                     format={DEFAULT_DATE_PATTERN}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "30%", marginBottom: "12px" }
                     }}
@@ -625,7 +639,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     entityName={entityName}
                     propertyName="scaleOfDistrubution"
                     form={this.props.form}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "30%", marginBottom: "12px" }
                     }}
@@ -634,7 +648,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     }}
                   />
                 </Row>
+                  </Spin>
               </Card>
+
 
               <Card title="Эксперты" size="small" className="generalInfo">
                 <Row
@@ -650,7 +666,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     entityName={entityName}
                     propertyName="projectManager"
                     form={this.props.form}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     // disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "25%", marginBottom: "12px" }
@@ -712,7 +728,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     entityName={entityName}
                     propertyName="managerContactInfo"
                     form={this.props.form}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "33%", marginBottom: "12px" }
                     }}
@@ -725,7 +741,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     propertyName="projectExpert"
                     form={this.props.form}
                     // disabled={isNotDraft}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "25%", marginBottom: "12px" }
                     }}
@@ -780,7 +796,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     entityName={entityName}
                     propertyName="expertContanctInfo"
                     form={this.props.form}
-                    disabled={this.isNotDraft()}
+                    disabled={isNotDraft}
                     formItemOpts={{
                       style: { minWidth: "33%", marginBottom: "12px" }
                     }}
@@ -813,7 +829,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   >
                     {this.props.form.getFieldDecorator(
                       "shortProjectDescriptionRu"
-                    )(<TextArea rows={6} disabled={this.isNotDraft()} />)}
+                    )(<TextArea rows={6} disabled={isNotDraft} />)}
                   </Form.Item>
                   <Form.Item
                     style={{ width: "49%" }}
@@ -825,7 +841,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   >
                     {this.props.form.getFieldDecorator(
                       "shortProjectDescriptionEn"
-                    )(<TextArea rows={6} disabled={this.isNotDraft()} />)}
+                    )(<TextArea rows={6} disabled={isNotDraft} />)}
                   </Form.Item>
                 </Row>
               </Card>
@@ -897,7 +913,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             />
           </Card>
         </div>
-      </Spin>
+
     );
   }
 
@@ -907,12 +923,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       {
         view: "concourseRequestAttachments-view",
         sort: "-updateTs",
-        filter:{
-          conditions:[
+        filter: {
+          conditions: [
             {
-              property: "concourseRequestNumber",
               value: this.props.form.getFieldValue("requestNumber"),
-              operator: "="
+              operator: "=",
+              property: "concourseRequestNumber"
             }
           ]
         }
@@ -992,8 +1008,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       },
       item => {
         this.reqNumber = this.props.form.getFieldValue("requestNumber");
-
         console.log(this.reqNumber)
+        this.initDataCollection()
         if (item && !this.isNotDraft()) {
           this.personGroupId = item.personGroup
             ? item.personGroup!.id
@@ -1006,20 +1022,34 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                 : this.props.rootStore!.userInfo.personGroupId
             )
             .then(data => {
-              console.log(this.props.form.getFieldValue("personGroup"));
-              console.log(data);
+
               this.initiatorCompanyName = data.organizationName;
               this.initiatorPositionValue = data.positionName;
               this.reqNumber = this.props.form.getFieldValue("requestNumber");
-              console.log(this.reqNumber)
-              this.props.form.setFieldsValue({
+              console.log("Location: ",this.props.location)
+
+              // const {concourseId}  = this.props.location
+              let values:any = {
                 personGroup: this.personGroupId,
                 initiatorCompany: this.initiatorCompanyName,
                 initiatorPosition: this.initiatorPositionValue,
-                concourseId: this.props.entityId
-              });
+              }
+
+              if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH){
+                const paramsConcourseId = this.props.location.search.split("=")[1]
+
+                console.log(paramsConcourseId)
+                values = {
+                  concourseId: paramsConcourseId,
+                  ...values
+                }
+              }
+              console.log(values)
+              this.props.form.setFieldsValue(values);
             });
         }
+
+        //
 
         getCubaREST()!
           .searchEntities<PersonExt>(
@@ -1044,9 +1074,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
       }
     );
-    this.initDataCollection()
+
     this.loadData();
     this.loadBpmProcessData();
+    // this.initDataCollection()
     // this.loadBpmProcessData()
   }
 
