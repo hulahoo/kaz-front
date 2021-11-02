@@ -1,6 +1,6 @@
 import * as React from "react";
 import "./App.css";
-
+import "./pages/Concourse/style.less";
 import {Layout, Menu} from "antd";
 import {inject, observer} from "mobx-react";
 import Login from "./login/Login";

@@ -17,6 +17,7 @@ export class Concourse extends AbstractParentEntity {
   startVoting?: any | null;
   endVoting?: any | null;
   description?: string | null;
+  concourseName?: string | null;
 }
 export type ConcourseViewName =
   | "_base"
@@ -79,5 +80,6 @@ export type ConcourseView<V extends ConcourseViewName> = V extends "_base"
       | "banner"
       | "requestTemplate"
       | "markCriteria"
+      | "concourseName"
     >
   : never;

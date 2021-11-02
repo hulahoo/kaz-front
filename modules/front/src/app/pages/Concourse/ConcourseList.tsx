@@ -77,6 +77,7 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
     "requestNumber",
     "requestDate",
     "status",
+    "concourseName"
   ]
 
   constructor(props:any) {
@@ -196,20 +197,11 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "bestConcourse"})} key="3">
               <div>
-
-
                   {
-
                     this.bestConcoursesList.items.map((el, index) => (
                         el && this.bestConcourseComponent(el!.name_ru, index+1, el!.organizationBin)
                     ))
-
                   }
-{/*                 <DataTableFormat */}
-{/*                   dataCollection={this.dataCollectionConcourse} */}
-{/*                   fields={this.bestConcourseFields} */}
-{/*                   hideSelectionColumn={true} */}
-{/*                 /> */}
               </div>
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "concourseRequest"})} key="4">
@@ -222,7 +214,16 @@ class ConcourseListComponent extends React.Component<ActiveTabProps & MainStoreI
                         render: (text, record) => <Link
                         to={ConcourseRequestManagement.PATH + "/" + (record as ConcourseRequest).id}
                         >{text}</Link>
-                }]}
+                        },{
+                        column: this.concourseRequestFields[3],
+                        render: (text, record) =>{
+                              let res = this.dataCollection.items.filter((el)=>el.id === (record as ConcourseRequest).concourseId)
+                             return <Link to={"/"}>{res?res:"Link is coming"}</Link>
+                        }
+
+                        }
+
+                ]}
                 />
             </TabPane>
           </Tabs>
