@@ -57,6 +57,8 @@ import ConcourseRequestAttachmentsList from "./ConcourseRequestAttachments/Conco
 import DataTableFormat from "../../components/DataTable/intex";
 import ConcourseRequestAttachmentsEdit from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsEdit";
 import {ConcourseRequestAttachmentsManagement} from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsManagement";
+import {Concourse} from "../../../cuba/entities/base/tsadv_Concourse";
+import {ConcourseFile} from "./ConcourseTemplateFile";
 // import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
 // import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
 // import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
@@ -75,7 +77,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   Props
 > {
   dataInstance = instance<ConcourseRequest>(ConcourseRequest.NAME, {
-    view: "concourseRequest-view",
+    view: "concourseRequest-edit",
     loadImmediately: false
   });
 
@@ -96,16 +98,25 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
   );
 
+  concoursesDc = collection<Concourse>(Concourse.NAME,{
+    view:"concourse-view",
+    filter:{
+      conditions:[
+        {
+          value: this.props.location.search.split("=")[1],
+          operator: "=",
+          property: "id"
+        }
+      ]
+    }
+  })
+
   projectManagersDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_base"
   });
 
   projectExpertsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "_base"
-  });
-
-  requestTemplatesDc = collection<FileDescriptor>(FileDescriptor.NAME, {
-    view: "_minimal"
   });
 
   requestAttachmentssDc = collection<ConcourseRequestAttachments>(
@@ -126,11 +137,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   );
   //
   personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_minimal"
+    view: "_base"
   });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "_minimal"
+    view: "dicRequestStatus-browse"
   });
 
   processDefinitionKey = "concourseRequest";
@@ -140,6 +151,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
   @observable
   updated = false;
+
   reactionDisposer: IReactionDisposer;
 
   @observable
@@ -148,13 +160,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   @observable
   personGroupId: string;
 
-  @observable
   initiatorCompanyName: string | undefined;
 
-  @observable
   initiatorPositionValue: string | undefined;
 
   fields = [
+
     "status",
 
     "endDate",
@@ -193,19 +204,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     "requestDate",
 
-    "requestTemplate",
-
     "requestAttachments",
 
     "personGroup",
-
-    "concourseId",
 
     "initiatorCompany",
 
     "initiatorPosition",
 
-    "assignmentGroup"
   ];
 
   attachmentFields = ["attachment", "comments"];
@@ -239,16 +245,16 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     });
   };
 
-  getUpdateEntityData(): any {
-    if (this.isNotDraft()) return super.getUpdateEntityData();
-    return {
-      personGroup: {
-        id: this.personGroupId
-      },
-      concourseId: this.props.entityId,
-      ...super.getUpdateEntityData()
-    };
-  }
+  // getUpdateEntityData(): any {
+  //   if (this.isNotDraft()) return super.getUpdateEntityData();
+  //   return {
+  //     personGroup: {
+  //       id: this.personGroupId
+  //     },
+  //     concourseId: this.props.entityId,
+  //     ...super.getUpdateEntityData()
+  //   };
+  // }
 
   // update = () => {
   //   const updateEntityData = this.getUpdateEntityData();
@@ -267,6 +273,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   isCreateMember: boolean = false;
 
   update = (): Promise<boolean> => {
+    console.log(this.dataInstance)
+    this.dataInstance.item!.concourse = this.concoursesDc.items[0] as Concourse
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     this.props.form.validateFields((err, values) => {
 
@@ -390,17 +398,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     const entityName = this.dataInstance.entityName;
     const { status } = this.dataInstance;
 
-    const fieldValue = this.props.form.getFieldValue("projectManager");
-    // const val = this.projectManagersDc.items.find(
-    //   value => value.id === fieldValue
-    // )!;
-    const isNeedBpm = true;
-
     let saveButton = true;
     if (!this.dataInstance) {
       return <LoadingPage />;
     }
-
+    // console.log("Concourse:",this.concoursesDc)
     return (
 
 
@@ -845,18 +847,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   </Form.Item>
                 </Row>
               </Card>
+
               <Card title="Шаблон заявки" className="generalInfo" size="small">
                 <p className="text">Скачайте шаблон заявки для заполнения</p>
-                <Field
-                  entityName={entityName}
-                  propertyName="requestTemplate"
-                  form={this.props.form}
-                  formItemOpts={{ style: { marginBottom: "12px" } }}
-                  optionsContainer={this.requestTemplatesDc}
-                  getFieldDecoratorOpts={{
-                    rules: [{ required: true }]
-                  }}
-                />
+                {this.concoursesDc.items[0] && <ConcourseFile FileId={this.concoursesDc!.items[0]!.requestTemplate!.id} />}
               </Card>
 
               <Card
@@ -1026,8 +1020,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               this.initiatorCompanyName = data.organizationName;
               this.initiatorPositionValue = data.positionName;
               this.reqNumber = this.props.form.getFieldValue("requestNumber");
-              console.log("Location: ",this.props.location)
-
               // const {concourseId}  = this.props.location
               let values:any = {
                 personGroup: this.personGroupId,
@@ -1037,10 +1029,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
               if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH){
                 const paramsConcourseId = this.props.location.search.split("=")[1]
-
-                console.log(paramsConcourseId)
                 values = {
-                  concourseId: paramsConcourseId,
                   ...values
                 }
               }
@@ -1077,13 +1066,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     this.loadData();
     this.loadBpmProcessData();
-    // this.initDataCollection()
-    // this.loadBpmProcessData()
   }
 
-  protected initItem(request: ConcourseRequest):void {
-    super.initItem(request);
-  }
+  // protected initItem(request: ConcourseRequest):void {
+  //   super.initItem(request);
+  // }
 
   componentWillUnmount() {
     this.reactionDisposer();

@@ -1,10 +1,11 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
+import { Concourse } from "./tsadv_Concourse";
 import { PersonGroupExt } from "./base$PersonGroupExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
 export class ConcourseRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ConcourseRequest";
   endDate?: any | null;
-  concourseId?: any | null;
+  concourse?: Concourse | null;
   scaleOfDistrubution?: any | null;
   projectManager?: PersonGroupExt | null;
   managerContactInfo?: string | null;
@@ -29,6 +30,7 @@ export type ConcourseRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "concourseRequest-edit"
   | "concourseRequest-view";
 export type ConcourseRequestView<
   V extends ConcourseRequestViewName
@@ -38,7 +40,6 @@ export type ConcourseRequestView<
       | "id"
       | "requestNumber"
       | "endDate"
-      | "concourseId"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -64,7 +65,6 @@ export type ConcourseRequestView<
       ConcourseRequest,
       | "id"
       | "endDate"
-      | "concourseId"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -88,12 +88,11 @@ export type ConcourseRequestView<
     >
   : V extends "_minimal"
   ? Pick<ConcourseRequest, "id" | "requestNumber">
-  : V extends "concourseRequest-view"
+  : V extends "concourseRequest-edit"
   ? Pick<
       ConcourseRequest,
       | "id"
       | "endDate"
-      | "concourseId"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -120,5 +119,38 @@ export type ConcourseRequestView<
       | "requestAttachments"
       | "personGroup"
       | "status"
+      | "concourse"
+    >
+  : V extends "concourseRequest-view"
+  ? Pick<
+      ConcourseRequest,
+      | "id"
+      | "endDate"
+      | "scaleOfDistrubution"
+      | "managerContactInfo"
+      | "managerPosition"
+      | "managerCompany"
+      | "expertPosition"
+      | "expertCompany"
+      | "expertContanctInfo"
+      | "shortProjectDescriptionRu"
+      | "shortProjectDescriptionEn"
+      | "initiatorCompany"
+      | "initiatorPosition"
+      | "requestNameRu"
+      | "requestNameEn"
+      | "startDate"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "projectManager"
+      | "projectExpert"
+      | "requestTemplate"
+      | "requestAttachments"
+      | "status"
+      | "personGroup"
     >
   : never;
