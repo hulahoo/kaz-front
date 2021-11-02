@@ -63,7 +63,7 @@ class ConcourseListComponent extends React.Component<
   dataCollectionConcourseRequest = collection<ConcourseRequest>(
     ConcourseRequest.NAME,
     {
-      view: "concourseRequest-view",
+      view: "concourseRequest-edit",
       sort: "-updateTs"
     }
   );
@@ -72,7 +72,7 @@ class ConcourseListComponent extends React.Component<
 
   bestConcourseFields = ["name_ru", "category", "year"];
 
-  concourseRequestFields = ["requestNumber", "requestDate", "status"];
+  concourseRequestFields = ["requestNumber", "requestDate", "status", "concourse"];
 
   constructor(props: any) {
     super(props);
@@ -347,6 +347,12 @@ class ConcourseListComponent extends React.Component<
                       >
                         {text}
                       </Link>
+                    )
+                  },
+                  {
+                    column: this.concourseRequestFields[3],
+                    render: (text, record)=>(
+                      (record.concourse as Concourse).name_ru
                     )
                   }
                 ]}

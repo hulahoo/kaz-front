@@ -141,7 +141,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
-    view: "dicRequestStatus-browse"
+    view: "_base"
   });
 
   processDefinitionKey = "concourseRequest";
