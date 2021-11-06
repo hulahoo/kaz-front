@@ -1,10 +1,12 @@
 import * as React from "react";
 import { FormEvent } from "react";
-import { Alert, Button, Card, Form, message } from "antd";
-import { observer } from "mobx-react";
+import { Alert, Button, Card, Form, message, Row, Tabs, Layout, Select } from "antd";
+import Page from "../../hoc/PageContentHoc";
+import Section from "../../hoc/Section";
+import {inject, observer} from "mobx-react";
 import { ConcourseManagement } from "./ConcourseManagement";
 import { FormComponentProps } from "antd/lib/form";
-import { Link, Redirect } from "react-router-dom";
+import {Link, Redirect, RouteComponentProps} from "react-router-dom";
 import { IReactionDisposer, observable, reaction, toJS } from "mobx";
 import {
   FormattedMessage,
@@ -18,13 +20,21 @@ import {
   withLocalizedForm,
   extractServerValidationErrors,
   constructFieldsWithErrors,
-  clearFieldErrors,
-  MultilineText
+  clearFieldErrors, collection,
+  MultilineText, injectMainStore, MainStoreInjected, Msg
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
 import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
+import {RootStoreProp} from "../../store";
+import {ReadonlyField} from "../../components/ReadonlyField";
+import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
+import TextArea from "antd/es/input/TextArea";
+
+const { Footer, Content, Sider } = Layout;
+const {Option} = Select;
+const { TabPane } = Tabs;
 
 type Props = FormComponentProps & EditorProps;
 
@@ -32,14 +42,28 @@ type EditorProps = {
   entityId: string;
 };
 
+type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
+interface IState {
+  data: number;
+}
+
+
+@injectMainStore
+@inject("rootStore")
 @observer
 class ConcourseEditComponent extends React.Component<
-  Props & WrappedComponentProps
+  Props & WrappedComponentProps & ActiveTabProps &
+  MainStoreInjected  &
+  RootStoreProp &
+  RouteComponentProps<any>, IState
 > {
   dataInstance = instance<Concourse>(Concourse.NAME, {
     view: "concourse-view",
     loadImmediately: false
   });
+
+  dataCollection = collection<MarkCriteria>(MarkCriteria.name, {
+  })
 
   @observable
   updated = false;
@@ -68,229 +92,232 @@ class ConcourseEditComponent extends React.Component<
 
     "banner",
 
-    "organizationBin",
+    "requestTemplate"
 
-    "integrationUserLogin"
   ];
+
+  createElement = React.createElement;
 
   @observable
   globalErrors: string[] = [];
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (err) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
-        );
-        return;
-      }
-      this.dataInstance
-        .update(this.props.form.getFieldsValue(this.fields))
-        .then(() => {
-          message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
-          );
-          this.updated = true;
-        })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
-
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                );
-              } else {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                );
-              }
-            });
-          } else {
-            message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
-            );
-          }
-        });
-    });
-  };
+  pageName: string = "concourseManagement"
 
   render() {
     if (this.updated) {
       return <Redirect to={ConcourseManagement.PATH} />;
     }
 
+    const activeTab = "1";
+    const defaultActiveKey = activeTab ? activeTab : "1";
+
     const { status } = this.dataInstance;
 
+    console.log(this.dataCollection)
+
     return (
-      <Card className="narrow-layout">
-        <Form onSubmit={this.handleSubmit} layout="vertical">
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="description"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="name_ru"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="concourseStatus"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="category"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="judgeInsturction"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="name_en"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="year"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="startVoting"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="endVoting"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="legacyId"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="organizationBin"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="integrationUserLogin"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="banner"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
-
-          {this.globalErrors.length > 0 && (
-            <Alert
-              message={<MultilineText lines={toJS(this.globalErrors)} />}
-              type="error"
-              style={{ marginBottom: "24px" }}
-            />
-          )}
-
-          <Form.Item style={{ textAlign: "center" }}>
-            <Link to={ConcourseManagement.PATH}>
-              <Button htmlType="button">
-                <FormattedMessage id="management.editor.cancel" />
-              </Button>
-            </Link>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={status !== "DONE" && status !== "ERROR"}
-              loading={status === "LOADING"}
-              style={{ marginLeft: "8px" }}
+      <Page>
+        <Section size="large">
+          <Tabs
+            defaultActiveKey={defaultActiveKey}
+            onChange={activeKey =>
+              (this.pageName =
+                "concourseManagement" + (activeKey === "1" ? "" : "Request"))
+            }
+          >
+            <TabPane
+              tab={"Общие сведения"}
+              key="1"
             >
-              <FormattedMessage id="management.editor.submit" />
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+
+              <Form layout="vertical">
+                <Card size="small" className="generalInfo" style={{
+                  paddingLeft: "20px"}
+                }>
+                  <Row
+                    type={"flex"}
+                    align="middle"
+                    style={{
+                      marginTop: "8px",
+                    }}
+                    justify={"start"}
+                  >
+
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="name_ru"
+                      form={this.props.form}
+                      disabled={true}
+                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="name_en"
+                      form={this.props.form}
+                      disabled
+                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+                  </Row>
+                  <Row
+                    type={"flex"}
+                    align="middle"
+                    style={{
+                      marginTop: "8px"
+                    }}
+                    justify={"start"}
+                  >
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="concourseStatus"
+                      form={this.props.form}
+                      disabled={true}
+                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="category"
+                      form={this.props.form}
+                      disabled={true}
+                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+                  </Row>
+
+                  <Row
+                    type={"flex"}
+                    align="middle"
+                    style={{
+                      marginTop: "8px"
+                    }}
+                    justify={"start"}
+                  >
+
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="startVoting"
+                      form={this.props.form}
+                      disabled={true}
+                      formItemOpts={{ style: { marginBottom: "12px",  minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="endVoting"
+                      form={this.props.form}
+                      disabled={true}
+                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+
+                  </Row>
+
+                  <Row
+                    type={"flex"}
+                    align="middle"
+                    style={{
+                      marginTop: "8px"
+                    }}
+                    justify={"start"}
+                  >
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="judgeInsturction"
+                      form={this.props.form}
+                      disabled={true}
+                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="year"
+                      disabled={true}
+                      form={this.props.form}
+                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
+
+                  </Row>
+
+                  <Row
+                    type={"flex"}
+                    align="middle"
+                    style={{
+                      marginTop: "8px"
+                    }}
+                    justify={"start"}
+
+                  >
+
+                    <Form.Item
+                      style={{ width: "49%" }}
+                      label={this.createElement(Msg, {
+                        entityName: Concourse.NAME,
+                        propertyName: "description"
+                      })}
+                      required={true}
+                    >
+                      {this.props.form.getFieldDecorator(
+                        "description"
+                      )(<TextArea rows={6} disabled={true} />)}
+                    </Form.Item>
+
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="banner"
+                      disabled={true}
+                      form={this.props.form}
+                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{}}
+                    />
+
+                    <ReadonlyField
+                      entityName={Concourse.NAME}
+                      propertyName="requestTemplate"
+                      disabled={true}
+                      form={this.props.form}
+                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
+                      getFieldDecoratorOpts={{}}
+                    />
+                  </Row>
+                  {this.globalErrors.length > 0 && (
+                    <Alert
+                      message={<MultilineText lines={toJS(this.globalErrors)} />}
+                      type="error"
+                      style={{ marginBottom: "24px" }}
+                    />
+                  )}
+                </Card>
+
+              </Form>
+
+
+            </TabPane>
+
+          </Tabs>
+        </Section>
+      </Page>
     );
   }
 

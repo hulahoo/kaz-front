@@ -78,7 +78,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 > {
   dataInstance = instance<ConcourseRequest>(ConcourseRequest.NAME, {
     view: "concourseRequest-edit",
-    loadImmediately: false
+    loadImmediately: false,
   });
 
   dataCollection = collection<ConcourseRequestAttachments>(
@@ -111,13 +111,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
   })
 
-  projectManagersDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_base"
-  });
-
-  projectExpertsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_base"
-  });
 
   requestAttachmentssDc = collection<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
@@ -212,6 +205,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     "initiatorPosition",
 
+    "category"
+
   ];
 
   attachmentFields = ["attachment", "comments"];
@@ -245,16 +240,15 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     });
   };
 
-  // getUpdateEntityData(): any {
-  //   if (this.isNotDraft()) return super.getUpdateEntityData();
-  //   return {
-  //     personGroup: {
-  //       id: this.personGroupId
-  //     },
-  //     concourseId: this.props.entityId,
-  //     ...super.getUpdateEntityData()
-  //   };
-  // }
+  getUpdateEntityData(): any {
+    if (this.isNotDraft()) return super.getUpdateEntityData();
+    return {
+      personGroup: {
+        id: this.personGroupId
+      },
+      ...super.getUpdateEntityData()
+    };
+  }
 
   // update = () => {
   //   const updateEntityData = this.getUpdateEntityData();
@@ -272,9 +266,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   @observable
   isCreateMember: boolean = false;
 
-  update = (): Promise<boolean> => {
-    console.log(this.dataInstance)
-    this.dataInstance.item!.concourse = this.concoursesDc.items[0] as Concourse
+  update = async (): Promise<boolean> => {
+
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     this.props.form.validateFields((err, values) => {
 
@@ -286,6 +279,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
         return;
       }
+
       promise = this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
@@ -388,12 +382,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         type="primary"
         icon={"delete"}
         key="delete"
-        disabled={this.selectedRowKey === undefined}
+        disabled={isNotDraft ? true : this.selectedRowKey === undefined }
         onClick={this.deleteSelectedRow}
       >
         <FormattedMessage id="management.browser.remove" />
       </Button>
     ];
+    console.log(this.takCard())
 
     const entityName = this.dataInstance.entityName;
     const { status } = this.dataInstance;
@@ -581,7 +576,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   type="flex"
                   align={"middle"}
                   justify="space-between"
-                  style={{ width: "65%" }}
+                  style={{  }}
                 >
                   <ReadonlyField
                     entityName={entityName}
@@ -589,7 +584,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     disabled={isNotDraft}
                     form={this.props.form}
                     formItemOpts={{
-                      style: { minWidth: "46%", marginBottom: "12px" }
+                      style: { minWidth: "30%", marginBottom: "12px" }
                     }}
                     getFieldDecoratorOpts={{
                       rules: [{ required: true }]
@@ -602,12 +597,29 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     form={this.props.form}
                     disabled={isNotDraft}
                     formItemOpts={{
-                      style: { minWidth: "46%", marginBottom: "12px" }
+                      style: { minWidth: "30%", marginBottom: "12px" }
                     }}
                     getFieldDecoratorOpts={{
                       rules: [{ required: true }]
                     }}
                   />
+                  {
+                    this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task" &&
+                  <ReadonlyField
+                    entityName={entityName}
+                    propertyName="category"
+                    form={this.props.form}
+
+                    formItemOpts={{
+                      style: {
+                        minWidth: "30%",
+                        marginBottom: "12px" }
+                    }}
+                    getFieldDecoratorOpts={{
+                      rules: [{ required: true }]
+                    }}
+                  />
+                  }
                 </Row>
                 <Row type="flex" align="middle" justify={"space-between"}>
                   <ReadonlyField
@@ -673,7 +685,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     formItemOpts={{
                       style: { minWidth: "25%", marginBottom: "12px" }
                     }}
-                    optionsContainer={this.projectManagersDc}
+                    optionsContainer={this.personGroupsDc}
                     getFieldDecoratorOpts={{
                       rules: [{ required: true }],
                       getValueFromEvent: (personGroupId, val) => {
@@ -682,7 +694,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                           ConcourseRequestManagement.NEW_SUBPATH
                         ) {
                           if (personGroupId) {
-                            const manager = this.projectManagersDc.items.find(
+                            const manager = this.personGroupsDc.items.find(
                               person => person.id === personGroupId
                             ) as PersonExt;
                             this.getManagerUserRecordById(
@@ -747,12 +759,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     formItemOpts={{
                       style: { minWidth: "25%", marginBottom: "12px" }
                     }}
-                    optionsContainer={this.projectExpertsDc}
+                    optionsContainer={this.personGroupsDc}
                     getFieldDecoratorOpts={{
                       rules: [{ required: true }],
                       getValueFromEvent: (personGroupId, val) => {
                         if (personGroupId) {
-                          const expert = this.projectExpertsDc.items.find(
+                          const expert = this.personGroupsDc.items.find(
                             person => person.id === personGroupId
                           ) as PersonExt;
                           this.getExpertUserRecordById(
@@ -850,7 +862,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
               <Card title="Шаблон заявки" className="generalInfo" size="small">
                 <p className="text">Скачайте шаблон заявки для заполнения</p>
-                {this.concoursesDc.items[0] && <ConcourseFile FileId={this.concoursesDc!.items[0]!.requestTemplate!.id} />}
+                {
+
+                  this.concoursesDc!.items[0] && <ConcourseFile FileId={this.concoursesDc!.items[0]!.requestTemplate!.id} />
+
+                }
               </Card>
 
               <Card
@@ -1003,12 +1019,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       item => {
         this.reqNumber = this.props.form.getFieldValue("requestNumber");
         console.log(this.reqNumber)
-        this.initDataCollection()
+
         if (item && !this.isNotDraft()) {
           this.personGroupId = item.personGroup
             ? item.personGroup!.id
             : this.props.rootStore!.userInfo.personGroupId;
-
           restServices.employeeService
             .personProfile(
               item.personGroup
@@ -1030,6 +1045,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH){
                 const paramsConcourseId = this.props.location.search.split("=")[1]
                 values = {
+                  concourse: paramsConcourseId,
                   ...values
                 }
               }
@@ -1063,14 +1079,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
       }
     );
-
+    this.initDataCollection()
     this.loadData();
     this.loadBpmProcessData();
   }
 
-  // protected initItem(request: ConcourseRequest):void {
-  //   super.initItem(request);
-  // }
+  protected initItem(request: ConcourseRequest):void {
+    super.initItem(request);
+  }
 
   componentWillUnmount() {
     this.reactionDisposer();

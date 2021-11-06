@@ -9,7 +9,7 @@ import DataTableFormat from "../../components/DataTable/intex";
 import { link } from "../../util/util";
 import { observable } from "mobx";
 
-import { Modal, Tabs, Layout, Row, Col, Divider, Select } from "antd";
+import { Modal, Tabs, Layout, Row, Col, Divider, Select, Spin } from "antd";
 
 import {
   collection,
@@ -64,7 +64,24 @@ class ConcourseListComponent extends React.Component<
     ConcourseRequest.NAME,
     {
       view: "concourseRequest-edit",
-      sort: "-updateTs"
+      sort: "-updateTs",
+      filter: {
+        conditions: [
+          {
+            value: this.props.rootStore!.userInfo!.personGroupId!,
+            operator: "=",
+            property: "personGroup.id"
+          }
+        ]
+      }
+    }
+  );
+
+  dataCollectionConcourseRequestGrade = collection<ConcourseRequest>(
+    ConcourseRequest.NAME,
+    {
+      view: "concourseRequest-edit",
+      sort: "-updateTs",
     }
   );
 
@@ -73,6 +90,8 @@ class ConcourseListComponent extends React.Component<
   bestConcourseFields = ["name_ru", "category", "year"];
 
   concourseRequestFields = ["requestNumber", "requestDate", "status", "concourse"];
+
+  concourseGradeFields = ["name_ru", "description", "gradeTotal", "comment"];
 
   constructor(props: any) {
     super(props);
@@ -241,7 +260,8 @@ class ConcourseListComponent extends React.Component<
 
     const { activeTab } = this.props.match.params;
     const defaultActiveKey = activeTab ? activeTab : "1";
-    console.log(this.dataCollection);
+    console.log("USER INFO:", this.dataCollection);
+    const { status } = this.dataCollection;
     return (
       <Page pageName={this.props.intl.formatMessage({ id: this.pageName })}>
         <Section size="large">
@@ -256,21 +276,17 @@ class ConcourseListComponent extends React.Component<
               tab={this.props.intl.formatMessage({ id: "concourse" })}
               key="1"
             >
-              <div>
-                {this.dataCollection.items.map(
-                  el =>
-                    el &&
-                    this.concourseComponent(
-                      el!.banner!.id,
-                      el.id,
-                      el.description
-                    )
-                )}
+              <div style={{paddingTop:12, paddingBottom:12}}>
+                <Spin spinning={status == "LOADING"}>
+                  {
+                    this.dataCollection.items.map( el => el && this.concourseComponent(el!.banner!.id, el!.id, el!.description)
+                  )}
+                </Spin>
               </div>
             </TabPane>
             <TabPane
               tab={this.props.intl.formatMessage({ id: "bestConcourse" })}
-              key="3"
+              key="2"
             >
               <div style={{display:"flex", flexDirection:"row", width:"500px"}}>
                 <div style={{width:"200px", marginRight:"50px"}}>
@@ -328,7 +344,7 @@ class ConcourseListComponent extends React.Component<
             </TabPane>
             <TabPane
               tab={this.props.intl.formatMessage({ id: "concourseRequest" })}
-              key="4"
+              key="3"
             >
               <DataTableFormat
                 dataCollection={this.dataCollectionConcourseRequest}
@@ -355,6 +371,32 @@ class ConcourseListComponent extends React.Component<
                       (record.concourse as Concourse).name_ru
                     )
                   }
+                ]}
+              />
+            </TabPane>
+            <TabPane
+              tab={"Заявки для оценки"}
+              key="4"
+            >
+              <DataTableFormat
+                dataCollection={this.dataCollection}
+                fields={this.concourseGradeFields}
+                hideSelectionColumn={true}
+                render={[
+                  {
+                    column: this.concourseGradeFields[0],
+                    render: (text, record) => (
+                      <Link
+                        to={
+                          ConcourseManagement.PATH +
+                          "/" +
+                          (record as Concourse).id
+                        }
+                      >
+                        {(record as Concourse).name_ru}
+                      </Link>
+                    )
+                  },
                 ]}
               />
             </TabPane>

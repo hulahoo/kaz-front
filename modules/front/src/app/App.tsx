@@ -189,6 +189,9 @@ class AppComponent extends React.Component<MainStoreInjected & WrappedComponentP
                        path={ConcourseRequestManagement.PATH + "/:entityId?"}
                        component={ConcourseRequestManagement}/>
                 <Route exact={true}
+                       path={ConcourseManagement.PATH + "/:entityId?"}
+                       component={ConcourseManagement}/>
+                <Route exact={true}
                        path={ChangeAbsenceDaysRequestManagement.PATH_WITH_PARAMS}
                        component={ChangeAbsenceDaysRequestManagement}/>
                 <Route exact={true}

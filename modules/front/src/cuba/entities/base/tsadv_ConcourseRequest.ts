@@ -1,7 +1,6 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
 import { Concourse } from "./tsadv_Concourse";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-import { FileDescriptor } from "./sys$FileDescriptor";
 export class ConcourseRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ConcourseRequest";
   endDate?: any | null;
@@ -17,14 +16,13 @@ export class ConcourseRequest extends AbstractBprocRequest {
   expertContanctInfo?: string | null;
   shortProjectDescriptionRu?: string | null;
   shortProjectDescriptionEn?: string | null;
-  requestTemplate?: FileDescriptor | null;
-  requestAttachments?: FileDescriptor[] | null;
   personGroup?: PersonGroupExt | null;
   initiatorCompany?: string | null;
   initiatorPosition?: string | null;
   requestNameRu?: string | null;
   requestNameEn?: string | null;
   startDate?: any | null;
+  category?: any | null;
 }
 export type ConcourseRequestViewName =
   | "_base"
@@ -54,6 +52,7 @@ export type ConcourseRequestView<
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
+      | "category"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -79,6 +78,7 @@ export type ConcourseRequestView<
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
+      | "category"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -107,6 +107,7 @@ export type ConcourseRequestView<
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
+      | "category"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -115,8 +116,6 @@ export type ConcourseRequestView<
       | "comment"
       | "projectManager"
       | "projectExpert"
-      | "requestTemplate"
-      | "requestAttachments"
       | "personGroup"
       | "status"
       | "concourse"
@@ -140,6 +139,7 @@ export type ConcourseRequestView<
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
+      | "category"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -148,9 +148,8 @@ export type ConcourseRequestView<
       | "comment"
       | "projectManager"
       | "projectExpert"
-      | "requestTemplate"
-      | "requestAttachments"
       | "status"
       | "personGroup"
+      | "concourse"
     >
   : never;
