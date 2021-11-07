@@ -31,6 +31,7 @@ import {RootStoreProp} from "../../store";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
 import TextArea from "antd/es/input/TextArea";
+import GradeFormComponent from "./GradeForm";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -62,7 +63,8 @@ class ConcourseEditComponent extends React.Component<
     loadImmediately: false
   });
 
-  dataCollection = collection<MarkCriteria>(MarkCriteria.name, {
+  dataCollection = collection<MarkCriteria>(MarkCriteria.NAME, {
+    view: "markCriteria-view",
   })
 
   @observable
@@ -113,7 +115,7 @@ class ConcourseEditComponent extends React.Component<
 
     const { status } = this.dataInstance;
 
-    console.log(this.dataCollection)
+    console.log(this.dataInstance)
 
     return (
       <Page>
@@ -122,7 +124,7 @@ class ConcourseEditComponent extends React.Component<
             defaultActiveKey={defaultActiveKey}
             onChange={activeKey =>
               (this.pageName =
-                "concourseManagement" + (activeKey === "1" ? "" : "Request"))
+                "concourseManagement" + (activeKey === "1" ? "" : "Оценки"))
             }
           >
             <TabPane
@@ -311,6 +313,15 @@ class ConcourseEditComponent extends React.Component<
                 </Card>
 
               </Form>
+
+
+            </TabPane>
+            <TabPane
+              tab={"Оценки"}
+              key="2"
+            >
+
+              <GradeFormComponent markCriteria={ this.dataInstance.item && this.dataInstance.item.markCriteria}/>
 
 
             </TabPane>
