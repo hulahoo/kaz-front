@@ -436,7 +436,7 @@ class ConcourseListComponent extends React.Component<
                             (record as Concourse).id
                           }
                         >
-                          {(record as Concourse).name_ru}
+                          {(this.props.mainStore!.locale) == "ru" ? (record as Concourse).name_ru : (record as Concourse).name_en}
                         </Link>
                       )
                     },
