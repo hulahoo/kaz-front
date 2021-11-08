@@ -184,6 +184,8 @@
   "concourseGeneralInfo": "Общие сведения",
   "concourseRequest": "Мои заявки",
   "concourseMarks": "Заявки для оценки",
+  "concourseMarksTab": "Оценки",
+  "concourseGeneralInfoTab": "Общие сведения",
   "placeholder.company": "Введите компанию",
   "grade": "Грейд",
   "placeholder.grade": "Введите грейд",

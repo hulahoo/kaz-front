@@ -160,7 +160,7 @@ class ConcourseEditComponent extends React.Component<
             }
           >
             <TabPane
-              tab={"Общие сведения"}
+              tab={this.props.intl.formatMessage({ id: "concourseGeneralInfoTab" })}
               key="1"
             >
 
@@ -349,7 +349,7 @@ class ConcourseEditComponent extends React.Component<
 
             </TabPane>
             <TabPane
-              tab={"Оценки"}
+              tab={this.props.intl.formatMessage({ id: "concourseMarksTab" })}
               key="2"
             >
               <GradeFormComponent dataInstance={this.dataInstance} personGroupId={this.personGroupId && this.personGroupId}  markCriteria={ this.dataInstance.item && this.dataInstance.item.markCriteria}/>

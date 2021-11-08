@@ -355,7 +355,7 @@ class ConcourseListComponent extends React.Component<
                     }
                     else if (this.filterYearValue && !this.filterCategoryValue){
                       return el.year!.toString() === this.filterYearValue && this.bestConcourseComponent(
-                          el!.name_ru,
+                          this.props.mainStore!.locale == "ru" ? el!.name_ru : el!.name_en,
                           index + 1,
                           el!.organizationBin
                         )
@@ -363,12 +363,12 @@ class ConcourseListComponent extends React.Component<
                     else if (!this.filterYearValue && this.filterCategoryValue){
                       return el.category!.toString() === this.filterCategoryValue &&
                         this.bestConcourseComponent(
-                          el!.name_ru,
+                          this.props.mainStore!.locale == "ru" ? el!.name_ru : el!.name_en,
                           index + 1,
                           el!.organizationBin
                         )
                     }
-                    return this.bestConcourseComponent( el!.name_ru,
+                    return this.bestConcourseComponent( this.props.mainStore!.locale == "ru" ? el!.name_ru : el!.name_en,
                       index + 1,
                       el!.organizationBin)
                   }
