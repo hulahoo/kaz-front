@@ -33,6 +33,7 @@ import {
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {ICollection} from "@amcharts/amcharts4/.internal/fabric/fabric-impl";
+import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
 const { TabPane } = Tabs;
@@ -87,6 +88,19 @@ class ConcourseListComponent extends React.Component<
       sort: "-updateTs",
     }
   );
+
+  gradeDataCollection = collection<GradeDetail>(GradeDetail.NAME, {
+    view: "gradeDetail-view",
+    filter: {
+      conditions: [
+        {
+          value: this.props.rootStore!.userInfo!.personGroupId!,
+          operator: "=",
+          property: "personGroup.id"
+        }
+      ]
+    }
+  })
 
   concourseFields = ["description", "banner"];
 
@@ -350,12 +364,12 @@ class ConcourseListComponent extends React.Component<
                 {this.bestConcoursesList.items.map(
                   (el, index) => {
                     if (this.filterYearValue && this.filterCategoryValue){
-                      return (el.year!.toString()===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(el!.name_ru, index + 1, el!.organizationBin
+                      return (el.year!.toString()===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en, index + 1, el!.organizationBin
                       )
                     }
                     else if (this.filterYearValue && !this.filterCategoryValue){
                       return el.year!.toString() === this.filterYearValue && this.bestConcourseComponent(
-                          el!.name_ru,
+                        this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
                           index + 1,
                           el!.organizationBin
                         )
@@ -363,12 +377,12 @@ class ConcourseListComponent extends React.Component<
                     else if (!this.filterYearValue && this.filterCategoryValue){
                       return el.category!.toString() === this.filterCategoryValue &&
                         this.bestConcourseComponent(
-                          el!.name_ru,
+                          this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
                           index + 1,
                           el!.organizationBin
                         )
                     }
-                    return this.bestConcourseComponent( el!.name_ru,
+                    return this.bestConcourseComponent( this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
                       index + 1,
                       el!.organizationBin)
                   }
@@ -404,7 +418,7 @@ class ConcourseListComponent extends React.Component<
                   {
                     column: this.concourseRequestFields[3],
                     render: (text, record)=>(
-                      (this.props.mainStore!.locale) == "ru" ? (record.concourse as Concourse).name_ru : (record.concourse as Concourse).name_en
+                      record && (this.props.mainStore!.locale) == "ru" ? (record!.concourse! as Concourse).name_ru : (record!.concourse! as Concourse).name_en
                     )
                   }
                 ]}
@@ -436,23 +450,43 @@ class ConcourseListComponent extends React.Component<
                             (record as Concourse).id
                           }
                         >
-                          {(this.props.mainStore!.locale) == "ru" ? (record as Concourse).name_ru : (record as Concourse).name_en}
+                          {record && (this.props.mainStore!.locale) == "ru" ? (record! as Concourse).name_ru : (record! as Concourse).name_en}
                         </Link>
                       )
                     },
                     {
                       column: this.concourseGradeFields[2],
                       render: (text, record) => {
-                        let sum = 0
-                        record.grade!.map(el=>{
-                          sum+=el.grade
+                        console.log(this.gradeDataCollection)
+                        // @ts-ignore
+                        const elem = this.gradeDataCollection.items.filter( (el:GradeDetail) => {
+                          // if (el.concourse!.id === record.id){
+                          //   console.log(`${el.grade}=> `, el)
+                          //   return el
+                          // }
+                          return el.concourse!.id === record.id
                         })
-                        return sum
+                        console.log("Element1: ", elem)
+                        if (elem[0]) return elem[0]!.grade!
+                        return
                       }
                     },
                     {
                       column: this.concourseGradeFields[3],
-                      render: (text, record) => (record.grade!.map(el => (el.personGroup==this.props.rootStore!.userInfo!.personGroupId && el.comment)))
+                      render: (text, record) => {
+                        console.log(this.gradeDataCollection)
+                        // @ts-ignore
+                        const elem = this.gradeDataCollection.items.filter( (el:GradeDetail) => {
+                          // if (el.concourse!.id === record.id){
+                          //   console.log(`${el.grade}=> `, el)
+                          //   return el
+                          // }
+                          return el.concourse!.id === record.id
+                        })
+                        console.log("Element2: ", elem)
+                        if (elem[0]) return elem[0]!.comment!
+                        return
+                      }
                     },
                   ]}
                 />

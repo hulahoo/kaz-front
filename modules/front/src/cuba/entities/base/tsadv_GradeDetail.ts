@@ -18,5 +18,6 @@ export type GradeDetailView<V extends GradeDetailViewName> = V extends "_base"
   : V extends "_local"
   ? Pick<GradeDetail, "id" | "comment" | "grade">
   : V extends "gradeDetail-view"
-  ? Pick<GradeDetail, "id" | "comment" | "grade" | "personGroup">
+  ? Pick<GradeDetail, "id" | "comment" | "grade" | "personGroup" | "concourse">
+
   : never;

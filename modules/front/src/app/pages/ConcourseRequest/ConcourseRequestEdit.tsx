@@ -280,7 +280,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
         return;
       }
-      this.dataInstance.item!.concourse = this.dataInstance.item!.concourse ? this.dataInstance.item!.concourse:this.concoursesDc.items[0]
+
+      console.log(this.props.form.getFieldsValue(this.fields))
       promise = this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
@@ -334,11 +335,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
   @action
   onChangeVisible = (value: boolean): void => {
-    if (value)
-      this.update().then(
-        updatedSuccess => (this.visible = updatedSuccess && value)
-      );
-    else this.visible = value;
+    this.visible = value
   };
 
   render() {
@@ -1019,7 +1016,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       (item: ConcourseRequest | undefined) => {
         this.reqNumber = item ? item.requestNumber : this.props.form.getFieldValue("requestNumber");
         console.log(this.reqNumber)
-
+        this.initDataCollection()
         if (item && !this.isNotDraft()) {
           console.log("Inside item:", item)
           this.personGroupId = item.personGroup
@@ -1054,30 +1051,31 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
         //
 
-        // getCubaREST()!
-        //   .searchEntities<PersonExt>(
-        //     PersonExt.NAME,
-        //     {
-        //       conditions: [
-        //         {
-        //           property: "group.id",
-        //           operator: "=",
-        //           value: this.personGroupId
-        //         }
-        //       ]
-        //     },
-        //     {
-        //       view: "person-edit"
-        //     }
-        //   )
-        //   .then(value => value[0])
-        //   .then(value => (this.person = value));
+        getCubaREST()!
+        .searchEntities<PersonExt>(
+          PersonExt.NAME,
+          {
+            conditions: [
+              {
+                property: "group.id",
+                operator: "=",
+                value: this.personGroupId
+              }
+            ]
+          },
+          {
+            view: "person-edit"
+          }
+        )
+        .then(value => value[0])
+        .then(value => (this.person = value));
+        this.dataInstance.item!.concourse = this.dataInstance.item!.concourse ? this.dataInstance.item!.concourse:this.concoursesDc.items[0]
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );
       }
     );
-    this.initDataCollection()
+
     this.loadData();
     this.loadBpmProcessData();
   }

@@ -110,32 +110,6 @@ class ConcourseEditComponent extends React.Component<
 
   pageName: string = "concourseManagement"
 
-  submitForm( values1:object, values2:object ){
-    let sum = 0
-    if (values1){
-      for (const property in values1){
-        sum += +values1[property]
-      }
-    }
-    if (values2){
-      for (const property in values2){
-        if (values2[property]) sum++;
-      }
-    }
-
-    let gr = new GradeDetail();
-    if (this.personGroupId){
-      gr.grade = sum;
-      gr.personGroup!.id = this.personGroupId
-      this.dataInstance.item!.grade!.push(gr)
-      this.dataInstance.commit().then(data=>{
-        console.log("saved on the db")
-      }).catch(error=>{
-        console.log(error)
-      })
-    }
-
-  }
 
   render() {
     if (this.updated) {
@@ -146,8 +120,6 @@ class ConcourseEditComponent extends React.Component<
     const defaultActiveKey = activeTab ? activeTab : "1";
 
     const { status } = this.dataInstance;
-
-    console.log(this.dataInstance)
 
     return (
       <Page>

@@ -71,6 +71,19 @@ class GradeFormComponent extends React.Component<
     loadImmediately: false
   })
 
+  concoursesDsc = collection<Concourse>(Concourse.NAME, {
+    view: "concourse-view",
+    filter:{
+      conditions:[
+        {
+          value: this.dataInstance.item!.id,
+          operator: "=",
+          property: "id"
+        }
+      ]
+    }
+  })
+
   personGroupDsc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view:"personGroup-view",
     filter: {
@@ -129,6 +142,7 @@ class GradeFormComponent extends React.Component<
   }
 
   submitForm( values1:object, values2:object ){
+    let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     let sum = 0
     if (values1){
       for (const property in values1){
@@ -140,59 +154,16 @@ class GradeFormComponent extends React.Component<
         if (values2[property]) sum++;
       }
     }
+    console.log(this.gradeInstance)
 
-    this.gradeInstance.setItem(new GradeDetail())
-    let gr = new GradeDetail();
-    if (this.personGroupId){
-      this.gradeInstance.item!.grade = sum
-      this.gradeInstance.item!.personGroup = this.personGroupDsc.items[0]
-      this.gradeInstance.item!.comment = this.comment
-
-      // this.dataInstance.item!.grade!.push(gr)
-      let newGrades = this.dataInstance.item!.grade
-      let check = false
-      if (newGrades){
-        newGrades.forEach(obj => {
-          if (obj.personGroup === this.personGroupId){
-            obj.grade = sum
-            obj.comment = this.comment
-            check = true
-          }
-        })
-      }
-      if (check){
-        this.dataInstance.update({grade: newGrades})
-        this.dataInstance.commit().then((data:any)=>{
-          console.log("saved on the db")
-        }).catch((error:any)=>{
-          console.log(error)
-        })
-      }
-      else{
-        gr.grade = this.gradeInstance.item!.grade
-        gr.comment = this.gradeInstance.item!.comment
-        gr.personGroup = this.gradeInstance.item!.personGroup
-        gr.concourse = this.gradeInstance.item!.concourse
-        gr.updateTs = this.gradeInstance.item!.updateTs
-        gr.createTs = this.gradeInstance.item!.createTs
-        gr.updatedBy = this.gradeInstance.item!.updatedBy
-        gr.deleteTs = this.gradeInstance.item!.deleteTs
-        gr.deletedBy = this.gradeInstance.item!.deletedBy
-        newGrades!.push(gr)
-        this.dataInstance.update({grade: newGrades})
-        this.dataInstance.commit().then((data:any)=>{
-          console.log("saved on the db")
-        }).catch((error:any)=>{
-          console.log(error)
-        })
-      }
-
-      // this.dataInstance.commit().then(data=>{
-      //   console.log("saved on the db")
-      // }).catch(error=>{
-      //   console.log(error)
-      // })
-    }
+    this.gradeInstance.update({
+      personGroup: this.personGroupDsc.items[0],
+      concourse: this.concoursesDsc.items[0],
+      comment: this.comment,
+      grade: sum
+    }).then(data=>{
+      console.log(data)
+    })
 
   }
 
@@ -210,9 +181,7 @@ class GradeFormComponent extends React.Component<
     const activeTab = "1";
     const defaultActiveKey = activeTab ? activeTab : "1";
 
-    if (this.props.markCriteria){
-      console.log(this.props.markCriteria)
-    }
+
 
     return (
       <Form style={{width: "100%"}} onSubmit={this.handleSubmit}>
@@ -237,10 +206,9 @@ class GradeFormComponent extends React.Component<
               }
             </Form.Item>,
             [
-              !el.indicator && el.ratingScale &&
-                <Form.Item style={{marginTop:"24px"}} required={true} label={this.createElement(Msg, {
+              !el.indicator && el.ratingScale && <Form.Item style={{marginTop:"24px"}} required={true} label={this.createElement(Msg, {
                   entityName: "tsadv_markCriteria",
-                  propertyName: el.ratingScale!.name_ru
+                  propertyName: this.props.mainStore!.locale=="ru" ? el.ratingScale!.name_ru : el.ratingScale!.name_en
                 })}>
                   <Select onChange={ value => this.handleChangeOption(el.ratingScale!.name_ru!, value as string)} allowClear={true} placeholder={"Select..."} style={{width:"50%"}} >{
                     el.ratingScale.level_relation!.map((lvl)=>(
@@ -277,6 +245,7 @@ class GradeFormComponent extends React.Component<
 
             <Button
               htmlType="button"
+              onClick={()=>this.props.history.goBack()}
             >
               <FormattedMessage id="management.editor.cancel" />
             </Button>
@@ -290,6 +259,7 @@ class GradeFormComponent extends React.Component<
   }
 
   componentDidMount() {
+    this.gradeInstance.setItem(new GradeDetail())
   }
 
   componentWillUnmount() {
