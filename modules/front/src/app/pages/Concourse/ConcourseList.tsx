@@ -296,7 +296,6 @@ class ConcourseListComponent extends React.Component<
     const defaultActiveKey = activeTab ? activeTab : "1";
     console.log("USER INFO:", this.dataCollection);
     const { status } = this.dataCollection;
-    console.log(this.props)
 
     return (
       <Page pageName={this.props.intl.formatMessage({ id: this.pageName })}>
@@ -405,7 +404,7 @@ class ConcourseListComponent extends React.Component<
                   {
                     column: this.concourseRequestFields[3],
                     render: (text, record)=>(
-                      (record.concourse as Concourse).name_en
+                      (this.props.mainStore!.locale) == "ru" ? (record.concourse as Concourse).name_ru : (record.concourse as Concourse).name_en
                     )
                   }
                 ]}
@@ -413,8 +412,12 @@ class ConcourseListComponent extends React.Component<
             </TabPane>
 
             {
-              <TabPane
-                tab={"Заявки для оценки"}
+              this.dataCollection.items.map(concourse=>(
+                concourse.judges!.length && concourse.judges!.map(judge=>(
+                  judge.personGroup!.id===this.props.rootStore!.userInfo.personGroupId
+                )) && concourse
+              )) && <TabPane
+                tab={this.props.intl.formatMessage({ id: "concourseMarks" })}
                 key="4"
               >
 
@@ -433,7 +436,7 @@ class ConcourseListComponent extends React.Component<
                             (record as Concourse).id
                           }
                         >
-                          {(record as Concourse).name_en}
+                          {(record as Concourse).name_ru}
                         </Link>
                       )
                     },
