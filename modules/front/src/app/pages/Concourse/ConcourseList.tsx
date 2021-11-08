@@ -30,6 +30,9 @@ import {
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
+import {ICollection} from "@amcharts/amcharts4/.internal/fabric/fabric-impl";
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
 const { TabPane } = Tabs;
@@ -217,6 +220,21 @@ class ConcourseListComponent extends React.Component<
   };
 
   @observable
+  newData = collection<Concourse>(Concourse.NAME, {
+    view: "concourse-view",
+    sort: "-updateTs",
+    filter: {
+      conditions: [
+        {
+          value: this.props.rootStore!.userInfo!.personGroupId!,
+          operator: "=",
+          property: "id"
+        }
+      ]
+    }
+  });
+
+  @observable
   concourseYear: number;
 
   @observable
@@ -237,7 +255,23 @@ class ConcourseListComponent extends React.Component<
     console.log("filteredValue", this.filterYearValue)
   }
 
+
+
   render() {
+
+    let newCollection = this.dataCollection.items.map((concourse) => {
+      concourse.judges!.map(judge=>{
+        console.log(judge)
+        if (judge.personGroup!.id===this.props.rootStore!.userInfo.personGroupId)
+          if (!this.newData.items.includes(concourse)){
+            this.newData.items.push(concourse)
+          }
+
+      })
+    })
+
+    console.log(this.newData)
+
     const btns = [
       <Link
         to={
@@ -262,6 +296,7 @@ class ConcourseListComponent extends React.Component<
     const defaultActiveKey = activeTab ? activeTab : "1";
     console.log("USER INFO:", this.dataCollection);
     const { status } = this.dataCollection;
+
     return (
       <Page pageName={this.props.intl.formatMessage({ id: this.pageName })}>
         <Section size="large">
@@ -342,6 +377,7 @@ class ConcourseListComponent extends React.Component<
 
               </div>
             </TabPane>
+
             <TabPane
               tab={this.props.intl.formatMessage({ id: "concourseRequest" })}
               key="3"
@@ -374,36 +410,66 @@ class ConcourseListComponent extends React.Component<
                 ]}
               />
             </TabPane>
-            <TabPane
-              tab={"Заявки для оценки"}
-              key="4"
-            >
-              <DataTableFormat
-                dataCollection={this.dataCollection}
-                fields={this.concourseGradeFields}
-                hideSelectionColumn={true}
-                render={[
-                  {
-                    column: this.concourseGradeFields[0],
-                    render: (text, record) => (
-                      <Link
-                        to={
-                          ConcourseManagement.PATH +
-                          "/" +
-                          (record as Concourse).id
-                        }
-                      >
-                        {(record as Concourse).name_ru}
-                      </Link>
-                    )
-                  },
-                ]}
-              />
-            </TabPane>
+
+            {
+              this.dataCollection.items.map(concourse=>(
+                concourse.judges!.length && concourse.judges!.map(judge=>(
+                  judge.personGroup!.id===this.props.rootStore!.userInfo.personGroupId
+                )) && concourse
+              )) && <TabPane
+                tab={"Заявки для оценки"}
+                key="4"
+              >
+
+                <DataTableFormat
+                  dataCollection={this.newData}
+                  fields={this.concourseGradeFields}
+                  hideSelectionColumn={true}
+                  render={[
+                    {
+                      column: this.concourseGradeFields[0],
+                      render: (text, record) => (
+                        <Link
+                          to={
+                            ConcourseManagement.PATH +
+                            "/" +
+                            (record as Concourse).id
+                          }
+                        >
+                          {(record as Concourse).name_ru}
+                        </Link>
+                      )
+                    },
+                    {
+                      column: this.concourseGradeFields[2],
+                      render: (text, record) => {
+                        let sum = 0
+                        record.grade!.map(el=>{
+                          sum+=el.grade
+                        })
+                        return sum
+                      }
+                    },
+                    {
+                      column: this.concourseGradeFields[3],
+                      render: (text, record) => (record.grade!.map(el => (el.personGroup==this.props.rootStore!.userInfo!.personGroupId && el.comment)))
+                    },
+                  ]}
+                />
+              </TabPane>
+            }
+
           </Tabs>
         </Section>
       </Page>
     );
+  }
+
+  componentDidMount() {
+
+
+
+
   }
 
   getRecordById(id: string): SerializedEntity<Concourse> {

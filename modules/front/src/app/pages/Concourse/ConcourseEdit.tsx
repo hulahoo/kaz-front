@@ -32,6 +32,8 @@ import {ReadonlyField} from "../../components/ReadonlyField";
 import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
 import TextArea from "antd/es/input/TextArea";
 import GradeFormComponent from "./GradeForm";
+import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
+import {BaseUuidEntity} from "../../../cuba/entities/base/sys$BaseUuidEntity";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -98,12 +100,42 @@ class ConcourseEditComponent extends React.Component<
 
   ];
 
+  @observable
+  personGroupId:any
+
   createElement = React.createElement;
 
   @observable
   globalErrors: string[] = [];
 
   pageName: string = "concourseManagement"
+
+  submitForm( values1:object, values2:object ){
+    let sum = 0
+    if (values1){
+      for (const property in values1){
+        sum += +values1[property]
+      }
+    }
+    if (values2){
+      for (const property in values2){
+        if (values2[property]) sum++;
+      }
+    }
+
+    let gr = new GradeDetail();
+    if (this.personGroupId){
+      gr.grade = sum;
+      gr.personGroup!.id = this.personGroupId
+      this.dataInstance.item!.grade!.push(gr)
+      this.dataInstance.commit().then(data=>{
+        console.log("saved on the db")
+      }).catch(error=>{
+        console.log(error)
+      })
+    }
+
+  }
 
   render() {
     if (this.updated) {
@@ -320,9 +352,7 @@ class ConcourseEditComponent extends React.Component<
               tab={"Оценки"}
               key="2"
             >
-
-              <GradeFormComponent markCriteria={ this.dataInstance.item && this.dataInstance.item.markCriteria}/>
-
+              <GradeFormComponent dataInstance={this.dataInstance} personGroupId={this.personGroupId && this.personGroupId}  markCriteria={ this.dataInstance.item && this.dataInstance.item.markCriteria}/>
 
             </TabPane>
 
@@ -343,6 +373,8 @@ class ConcourseEditComponent extends React.Component<
         return this.dataInstance.item;
       },
       () => {
+        console.log(this.props)
+        this.personGroupId = this.props.rootStore!.userInfo!.personGroupId
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );
