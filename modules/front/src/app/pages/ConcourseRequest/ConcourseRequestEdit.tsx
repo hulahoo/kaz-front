@@ -280,7 +280,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
         return;
       }
-
+      this.dataInstance.item!.concourse = this.dataInstance.item!.concourse ? this.dataInstance.item!.concourse:this.concoursesDc.items[0]
       promise = this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {

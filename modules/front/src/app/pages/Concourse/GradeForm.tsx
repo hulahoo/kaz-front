@@ -33,6 +33,7 @@ import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
 import TextArea from "antd/es/input/TextArea";
 import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
+import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -68,6 +69,19 @@ class GradeFormComponent extends React.Component<
   gradeInstance = instance<GradeDetail>(GradeDetail.NAME,{
     view: "gradeDetail-view",
     loadImmediately: false
+  })
+
+  personGroupDsc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+    view:"personGroup-view",
+    filter: {
+      conditions: [
+        {
+          value: this.props.personGroupId,
+          operator: "=",
+          property: "id"
+        }
+      ]
+    }
   })
 
   @observable
@@ -131,9 +145,9 @@ class GradeFormComponent extends React.Component<
     let gr = new GradeDetail();
     if (this.personGroupId){
       this.gradeInstance.item!.grade = sum
-      this.gradeInstance.item!.personGroup!.id = this.personGroupId
+      this.gradeInstance.item!.personGroup = this.personGroupDsc.items[0]
       this.gradeInstance.item!.comment = this.comment
-      this.gradeInstance.commit().then(data=>console.log(data))
+
       // this.dataInstance.item!.grade!.push(gr)
       let newGrades = this.dataInstance.item!.grade
       let check = false
@@ -155,7 +169,16 @@ class GradeFormComponent extends React.Component<
         })
       }
       else{
-        newGrades!.push()
+        gr.grade = this.gradeInstance.item!.grade
+        gr.comment = this.gradeInstance.item!.comment
+        gr.personGroup = this.gradeInstance.item!.personGroup
+        gr.concourse = this.gradeInstance.item!.concourse
+        gr.updateTs = this.gradeInstance.item!.updateTs
+        gr.createTs = this.gradeInstance.item!.createTs
+        gr.updatedBy = this.gradeInstance.item!.updatedBy
+        gr.deleteTs = this.gradeInstance.item!.deleteTs
+        gr.deletedBy = this.gradeInstance.item!.deletedBy
+        newGrades!.push(gr)
         this.dataInstance.update({grade: newGrades})
         this.dataInstance.commit().then((data:any)=>{
           console.log("saved on the db")
