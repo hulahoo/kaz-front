@@ -254,6 +254,7 @@ class ConcourseListComponent extends React.Component<
     this.filterYearValue = value
     console.log("filteredValue", this.filterYearValue)
   }
+  
 
 
 
@@ -404,7 +405,7 @@ class ConcourseListComponent extends React.Component<
                   {
                     column: this.concourseRequestFields[3],
                     render: (text, record)=>(
-                      (record.concourse as Concourse).name_ru
+                      (this.props.mainStore?.locale) == "ru" ? (record.concourse as Concourse).name_ru : (record.concourse as Concourse).name_en
                     )
                   }
                 ]}
@@ -417,7 +418,7 @@ class ConcourseListComponent extends React.Component<
                   judge.personGroup!.id===this.props.rootStore!.userInfo.personGroupId
                 )) && concourse
               )) && <TabPane
-                tab={"Заявки для оценки"}
+                tab={this.props.intl.formatMessage({ id: "concourseMarks" })}
                 key="4"
               >
 

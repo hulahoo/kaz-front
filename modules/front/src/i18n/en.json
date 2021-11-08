@@ -188,6 +188,8 @@
   "concourse": "Project concourses",
   "concourseRequest": "My requests",
   "bestConcourse": "Best projects",
+  "concourseGeneralInfo": "General info",  
+  "concourseMarks": "Request for marks",
   "settings": "Settings",
   "logout": "Logout",
   "search": "Search",

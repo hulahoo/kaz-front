@@ -404,8 +404,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         <div className="cardWrapper" id="concourseRequest">
           <h1>
             {this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH
-              ? "Редактирование заявки"
-              : "Создание заявки"}
+              ? this.props.intl.formatMessage({ id: "concourseRequestEdit" })
+              : this.props.intl.formatMessage({ id: "concourseRequestCreate" })}
           </h1>
           <Card
             className={`narrow-layout card-actions-container`}
@@ -423,7 +423,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           >
             <Form onSubmit={this.validate} layout="vertical">
 
-                <Card title="Общие сведения" size="small" className="generalInfo">
+                <Card title={this.props.intl.formatMessage({ id: "concourseGeneralInfo" })} size="small" className="generalInfo">
                   <Spin spinning={status == "LOADING"}>
                 <Row
                   type={"flex"}
