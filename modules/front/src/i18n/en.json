@@ -12,6 +12,8 @@
   "management.editor.cancel": "Cancel",
   "management.editor.submit": "Submit",
   "router.ConcourseManagement": "ConcourseManagement",
+  "concourseMarksTab": "Marks",
+  "concourseGeneralInfoTab": "General info",
   "router.ConcourseRequestDocumentManagement": "ConcourseRequestDocumentManagement",
   "router.PositionOverlappingRequestManagement": "Position Overlapping Request Management",
   "router.DismissalRequestManagement": "DismissalRequestManagement",
