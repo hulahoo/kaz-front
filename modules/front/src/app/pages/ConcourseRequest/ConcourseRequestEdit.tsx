@@ -373,7 +373,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         }}
       >
         <span>
-          <FormattedMessage id="management.browser.create" />
+          <FormattedMessage id={this.props.intl.formatMessage({ id: "concourseRequestAttachmentsCreate" })} />
         </span>
       </Button>,
       <Button
@@ -682,7 +682,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               </Card>
 
 
-              <Card title="Эксперты" size="small" className="generalInfo">
+              <Card title={this.props.intl.formatMessage({ id: "concourseRequestExpertTable" })} size="small" className="generalInfo">
                 <Row
                   type="flex"
                   align="middle"
@@ -837,7 +837,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               </Card>
 
               <Card
-                title="Описание проекта"
+                title={this.props.intl.formatMessage({ id: "concourseRequestDescriptionTable" })}
                 size="small"
                 className="generalInfo"
               >
@@ -877,8 +877,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                 </Row>
               </Card>
 
-              <Card title="Шаблон заявки" className="generalInfo" size="small">
-                <p className="text">Скачайте шаблон заявки для заполнения</p>
+              <Card title={this.props.intl.formatMessage({ id: "concourseRequestRequestTemplate" })} className="generalInfo" size="small">
+                <p className="text">{this.props.intl.formatMessage({ id: "concourseRequestDownloadMessage" })}</p>
                 {
 
                   this.concoursesDc!.items[0] && <ConcourseFile FileId={this.concoursesDc!.items[0]!.requestTemplate!.id} />
@@ -887,7 +887,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               </Card>
 
               <Card
-                title="Приложения"
+                title={this.props.intl.formatMessage({ id: "concourseRequestAttachmentsTable" })}
                 className="generalInfo"
                 size="small"
                 style={{ marginTop: "12px", marginBottom: "16px" }}
