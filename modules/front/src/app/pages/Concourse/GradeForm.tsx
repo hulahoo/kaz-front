@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FormEvent } from "react";
+import {FormEvent, FunctionComponent} from "react";
 import { Alert, Button, Card, Form, message, Row, Tabs, Layout, Select, Checkbox } from "antd";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
@@ -44,9 +44,10 @@ type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
   markCriteria: MarkCriteria[] | null | undefined,
-  submitForm?: any,
+  setTotalGrade: Function,
   dataInstance: DataInstanceStore<Concourse>,
-  personGroupId?: any
+  personGroupId?: any,
+  updated:boolean
 };
 
 type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
@@ -111,8 +112,21 @@ class GradeFormComponent extends React.Component<
     }
   })
 
+  totalGradeDataCollection = collection<GradeDetail>(GradeDetail.NAME, {
+    view: "gradeDetail-view",
+    filter: {
+      conditions: [
+        {
+          value: this.dataInstance.item!.id,
+          operator: "=",
+          property: "concourse.id"
+        }
+      ]
+    }
+  })
+
   @observable
-  updated = false;
+  updated = this.props.updated;
   reactionDisposer: IReactionDisposer;
 
   @observable
@@ -125,8 +139,6 @@ class GradeFormComponent extends React.Component<
 
   pageName: string = "concourseManagement"
 
-  @observable
-  submit: Function = this.props.submitForm
 
   @observable
   optionValue:object = {}
@@ -158,6 +170,24 @@ class GradeFormComponent extends React.Component<
     this.comment = e.target.value
   }
 
+  totalGradeHandler=()=>{
+    let sum = 0;
+    this.totalGradeDataCollection.items.map(el=>{
+      if (el.grade){
+        sum+=el.grade;
+      }
+    })
+    this.props.setTotalGrade(sum)
+    // this.dataInstance.item!.gradeTotal = sum;
+    // this.dataInstance.commit().then((data)=>{
+    //   this.updated=true
+    // }).catch(err=>{console.log(err)})
+    // this.dataInstance.update({
+    //   gradeTotal: sum
+    // })
+
+  }
+
   submitForm( values1:object, values2:object ){
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     let sum = 0
@@ -186,7 +216,9 @@ class GradeFormComponent extends React.Component<
         message.success(
           this.props.intl.formatMessage({ id: "management.editor.success" })
         );
-        this.updated = true
+        this.totalGradeHandler()
+        // this.updated = true
+
       }).catch((e: any) => {
         if (e.response && typeof e.response.json === "function") {
           e.response.json().then((response: any) => {
@@ -233,7 +265,8 @@ class GradeFormComponent extends React.Component<
         message.success(
           this.props.intl.formatMessage({ id: "management.editor.success" })
         );
-        this.updated = true
+        this.totalGradeHandler()
+        // this.updated = true
       }).catch((e: any) => {
         if (e.response && typeof e.response.json === "function") {
           e.response.json().then((response: any) => {
@@ -300,13 +333,13 @@ class GradeFormComponent extends React.Component<
         {
           this.props.markCriteria && this.props.markCriteria.map((el:MarkCriteria) => ([
             el.indicator && el.indicator_relation &&
-            <Form.Item style={{ marginTop:"24px"}} required={true} label={this.createElement(Msg, {
+            <Form.Item style={{ marginTop:"24px", width:"80%"}} required={true} label={this.createElement(Msg, {
               entityName: "tsadv_markCriteria",
               propertyName: el.name_en
             })}>
               {
               el.indicator_relation.map(chk => (
-                  <Form.Item key={chk.id} style={{display: "flex", width:"50%", alignItems: "center", margin:"0", marginLeft:"16px", justifyContent:"flex-start"}}
+                  <Form.Item key={chk.id} style={{display: "flex", alignItems: "center", margin:"0", marginLeft:"16px", justifyContent:"flex-start"}}
                              label={this.createElement(Msg, {
                                entityName: "tsadv_markCriteria",
                                propertyName: chk.name_en
@@ -321,7 +354,7 @@ class GradeFormComponent extends React.Component<
                   entityName: "tsadv_markCriteria",
                   propertyName: this.props.mainStore!.locale=="ru" ? el.ratingScale!.name_ru : el.ratingScale!.name_en
                 })}>
-                  <Select onChange={ value => this.handleChangeOption(el.ratingScale!.name_ru!, value as string)} allowClear={true} placeholder={"Select..."} style={{width:"50%"}} >{
+                  <Select onChange={ value => this.handleChangeOption(el.ratingScale!.name_ru!, value as string)} allowClear={true} placeholder={"....."} style={{width:"80%"}} >{
                     el.ratingScale.level_relation!.map((lvl)=>(
                        lvl && <Option key={lvl.id} value={lvl.number!} >{lvl.name_en!}</Option>
                     ))
@@ -333,7 +366,7 @@ class GradeFormComponent extends React.Component<
           ]))
         }
           <Form.Item
-            style={{ width: "50%" }}
+            style={{ width: "80%" }}
             label={this.createElement(Msg, {
               entityName: "tsadv_markCriteria",
               propertyName: "Comments"

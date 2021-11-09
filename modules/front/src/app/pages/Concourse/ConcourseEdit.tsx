@@ -70,6 +70,9 @@ class ConcourseEditComponent extends React.Component<
   })
 
   @observable
+  saved = false
+
+  @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
 
@@ -109,6 +112,14 @@ class ConcourseEditComponent extends React.Component<
   globalErrors: string[] = [];
 
   pageName: string = "concourseManagement"
+
+  setTotalGrade=(sum:number)=>{
+    this.dataInstance.item!.gradeTotal = sum;
+    this.dataInstance.commit().then((data)=>{
+      this.saved = true
+      console.log("SAVED!")
+    }).catch(err=>{console.log(err)})
+  }
 
 
   render() {
@@ -324,7 +335,7 @@ class ConcourseEditComponent extends React.Component<
               tab={this.props.intl.formatMessage({ id: "concourseMarksTab" })}
               key="2"
             >
-              <GradeFormComponent dataInstance={this.dataInstance} personGroupId={this.personGroupId && this.personGroupId}  markCriteria={ this.dataInstance.item && this.dataInstance.item.markCriteria}/>
+              <GradeFormComponent updated={this.saved} setTotalGrade={this.setTotalGrade} dataInstance={this.dataInstance} personGroupId={this.personGroupId && this.personGroupId}  markCriteria={ this.dataInstance.item && this.dataInstance.item.markCriteria}/>
 
             </TabPane>
 
