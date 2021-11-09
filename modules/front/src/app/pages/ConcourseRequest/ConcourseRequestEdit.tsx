@@ -350,7 +350,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       let dateNow = moment(Date.now()) ;
       let requestDate = moment(this.concoursesDc.items[0]!.endVoting)
       console.log(requestDate)
-      if (requestDate.isAfter(dateNow)){
+      if (dateNow.isAfter(requestDate)){
         isNotDraft = true
         console.log(dateNow, requestDate)
       }
@@ -617,7 +617,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     }}
                   />
                   {
-
+                    (this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task") ?
                     <ReadonlyField
                       entityName={entityName}
                       propertyName="category"
@@ -627,14 +627,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                         style: {
                           minWidth: "30%",
                           marginBottom: "12px",
-                          visibility: (this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task")? "visible": "hidden",
                         }
                       }}
 
                       getFieldDecoratorOpts={{
                         rules: [{ required: true }]
                       }}
-                    />
+                    />:<span style={{minWidth: "30%",}}>{" "}</span>
                   }
                 </Row>
                 <Row type="flex" align="middle" justify={"space-between"}>

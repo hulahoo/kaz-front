@@ -35,6 +35,7 @@ import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
+import moment from "moment";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -170,8 +171,9 @@ class GradeFormComponent extends React.Component<
     this.comment = e.target.value
   }
 
-  totalGradeHandler=()=>{
+  totalGradeHandler=(localSum:number)=>{
     let sum = 0;
+    sum+=localSum;
     this.totalGradeDataCollection.items.map(el=>{
       if (el.grade){
         sum+=el.grade;
@@ -216,7 +218,7 @@ class GradeFormComponent extends React.Component<
         message.success(
           this.props.intl.formatMessage({ id: "management.editor.success" })
         );
-        this.totalGradeHandler()
+        this.totalGradeHandler(sum)
         // this.updated = true
 
       }).catch((e: any) => {
@@ -265,7 +267,7 @@ class GradeFormComponent extends React.Component<
         message.success(
           this.props.intl.formatMessage({ id: "management.editor.success" })
         );
-        this.totalGradeHandler()
+        this.totalGradeHandler(sum)
         // this.updated = true
       }).catch((e: any) => {
         if (e.response && typeof e.response.json === "function") {
@@ -312,7 +314,22 @@ class GradeFormComponent extends React.Component<
     e.preventDefault();
   }
 
+
+
   render() {
+
+    let isDisabled = false
+
+    if (this.concoursesDsc.items[0]){
+      let dateNow = moment(Date.now()) ;
+      let requestDate = moment(this.concoursesDsc.items[0]!.endVoting)
+      console.log(requestDate)
+      if (dateNow.isAfter(requestDate)){
+        isDisabled = true
+        console.log(dateNow, requestDate)
+      }
+
+    }
 
     if (this.updated) {
       return <Redirect exact={true} to={"/concourse"} />;
@@ -344,7 +361,7 @@ class GradeFormComponent extends React.Component<
                                entityName: "tsadv_markCriteria",
                                propertyName: chk.name_en
                              })}>
-                    <Checkbox onChange={ value=>this.handleChangeCheckbox(chk.name_en!, value.target.checked) }/>
+                    <Checkbox disabled={isDisabled} onChange={ value=>this.handleChangeCheckbox(chk.name_en!, value.target.checked) }/>
                   </Form.Item>
               ))
               }
@@ -354,7 +371,7 @@ class GradeFormComponent extends React.Component<
                   entityName: "tsadv_markCriteria",
                   propertyName: this.props.mainStore!.locale=="ru" ? el.ratingScale!.name_ru : el.ratingScale!.name_en
                 })}>
-                  <Select onChange={ value => this.handleChangeOption(el.ratingScale!.name_ru!, value as string)} allowClear={true} placeholder={"....."} style={{width:"80%"}} >{
+                  <Select disabled={isDisabled} onChange={ value => this.handleChangeOption(el.ratingScale!.name_ru!, value as string)} allowClear={true} placeholder={"....."} style={{width:"80%"}} >{
                     el.ratingScale.level_relation!.map((lvl)=>(
                        lvl && <Option key={lvl.id} value={lvl.number!} >{lvl.name_en!}</Option>
                     ))
@@ -375,13 +392,13 @@ class GradeFormComponent extends React.Component<
           >
             {this.props.form.getFieldDecorator(
               "Comments"
-            )(<TextArea value={this.comment} onChange={this.handleChangeComment} rows={6} />)}
+            )(<TextArea disabled={isDisabled} value={this.comment} onChange={this.handleChangeComment} rows={6} />)}
           </Form.Item>
           <Form.Item style={{ textAlign: "left", marginTop:"36px" }}>
             <Button
               type="primary"
               htmlType="submit"
-
+              disabled={isDisabled}
               style={{ marginRight: "8px" }}
             >
               <FormattedMessage id="management.editor.submit" />
