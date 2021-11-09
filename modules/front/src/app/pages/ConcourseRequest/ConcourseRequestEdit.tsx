@@ -59,6 +59,7 @@ import ConcourseRequestAttachmentsEdit from "./ConcourseRequestAttachments/Conco
 import {ConcourseRequestAttachmentsManagement} from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsManagement";
 import {Concourse} from "../../../cuba/entities/base/tsadv_Concourse";
 import {ConcourseFile} from "./ConcourseTemplateFile";
+import moment from "moment";
 // import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
 // import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
 // import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
@@ -342,7 +343,22 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     if (this.updated) {
       return <Redirect to={ConcourseRequestManagement.PATH} />;
     }
-    const isNotDraft = this.isNotDraft();
+
+    let isNotDraft = this.isNotDraft();
+
+    if (this.concoursesDc.items[0]){
+      let dateNow = moment(Date.now()) ;
+      let requestDate = moment(this.concoursesDc.items[0]!.endVoting)
+      console.log(requestDate)
+      if (requestDate.isAfter(dateNow)){
+        isNotDraft = true
+        console.log(dateNow, requestDate)
+      }
+
+    }
+
+
+
     const buttons = [
       <Button
         htmlType="button"
@@ -601,21 +617,24 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     }}
                   />
                   {
-                    this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task" &&
-                  <ReadonlyField
-                    entityName={entityName}
-                    propertyName="category"
-                    form={this.props.form}
 
-                    formItemOpts={{
-                      style: {
-                        minWidth: "30%",
-                        marginBottom: "12px" }
-                    }}
-                    getFieldDecoratorOpts={{
-                      rules: [{ required: true }]
-                    }}
-                  />
+                    <ReadonlyField
+                      entityName={entityName}
+                      propertyName="category"
+                      form={this.props.form}
+
+                      formItemOpts={{
+                        style: {
+                          minWidth: "30%",
+                          marginBottom: "12px",
+                          visibility: (this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task")? "visible": "hidden",
+                        }
+                      }}
+
+                      getFieldDecoratorOpts={{
+                        rules: [{ required: true }]
+                      }}
+                    />
                   }
                 </Row>
                 <Row type="flex" align="middle" justify={"space-between"}>

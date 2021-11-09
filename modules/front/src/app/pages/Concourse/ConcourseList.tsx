@@ -56,12 +56,30 @@ class ConcourseListComponent extends React.Component<
 > {
   dataCollection = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
-    sort: "-updateTs"
+    sort: "-updateTs",
+    filter: {
+      conditions:[
+        {
+          value: "ACTIVE",
+          operator: "=",
+          property: "concourseStatus"
+        }
+      ]
+    }
   });
 
   dataCollectionConcourse = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
-    sort: "-updateTs"
+    sort: "-updateTs",
+    filter: {
+      conditions:[
+        {
+          value: "ACTIVE",
+          operator: "=",
+          property: "concourseStatus"
+        }
+      ]
+    }
   });
 
   dataCollectionConcourseRequest = collection<ConcourseRequest>(
@@ -233,7 +251,6 @@ class ConcourseListComponent extends React.Component<
     );
   };
 
-  @observable
   newData = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
     sort: "-updateTs",
@@ -284,7 +301,7 @@ class ConcourseListComponent extends React.Component<
       })
     })
 
-    console.log(this.newData)
+    console.log(this.bestConcoursesList.items)
 
     const btns = [
       <Link
@@ -341,7 +358,7 @@ class ConcourseListComponent extends React.Component<
                 <div style={{width:"200px", marginRight:"50px"}}>
                   <Col  >{this.props.intl.formatMessage({id: "concourse.categories.year"})}</Col>
                   <Col  >
-                    <Select allowClear={true} placeholder={"Select..."} onChange={value => this.handleChangeYear("name",value as string)} style={{width:"100%"}} >
+                    <Select allowClear={true} placeholder={"....."} onChange={value => this.handleChangeYear("name",value as string)} style={{width:"100%"}} >
                       <Option value={"2018"}>2018</Option>
                       <Option value={"2019"}>2019</Option>
                       <Option value={"2020"}>2020</Option>
@@ -352,7 +369,7 @@ class ConcourseListComponent extends React.Component<
                 <div style={{width:"200px", marginRight:"50px"}}>
                   <Col  >{this.props.intl.formatMessage({id: "concourse.categories.project"})}</Col>
                   <Col  >
-                    <Select allowClear={true} placeholder={"Select..."} onChange={value => this.handleChangeCategory("name",value as string)} style={{width:"100%"}} >
+                    <Select allowClear={true} placeholder={"....."} onChange={value => this.handleChangeCategory("name",value as string)} style={{width:"100%"}} >
                       <Option value={"PRODUCTIONPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.production.projects"})}</Option>
                       <Option value={"SOCIALPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.social.projects"})}</Option>
                       <Option value={"SAFETYPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.safety.projects"})}</Option>
@@ -361,16 +378,16 @@ class ConcourseListComponent extends React.Component<
                 </div>
               </div>
               <div>
-                {this.bestConcoursesList.items.map(
+                {this.bestConcoursesList.items.filter(el=>el.place && (el.place.toString()==="1"||el.place.toString()==="2"||el.place.toString()==="3")).map(
                   (el, index) => {
                     if (this.filterYearValue && this.filterCategoryValue){
-                      return (el.year!.toString()===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en, index + 1, el!.organizationBin
+                      return (el.year!.toString()===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en, el.place!, el!.organizationBin
                       )
                     }
                     else if (this.filterYearValue && !this.filterCategoryValue){
                       return el.year!.toString() === this.filterYearValue && this.bestConcourseComponent(
                         this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
-                          index + 1,
+                        el.place!,
                           el!.organizationBin
                         )
                     }
@@ -378,7 +395,7 @@ class ConcourseListComponent extends React.Component<
                       return el.category!.toString() === this.filterCategoryValue &&
                         this.bestConcourseComponent(
                           this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
-                          index + 1,
+                          el.place!,
                           el!.organizationBin
                         )
                     }
@@ -426,11 +443,7 @@ class ConcourseListComponent extends React.Component<
             </TabPane>
 
             {
-              this.dataCollection.items.map(concourse=>(
-                concourse.judges!.length && concourse.judges!.map(judge=>(
-                  judge.personGroup!.id===this.props.rootStore!.userInfo.personGroupId
-                )) && concourse
-              )) && <TabPane
+              <TabPane
                 tab={this.props.intl.formatMessage({ id: "concourseMarks" })}
                 key="4"
               >

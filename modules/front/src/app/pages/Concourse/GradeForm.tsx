@@ -34,6 +34,7 @@ import TextArea from "antd/es/input/TextArea";
 import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
 import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
+import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -97,9 +98,25 @@ class GradeFormComponent extends React.Component<
     }
   })
 
+  gradeDataCollection = collection<GradeDetail>(GradeDetail.NAME, {
+    view: "gradeDetail-view",
+    filter: {
+      conditions: [
+        {
+          value: this.props.personGroupId,
+          operator: "=",
+          property: "personGroup.id"
+        }
+      ]
+    }
+  })
+
   @observable
   updated = false;
   reactionDisposer: IReactionDisposer;
+
+  @observable
+  goBack = false;
 
   createElement = React.createElement;
 
@@ -156,14 +173,104 @@ class GradeFormComponent extends React.Component<
     }
     console.log(this.gradeInstance)
 
-    this.gradeInstance.update({
-      personGroup: this.personGroupDsc.items[0],
-      concourse: this.concoursesDsc.items[0],
-      comment: this.comment,
-      grade: sum
-    }).then(data=>{
-      console.log(data)
-    })
+    let grade = this.gradeDataCollection.items.filter((elem)=>elem.concourse!.id === this.concoursesDsc.items[0]!.id)
+    console.log(grade)
+    if (grade.length){
+      this.gradeInstance.update({
+        id: grade[0].id,
+        personGroup: this.personGroupDsc.items[0],
+        concourse: this.concoursesDsc.items[0],
+        comment: this.comment,
+        grade: sum
+      }).then(data=>{
+        message.success(
+          this.props.intl.formatMessage({ id: "management.editor.success" })
+        );
+        this.updated = true
+      }).catch((e: any) => {
+        if (e.response && typeof e.response.json === "function") {
+          e.response.json().then((response: any) => {
+            clearFieldErrors(this.props.form);
+            const {
+              globalErrors,
+              fieldErrors
+            } = extractServerValidationErrors(response);
+            this.globalErrors = globalErrors;
+            if (fieldErrors.size > 0) {
+              this.props.form.setFields(
+                constructFieldsWithErrors(fieldErrors, this.props.form)
+              );
+            }
+
+            if (fieldErrors.size > 0 || globalErrors.length > 0) {
+              message.error(
+                this.props.intl.formatMessage({
+                  id: "management.editor.validationError"
+                })
+              );
+            } else {
+              message.error(
+                this.props.intl.formatMessage({
+                  id: "management.editor.error"
+                })
+              );
+            }
+          });
+        } else {
+          message.error(
+            this.props.intl.formatMessage({ id: "management.editor.error" })
+          );
+        }
+      });
+    }
+    else{
+      this.gradeInstance.update({
+        personGroup: this.personGroupDsc.items[0],
+        concourse: this.concoursesDsc.items[0],
+        comment: this.comment,
+        grade: sum
+      }).then(data=>{
+        message.success(
+          this.props.intl.formatMessage({ id: "management.editor.success" })
+        );
+        this.updated = true
+      }).catch((e: any) => {
+        if (e.response && typeof e.response.json === "function") {
+          e.response.json().then((response: any) => {
+            clearFieldErrors(this.props.form);
+            const {
+              globalErrors,
+              fieldErrors
+            } = extractServerValidationErrors(response);
+            this.globalErrors = globalErrors;
+            if (fieldErrors.size > 0) {
+              this.props.form.setFields(
+                constructFieldsWithErrors(fieldErrors, this.props.form)
+              );
+            }
+
+            if (fieldErrors.size > 0 || globalErrors.length > 0) {
+              message.error(
+                this.props.intl.formatMessage({
+                  id: "management.editor.validationError"
+                })
+              );
+            } else {
+              message.error(
+                this.props.intl.formatMessage({
+                  id: "management.editor.error"
+                })
+              );
+            }
+          });
+        } else {
+          message.error(
+            this.props.intl.formatMessage({ id: "management.editor.error" })
+          );
+        }
+      });
+    }
+
 
   }
 
@@ -175,7 +282,11 @@ class GradeFormComponent extends React.Component<
   render() {
 
     if (this.updated) {
-      return <Redirect to={ConcourseManagement.PATH} />;
+      return <Redirect exact={true} to={"/concourse"} />;
+    }
+
+    if (this.goBack){
+      return <Redirect exact={true} to={"/concourse"} />;
     }
 
     const activeTab = "1";
@@ -245,7 +356,7 @@ class GradeFormComponent extends React.Component<
 
             <Button
               htmlType="button"
-              onClick={()=>this.props.history.goBack()}
+              onClick={()=>this.goBack=true}
             >
               <FormattedMessage id="management.editor.cancel" />
             </Button>
