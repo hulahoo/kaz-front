@@ -36,6 +36,7 @@ import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
 import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
 import moment from "moment";
+import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -46,7 +47,7 @@ type Props = FormComponentProps & EditorProps;
 type EditorProps = {
   markCriteria: MarkCriteria[] | null | undefined,
   setTotalGrade: Function,
-  dataInstance: DataInstanceStore<Concourse>,
+  dataInstance: DataInstanceStore<ConcourseRequest>,
   personGroupId?: any,
   updated:boolean
 };
@@ -74,8 +75,8 @@ class GradeFormComponent extends React.Component<
     loadImmediately: false
   })
 
-  concoursesDsc = collection<Concourse>(Concourse.NAME, {
-    view: "concourse-view",
+  concoursesDsc = collection<ConcourseRequest>(ConcourseRequest.NAME, {
+    view: "concourseRequest-edit",
     filter:{
       conditions:[
         {
@@ -205,13 +206,13 @@ class GradeFormComponent extends React.Component<
     }
     console.log(this.gradeInstance)
 
-    let grade = this.gradeDataCollection.items.filter((elem)=>elem.concourse!.id === this.concoursesDsc.items[0]!.id)
+    let grade = this.gradeDataCollection.items.filter((elem)=>elem.concourseRequest!.id === this.concoursesDsc.items[0]!.id)
     console.log(grade)
     if (grade.length){
       this.gradeInstance.update({
         id: grade[0].id,
         personGroup: this.personGroupDsc.items[0],
-        concourse: this.concoursesDsc.items[0],
+        concourseRequest: this.concoursesDsc.items[0],
         comment: this.comment,
         grade: sum
       }).then(data=>{
@@ -260,7 +261,7 @@ class GradeFormComponent extends React.Component<
     else{
       this.gradeInstance.update({
         personGroup: this.personGroupDsc.items[0],
-        concourse: this.concoursesDsc.items[0],
+        concourseRequest: this.concoursesDsc.items[0],
         comment: this.comment,
         grade: sum
       }).then(data=>{
@@ -322,7 +323,7 @@ class GradeFormComponent extends React.Component<
 
     if (this.concoursesDsc.items[0]){
       let dateNow = moment(Date.now()) ;
-      let requestDate = moment(this.concoursesDsc.items[0]!.endVoting)
+      let requestDate = moment(this.concoursesDsc.items[0]!.endDate)
       console.log(requestDate)
       if (dateNow.isAfter(requestDate)){
         isDisabled = true

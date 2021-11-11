@@ -73,7 +73,7 @@ type Props = FormComponentProps & EditorProps;
 @injectMainStore
 @inject("rootStore")
 @observer
-class ConcourseRequestEditComponent extends AbstractBprocEdit<
+class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
   ConcourseRequest,
   Props
 > {
@@ -241,27 +241,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     });
   };
 
-  // getUpdateEntityData(): any {
-  //   if (this.isNotDraft()) return super.getUpdateEntityData();
-  //   else return {
-  //     personGroup: {
-  //       id: this.personGroupId,
-  //       concourse: this.concoursesDc.items[0]
-  //     },
-  //     ...super.getUpdateEntityData()
-  //   };
-  // }
-
-  // update = () => {
-  //   const updateEntityData = this.getUpdateEntityData();
-  //   // if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
-  //   //   updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
-  //   // }
-  //
-  //   return this.dataInstance.update({
-  //     personGroup: this.personGroupId,
-  //     ...updateEntityData});
-  // };
   @observable
   visible: boolean = false;
 
@@ -414,24 +393,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     return (
 
 
-        <div className="cardWrapper" id="concourseRequest">
-          <h1>
-            {this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH
-              ? this.props.intl.formatMessage({ id: "concourseRequestEdit" })
-              : this.props.intl.formatMessage({ id: "concourseRequestCreate" })}
-          </h1>
+
           <Card
-            className={`narrow-layout card-actions-container`}
-            actions={[
-              <Button
-                buttonType={ButtonType.FOLLOW}
-                htmlType={"button"}
-                onClick={() => goBackOrHomePage(this.props.history!)}
-              >
-                {this.props.intl.formatMessage({ id: "close" })}
-              </Button>,
-              saveButton ? this.getOutcomeBtns() : null
-            ]}
+            className={`narrow-layout`}
             bordered={false}
           >
             <Form onSubmit={this.validate} layout="vertical">
@@ -496,29 +460,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   }}
                   justify={"space-between"}
                 >
-                  {/*<ReadonlyField*/}
-                  {/*  entityName={entityName}*/}
-                  {/*  propertyName="personGroup"*/}
-                  {/*  form={this.props.form}*/}
-                  {/*  disabled={true}*/}
-                  {/*  formItemOpts={{ style: {minWidth: "30%", marginBottom: "12px" } }}*/}
-                  {/*  optionsContainer={this.personGroupsDc}*/}
-                  {/*  getFieldDecoratorOpts={{}}*/}
-
-                  {/*/>*/}
-                  {/*<Form.Item*/}
-                  {/*  label={createElement(Msg, {*/}
-                  {/*    entityName: entityName,*/}
-                  {/*    propertyName: "personGroup"*/}
-                  {/*  })}*/}
-                  {/*  required={true}*/}
-                  {/*  style={{minWidth: "30%", marginBottom: "12px"}}*/}
-                  {/*>*/}
-                  {/*  <Input*/}
-                  {/*    value={this.person ? this.person["_instanceName"] || "" : ""}*/}
-                  {/*    disabled*/}
-                  {/*  />*/}
-                  {/*</Form.Item>*/}
 
                   <ReadonlyField
                     entityName={entityName}
@@ -557,33 +498,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       rules: [{ required: true }]
                     }}
                   />
-                  {/*<Form.Item*/}
-                  {/*  label={createElement(Msg, {*/}
-                  {/*    entityName: entityName,*/}
-                  {/*    propertyName: "initiatorCompany"*/}
-                  {/*  })}*/}
-                  {/*  required={true}*/}
-                  {/*  style={{minWidth: "30%", marginBottom: "12px"}}*/}
-                  {/*>*/}
-                  {/*  <Input*/}
-                  {/*    // value={this.initiatorCompanyName ? this.initiatorCompanyName || "" : ""}*/}
-                  {/*    disabled*/}
-                  {/*  />*/}
-                  {/*</Form.Item>*/}
-
-                  {/*<Form.Item*/}
-                  {/*  label={createElement(Msg, {*/}
-                  {/*    entityName: entityName,*/}
-                  {/*    propertyName: "initiatorPosition"*/}
-                  {/*  })}*/}
-                  {/*  required={true}*/}
-                  {/*  style={{minWidth: "30%", marginBottom: "12px"}}*/}
-                  {/*>*/}
-                  {/*  <Input*/}
-                  {/*    // value={this.initiatorPositionValue ? this.initiatorPositionValue || "" : ""}*/}
-                  {/*    disabled*/}
-                  {/*  />*/}
-                  {/*</Form.Item>*/}
                 </Row>
                 <Row
                   type="flex"
@@ -617,12 +531,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     }}
                   />
                   {
-                    (this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task") ?
+
                     <ReadonlyField
                       entityName={entityName}
                       propertyName="category"
                       form={this.props.form}
-
+                      disabled={true}
                       formItemOpts={{
                         style: {
                           minWidth: "30%",
@@ -633,7 +547,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       getFieldDecoratorOpts={{
                         rules: [{ required: true }]
                       }}
-                    />:<span style={{minWidth: "30%",}}>{" "}</span>
+                    />
                   }
                 </Row>
                 <Row type="flex" align="middle" justify={"space-between"}>
@@ -878,11 +792,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
               <Card title={this.props.intl.formatMessage({ id: "concourseRequestRequestTemplate" })} className="generalInfo" size="small">
                 <p className="text">{this.props.intl.formatMessage({ id: "concourseRequestDownloadMessage" })}</p>
-                {
-
-                  this.concoursesDc!.items[0] && <ConcourseFile FileId={this.concoursesDc!.items[0]!.requestTemplate!.id} />
-
-                }
               </Card>
 
               <Card
@@ -901,24 +810,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                 />
               </Card>
 
-              {/*<Form.Item style={{ textAlign: "center" }}>*/}
-              {/*  <Button*/}
-              {/*    htmlType="button"*/}
-              {/*  >*/}
-              {/*    <FormattedMessage id="management.editor.cancel" />*/}
-              {/*  </Button>*/}
-
-              {/*  <Button*/}
-              {/*    type="primary"*/}
-              {/*    htmlType="submit"*/}
-              {/*    disabled={status !== "DONE" && status !== "ERROR"}*/}
-              {/*    loading={status === "LOADING"}*/}
-              {/*    style={{ marginLeft: "8px" }}*/}
-              {/*  >*/}
-              {/*    <FormattedMessage id="management.editor.submit" />*/}
-              {/*  </Button>*/}
-              {/*</Form.Item>*/}
-
               {this.globalErrors.length > 0 && (
                 <Alert
                   message={<MultilineText lines={toJS(this.globalErrors)} />}
@@ -928,8 +819,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               )}
             </Form>
 
-            {this.takCard()}
-
             <ConcourseRequestAttachmentsEdit
               entityId={this.isCreateMember ? ConcourseRequestAttachmentsManagement.NEW_SUBPATH : this.selectedRowKey}
               visible={this.visible }
@@ -938,8 +827,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               refreshDs={this.refreshDs}
             />
           </Card>
-        </div>
-
     );
   }
 
@@ -1070,24 +957,24 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
         //
 
-        getCubaREST()!
-        .searchEntities<PersonExt>(
-          PersonExt.NAME,
-          {
-            conditions: [
-              {
-                property: "group.id",
-                operator: "=",
-                value: this.personGroupId
-              }
-            ]
-          },
-          {
-            view: "person-edit"
-          }
-        )
-        .then(value => value[0])
-        .then(value => (this.person = value));
+        // getCubaREST()!
+        // .searchEntities<PersonExt>(
+        //   PersonExt.NAME,
+        //   {
+        //     conditions: [
+        //       {
+        //         property: "group.id",
+        //         operator: "=",
+        //         value: this.personGroupId
+        //       }
+        //     ]
+        //   },
+        //   {
+        //     view: "person-edit"
+        //   }
+        // )
+        // .then(value => value[0])
+        // .then(value => (this.person = value));
         this.dataInstance.item!.concourse = this.dataInstance.item!.concourse ? this.dataInstance.item!.concourse:this.concoursesDc.items[0]
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
@@ -1120,5 +1007,5 @@ export default injectIntl(
         });
       });
     }
-  })(withRouter(ConcourseRequestEditComponent))
+  })(withRouter(ConcourseRequestEditGradeComponent))
 );

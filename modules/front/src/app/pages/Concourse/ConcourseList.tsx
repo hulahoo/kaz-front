@@ -126,7 +126,7 @@ class ConcourseListComponent extends React.Component<
 
   concourseRequestFields = ["requestNumber", "requestDate", "status", "concourse"];
 
-  concourseGradeFields = ["name_ru", "description", "gradeTotal", "comment"];
+  concourseGradeFields = ["requestNameRu", "shortProjectDescriptionRu", "totalGrade", "comment"];
 
   constructor(props: any) {
     super(props);
@@ -251,7 +251,7 @@ class ConcourseListComponent extends React.Component<
     );
   };
 
-  newData = collection<Concourse>(Concourse.NAME, {
+  newData = collection<ConcourseRequest>(ConcourseRequest.NAME, {
     view: "concourse-view",
     sort: "-updateTs",
     filter: {
@@ -290,12 +290,12 @@ class ConcourseListComponent extends React.Component<
 
   render() {
 
-    let newCollection = this.dataCollection.items.map((concourse) => {
-      concourse.judges!.map(judge=>{
+    let newCollection = this.dataCollectionConcourseRequestGrade.items.map((item) => {
+      item.concourse!.judges!.map(judge=>{
         console.log(judge)
         if (judge.personGroup!.id===this.props.rootStore!.userInfo.personGroupId)
-          if (!this.newData.items.includes(concourse)){
-            this.newData.items.push(concourse)
+          if (!this.newData.items.includes(item)){
+            this.newData.items.push(item)
           }
 
       })
@@ -460,10 +460,10 @@ class ConcourseListComponent extends React.Component<
                           to={
                             ConcourseManagement.PATH +
                             "/" +
-                            (record as Concourse).id
+                            (record as ConcourseRequest).id
                           }
                         >
-                          {record && (this.props.mainStore!.locale) == "ru" ? (record! as Concourse).name_ru : (record! as Concourse).name_en}
+                          {record && (this.props.mainStore!.locale) == "ru" ? (record!.concourse! as Concourse).name_ru : (record!.concourse! as Concourse).name_en}
                         </Link>
                       )
                     },
@@ -477,7 +477,7 @@ class ConcourseListComponent extends React.Component<
                           //   console.log(`${el.grade}=> `, el)
                           //   return el
                           // }
-                          return el.concourse!.id === record.id
+                          return el.concourseRequest!.id === record.id
                         })
                         console.log("Element1: ", elem)
                         if (elem[0]) return elem[0]!.grade!
@@ -494,7 +494,7 @@ class ConcourseListComponent extends React.Component<
                           //   console.log(`${el.grade}=> `, el)
                           //   return el
                           // }
-                          return el.concourse!.id === record.id
+                          return el.concourseRequest!.id === record.id
                         })
                         console.log("Element2: ", elem)
                         if (elem[0]) return elem[0]!.comment!

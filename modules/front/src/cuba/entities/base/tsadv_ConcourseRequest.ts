@@ -4,6 +4,8 @@ import { PersonGroupExt } from "./base$PersonGroupExt";
 export class ConcourseRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ConcourseRequest";
   endDate?: any | null;
+  place?: number | null;
+  totalGrade?: any | null;
   concourse?: Concourse | null;
   scaleOfDistrubution?: any | null;
   projectManager?: PersonGroupExt | null;
@@ -38,6 +40,8 @@ export type ConcourseRequestView<
       | "id"
       | "requestNumber"
       | "endDate"
+      | "place"
+      | "totalGrade"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -64,6 +68,8 @@ export type ConcourseRequestView<
       ConcourseRequest,
       | "id"
       | "endDate"
+      | "place"
+      | "totalGrade"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -93,6 +99,8 @@ export type ConcourseRequestView<
       ConcourseRequest,
       | "id"
       | "endDate"
+      | "place"
+      | "totalGrade"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -125,6 +133,8 @@ export type ConcourseRequestView<
       ConcourseRequest,
       | "id"
       | "endDate"
+      | "place"
+      | "totalGrade"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"

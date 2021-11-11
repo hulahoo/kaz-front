@@ -1,6 +1,5 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { MarkCriteria } from "./tsadv_MarkCriteria";
-import { GradeDetail } from "./tsadv_GradeDetail";
 import { TsadvUser } from "./tsadv$UserExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
 export class Concourse extends AbstractParentEntity {
@@ -8,7 +7,6 @@ export class Concourse extends AbstractParentEntity {
   name_ru?: string | null;
   markCriteria?: MarkCriteria[] | null;
   gradeTotal?: any | null;
-  grade?: GradeDetail[] | null;
   place?: number | null;
   comment?: string | null;
   concourseStatus?: any | null;
@@ -92,7 +90,6 @@ export type ConcourseView<V extends ConcourseViewName> = V extends "_base"
       | "judges"
       | "banner"
       | "requestTemplate"
-      | "grade"
       | "markCriteria"
     >
   : never;

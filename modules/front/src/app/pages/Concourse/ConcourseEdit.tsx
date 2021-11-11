@@ -34,6 +34,10 @@ import TextArea from "antd/es/input/TextArea";
 import GradeFormComponent from "./GradeForm";
 import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
 import {BaseUuidEntity} from "../../../cuba/entities/base/sys$BaseUuidEntity";
+import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
+import ConcourseRequestEdit from "../ConcourseRequest/ConcourseRequestEdit";
+import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
+import ConcourseRequestEditGrade from "../ConcourseRequest/ConcourseRequestEditGrade";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -60,8 +64,8 @@ class ConcourseEditComponent extends React.Component<
   RootStoreProp &
   RouteComponentProps<any>, IState
 > {
-  dataInstance = instance<Concourse>(Concourse.NAME, {
-    view: "concourse-view",
+  dataInstance = instance<ConcourseRequest>(ConcourseRequest.NAME, {
+    view: "concourseRequest-edit",
     loadImmediately: false
   });
 
@@ -114,7 +118,7 @@ class ConcourseEditComponent extends React.Component<
   pageName: string = "concourseManagement"
 
   setTotalGrade=(sum:number)=>{
-    this.dataInstance.item!.gradeTotal = sum;
+    this.dataInstance.item!.totalGrade = sum;
     this.dataInstance.commit().then((data)=>{
       this.saved = true
       console.log("SAVED!")
@@ -143,200 +147,19 @@ class ConcourseEditComponent extends React.Component<
             }
           >
             <TabPane
-              tab={this.props.intl.formatMessage({ id: "concourseGeneralInfoTab" })}
+              tab={this.props.intl.formatMessage({id: "concourseGeneralInfoTab"})}
               key="1"
             >
-
-              <Form layout="vertical">
-                <Card size="small" className="generalInfo" style={{
-                  paddingLeft: "20px"}
-                }>
-                  <Row
-                    type={"flex"}
-                    align="middle"
-                    style={{
-                      marginTop: "8px",
-                    }}
-                    justify={"start"}
-                  >
-
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="name_ru"
-                      form={this.props.form}
-                      disabled={true}
-                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="name_en"
-                      form={this.props.form}
-                      disabled
-                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-                  </Row>
-                  <Row
-                    type={"flex"}
-                    align="middle"
-                    style={{
-                      marginTop: "8px"
-                    }}
-                    justify={"start"}
-                  >
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="concourseStatus"
-                      form={this.props.form}
-                      disabled={true}
-                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="category"
-                      form={this.props.form}
-                      disabled={true}
-                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-                  </Row>
-
-                  <Row
-                    type={"flex"}
-                    align="middle"
-                    style={{
-                      marginTop: "8px"
-                    }}
-                    justify={"start"}
-                  >
-
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="startVoting"
-                      form={this.props.form}
-                      disabled={true}
-                      formItemOpts={{ style: { marginBottom: "12px",  minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="endVoting"
-                      form={this.props.form}
-                      disabled={true}
-                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-
-                  </Row>
-
-                  <Row
-                    type={"flex"}
-                    align="middle"
-                    style={{
-                      marginTop: "8px"
-                    }}
-                    justify={"start"}
-                  >
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="judgeInsturction"
-                      form={this.props.form}
-                      disabled={true}
-                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="year"
-                      disabled={true}
-                      form={this.props.form}
-                      formItemOpts={{ style: { marginBottom: "12px", marginLeft:"20px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
-                      }}
-                    />
-
-                  </Row>
-
-                  <Row
-                    type={"flex"}
-                    align="middle"
-                    style={{
-                      marginTop: "8px"
-                    }}
-                    justify={"start"}
-
-                  >
-
-                    <Form.Item
-                      style={{ width: "49%" }}
-                      label={this.createElement(Msg, {
-                        entityName: Concourse.NAME,
-                        propertyName: "description"
-                      })}
-                      required={true}
-                    >
-                      {this.props.form.getFieldDecorator(
-                        "description"
-                      )(<TextArea rows={6} disabled={true} />)}
-                    </Form.Item>
-
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="banner"
-                      disabled={true}
-                      form={this.props.form}
-                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{}}
-                    />
-
-                    <ReadonlyField
-                      entityName={Concourse.NAME}
-                      propertyName="requestTemplate"
-                      disabled={true}
-                      form={this.props.form}
-                      formItemOpts={{ style: { marginBottom: "12px", minWidth: "30%" } }}
-                      getFieldDecoratorOpts={{}}
-                    />
-                  </Row>
-                  {this.globalErrors.length > 0 && (
-                    <Alert
-                      message={<MultilineText lines={toJS(this.globalErrors)} />}
-                      type="error"
-                      style={{ marginBottom: "24px" }}
-                    />
-                  )}
-                </Card>
-
-              </Form>
-
-
+              <ConcourseRequestEditGrade entityId={this.props.entityId}/>
             </TabPane>
             <TabPane
-              tab={this.props.intl.formatMessage({ id: "concourseMarksTab" })}
+              tab={this.props.intl.formatMessage({id: "concourseMarksTab"})}
               key="2"
             >
-              <GradeFormComponent updated={this.saved} setTotalGrade={this.setTotalGrade} dataInstance={this.dataInstance} personGroupId={this.personGroupId && this.personGroupId}  markCriteria={ this.dataInstance.item && this.dataInstance.item.markCriteria}/>
-
+              <GradeFormComponent updated={this.saved} setTotalGrade={this.setTotalGrade}
+                                  dataInstance={this.dataInstance && this.dataInstance}
+                                  personGroupId={this.personGroupId && this.personGroupId}
+                                  markCriteria={this.dataInstance.item! && this.dataInstance.item!.concourse!.markCriteria}/>
             </TabPane>
 
           </Tabs>
@@ -346,10 +169,10 @@ class ConcourseEditComponent extends React.Component<
   }
 
   componentDidMount() {
-    if (this.props.entityId !== ConcourseManagement.NEW_SUBPATH) {
+    if (this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
     } else {
-      this.dataInstance.setItem(new Concourse());
+      this.dataInstance.setItem(new ConcourseRequest());
     }
     this.reactionDisposer = reaction(
       () => {
