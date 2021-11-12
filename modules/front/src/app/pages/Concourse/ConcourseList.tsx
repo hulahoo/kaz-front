@@ -68,18 +68,9 @@ class ConcourseListComponent extends React.Component<
     }
   });
 
-  dataCollectionConcourse = collection<Concourse>(Concourse.NAME, {
-    view: "concourse-view",
+  dataCollectionConcourse = collection<ConcourseRequest>(ConcourseRequest.NAME, {
+    view: "concourseRequest-edit",
     sort: "-updateTs",
-    filter: {
-      conditions:[
-        {
-          value: "ACTIVE",
-          operator: "=",
-          property: "concourseStatus"
-        }
-      ]
-    }
   });
 
   dataCollectionConcourseRequest = collection<ConcourseRequest>(
@@ -328,6 +319,10 @@ class ConcourseListComponent extends React.Component<
     console.log("USER INFO:", this.dataCollection);
     const { status } = this.dataCollection;
 
+    let dates = this.bestConcoursesList.items.map(el=>el.requestDate.split("-")[0])
+    console.log(dates)
+    let uniqueYears = [...new Set(dates)];
+
     return (
       <Page pageName={this.props.intl.formatMessage({ id: this.pageName })}>
         <Section size="large">
@@ -359,10 +354,15 @@ class ConcourseListComponent extends React.Component<
                   <Col  >{this.props.intl.formatMessage({id: "concourse.categories.year"})}</Col>
                   <Col  >
                     <Select allowClear={true} placeholder={"....."} onChange={value => this.handleChangeYear("name",value as string)} style={{width:"100%"}} >
-                      <Option value={"2018"}>2018</Option>
-                      <Option value={"2019"}>2019</Option>
-                      <Option value={"2020"}>2020</Option>
-                      <Option value={"2021"}>2021</Option>
+                      {
+                        uniqueYears.map((el, id)=>(
+                          <Option value={el} key={el+id}>{el}</Option>
+                        ))
+                      }
+                      {/*<Option value={"2018"}>2018</Option>*/}
+                      {/*<Option value={"2019"}>2019</Option>*/}
+                      {/*<Option value={"2020"}>2020</Option>*/}
+                      {/*<Option value={"2021"}>2021</Option>*/}
                     </Select>
                   </Col>
                 </div>
@@ -381,25 +381,25 @@ class ConcourseListComponent extends React.Component<
                 {this.bestConcoursesList.items.filter(el=>el.place && (el.place.toString()==="1"||el.place.toString()==="2"||el.place.toString()==="3")).map(
                   (el, index) => {
                     if (this.filterYearValue && this.filterCategoryValue){
-                      return (el.year!.toString()===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en, el.place!, el!.organizationBin
+                      return (el.requestDate!.toString().split("-")[0]===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(this.props.mainStore!.locale == "ru" ? el!.requestNameRu : el!.requestNameEn, el.place!, el!.organizationBin
                       )
                     }
                     else if (this.filterYearValue && !this.filterCategoryValue){
-                      return el.year!.toString() === this.filterYearValue && this.bestConcourseComponent(
-                        this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
+                      return el.requestDate!.toString().split("-")[0] === this.filterYearValue && this.bestConcourseComponent(
+                        this.props.mainStore!.locale == "ru" ? el!.requestNameRu : el!.requestNameEn,
                         el.place!,
                           el!.organizationBin
                         )
                     }
                     else if (!this.filterYearValue && this.filterCategoryValue){
-                      return el.category!.toString() === this.filterCategoryValue &&
+                      return el.category && el.category!.toString() === this.filterCategoryValue &&
                         this.bestConcourseComponent(
-                          this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
+                          this.props.mainStore!.locale == "ru" ? el!.requestNameRu : el!.requestNameEn,
                           el.place!,
                           el!.organizationBin
                         )
                     }
-                    return this.bestConcourseComponent( this.props.mainStore!.locale == "ru" ? el!.name_ru:el!.name_en,
+                    return this.bestConcourseComponent( this.props.mainStore!.locale == "ru" ?el!.requestNameRu : el!.requestNameEn,
                       index + 1,
                       el!.organizationBin)
                   }

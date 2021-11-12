@@ -617,12 +617,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     }}
                   />
                   {
-                    (this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task") ?
+                    (this.takCard().props!.tasks &&  this.takCard().props!.tasks![this.takCard().props!.tasks.length-1].name === "administrator_task" ) ?
                     <ReadonlyField
                       entityName={entityName}
                       propertyName="category"
                       form={this.props.form}
-
+                      disabled={this.props.rootStore!.userInfo!.personGroupId === this.dataInstance.item!.personGroup!.id}
                       formItemOpts={{
                         style: {
                           minWidth: "30%",
@@ -631,7 +631,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       }}
 
                       getFieldDecoratorOpts={{
-                        rules: [{ required: true }]
+                        rules: [{ required: true }],
+                        getValueFromEvent: (id, val) => {
+                          if (id) {
+                            this.update().then(()=>console.log("UPDATED!"))
+                            return id;
+                          }
+                        }
                       }}
                     />:<span style={{minWidth: "30%",}}>{" "}</span>
                   }
