@@ -709,15 +709,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                           ConcourseRequestManagement.NEW_SUBPATH
                         ) {
                           if (personGroupId) {
-                            console.log(personGroupId)
-                            const manager = this.personGroupsDc.items.find(
-                              person => person.id === personGroupId
-                            ) as PersonExt;
+
                             this.getManagerUserRecordById(
                               personGroupId,
-                              manager["list"][0]!.id
+
                             );
-                            console.log(manager["list"][0], val);
                             return personGroupId;
                           } else {
                             this.props.form.setFieldsValue({
@@ -780,14 +776,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       rules: [{ required: true }],
                       getValueFromEvent: (personGroupId, val) => {
                         if (personGroupId) {
-                          const expert = this.personGroupsDc.items.find(
-                            person => person.id === personGroupId
-                          ) as PersonExt;
+                          // const expert = this.personGroupsDc.items.find(
+                          //   person => person.id === personGroupId
+                          // ) as PersonExt;
                           this.getExpertUserRecordById(
                             personGroupId,
-                            expert["list"][0]!.id
                           );
-                          console.log(expert["list"][0], val);
+
                           return personGroupId;
                         } else {
                           this.props.form.setFieldsValue({
@@ -991,12 +986,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     this.showDeletionDialog(this.getRecordById(this.selectedRowKey!));
   };
 
-  getExpertUserRecordById(id: string, groupId: string) {
-    // @ts-ignore
-    if (id || groupId) {
+  getExpertUserRecordById(id: string) {
+    if (id) {
       const pos = restServices.employeeService.personProfile(id).then(pos => {
         this.props.form.setFieldsValue({
-          expertCompany: pos.organizationName,
+          expertCompany: pos.companyCode,
           expertPosition: pos.positionName
         });
       });
@@ -1005,18 +999,17 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
   }
 
-  getManagerUserRecordById(id: string, groupId: string) {
-    // @ts-ignore
-    if (id || groupId) {
+  getManagerUserRecordById(id: string) {
+    if (id) {
       const pos = restServices.employeeService.personProfile(id).then(pos => {
         this.props.form.setFieldsValue({
-          managerCompany: pos.organizationName,
+          managerCompany: pos.companyCode,
           managerPosition: pos.positionName
         });
       });
 
     } else {
-      console.log("No data:", id, groupId);
+      console.log("No data:", id);
     }
   }
 
@@ -1035,40 +1028,38 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         this.reqNumber = item ? item.requestNumber : this.props.form.getFieldValue("requestNumber");
         console.log(this.reqNumber)
         this.initDataCollection()
-        if (item && !this.isNotDraft()) {
-          console.log("Inside item:", item)
-          this.personGroupId = item.personGroup
-            ? item.personGroup!.id
-            : this.props.rootStore!.userInfo.personGroupId;
+        let values:any;
+        this.personGroupId = item!.personGroup ? item!.personGroup!.id : this.props.rootStore!.userInfo!.personGroupId!
+        restServices.employeeService.personProfile(this.personGroupId).then(data=>{
+          values = {
+            personGroup: this.personGroupId,
+            initiatorCompany: data.companyCode,
+            initiatorPosition: data.positionName,
+          }
+          this.props.form.setFieldsValue(values);
+        })
 
-          restServices.employeeService
-            .personProfile(
-              item.personGroup
-                ? item.personGroup!.id
-                : this.props.rootStore!.userInfo.personGroupId
-            )
-            .then(data => {
-              // const {concourseId}  = this.props.location
-              this.reqNumber = item.requestNumber;
-              let values:any = {
-                personGroup: this.personGroupId,
-                initiatorCompany: data.organizationName,
-                initiatorPosition: data.positionName,
-              }
+        if (item && this.isNotDraft()){
+          const managerId = this.dataInstance.item!.projectManager!.id
+          let values:any;
+          restServices.employeeService.personProfile(managerId).then(data=>{
+            values = {
+              managerCompany: data.companyCode,
+              managerPosition: data.positionName,
+            }
+            this.props.form.setFieldsValue(values);
+          })
+          const expertId = this.dataInstance.item!.projectExpert!.id
+          restServices.employeeService.personProfile(expertId).then(data=>{
+            values = {
+              expertCompany: data.companyCode,
+              expertPosition: data.positionName,
+              ...values
+            }
+            this.props.form.setFieldsValue(values);
+          })
 
-              if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH){
-                const paramsConcourseId = this.props.location.search.split("=")[1]
-                values = {
-                  // concourse: paramsConcourseId,
-                  ...values
-                }
-              }
-              console.log(values)
-              this.props.form.setFieldsValue(values);
-            });
         }
-
-        //
 
         getCubaREST()!
         .searchEntities<PersonExt>(
@@ -1089,9 +1080,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         .then(value => value[0])
         .then(value => (this.person = value));
         this.dataInstance.item!.concourse = this.dataInstance.item!.concourse ? this.dataInstance.item!.concourse:this.concoursesDc.items[0]
-        this.props.form.setFieldsValue(
-          this.dataInstance.getFieldValues(this.fields)
-        );
+
+        this.props.form.setFieldsValue(this.dataInstance.getFieldValues(this.fields));
       }
     );
 

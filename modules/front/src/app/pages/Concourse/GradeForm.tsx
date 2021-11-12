@@ -37,6 +37,8 @@ import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
 import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
 import moment from "moment";
 import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
+import {Indicator} from "../../../cuba/entities/base/tsadv_Indicator";
+import {RatingScale} from "../../../cuba/entities/base/tsadv_RatingScale";
 
 const { Footer, Content, Sider } = Layout;
 const {Option} = Select;
@@ -109,7 +111,12 @@ class GradeFormComponent extends React.Component<
           value: this.props.personGroupId,
           operator: "=",
           property: "personGroup.id"
+        }, {
+          value: this.dataInstance.item!.id,
+          operator: "=",
+          property: "concourseRequest.id"
         }
+
       ]
     }
   })
@@ -121,7 +128,7 @@ class GradeFormComponent extends React.Component<
         {
           value: this.dataInstance.item!.id,
           operator: "=",
-          property: "concourse.id"
+          property: "concourseRequest.id"
         }
       ]
     }
@@ -206,7 +213,7 @@ class GradeFormComponent extends React.Component<
     }
     console.log(this.gradeInstance)
 
-    let grade = this.gradeDataCollection.items.filter((elem)=>elem.concourseRequest!.id === this.concoursesDsc.items[0]!.id)
+    let grade = this.gradeDataCollection.items
     console.log(grade)
     if (grade.length){
       this.gradeInstance.update({
@@ -259,11 +266,38 @@ class GradeFormComponent extends React.Component<
       });
     }
     else{
+      let indicators:Indicator[] = [];
+      if (this.checkboxValue){
+        for (let obj in this.checkboxValue){
+          let temp = new Indicator();
+          temp.name_ru = obj;
+          temp.name_en = obj;
+          if (this.checkboxValue.hasOwnProperty(obj))
+            temp.value = this.checkboxValue[obj]
+
+          indicators.push(temp)
+        }
+      }
+
+      let ratingScales:RatingScale[]=[];
+
+      if (this.optionValue){
+        for (let obj in this.optionValue){
+          let tmp = new RatingScale();
+          tmp.name_ru = obj;
+          tmp.name_en = obj;
+          if (this.optionValue.hasOwnProperty(obj) && tmp.level_relation)
+            tmp.level_relation.push(this.optionValue[obj])
+          ratingScales.push(tmp)
+        }
+      }
+
+
       this.gradeInstance.update({
         personGroup: this.personGroupDsc.items[0],
         concourseRequest: this.concoursesDsc.items[0],
         comment: this.comment,
-        grade: sum
+        grade: sum,
       }).then(data=>{
         message.success(
           this.props.intl.formatMessage({ id: "management.editor.success" })
@@ -343,7 +377,7 @@ class GradeFormComponent extends React.Component<
     const activeTab = "1";
     const defaultActiveKey = activeTab ? activeTab : "1";
 
-
+    const isRu = this.props.mainStore!.locale==="ru"
 
     return (
       <Form style={{width: "100%"}} onSubmit={this.handleSubmit}>
@@ -353,16 +387,16 @@ class GradeFormComponent extends React.Component<
             el.indicator && el.indicator_relation &&
             <Form.Item style={{ marginTop:"24px", width:"80%"}} required={true} label={this.createElement(Msg, {
               entityName: "tsadv_markCriteria",
-              propertyName: el.name_en
+              propertyName: isRu?el.name_ru:el.name_en
             })}>
               {
               el.indicator_relation.map(chk => (
                   <Form.Item key={chk.id} style={{display: "flex", alignItems: "center", margin:"0", marginLeft:"16px", justifyContent:"flex-start"}}
                              label={this.createElement(Msg, {
                                entityName: "tsadv_markCriteria",
-                               propertyName: chk.name_en
+                               propertyName: isRu?chk.name_ru:chk.name_en
                              })}>
-                    <Checkbox disabled={isDisabled} onChange={ value=>this.handleChangeCheckbox(chk.name_en!, value.target.checked) }/>
+                    <Checkbox disabled={isDisabled} onChange={ value=>this.handleChangeCheckbox(isRu?chk.name_ru!:chk.name_en!, value.target.checked) }/>
                   </Form.Item>
               ))
               }
@@ -370,11 +404,11 @@ class GradeFormComponent extends React.Component<
             [
               !el.indicator && el.ratingScale && <Form.Item style={{marginTop:"24px"}} required={true} label={this.createElement(Msg, {
                   entityName: "tsadv_markCriteria",
-                  propertyName: this.props.mainStore!.locale=="ru" ? el.ratingScale!.name_ru : el.ratingScale!.name_en
+                  propertyName: isRu ? el.ratingScale!.name_ru : el.ratingScale!.name_en
                 })}>
-                  <Select disabled={isDisabled} onChange={ value => this.handleChangeOption(el.ratingScale!.name_ru!, value as string)} allowClear={true} placeholder={"....."} style={{width:"80%"}} >{
-                    el.ratingScale.level_relation!.map((lvl)=>(
-                       lvl && <Option key={lvl.id} value={lvl.number!} >{lvl.name_en!}</Option>
+                  <Select disabled={isDisabled} onChange={ value => this.handleChangeOption(isRu ?el.ratingScale!.name_ru!:el.ratingScale!.name_en!, value as string)} allowClear={true} placeholder={"....."} style={{width:"80%"}} >{
+                    el.ratingScale.level_relation!.map((lvl, idx)=>(
+                       lvl && <Option key={lvl.id?lvl.id:idx+"option-"+el.ratingScale!.name_en} value={lvl.number!} >{isRu ?lvl.name_ru:lvl.name_en!}</Option>
                     ))
                   }
                   </Select>
@@ -387,13 +421,14 @@ class GradeFormComponent extends React.Component<
             style={{ width: "80%" }}
             label={this.createElement(Msg, {
               entityName: "tsadv_markCriteria",
-              propertyName: "Comments"
+              propertyName: isRu?"Комментарии":"Comments"
             })}
             required={true}
           >
-            {this.props.form.getFieldDecorator(
-              "Comments"
-            )(<TextArea disabled={isDisabled} value={this.comment} onChange={this.handleChangeComment} rows={6} />)}
+            {
+              this.props.form.getFieldDecorator("Comments")
+              (<TextArea disabled={isDisabled} value={this.comment} onChange={this.handleChangeComment} rows={6} />)
+            }
           </Form.Item>
           <Form.Item style={{ textAlign: "left", marginTop:"36px" }}>
             <Button

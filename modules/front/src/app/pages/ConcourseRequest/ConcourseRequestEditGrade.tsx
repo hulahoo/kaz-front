@@ -361,7 +361,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
         type="primary"
         icon={"edit"}
         key="edit"
-        disabled={this.selectedRowKey === undefined}
+        disabled={isNotDraft ? true : this.selectedRowKey === undefined}
         onClick={() => {
           this.isCreateMember = false;
           this.showModal();
@@ -391,14 +391,8 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
     }
     // console.log("Concourse:",this.concoursesDc)
     return (
-
-
-
-          <Card
-            className={`narrow-layout`}
-            bordered={false}
-          >
-            <Form onSubmit={this.validate} layout="vertical">
+      [
+            <Form style={{padding:"8px"}} onSubmit={this.validate} layout="vertical">
 
                 <Card title={this.props.intl.formatMessage({ id: "concourseGeneralInfo" })} size="small" className="generalInfo">
                   <Spin spinning={status == "LOADING"}>
@@ -817,7 +811,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
                   style={{ marginBottom: "24px" }}
                 />
               )}
-            </Form>
+            </Form>,
 
             <ConcourseRequestAttachmentsEdit
               entityId={this.isCreateMember ? ConcourseRequestAttachmentsManagement.NEW_SUBPATH : this.selectedRowKey}
@@ -826,7 +820,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
               requestNum = {this.reqNumber}
               refreshDs={this.refreshDs}
             />
-          </Card>
+          ]
     );
   }
 
@@ -922,59 +916,59 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
         this.reqNumber = item ? item.requestNumber : this.props.form.getFieldValue("requestNumber");
         console.log(this.reqNumber)
         this.initDataCollection()
-        if (item && !this.isNotDraft()) {
-          console.log("Inside item:", item)
-          this.personGroupId = item.personGroup
-            ? item.personGroup!.id
-            : this.props.rootStore!.userInfo.personGroupId;
+        let values:any;
+        this.personGroupId = item!.personGroup ? item!.personGroup!.id : this.props.rootStore!.userInfo!.personGroupId!
+        restServices.employeeService.personProfile(this.personGroupId).then(data=>{
+          values = {
+            personGroup: this.personGroupId,
+            initiatorCompany: data.companyCode,
+            initiatorPosition: data.positionName,
+          }
+          this.props.form.setFieldsValue(values);
+        })
 
-          restServices.employeeService
-            .personProfile(
-              item.personGroup
-                ? item.personGroup!.id
-                : this.props.rootStore!.userInfo.personGroupId
-            )
-            .then(data => {
-              // const {concourseId}  = this.props.location
-              this.reqNumber = item.requestNumber;
-              let values:any = {
-                personGroup: this.personGroupId,
-                initiatorCompany: data.organizationName,
-                initiatorPosition: data.positionName,
-              }
+        if (item && this.isNotDraft()){
+          const managerId = this.dataInstance.item!.projectManager!.id
+          let values:any;
+          restServices.employeeService.personProfile(managerId).then(data=>{
+            values = {
+              managerCompany: data.companyCode,
+              managerPosition: data.positionName,
+            }
+            this.props.form.setFieldsValue(values);
+          })
+          const expertId = this.dataInstance.item!.projectExpert!.id
+          restServices.employeeService.personProfile(expertId).then(data=>{
+            values = {
+              expertCompany: data.companyCode,
+              expertPosition: data.positionName,
+              ...values
+            }
+            this.props.form.setFieldsValue(values);
+          })
 
-              if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH){
-                const paramsConcourseId = this.props.location.search.split("=")[1]
-                values = {
-                  // concourse: paramsConcourseId,
-                  ...values
-                }
-              }
-              console.log(values)
-              this.props.form.setFieldsValue(values);
-            });
         }
 
         //
 
-        // getCubaREST()!
-        // .searchEntities<PersonExt>(
-        //   PersonExt.NAME,
-        //   {
-        //     conditions: [
-        //       {
-        //         property: "group.id",
-        //         operator: "=",
-        //         value: this.personGroupId
-        //       }
-        //     ]
-        //   },
-        //   {
-        //     view: "person-edit"
-        //   }
-        // )
-        // .then(value => value[0])
-        // .then(value => (this.person = value));
+        getCubaREST()!
+        .searchEntities<PersonExt>(
+          PersonExt.NAME,
+          {
+            conditions: [
+              {
+                property: "group.id",
+                operator: "=",
+                value: this.personGroupId
+              }
+            ]
+          },
+          {
+            view: "person-edit"
+          }
+        )
+        .then(value => value[0])
+        .then(value => (this.person = value));
         this.dataInstance.item!.concourse = this.dataInstance.item!.concourse ? this.dataInstance.item!.concourse:this.concoursesDc.items[0]
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
@@ -983,7 +977,6 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
     );
 
     this.loadData();
-    this.loadBpmProcessData();
   }
 
   protected initItem(request: ConcourseRequest):void {
