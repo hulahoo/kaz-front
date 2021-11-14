@@ -467,7 +467,7 @@
   "concourseDesc": "Description",
   "concourseCompany": "Company",
   "concoursePlace": "Place",
-  "concourseRequestEdit": "Edit concourse",
+  "concourseRequestEdit": "Concourse request",
   "concourseRequestCreate": "Create request",
   "comment.rate.error.required": "Rate is not selected",
   "workOnWeekend": "Approved Weekend work, Temporary transfers, Overtime work",

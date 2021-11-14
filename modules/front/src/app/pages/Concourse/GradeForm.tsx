@@ -1,13 +1,13 @@
 import * as React from "react";
 import {FormEvent, FunctionComponent} from "react";
-import { Alert, Button, Card, Form, message, Row, Tabs, Layout, Select, Checkbox } from "antd";
+import {Alert, Button, Card, Form, message, Row, Tabs, Layout, Select, Checkbox} from "antd";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {inject, observer} from "mobx-react";
-import { ConcourseManagement } from "./ConcourseManagement";
-import { FormComponentProps } from "antd/lib/form";
+import {ConcourseManagement} from "./ConcourseManagement";
+import {FormComponentProps} from "antd/lib/form";
 import {Link, Redirect, RouteComponentProps} from "react-router-dom";
-import { IReactionDisposer, observable, reaction, toJS } from "mobx";
+import {IReactionDisposer, observable, reaction, toJS} from "mobx";
 import {
   FormattedMessage,
   injectIntl,
@@ -26,7 +26,7 @@ import {
 
 import "../../../app/App.css";
 
-import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
+import {Concourse} from "../../../cuba/entities/base/tsadv_Concourse";
 import {RootStoreProp} from "../../store";
 import {ReadonlyField} from "../../components/ReadonlyField";
 import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
@@ -40,9 +40,9 @@ import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseReque
 import {Indicator} from "../../../cuba/entities/base/tsadv_Indicator";
 import {RatingScale} from "../../../cuba/entities/base/tsadv_RatingScale";
 
-const { Footer, Content, Sider } = Layout;
+const {Footer, Content, Sider} = Layout;
 const {Option} = Select;
-const { TabPane } = Tabs;
+const {TabPane} = Tabs;
 
 type Props = FormComponentProps & EditorProps;
 
@@ -51,10 +51,11 @@ type EditorProps = {
   setTotalGrade: Function,
   dataInstance: DataInstanceStore<ConcourseRequest>,
   personGroupId?: any,
-  updated:boolean
+  updated: boolean
 };
 
 type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
+
 interface IState {
   data: number;
 }
@@ -63,24 +64,40 @@ interface IState {
 @injectMainStore
 @inject("rootStore")
 @observer
-class GradeFormComponent extends React.Component<
-  Props & WrappedComponentProps & ActiveTabProps &
-  MainStoreInjected  &
+class GradeFormComponent extends React.Component<Props & WrappedComponentProps & ActiveTabProps &
+  MainStoreInjected &
   RootStoreProp &
-  RouteComponentProps<any>, IState
-  > {
+  RouteComponentProps<any>, IState> {
 
   dataInstance = this.props.dataInstance
 
-  gradeInstance = instance<GradeDetail>(GradeDetail.NAME,{
+  gradeInstance = instance<GradeDetail>(GradeDetail.NAME, {
     view: "gradeDetail-view",
     loadImmediately: false
   })
 
-  concoursesDsc = collection<ConcourseRequest>(ConcourseRequest.NAME, {
+  indicatorsDsc = collection<Indicator>(Indicator.NAME, {
+    view: "_base",
+  })
+
+
+  concoursesDsc = collection<Concourse>(Concourse.NAME, {
+    view: "concourse-view",
+    filter: {
+      conditions: [
+        {
+          value: this.dataInstance.item!.concourse!.id,
+          operator: "=",
+          property: "id"
+        }
+      ]
+    }
+  })
+
+  concourseRequestsDsc = collection<ConcourseRequest>(ConcourseRequest.NAME, {
     view: "concourseRequest-edit",
-    filter:{
-      conditions:[
+    filter: {
+      conditions: [
         {
           value: this.dataInstance.item!.id,
           operator: "=",
@@ -91,7 +108,7 @@ class GradeFormComponent extends React.Component<
   })
 
   personGroupDsc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view:"personGroup-view",
+    view: "personGroup-view",
     filter: {
       conditions: [
         {
@@ -133,7 +150,6 @@ class GradeFormComponent extends React.Component<
       ]
     }
   })
-
   @observable
   updated = this.props.updated;
   reactionDisposer: IReactionDisposer;
@@ -148,43 +164,48 @@ class GradeFormComponent extends React.Component<
 
   pageName: string = "concourseManagement"
 
+  @observable
+  optionValue: object = {}
 
   @observable
-  optionValue:object = {}
+  checkboxValue: object = {}
 
   @observable
-  checkboxValue:object = {}
+  personGroupId: any = this.props.personGroupId
 
   @observable
-  personGroupId:any = this.props.personGroupId
+  comment: string = ""
+  isDisabled: boolean = false;
 
-  @observable
-  comment:string = ""
-
-  handleChangeOption= (name:string, value:string) =>{
-    this.optionValue = {
-      [name]:value,
-      ...this.optionValue
+  handleChangeOption = (name: string, val: any) => {
+    console.log(val)
+    let [item, value] = val.split("$")
+    this.optionValue[name] = {
+      [item]: value
     }
-    console.log("filteredValue", this.optionValue)
+    console.log("filteredValueOption", this.optionValue)
   }
 
-  handleChangeCheckbox= (name:string, value:any) =>{
+  handleChangeCheckbox = (item: string, name: string, value: any) => {
     console.log(value)
-    this.checkboxValue[name] = value ? value : false
-    console.log("filteredValue", this.checkboxValue)
+    this.checkboxValue[item] = {
+      ...this.checkboxValue[item],
+      [name]: value ? value : false,
+    }
+
+    console.log("filteredValueCheckbox", this.checkboxValue)
   }
 
-  handleChangeComment=(e:any)=>{
+  handleChangeComment = (e: any) => {
     this.comment = e.target.value
   }
 
-  totalGradeHandler=(localSum:number)=>{
+  totalGradeHandler = (localSum: number) => {
     let sum = 0;
-    sum+=localSum;
-    this.totalGradeDataCollection.items.map(el=>{
-      if (el.grade){
-        sum+=el.grade;
+    sum += localSum;
+    this.totalGradeDataCollection.items.map(el => {
+      if (el.grade) {
+        sum += el.grade;
       }
     })
     this.props.setTotalGrade(sum)
@@ -198,35 +219,151 @@ class GradeFormComponent extends React.Component<
 
   }
 
-  submitForm( values1:object, values2:object ){
+  @observable
+  innerHtml:string = ""
+
+  submitForm(values1: object, values2: object) {
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     let sum = 0
-    if (values1){
-      for (const property in values1){
-        sum += +values1[property]
+    if (values1) {
+      for (const property in values1) {
+        if (values1.hasOwnProperty(property)){
+          for (const val in values1[property]){
+            if (values1[property].hasOwnProperty(val))
+              sum += +values1[property][val]
+          }
+        }
       }
     }
-    if (values2){
-      for (const property in values2){
-        if (values2[property]) sum++;
+    if (values2) {
+      for (const property in values2) {
+        if (values2.hasOwnProperty(property)){
+          for (const val in values2[property]){
+            if (values2[property].hasOwnProperty(val))
+              if ( values2[property][val] )
+                sum++
+          }
+        }
       }
     }
-    console.log(this.gradeInstance)
+    console.log(sum)
 
     let grade = this.gradeDataCollection.items
-    console.log(grade)
-    if (grade.length){
+    const indicators = (checkboxValue: any, optionValue:any) => {
+      let html = `
+          <form class="ant-form ant-form-horizontal" style="width: 100%;">
+                    <div class="ant-card generalInfo ant-card-bordered ant-card-small" style="padding: 5px 20px 20px;">
+                        <div class="ant-card-body">
+      `
+      if (checkboxValue)
+        for (let key in checkboxValue) {
+          if (checkboxValue.hasOwnProperty(key)) {
+            html +=`
+              <div class="ant-row ant-form-item" style="margin-top: 24px;">
+                  <div class="ant-col ant-form-item-label">
+                      <label class="ant-form-item-required" title="">${key}</label>
+                  </div>
+              `
+            for (let values in checkboxValue[key])
+              if (checkboxValue[key].hasOwnProperty(values))
+                html += `
+                  <span class="ant-form-item-children">
+                      <div class="ant-row ant-form-item" style="display: flex; align-items: center; margin: 0px 0px 0px 16px; justify-content: flex-start;">
+                          <div class="ant-col ant-form-item-label">
+                              <label class="" title="">${values}</label>
+                          </div>
+                          <div class="ant-col ant-form-item-control-wrapper">
+                              <div class="ant-form-item-control">
+                                  <span class="ant-form-item-children">
+                                      <label class="ant-checkbox-wrapper">
+                                          <span  class="ant-checkbox ${checkboxValue[key][values] ? "ant-checkbox-checked" : ""}">
+                                              <input disabled type="checkbox" class="ant-checkbox-input" value="">
+                                              <span class="ant-checkbox-inner"></span>
+                                          </span>
+                                      </label>
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                  </span>`
+          }
+          html+=`</div>`
+
+        }
+
+      if (optionValue){
+        for (let key in optionValue) {
+          if (optionValue.hasOwnProperty(key)) {
+            html +=`
+              <div class="ant-row ant-form-item" style="margin-top: 24px;">
+                  <div class="ant-col ant-form-item-label">
+                      <label class="ant-form-item-required" title="">${key}</label>
+                  </div>
+              `
+            for (let values in optionValue[key]){
+              if (optionValue[key].hasOwnProperty(values))
+                html += `
+                          <div class="ant-col ant-form-item-control-wrapper">
+                              <div class="ant-form-item-control">
+                                  <span class="ant-form-item-children">
+                                      <div class="ant-select ant-select-enabled ant-select-allow-clear" style="width: 80%;">
+                                          <div class="ant-select-selection ant-select-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-controls="80c4bf7f-823b-44a5-93fe-83b3d92a612b" aria-expanded="false" tabindex="0">
+                                            <div class="ant-select-selection__rendered">
+                                                <div disabled class="ant-select-selection-selected-value" title="${values}" style="display: block; opacity: 1;">
+                                                  ${values}
+                                                </div>
+                                            </div>
+                                          </div>
+                                      </div>
+                                  </span>
+                              </div>
+                          </div>`
+            }
+          }
+          html+=`</div>`
+
+        }
+      }
+
+      html+=`
+      <div class="ant-row ant-form-item" style="width: 80%;">
+          <div class="ant-col ant-form-item-label">
+              <label for="Comments" class="ant-form-item-required" title="">
+                  ${this.props.mainStore!.locale === "ru"?"Комментарии":"Comment"}
+              </label>
+          </div>
+          <div class="ant-col ant-form-item-control-wrapper">
+              <div class="ant-form-item-control">
+                  <span class="ant-form-item-children">
+                      <textarea disabled rows="6" id="Comments" data-__meta="[object Object]" data-__field="[object Object]" class="ant-input">${this.comment}</textarea>
+                  </span>
+              </div>
+          </div>
+      </div>
+      
+      `
+
+      html+=`</div> </div> </form> `
+
+      return html;
+    }
+
+    if (grade.length) {
+
+      console.log(indicators(this.checkboxValue, this.optionValue))
       this.gradeInstance.update({
         id: grade[0].id,
         personGroup: this.personGroupDsc.items[0],
-        concourseRequest: this.concoursesDsc.items[0],
+        concourseRequest: this.concourseRequestsDsc.items[0],
         comment: this.comment,
-        grade: sum
-      }).then(data=>{
+        grade: sum,
+        indicatorsList: indicators(this.checkboxValue, this.optionValue)
+      }).then(data => {
         message.success(
-          this.props.intl.formatMessage({ id: "management.editor.success" })
+          this.props.intl.formatMessage({id: "management.editor.success"})
         );
-        this.totalGradeHandler(sum)
+        console.log("Hopefully updated grade", grade)
+        // this.totalGradeHandler(sum)
         // this.updated = true
 
       }).catch((e: any) => {
@@ -260,48 +397,49 @@ class GradeFormComponent extends React.Component<
           });
         } else {
           message.error(
-            this.props.intl.formatMessage({ id: "management.editor.error" })
+            this.props.intl.formatMessage({id: "management.editor.error"})
           );
         }
       });
-    }
-    else{
-      let indicators:Indicator[] = [];
-      if (this.checkboxValue){
-        for (let obj in this.checkboxValue){
-          let temp = new Indicator();
-          temp.name_ru = obj;
-          temp.name_en = obj;
-          if (this.checkboxValue.hasOwnProperty(obj))
-            temp.value = this.checkboxValue[obj]
 
-          indicators.push(temp)
-        }
-      }
+    } else {
 
-      let ratingScales:RatingScale[]=[];
-
-      if (this.optionValue){
-        for (let obj in this.optionValue){
-          let tmp = new RatingScale();
-          tmp.name_ru = obj;
-          tmp.name_en = obj;
-          if (this.optionValue.hasOwnProperty(obj) && tmp.level_relation)
-            tmp.level_relation.push(this.optionValue[obj])
-          ratingScales.push(tmp)
-        }
-      }
+      console.log(indicators(this.checkboxValue, this.optionValue))
+      this.innerHtml = indicators(this.checkboxValue, this.optionValue)
+      // let indicators:String[] = [];
+      // if (this.checkboxValue){
+      //   for (let obj in this.checkboxValue){
+      //     // let temp = new Indicator();
+      //     // temp.name_ru = obj;
+      //     // temp.name_en = obj;
+      //     // if (this.checkboxValue.hasOwnProperty(obj))
+      //     //   temp.value = this.checkboxValue[obj]
+      //     //
+      //     // indicators.push(temp)
+      //     // console.log(indicators)
+      //     console.log(obj)
+      //     let item = this.indicatorsDsc.items.filter((el)=>{
+      //                 return el.name_en === obj || el.name_ru===obj
+      //     })
+      //     if (item.length){
+      //       // indicators.push(item[0].name_en)
+      //       console.log(indicators)
+      //     }
+      //   }
+      // }
 
 
       this.gradeInstance.update({
         personGroup: this.personGroupDsc.items[0],
-        concourseRequest: this.concoursesDsc.items[0],
+        concourseRequest: this.concourseRequestsDsc.items[0],
         comment: this.comment,
         grade: sum,
-      }).then(data=>{
+        indicatorsList: indicators(this.checkboxValue, this.optionValue)
+      }).then(data => {
         message.success(
-          this.props.intl.formatMessage({ id: "management.editor.success" })
+          this.props.intl.formatMessage({id: "management.editor.success"})
         );
+        // console.log("Hopefully created grade", grade)
         this.totalGradeHandler(sum)
         // this.updated = true
       }).catch((e: any) => {
@@ -335,7 +473,7 @@ class GradeFormComponent extends React.Component<
           });
         } else {
           message.error(
-            this.props.intl.formatMessage({ id: "management.editor.error" })
+            this.props.intl.formatMessage({id: "management.editor.error"})
           );
         }
       });
@@ -349,106 +487,150 @@ class GradeFormComponent extends React.Component<
     e.preventDefault();
   }
 
-
-
-  render() {
-
-    let isDisabled = false
-
-    if (this.concoursesDsc.items[0]){
-      let dateNow = moment(Date.now()) ;
-      let requestDate = moment(this.concoursesDsc.items[0]!.endDate)
-      console.log(requestDate)
-      if (dateNow.isAfter(requestDate)){
-        isDisabled = true
+  checkDates = () => {
+    if (this.concoursesDsc.items[0]) {
+      let dateNow = moment(Date.now());
+      let requestDate = moment(this.concoursesDsc.items[0]!.endVoting)
+      console.log(dateNow, requestDate, dateNow.isAfter(requestDate))
+      if (dateNow.isAfter(requestDate)) {
+        this.isDisabled = true
         console.log(dateNow, requestDate)
       }
 
     }
+  }
+
+  checkGradeExists = () => {
+    let grade = this.gradeDataCollection.items
+    if (grade.length) {
+      this.isDisabled = true
+    }
+  }
+
+  render() {
 
     if (this.updated) {
-      return <Redirect exact={true} to={"/concourse"} />;
+      return <Redirect exact={true} to={"/concourse/4"}/>;
     }
 
-    if (this.goBack){
-      return <Redirect exact={true} to={"/concourse"} />;
+    if (this.goBack) {
+      return <Redirect exact={true} to={"/concourse/4"}/>;
     }
 
     const activeTab = "1";
     const defaultActiveKey = activeTab ? activeTab : "1";
 
-    const isRu = this.props.mainStore!.locale==="ru"
+    const isRu = this.props.mainStore!.locale === "ru"
 
-    return (
+
+
+    this.checkDates()
+    this.checkGradeExists()
+
+
+    return (this.isDisabled && this.gradeDataCollection.items[0]) ? ([
+      <span dangerouslySetInnerHTML={{__html:this.gradeDataCollection.items![0].indicatorsList!}}>
+
+      </span>,
+        <Button
+          htmlType="button"
+          onClick={() => this.goBack = true}
+          style={{marginTop: 24}}
+        >
+          <FormattedMessage id="back"/>
+        </Button>
+      ]
+      ) : (
       <Form style={{width: "100%"}} onSubmit={this.handleSubmit}>
-        <Card size="small" className="generalInfo" style={{padding:"5px 20px 20px"}}>
-        {
-          this.props.markCriteria && this.props.markCriteria.map((el:MarkCriteria) => ([
-            el.indicator && el.indicator_relation &&
-            <Form.Item style={{ marginTop:"24px", width:"80%"}} required={true} label={this.createElement(Msg, {
-              entityName: "tsadv_markCriteria",
-              propertyName: isRu?el.name_ru:el.name_en
-            })}>
-              {
-              el.indicator_relation.map(chk => (
-                  <Form.Item key={chk.id} style={{display: "flex", alignItems: "center", margin:"0", marginLeft:"16px", justifyContent:"flex-start"}}
-                             label={this.createElement(Msg, {
-                               entityName: "tsadv_markCriteria",
-                               propertyName: isRu?chk.name_ru:chk.name_en
-                             })}>
-                    <Checkbox disabled={isDisabled} onChange={ value=>this.handleChangeCheckbox(isRu?chk.name_ru!:chk.name_en!, value.target.checked) }/>
-                  </Form.Item>
-              ))
-              }
-            </Form.Item>,
-            [
-              !el.indicator && el.ratingScale && <Form.Item style={{marginTop:"24px"}} required={true} label={this.createElement(Msg, {
+        <Card size="small" className="generalInfo" style={{padding: "5px 20px 20px"}}>
+          {
+            this.props.markCriteria && this.props.markCriteria.map((el: MarkCriteria) => (
+              [
+                el.indicator && el.indicator_relation && <Form.Item key={isRu ? el.name_ru : el.name_en} style={{marginTop: "24px", width: "80%"}}
+                           required={true} label={this.createElement(Msg, {
+                  entityName: "tsadv_markCriteria",
+                  propertyName: isRu ? el.name_ru : el.name_en
+                })}>
+                  {
+                    el.indicator_relation!.map(chk => (
+                      <Form.Item key={chk.id} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        margin: "0",
+                        marginLeft: "16px",
+                        justifyContent: "flex-start"
+                      }}
+                                 label={this.createElement(Msg, {
+                                   entityName: "tsadv_markCriteria",
+                                   propertyName: isRu ? chk.name_ru : chk.name_en
+                                 })}>
+                        <Checkbox disabled={this.isDisabled}
+                                  onChange={value => this.handleChangeCheckbox(isRu ? el.name_ru! : el.name_en!, isRu ? chk.name_ru! : chk.name_en!, value.target.checked)}/>
+                      </Form.Item>
+                    ))
+                  }
+                </Form.Item>,
+
+                !el.indicator && el.ratingScale &&
+                <Form.Item key={isRu ? el.ratingScale!.name_ru : el.ratingScale!.name_en} style={{marginTop: "24px"}}
+                           required={true} label={this.createElement(Msg, {
                   entityName: "tsadv_markCriteria",
                   propertyName: isRu ? el.ratingScale!.name_ru : el.ratingScale!.name_en
                 })}>
-                  <Select disabled={isDisabled} onChange={ value => this.handleChangeOption(isRu ?el.ratingScale!.name_ru!:el.ratingScale!.name_en!, value as string)} allowClear={true} placeholder={"....."} style={{width:"80%"}} >{
-                    el.ratingScale.level_relation!.map((lvl, idx)=>(
-                       lvl && <Option key={lvl.id?lvl.id:idx+"option-"+el.ratingScale!.name_en} value={lvl.number!} >{isRu ?lvl.name_ru:lvl.name_en!}</Option>
-                    ))
-                  }
+                  <Select disabled={this.isDisabled}
+                          // value={this.optionValue[isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!]}
+                          onChange={ (value) => this.handleChangeOption(isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!, value)}
+                          allowClear={true} placeholder={"....."} style={{width: "80%"}}>
+                    {
+                      el.ratingScale.level_relation!.map((lvl, idx) => (
+                        lvl && <Option key={lvl.id ? lvl.id : idx + "option-" + el.ratingScale!.name_en}
+                                       value={`${isRu ? lvl.name_ru!+"$"+lvl.number! : lvl.name_en!+"$"+lvl.number!}`}>{isRu ? lvl.name_ru : lvl.name_en!}</Option>
+
+                      ))
+                    }
                   </Select>
                 </Form.Item>
 
-            ]
-          ]))
-        }
+
+              ]))
+          }
           <Form.Item
-            style={{ width: "80%" }}
+            style={{width: "80%"}}
             label={this.createElement(Msg, {
               entityName: "tsadv_markCriteria",
-              propertyName: isRu?"Комментарии":"Comments"
+              propertyName: isRu ? "Комментарии" : "Comments"
             })}
             required={true}
           >
             {
               this.props.form.getFieldDecorator("Comments")
-              (<TextArea disabled={isDisabled} value={this.comment} onChange={this.handleChangeComment} rows={6} />)
+              (<TextArea disabled={this.isDisabled} value={this.comment} onChange={this.handleChangeComment} rows={6}/>)
             }
           </Form.Item>
-          <Form.Item style={{ textAlign: "left", marginTop:"36px" }}>
+          <Form.Item style={{textAlign: "left", marginTop: "36px"}}>
             <Button
               type="primary"
               htmlType="submit"
-              disabled={isDisabled}
-              style={{ marginRight: "8px" }}
+              disabled={this.isDisabled}
+              style={{marginRight: "8px"}}
             >
-              <FormattedMessage id="management.editor.submit" />
+              <FormattedMessage id="management.editor.submit"/>
             </Button>
 
             <Button
               htmlType="button"
-              onClick={()=>this.goBack=true}
+              onClick={() => this.goBack = true}
             >
-              <FormattedMessage id="management.editor.cancel" />
+              <FormattedMessage id="management.editor.cancel"/>
             </Button>
 
 
+
           </Form.Item>
+          {/*{*/}
+          {/*  this.innerHtml.length &&  <span dangerouslySetInnerHTML={{__html:this.innerHtml}}>*/}
+          {/*  </span>*/}
+          {/*}*/}
         </Card>
 
       </Form>
@@ -457,6 +639,7 @@ class GradeFormComponent extends React.Component<
 
   componentDidMount() {
     this.gradeInstance.setItem(new GradeDetail())
+
   }
 
   componentWillUnmount() {

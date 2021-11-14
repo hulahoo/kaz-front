@@ -294,7 +294,7 @@
   "concourseDesc": "Описание",
   "concourseCompany": "Компания",
   "concoursePlace": "Место",
-  "concourseRequestEdit": "Редактирование заявки",
+  "concourseRequestEdit": "Заявка конкурса",
   "concourseRequestCreate": "Создание заявки",
   "bproc.REJECT.success": "Форма отклонена",
   "bproc.APPROVE.success": "Форма успешно утверждена",

@@ -7,7 +7,7 @@ import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import DataTableFormat from "../../components/DataTable/intex";
 import { link } from "../../util/util";
-import { observable } from "mobx";
+import { action, observable } from "mobx";
 
 import { Modal, Tabs, Layout, Row, Col, Divider, Select, Spin } from "antd";
 
@@ -30,12 +30,12 @@ import {
   injectIntl,
   WrappedComponentProps
 } from "react-intl";
-import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
-import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
-import {ICollection} from "@amcharts/amcharts4/.internal/fabric/fabric-impl";
-import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
+import { DataCollectionStore } from "@cuba-platform/react/dist/data/Collection";
+import { DataInstanceStore } from "@cuba-platform/react/dist/data/Instance";
+import { ICollection } from "@amcharts/amcharts4/.internal/fabric/fabric-impl";
+import { GradeDetail } from "../../../cuba/entities/base/tsadv_GradeDetail";
 const { Footer, Content, Sider } = Layout;
-const {Option} = Select;
+const { Option } = Select;
 const { TabPane } = Tabs;
 
 type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
@@ -58,7 +58,7 @@ class ConcourseListComponent extends React.Component<
     view: "concourse-view",
     sort: "-updateTs",
     filter: {
-      conditions:[
+      conditions: [
         {
           value: "ACTIVE",
           operator: "=",
@@ -68,10 +68,13 @@ class ConcourseListComponent extends React.Component<
     }
   });
 
-  dataCollectionConcourse = collection<ConcourseRequest>(ConcourseRequest.NAME, {
-    view: "concourseRequest-edit",
-    sort: "-updateTs",
-  });
+  dataCollectionConcourse = collection<ConcourseRequest>(
+    ConcourseRequest.NAME,
+    {
+      view: "concourseRequest-edit",
+      sort: "-updateTs"
+    }
+  );
 
   dataCollectionConcourseRequest = collection<ConcourseRequest>(
     ConcourseRequest.NAME,
@@ -95,6 +98,15 @@ class ConcourseListComponent extends React.Component<
     {
       view: "concourseRequest-edit",
       sort: "-updateTs",
+      filter: {
+        conditions: [
+          {
+            value: "APPROVED",
+            operator: "=",
+            property: "status.code"
+          }
+        ]
+      }
     }
   );
 
@@ -109,15 +121,25 @@ class ConcourseListComponent extends React.Component<
         }
       ]
     }
-  })
+  });
 
   concourseFields = ["description", "banner"];
 
   bestConcourseFields = ["name_ru", "category", "year"];
 
-  concourseRequestFields = ["requestNumber", "requestDate", "status", "concourse"];
+  concourseRequestFields = [
+    "requestNumber",
+    "requestDate",
+    "status",
+    "concourse"
+  ];
 
-  concourseGradeFields = ["requestNameRu", "shortProjectDescriptionRu", "totalGrade", "comment"];
+  concourseGradeFields = [
+    "requestNameRu",
+    "shortProjectDescriptionRu",
+    "totalGrade",
+    "comment"
+  ];
 
   constructor(props: any) {
     super(props);
@@ -210,6 +232,7 @@ class ConcourseListComponent extends React.Component<
     index?: number,
     organizationBin?: any
   ) => {
+    console.log(organizationBin);
     return (
       <Row
         style={{
@@ -233,9 +256,7 @@ class ConcourseListComponent extends React.Component<
                 <FormattedMessage id="concourseCompany" />
               </h4>
             </Col>
-            <Col>
-              <h4>{organizationBin}</h4>
-            </Col>
+            <Col><h4>{organizationBin}</h4></Col>
           </Row>
         </Col>
       </Row>
@@ -251,6 +272,11 @@ class ConcourseListComponent extends React.Component<
           value: this.props.rootStore!.userInfo!.personGroupId!,
           operator: "=",
           property: "id"
+        },
+        {
+          value: "APPROVED",
+          operator: "=",
+          property: "status.code"
         }
       ]
     }
@@ -263,36 +289,37 @@ class ConcourseListComponent extends React.Component<
   concourseCategory: string;
 
   @observable
-  filterCategoryValue:string = ""
+  filterCategoryValue: string = "";
 
   @observable
-  filterYearValue:string = ""
+  filterYearValue: string = "";
 
-  handleChangeCategory = (name:string, value:string) =>{
-    this.filterCategoryValue = value
-    console.log("filteredValue", this.filterCategoryValue)
-  }
-  handleChangeYear= (name:string, value:string) =>{
-    this.filterYearValue = value
-    console.log("filteredValue", this.filterYearValue)
-  }
+  handleChangeCategory = (name: string, value: string) => {
+    this.filterCategoryValue = value;
+  };
+  handleChangeYear = (name: string, value: string) => {
+    this.filterYearValue = value;
+  };
 
-
+  @action
+  dataUpdater = () => {
+    let newCollection = this.dataCollectionConcourseRequestGrade.items.map(
+      item => {
+        item.concourse!.judges!.map(judge => {
+          if (
+            judge.personGroup!.id ===
+            this.props.rootStore!.userInfo.personGroupId
+          )
+            if (!this.newData.items.includes(item)) {
+              this.newData.items.push(item);
+            }
+        });
+      }
+    );
+  };
 
   render() {
-
-    let newCollection = this.dataCollectionConcourseRequestGrade.items.map((item) => {
-      item.concourse!.judges!.map(judge=>{
-        console.log(judge)
-        if (judge.personGroup!.id===this.props.rootStore!.userInfo.personGroupId)
-          if (!this.newData.items.includes(item)){
-            this.newData.items.push(item)
-          }
-
-      })
-    })
-
-    console.log(this.bestConcoursesList.items)
+    this.dataUpdater();
 
     const btns = [
       <Link
@@ -316,12 +343,15 @@ class ConcourseListComponent extends React.Component<
 
     const { activeTab } = this.props.match.params;
     const defaultActiveKey = activeTab ? activeTab : "1";
-    console.log("USER INFO:", this.dataCollection);
+
     const { status } = this.dataCollection;
 
-    let dates = this.bestConcoursesList.items.map(el=>el.requestDate.split("-")[0])
-    console.log(dates)
+    let dates = this.bestConcoursesList.items.map(
+      el => el.requestDate.split("-")[0]
+    );
     let uniqueYears = [...new Set(dates)];
+
+    const isRus = this.props.mainStore!.locale == "ru";
 
     return (
       <Page pageName={this.props.intl.formatMessage({ id: this.pageName })}>
@@ -337,10 +367,16 @@ class ConcourseListComponent extends React.Component<
               tab={this.props.intl.formatMessage({ id: "concourse" })}
               key="1"
             >
-              <div style={{paddingTop:12, paddingBottom:12}}>
+              <div style={{ paddingTop: 12, paddingBottom: 12 }}>
                 <Spin spinning={status == "LOADING"}>
-                  {
-                    this.dataCollection.items.map( el => el && this.concourseComponent(el!.banner!.id, el!.id, el!.description)
+                  {this.dataCollection.items.map(
+                    el =>
+                      el &&
+                      this.concourseComponent(
+                        el!.banner!.id,
+                        el!.id,
+                        el!.description
+                      )
                   )}
                 </Spin>
               </div>
@@ -349,16 +385,33 @@ class ConcourseListComponent extends React.Component<
               tab={this.props.intl.formatMessage({ id: "bestConcourse" })}
               key="2"
             >
-              <div style={{display:"flex", flexDirection:"row", width:"500px"}}>
-                <div style={{width:"200px", marginRight:"50px"}}>
-                  <Col  >{this.props.intl.formatMessage({id: "concourse.categories.year"})}</Col>
-                  <Col  >
-                    <Select allowClear={true} placeholder={"....."} onChange={value => this.handleChangeYear("name",value as string)} style={{width:"100%"}} >
-                      {
-                        uniqueYears.map((el, id)=>(
-                          <Option value={el} key={el+id}>{el}</Option>
-                        ))
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  width: "500px"
+                }}
+              >
+                <div style={{ width: "200px", marginRight: "50px" }}>
+                  <Col>
+                    {this.props.intl.formatMessage({
+                      id: "concourse.categories.year"
+                    })}
+                  </Col>
+                  <Col>
+                    <Select
+                      allowClear={true}
+                      placeholder={"....."}
+                      onChange={value =>
+                        this.handleChangeYear("name", value as string)
                       }
+                      style={{ width: "100%" }}
+                    >
+                      {uniqueYears.map((el, id) => (
+                        <Option value={el} key={el + id}>
+                          {el}
+                        </Option>
+                      ))}
                       {/*<Option value={"2018"}>2018</Option>*/}
                       {/*<Option value={"2019"}>2019</Option>*/}
                       {/*<Option value={"2020"}>2020</Option>*/}
@@ -366,46 +419,104 @@ class ConcourseListComponent extends React.Component<
                     </Select>
                   </Col>
                 </div>
-                <div style={{width:"200px", marginRight:"50px"}}>
-                  <Col  >{this.props.intl.formatMessage({id: "concourse.categories.project"})}</Col>
-                  <Col  >
-                    <Select allowClear={true} placeholder={"....."} onChange={value => this.handleChangeCategory("name",value as string)} style={{width:"100%"}} >
-                      <Option value={"PRODUCTIONPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.production.projects"})}</Option>
-                      <Option value={"SOCIALPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.social.projects"})}</Option>
-                      <Option value={"SAFETYPROJECTS"}>{this.props.intl.formatMessage({id: "concourse.safety.projects"})}</Option>
+                <div style={{ width: "200px", marginRight: "50px" }}>
+                  <Col>
+                    {this.props.intl.formatMessage({
+                      id: "concourse.categories.project"
+                    })}
+                  </Col>
+                  <Col>
+                    <Select
+                      allowClear={true}
+                      placeholder={"....."}
+                      onChange={value =>
+                        this.handleChangeCategory("name", value as string)
+                      }
+                      style={{ width: "100%" }}
+                    >
+                      <Option value={"PRODUCTIONPROJECTS"}>
+                        {this.props.intl.formatMessage({
+                          id: "concourse.production.projects"
+                        })}
+                      </Option>
+                      <Option value={"SOCIALPROJECTS"}>
+                        {this.props.intl.formatMessage({
+                          id: "concourse.social.projects"
+                        })}
+                      </Option>
+                      <Option value={"SAFETYPROJECTS"}>
+                        {this.props.intl.formatMessage({
+                          id: "concourse.safety.projects"
+                        })}
+                      </Option>
                     </Select>
                   </Col>
                 </div>
               </div>
               <div>
-                {this.bestConcoursesList.items.filter(el=>el.place && (el.place.toString()==="1"||el.place.toString()==="2"||el.place.toString()==="3")).map(
-                  (el, index) => {
-                    if (this.filterYearValue && this.filterCategoryValue){
-                      return (el.requestDate!.toString().split("-")[0]===this.filterYearValue && el.category!.toString() === this.filterCategoryValue) && this.bestConcourseComponent(this.props.mainStore!.locale == "ru" ? el!.requestNameRu : el!.requestNameEn, el.place!, el!.organizationBin
-                      )
-                    }
-                    else if (this.filterYearValue && !this.filterCategoryValue){
-                      return el.requestDate!.toString().split("-")[0] === this.filterYearValue && this.bestConcourseComponent(
-                        this.props.mainStore!.locale == "ru" ? el!.requestNameRu : el!.requestNameEn,
-                        el.place!,
-                          el!.organizationBin
-                        )
-                    }
-                    else if (!this.filterYearValue && this.filterCategoryValue){
-                      return el.category && el.category!.toString() === this.filterCategoryValue &&
+                {this.bestConcoursesList.items
+                  .filter(
+                    el =>
+                      el.place &&
+                      (el.place.toString() === "1" ||
+                        el.place.toString() === "2" ||
+                        el.place.toString() === "3")
+                  )
+                  .map((el, index) => {
+                    if (this.filterYearValue && this.filterCategoryValue) {
+                      return (
+                        el.requestDate!.toString().split("-")[0] ===
+                          this.filterYearValue &&
+                        el.category!.toString() === this.filterCategoryValue &&
                         this.bestConcourseComponent(
-                          this.props.mainStore!.locale == "ru" ? el!.requestNameRu : el!.requestNameEn,
+                          this.props.mainStore!.locale == "ru"
+                            ? el!.requestNameRu
+                            : el!.requestNameEn,
                           el.place!,
-                          el!.organizationBin
+                          isRus
+                            ? el!.personGroup!.company!.langValue2
+                            : el!.personGroup!.company!.langValue1
                         )
+                      );
+                    } else if (
+                      this.filterYearValue &&
+                      !this.filterCategoryValue
+                    ) {
+                      return (
+                        el.requestDate!.toString().split("-")[0] ===
+                          this.filterYearValue &&
+                        this.bestConcourseComponent(
+                          isRus ? el!.requestNameRu : el!.requestNameEn,
+                          el.place!,
+                          isRus
+                            ? el!.personGroup!.company!.langValue2
+                            : el!.personGroup!.company!.langValue1
+                        )
+                      );
+                    } else if (
+                      !this.filterYearValue &&
+                      this.filterCategoryValue
+                    ) {
+                      return (
+                        el.category &&
+                        el.category!.toString() === this.filterCategoryValue &&
+                        this.bestConcourseComponent(
+                          isRus ? el!.requestNameRu : el!.requestNameEn,
+                          el.place!,
+                          isRus
+                            ? el!.personGroup!.company!.langValue2
+                            : el!.personGroup!.company!.langValue1
+                        )
+                      );
                     }
-                    return this.bestConcourseComponent( this.props.mainStore!.locale == "ru" ?el!.requestNameRu : el!.requestNameEn,
+                    return this.bestConcourseComponent(
+                      isRus ? el!.requestNameRu : el!.requestNameEn,
                       index + 1,
-                      el!.organizationBin)
-                  }
-
-                )}
-
+                      isRus
+                        ? el!.personGroup!.company!.langValue2
+                        : el!.personGroup!.company!.langValue1
+                    );
+                  })}
               </div>
             </TabPane>
 
@@ -434,9 +545,10 @@ class ConcourseListComponent extends React.Component<
                   },
                   {
                     column: this.concourseRequestFields[3],
-                    render: (text, record)=>(
-                      record && (this.props.mainStore!.locale) == "ru" ? (record!.concourse! as Concourse).name_ru : (record!.concourse! as Concourse).name_en
-                    )
+                    render: (text, record) =>
+                      record && isRus
+                        ? (record!.concourse! as Concourse).name_ru
+                        : (record!.concourse! as Concourse).name_en
                   }
                 ]}
               />
@@ -447,7 +559,6 @@ class ConcourseListComponent extends React.Component<
                 tab={this.props.intl.formatMessage({ id: "concourseMarks" })}
                 key="4"
               >
-
                 <DataTableFormat
                   dataCollection={this.newData}
                   fields={this.concourseGradeFields}
@@ -463,61 +574,57 @@ class ConcourseListComponent extends React.Component<
                             (record as ConcourseRequest).id
                           }
                         >
-                          {record && (this.props.mainStore!.locale) == "ru" ? (record!.concourse! as Concourse).name_ru : (record!.concourse! as Concourse).name_en}
+                          {text}
                         </Link>
                       )
                     },
                     {
                       column: this.concourseGradeFields[2],
                       render: (text, record) => {
-                        console.log(this.gradeDataCollection)
                         // @ts-ignore
-                        const elem = this.gradeDataCollection.items.filter( (el:GradeDetail) => {
-                          // if (el.concourse!.id === record.id){
-                          //   console.log(`${el.grade}=> `, el)
-                          //   return el
-                          // }
-                          return el.concourseRequest!.id === record.id
-                        })
-                        console.log("Element1: ", elem)
-                        if (elem[0]) return elem[0]!.grade!
-                        return
+                        const elem = this.gradeDataCollection.items.filter(
+                          (el: GradeDetail) => {
+                            // if (el.concourse!.id === record.id){
+                            //   console.log(`${el.grade}=> `, el)
+                            //   return el
+                            // }
+                            return el.concourseRequest!.id === record.id;
+                          }
+                        );
+
+                        if (elem[0]) return elem[0]!.grade!;
+                        return;
                       }
                     },
                     {
                       column: this.concourseGradeFields[3],
                       render: (text, record) => {
-                        console.log(this.gradeDataCollection)
                         // @ts-ignore
-                        const elem = this.gradeDataCollection.items.filter( (el:GradeDetail) => {
-                          // if (el.concourse!.id === record.id){
-                          //   console.log(`${el.grade}=> `, el)
-                          //   return el
-                          // }
-                          return el.concourseRequest!.id === record.id
-                        })
-                        console.log("Element2: ", elem)
-                        if (elem[0]) return elem[0]!.comment!
-                        return
+                        const elem = this.gradeDataCollection.items.filter(
+                          (el: GradeDetail) => {
+                            // if (el.concourse!.id === record.id){
+                            //   console.log(`${el.grade}=> `, el)
+                            //   return el
+                            // }
+                            return el.concourseRequest!.id === record.id;
+                          }
+                        );
+
+                        if (elem[0]) return elem[0]!.comment!;
+                        return;
                       }
-                    },
+                    }
                   ]}
                 />
               </TabPane>
             }
-
           </Tabs>
         </Section>
       </Page>
     );
   }
 
-  componentDidMount() {
-
-
-
-
-  }
+  componentDidMount() {}
 
   getRecordById(id: string): SerializedEntity<Concourse> {
     const record:

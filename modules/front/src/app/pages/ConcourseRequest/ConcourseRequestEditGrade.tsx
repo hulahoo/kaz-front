@@ -381,7 +381,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
         <FormattedMessage id="management.browser.remove" />
       </Button>
     ];
-    console.log(this.takCard())
+    console.log(this.dataInstance)
 
     const { status, entityName } = this.dataInstance;
 
