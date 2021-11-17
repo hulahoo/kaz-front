@@ -323,7 +323,7 @@ class ConcourseListComponent extends React.Component<
       item => {
         item.concourse!.judges!.map(judge => {
           if (
-            judge.personGroup!.id ===
+            judge.id! ===
             this.props.rootStore!.userInfo.personGroupId
           )
             if (!this.newData.items.includes(item)) {

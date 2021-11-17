@@ -1,6 +1,6 @@
 import { AbstractParentEntity } from "./AbstractParentEntity";
 import { MarkCriteria } from "./tsadv_MarkCriteria";
-import { TsadvUser } from "./tsadv$UserExt";
+import { PersonGroupExt } from "./base$PersonGroupExt";
 import { FileDescriptor } from "./sys$FileDescriptor";
 export class Concourse extends AbstractParentEntity {
   static NAME = "tsadv_Concourse";
@@ -11,7 +11,7 @@ export class Concourse extends AbstractParentEntity {
   comment?: string | null;
   concourseStatus?: any | null;
   category?: any | null;
-  judges?: TsadvUser[] | null;
+  judges?: PersonGroupExt[] | null;
   banner?: FileDescriptor | null;
   judgeInsturction?: string | null;
   requestTemplate?: FileDescriptor | null;
