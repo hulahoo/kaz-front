@@ -261,7 +261,6 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
         return;
       }
 
-      console.log(this.props.form.getFieldsValue(this.fields))
       promise = this.dataInstance
         .update(this.props.form.getFieldsValue(this.fields))
         .then(() => {
@@ -328,10 +327,10 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
     if (this.concoursesDc.items[0]){
       let dateNow = moment(Date.now()) ;
       let requestDate = moment(this.concoursesDc.items[0]!.endVoting)
-      console.log(requestDate)
+
       if (dateNow.isAfter(requestDate)){
         isNotDraft = true
-        console.log(dateNow, requestDate)
+
       }
 
     }
@@ -381,7 +380,6 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
         <FormattedMessage id="management.browser.remove" />
       </Button>
     ];
-    console.log(this.dataInstance)
 
     const { status, entityName } = this.dataInstance;
 
@@ -389,7 +387,6 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
     if (!this.dataInstance) {
       return <LoadingPage />;
     }
-    // console.log("Concourse:",this.concoursesDc)
     return (
       [
             <Form style={{padding:"8px"}} onSubmit={this.validate} layout="vertical">
@@ -617,7 +614,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
                           ConcourseRequestManagement.NEW_SUBPATH
                         ) {
                           if (personGroupId) {
-                            console.log(personGroupId)
+
                             const manager = this.personGroupsDc.items.find(
                               person => person.id === personGroupId
                             ) as PersonExt;
@@ -625,7 +622,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
                               personGroupId,
                               manager["list"][0]!.id
                             );
-                            console.log(manager["list"][0], val);
+
                             return personGroupId;
                           } else {
                             this.props.form.setFieldsValue({
@@ -695,7 +692,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
                             personGroupId,
                             expert["list"][0]!.id
                           );
-                          console.log(expert["list"][0], val);
+
                           return personGroupId;
                         } else {
                           this.props.form.setFieldsValue({
@@ -881,8 +878,6 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
           expertPosition: pos.positionName
         });
       });
-    } else {
-      console.log("No data");
     }
   }
 
@@ -896,8 +891,6 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
         });
       });
 
-    } else {
-      console.log("No data:", id, groupId);
     }
   }
 
@@ -914,7 +907,7 @@ class ConcourseRequestEditGradeComponent extends AbstractBprocEdit<
       },
       (item: ConcourseRequest | undefined) => {
         this.reqNumber = item ? item.requestNumber : this.props.form.getFieldValue("requestNumber");
-        console.log(this.reqNumber)
+
         this.initDataCollection()
         let values:any;
         this.personGroupId = item!.personGroup ? item!.personGroup!.id : this.props.rootStore!.userInfo!.personGroupId!

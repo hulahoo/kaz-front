@@ -121,7 +121,6 @@ class ConcourseEditComponent extends React.Component<
     this.dataInstance.item!.totalGrade = sum;
     this.dataInstance.commit().then((data)=>{
       this.saved = true
-      console.log("SAVED!")
     }).catch(err=>{console.log(err)})
   }
 
@@ -179,7 +178,6 @@ class ConcourseEditComponent extends React.Component<
         return this.dataInstance.item;
       },
       () => {
-        console.log(this.props)
         this.personGroupId = this.props.rootStore!.userInfo!.personGroupId
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)

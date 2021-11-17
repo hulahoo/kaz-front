@@ -7,7 +7,7 @@ import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import DataTableFormat from "../../components/DataTable/intex";
 import { link } from "../../util/util";
-import { action, observable } from "mobx";
+import {action, IReactionDisposer, observable, reaction} from "mobx";
 
 import { Modal, Tabs, Layout, Row, Col, Divider, Select, Spin } from "antd";
 
@@ -61,6 +61,9 @@ class ConcourseListComponent extends React.Component<
     RouteComponentProps<any>,
   IState
 > {
+
+  reactionDisposer: IReactionDisposer;
+
   dataCollection = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
     sort: "-updateTs",
@@ -478,7 +481,7 @@ class ConcourseListComponent extends React.Component<
                         el.place.toString() === "2" ||
                         el.place.toString() === "3")
                   )
-                  .map((el, index) => {
+                  .sort((a, b)=> a.place! - b.place! ).map((el, index) => {
                     if (this.filterYearValue && this.filterCategoryValue) {
                       return (
                         el.requestDate!.toString().split("-")[0] ===
@@ -648,7 +651,21 @@ class ConcourseListComponent extends React.Component<
     );
   }
 
-  componentDidMount() {}
+  componentDidMount(){
+    this.dataUpdater()
+    this.reactionDisposer = reaction(
+      () => {
+        return this.dataUpdater();
+      },
+      (item: void | undefined) => {
+        this.dataUpdater();
+      }
+    )
+  }
+
+  componentDidUpdate(prevProps: Readonly<ActiveTabProps & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>>, prevState: Readonly<IState>, snapshot?: any) {
+    this.dataUpdater();
+  }
 
   getRecordById(id: string): SerializedEntity<Concourse> {
     const record:

@@ -178,22 +178,22 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
   isDisabled: boolean = false;
 
   handleChangeOption = (name: string, val: any) => {
-    console.log(val)
+
     let [item, value] = val.split("$")
     this.optionValue[name] = {
       [item]: value
     }
-    console.log("filteredValueOption", this.optionValue)
+
   }
 
   handleChangeCheckbox = (item: string, name: string, value: any) => {
-    console.log(value)
+
     this.checkboxValue[item] = {
       ...this.checkboxValue[item],
       [name]: value ? value : false,
     }
 
-    console.log("filteredValueCheckbox", this.checkboxValue)
+
   }
 
   handleChangeComment = (e: any) => {
@@ -209,14 +209,6 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
       }
     })
     this.props.setTotalGrade(sum)
-    // this.dataInstance.item!.gradeTotal = sum;
-    // this.dataInstance.commit().then((data)=>{
-    //   this.updated=true
-    // }).catch(err=>{console.log(err)})
-    // this.dataInstance.update({
-    //   gradeTotal: sum
-    // })
-
   }
 
   @observable
@@ -246,7 +238,7 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
         }
       }
     }
-    console.log(sum)
+
 
     let grade = this.gradeDataCollection.items
     const indicators = (checkboxValue: any, optionValue:any) => {
@@ -350,7 +342,6 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
 
     if (grade.length) {
 
-      console.log(indicators(this.checkboxValue, this.optionValue))
       this.gradeInstance.update({
         id: grade[0].id,
         personGroup: this.personGroupDsc.items[0],
@@ -362,7 +353,7 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
         message.success(
           this.props.intl.formatMessage({id: "management.editor.success"})
         );
-        console.log("Hopefully updated grade", grade)
+
         // this.totalGradeHandler(sum)
         // this.updated = true
 
@@ -404,30 +395,7 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
 
     } else {
 
-      console.log(indicators(this.checkboxValue, this.optionValue))
       this.innerHtml = indicators(this.checkboxValue, this.optionValue)
-      // let indicators:String[] = [];
-      // if (this.checkboxValue){
-      //   for (let obj in this.checkboxValue){
-      //     // let temp = new Indicator();
-      //     // temp.name_ru = obj;
-      //     // temp.name_en = obj;
-      //     // if (this.checkboxValue.hasOwnProperty(obj))
-      //     //   temp.value = this.checkboxValue[obj]
-      //     //
-      //     // indicators.push(temp)
-      //     // console.log(indicators)
-      //     console.log(obj)
-      //     let item = this.indicatorsDsc.items.filter((el)=>{
-      //                 return el.name_en === obj || el.name_ru===obj
-      //     })
-      //     if (item.length){
-      //       // indicators.push(item[0].name_en)
-      //       console.log(indicators)
-      //     }
-      //   }
-      // }
-
 
       this.gradeInstance.update({
         personGroup: this.personGroupDsc.items[0],
@@ -439,7 +407,6 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
         message.success(
           this.props.intl.formatMessage({id: "management.editor.success"})
         );
-        // console.log("Hopefully created grade", grade)
         this.totalGradeHandler(sum)
         // this.updated = true
       }).catch((e: any) => {
@@ -491,10 +458,10 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
     if (this.concoursesDsc.items[0]) {
       let dateNow = moment(Date.now());
       let requestDate = moment(this.concoursesDsc.items[0]!.endVoting)
-      console.log(dateNow, requestDate, dateNow.isAfter(requestDate))
+
       if (dateNow.isAfter(requestDate)) {
         this.isDisabled = true
-        console.log(dateNow, requestDate)
+
       }
 
     }

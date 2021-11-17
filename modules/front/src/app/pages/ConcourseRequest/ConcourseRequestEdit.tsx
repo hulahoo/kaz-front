@@ -337,7 +337,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   @action
   onCategoryUpdate = ():void =>{
     this.update().then((data)=>{
-      console.log("Category updated!")
     })
   }
 
@@ -411,17 +410,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     if (!this.dataInstance) {
       return <LoadingPage />;
     }
-    // console.log(this.personGroupsDc)
 
     let is_admin = this.takCard().props!.tasks &&
       this.takCard().props!.tasks![
       this.takCard().props!.tasks.length - 1
         ].name === "administrator_task"
 
-    console.log(this.takCard(), is_admin)
 
 
-    // console.log("Concourse:",this.concoursesDc)
     return (
       <div className="cardWrapper" id="concourseRequest">
         <h1>
@@ -672,7 +668,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                           ) }],
                         getValueFromEvent: (id, val) => {
                           if (id) {
-                            console.log(id, val)
                             this.props.form.setFieldsValue({
                               category: id,
                             })
