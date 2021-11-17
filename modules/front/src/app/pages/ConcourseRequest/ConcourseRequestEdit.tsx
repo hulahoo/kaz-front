@@ -130,7 +130,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   );
 
   personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_base"
+    view: "_base",
   });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
@@ -413,6 +413,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
     // console.log(this.personGroupsDc)
 
+    let is_admin = this.takCard().props!.tasks &&
+      this.takCard().props!.tasks![
+      this.takCard().props!.tasks.length - 1
+        ].name === "administrator_task"
+
+    console.log(this.takCard(), is_admin)
+
+
     // console.log("Concourse:",this.concoursesDc)
     return (
       <div className="cardWrapper" id="concourseRequest">
@@ -639,27 +647,26 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
                     }}
                   />
-                  {this.takCard().props!.tasks &&
-                  this.takCard().props!.tasks![
-                    this.takCard().props!.tasks.length - 1
-                  ].name === "administrator_task" ? (
+
                     <ReadonlyField
                       entityName={entityName}
                       propertyName="category"
                       form={this.props.form}
                       disabled={
-                        this.props.rootStore!.userInfo!.personGroupId ===
-                        this.dataInstance.item!.personGroup!.id
+                        this.props.rootStore!.userInfo!.personGroupId === this.personGroupId
                       }
                       formItemOpts={{
                         style: {
                           minWidth: "30%",
                           maxWidth: "30%",
-                          marginBottom: "12px"
+                          marginBottom: "12px",
+                          visibility: is_admin?"visible":"hidden"
                         }, required:true
                       }}
                       getFieldDecoratorOpts={{
-                        rules: [{ required: true, message: this.props.intl.formatMessage(
+                        rules: [{
+                          required: is_admin,
+                          message: this.props.intl.formatMessage(
                             { id: "form.validation.required" },
                             { fieldName: messages[entityName + ".category"] }
                           ) }],
@@ -675,9 +682,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                         }
                       }}
                     />
-                  ) : (
-                    <span style={{ minWidth: "30%" }}> </span>
-                  )}
+
+                    <span style={{ visibility: is_admin?"hidden":"visible", minWidth: "30%" }}> </span>
+
                 </Row>
                 <Row type="flex" align="middle" justify={"space-between"}>
                   <ReadonlyField

@@ -43,6 +43,13 @@ interface IState {
   data: number;
 }
 
+interface bestConcourseList {
+  projectName?: any;
+  index?: number;
+  organizationBin?: any;
+  concourseId?: string;
+}
+
 @injectMainStore
 @inject("rootStore")
 @observer
@@ -135,8 +142,10 @@ class ConcourseListComponent extends React.Component<
   ];
 
   concourseGradeFields = [
-    "requestNameRu",
-    "shortProjectDescriptionRu",
+    this.props.mainStore!.locale == "ru" ? "requestNameRu" : "requestNameEn",
+    this.props.mainStore!.locale == "ru"
+      ? "shortProjectDescriptionRu"
+      : "shortProjectDescriptionEn",
     "totalGrade",
     "comment"
   ];
@@ -230,9 +239,9 @@ class ConcourseListComponent extends React.Component<
   bestConcourseComponent = (
     projectName?: any,
     index?: number,
-    organizationBin?: any
+    organizationBin?: any,
+    concourseId?: string
   ) => {
-    console.log(organizationBin);
     return (
       <Row
         style={{
@@ -248,7 +257,12 @@ class ConcourseListComponent extends React.Component<
             <FormattedMessage id="concoursePlace" /> {index}
           </p>
           <h2>
-            <a href="#">{projectName}</a>
+            <Link
+              to={ConcourseRequestManagement.PATH + "/" +  concourseId }
+              key="concourseRequestDetail"
+            >
+              <a>{projectName}</a>
+            </Link>
           </h2>
           <Row style={{ marginTop: "30px" }}>
             <Col span={4}>
@@ -256,7 +270,9 @@ class ConcourseListComponent extends React.Component<
                 <FormattedMessage id="concourseCompany" />
               </h4>
             </Col>
-            <Col><h4>{organizationBin}</h4></Col>
+            <Col>
+              <h4>{organizationBin}</h4>
+            </Col>
           </Row>
         </Col>
       </Row>
@@ -475,7 +491,8 @@ class ConcourseListComponent extends React.Component<
                           el.place!,
                           isRus
                             ? el!.personGroup!.company!.langValue2
-                            : el!.personGroup!.company!.langValue1
+                            : el!.personGroup!.company!.langValue1,
+                          el.id!
                         )
                       );
                     } else if (
@@ -490,7 +507,8 @@ class ConcourseListComponent extends React.Component<
                           el.place!,
                           isRus
                             ? el!.personGroup!.company!.langValue2
-                            : el!.personGroup!.company!.langValue1
+                            : el!.personGroup!.company!.langValue1,
+                          el.id!
                         )
                       );
                     } else if (
@@ -505,16 +523,18 @@ class ConcourseListComponent extends React.Component<
                           el.place!,
                           isRus
                             ? el!.personGroup!.company!.langValue2
-                            : el!.personGroup!.company!.langValue1
+                            : el!.personGroup!.company!.langValue1,
+                          el.id!
                         )
                       );
                     }
                     return this.bestConcourseComponent(
                       isRus ? el!.requestNameRu : el!.requestNameEn,
-                      index + 1,
+                      el.place!,
                       isRus
                         ? el!.personGroup!.company!.langValue2
-                        : el!.personGroup!.company!.langValue1
+                        : el!.personGroup!.company!.langValue1,
+                      el.id!
                     );
                   })}
               </div>
@@ -565,7 +585,7 @@ class ConcourseListComponent extends React.Component<
                   hideSelectionColumn={true}
                   render={[
                     {
-                      column: this.concourseGradeFields[0],
+                      column: isRus ? "requestNameRu" : "requestNameEn",
                       render: (text, record) => (
                         <Link
                           to={
@@ -577,6 +597,10 @@ class ConcourseListComponent extends React.Component<
                           {text}
                         </Link>
                       )
+                    },
+                    {
+                      column: isRus ? "requestNameRu" : "requestNameEn",
+                      render: (text, record) => ({ text })
                     },
                     {
                       column: this.concourseGradeFields[2],
