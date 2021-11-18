@@ -60,6 +60,9 @@ import { ConcourseRequestAttachmentsManagement } from "./ConcourseRequestAttachm
 import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
 import { ConcourseFile } from "./ConcourseTemplateFile";
 import moment from "moment";
+import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
+import {DataCollectionStoreWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
+import { ServiceDataCollectionStore } from "../../util/ServiceDataCollectionStore";
 // import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
 // import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
 // import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
@@ -129,9 +132,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
   );
 
-  personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "_base",
-  });
+  @observable
+  personGroupsDc : DataCollectionStore<PersonGroupExt>;
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_base"
@@ -439,6 +441,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           ]}
           bordered={false}
         >
+          <Spin spinning={status == "LOADING"}>
           <Form onSubmit={this.validate} layout="vertical">
             <Card
               title={this.props.intl.formatMessage({
@@ -447,7 +450,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               size="small"
               className="generalInfo"
             >
-              <Spin spinning={status == "LOADING"}>
+
                 <Row
                   type={"flex"}
                   align="middle"
@@ -731,7 +734,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     }}
                   />
                 </Row>
-              </Spin>
+
             </Card>
 
             <Card
@@ -1029,6 +1032,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             {/*  />*/}
             {/*)}*/}
           </Form>
+          </Spin>
 
           {this.takCard()}
 
@@ -1120,6 +1124,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
   }
 
+
+
   componentDidMount() {
     if (this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
@@ -1127,11 +1133,15 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       this.dataInstance.setItem(new ConcourseRequest());
     }
 
+    this.loadData();
+    this.loadBpmProcessData();
+
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
       (item: ConcourseRequest | undefined) => {
+        this.loadPersonGroupDc()
         this.reqNumber = item
           ? item.requestNumber
           : this.props.form.getFieldValue("requestNumber");
@@ -1213,8 +1223,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       }
     );
 
-    this.loadData();
-    this.loadBpmProcessData();
+
   }
 
   protected initItem(request: ConcourseRequest): void {
@@ -1224,6 +1233,15 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   componentWillUnmount() {
     this.reactionDisposer();
   }
+
+  loadPersonGroupDc = () => {
+    this.personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+      view: "_minimal",
+      loadImmediately: false
+    });
+    this.personGroupsDc.load();
+  };
+
 }
 
 export default injectIntl(

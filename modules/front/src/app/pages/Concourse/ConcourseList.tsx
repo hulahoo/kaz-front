@@ -282,24 +282,8 @@ class ConcourseListComponent extends React.Component<
     );
   };
 
-  newData = collection<ConcourseRequest>(ConcourseRequest.NAME, {
-    view: "concourse-view",
-    sort: "-updateTs",
-    filter: {
-      conditions: [
-        {
-          value: this.props.rootStore!.userInfo!.personGroupId!,
-          operator: "=",
-          property: "id"
-        },
-        {
-          value: "APPROVED",
-          operator: "=",
-          property: "status.code"
-        }
-      ]
-    }
-  });
+  @observable
+  newData : DataCollectionStore<ConcourseRequest>;
 
   @observable
   concourseYear: number;
@@ -320,24 +304,12 @@ class ConcourseListComponent extends React.Component<
     this.filterYearValue = value;
   };
 
-  @action
-  dataUpdater = () => {
-    let newCollection = this.dataCollectionConcourseRequestGrade.items.map(
-      item => {
-        item.concourse!.judges!.map(judge => {
-          if (
-            judge.id! ===
-            this.props.rootStore!.userInfo.personGroupId
-          )
-            if (!this.newData.items.includes(item)) {
-              this.newData.items.push(item);
-            }
-        });
-      }
-    );
-  };
+
+
+
 
   render() {
+
     this.dataUpdater();
 
     const btns = [
@@ -651,21 +623,37 @@ class ConcourseListComponent extends React.Component<
     );
   }
 
-  componentDidMount(){
-    this.dataUpdater()
-    this.reactionDisposer = reaction(
-      () => {
-        return this.dataUpdater();
-      },
-      (item: void | undefined) => {
-        this.dataUpdater();
-      }
-    )
+
+  componentWillMount() {
+    this.loadConcourseRequest();
   }
 
-  componentDidUpdate(prevProps: Readonly<ActiveTabProps & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>>, prevState: Readonly<IState>, snapshot?: any) {
+  componentDidMount(){
+
     this.dataUpdater();
   }
+
+  componentWillUpdate(nextProps: Readonly<ActiveTabProps & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>>, nextState: Readonly<IState>, nextContext: any) {
+    this.dataUpdater()
+  }
+
+
+  @action
+  dataUpdater = () => {
+    this.dataCollectionConcourseRequestGrade.items.map(
+      item => {
+        item.concourse!.judges!.map(judge => {
+          if (
+            judge.id! ===
+            this.props.rootStore!.userInfo.personGroupId
+          )
+            if (!this.newData.items.includes(item)) {
+              this.newData.items.push(item);
+            }
+        });
+      }
+    );
+  };
 
   getRecordById(id: string): SerializedEntity<Concourse> {
     const record:
@@ -676,6 +664,28 @@ class ConcourseListComponent extends React.Component<
     }
 
     return record;
+  }
+
+  loadConcourseRequest = () =>{
+    this.newData = collection<ConcourseRequest>(ConcourseRequest.NAME, {
+      view: "concourse-view",
+      sort: "-updateTs",
+      filter: {
+        conditions: [
+          {
+            value: this.props.rootStore!.userInfo!.personGroupId!,
+            operator: "=",
+            property: "id"
+          },
+          {
+            value: "APPROVED",
+            operator: "=",
+            property: "status.code"
+          }
+        ]
+      }
+    });
+    this.newData.load();
   }
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
