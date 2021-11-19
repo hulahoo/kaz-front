@@ -4,6 +4,5 @@
         <class>kz.uco.kzm.entity.DicPositionsOverlappingType</class>
         <class>kz.uco.kzm.entity.PositionOverlappingRequest</class>
 
-        <class>kz.uco.kzm.entity.Concourse</class>
     </persistence-unit>
 </persistence>
