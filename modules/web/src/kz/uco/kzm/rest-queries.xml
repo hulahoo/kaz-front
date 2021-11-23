@@ -11,4 +11,14 @@
             <param name="positionId" type="java.util.UUID"/>
         </params>
     </query>
+    <query name="personGroupByFullName" entity="base$PersonGroupExt" view="_base">
+        <jpql>
+            select o
+            from base$PersonGroupExt o
+            where o.fullName=:fullName )
+        </jpql>
+        <params>
+            <param name="fullName" type="java.util.String"/>
+        </params>
+    </query>
 </queries>

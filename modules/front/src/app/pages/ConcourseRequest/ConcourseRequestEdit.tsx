@@ -9,7 +9,7 @@ import {
   Modal,
   Row,
   Table,
-  Spin
+  Spin, Select
 } from "antd";
 import Button, { ButtonType } from "../../components/Button/Button";
 
@@ -63,6 +63,7 @@ import moment from "moment";
 import {DataCollectionStore} from "@cuba-platform/react/dist/data/Collection";
 import {DataCollectionStoreWithAfterLoad} from "../../util/DataCollectionStoreWithAfterLoad";
 import { ServiceDataCollectionStore } from "../../util/ServiceDataCollectionStore";
+import {SearchSelect} from "../../components/SearchSelect";
 // import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
 // import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
 // import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
@@ -84,6 +85,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     view: "concourseRequest-edit",
     loadImmediately: false
   });
+  dicLangValue = "langValue" + this.props.rootStore!.userInfo!.localeIndex;
 
   dataCollection = collection<ConcourseRequestAttachments>(
     ConcourseRequestAttachments.NAME,
@@ -132,8 +134,23 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     }
   );
 
-  @observable
-  personGroupsDc : DataCollectionStore<PersonGroupExt>;
+  personGroupsDc = collection<PersonExt>(PersonExt.NAME, {
+    view: "person-view_1",
+    loadImmediately: false,
+    sort: "lastName"
+  });
+
+  personManagerDc = collection<PersonExt>(PersonExt.NAME, {
+    view: "person-view_1",
+    loadImmediately: false,
+    sort: "lastName"
+  });
+
+  personExpertDc = collection<PersonExt>(PersonExt.NAME, {
+    view: "person-view_1",
+    loadImmediately: false,
+    sort: "lastName"
+  });
 
   statussDc = collection<DicRequestStatus>(DicRequestStatus.NAME, {
     view: "_base"
@@ -753,41 +770,65 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   marginTop: "8px"
                 }}
               >
-                <ReadonlyField
-                  entityName={entityName}
-                  propertyName="projectManager"
-                  form={this.props.form}
-                  disabled={isNotDraft}
-                  // disabled={isNotDraft}
-                  formItemOpts={{
-                    style: { minWidth: "25%", maxWidth: "25%", marginBottom: "12px" },
-                    required:true
-                  }}
-                  optionsContainer={this.personGroupsDc}
-                  getFieldDecoratorOpts={{
+                <Form.Item
+                  style={{ minWidth: "25%", maxWidth: "25%", }}
+                  label={<Msg entityName={entityName} propertyName={"projectManager"} />}
+                >{this.props.form.getFieldDecorator(
+                  "projectManager",
+                  {
                     rules: [{ required: true, message: this.props.intl.formatMessage(
                         { id: "form.validation.required" },
                         { fieldName: messages[entityName + ".projectManager"] }
-                      ) }],
-                    getValueFromEvent: (personGroupId, val) => {
-                      if (
-                        this.props.entityId ===
-                        ConcourseRequestManagement.NEW_SUBPATH
-                      ) {
-                        if (personGroupId) {
-                          this.getManagerUserRecordById(personGroupId);
-                          return personGroupId;
-                        } else {
-                          this.props.form.setFieldsValue({
-                            managerCompany: "",
-                            managerPosition: ""
-                          });
-                          return undefined;
-                        }
-                      }
-                    }
-                  }}
-                />
+                      ) }]
+                  }
+                )(<SearchSelect
+                  onSearch={this.onSearchManager}
+                  disabled={isNotDraft}
+                  loading={this.personManagerDc.status === "LOADING"}
+                  options={
+                    this.personManagerDc &&
+                    this.personManagerDc.items.filter(el=>el.group!.id!.toString().length).map(d => {
+                      console.log(d.id)
+                      return <Select.Option key={d.id}>{d.lastName + " " + d.firstName}</Select.Option>
+                    })
+                  }
+                />)}
+                </Form.Item>
+                {/*<ReadonlyField*/}
+                {/*  entityName={entityName}*/}
+                {/*  propertyName="projectManager"*/}
+                {/*  form={this.props.form}*/}
+                {/*  disabled={isNotDraft}*/}
+                {/*  // disabled={isNotDraft}*/}
+                {/*  formItemOpts={{*/}
+                {/*    style: { minWidth: "25%", maxWidth: "25%", marginBottom: "12px" },*/}
+                {/*    required:true*/}
+                {/*  }}*/}
+                {/*  optionsContainer={this.personGroupsDc}*/}
+                {/*  getFieldDecoratorOpts={{*/}
+                {/*    rules: [{ required: true, message: this.props.intl.formatMessage(*/}
+                {/*        { id: "form.validation.required" },*/}
+                {/*        { fieldName: messages[entityName + ".projectManager"] }*/}
+                {/*      ) }],*/}
+                {/*    getValueFromEvent: (personGroupId, val) => {*/}
+                {/*      if (*/}
+                {/*        this.props.entityId ===*/}
+                {/*        ConcourseRequestManagement.NEW_SUBPATH*/}
+                {/*      ) {*/}
+                {/*        if (personGroupId) {*/}
+                {/*          this.getManagerUserRecordById(personGroupId);*/}
+                {/*          return personGroupId;*/}
+                {/*        } else {*/}
+                {/*          this.props.form.setFieldsValue({*/}
+                {/*            managerCompany: "",*/}
+                {/*            managerPosition: ""*/}
+                {/*          });*/}
+                {/*          return undefined;*/}
+                {/*        }*/}
+                {/*      }*/}
+                {/*    }*/}
+                {/*  }}*/}
+                {/*/>*/}
 
                 <ReadonlyField
                   entityName={entityName}
@@ -836,39 +877,59 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                 />
               </Row>
               <Row type="flex" align="middle" justify={"space-between"}>
-                <ReadonlyField
-                  entityName={entityName}
-                  propertyName="projectExpert"
-                  form={this.props.form}
-                  // disabled={isNotDraft}
-                  disabled={isNotDraft}
-                  formItemOpts={{
-                    style: { minWidth: "25%", maxWidth: "25%", marginBottom: "12px" }, required:true
-                  }}
-                  optionsContainer={this.personGroupsDc}
-                  getFieldDecoratorOpts={{
+                <Form.Item
+                  style={{ minWidth: "25%", maxWidth: "25%", }}
+                  label={<Msg entityName={entityName} propertyName={"projectExpert"} />}
+                >{this.props.form.getFieldDecorator(
+                  "projectExpert",
+                  {
                     rules: [{ required: true, message: this.props.intl.formatMessage(
                         { id: "form.validation.required" },
                         { fieldName: messages[entityName + ".projectExpert"] }
-                      ) }],
-                    getValueFromEvent: (personGroupId, val) => {
-                      if (personGroupId) {
-                        // const expert = this.personGroupsDc.items.find(
-                        //   person => person.id === personGroupId
-                        // ) as PersonExt;
-                        this.getExpertUserRecordById(personGroupId);
+                      ) }]
+                  }
+                )(<SearchSelect
+                  onSearch={this.onSearchExpert}
+                  disabled={isNotDraft}
+                  loading={this.personExpertDc.status === "LOADING"}
+                  options={
+                    this.personExpertDc &&
+                    this.personExpertDc.items.filter(el=>el.group!.id!.toString().length).map(d => {
+                      console.log(d.id)
+                      return <Select.Option key={d.id}>{d.lastName + " " + d.firstName}</Select.Option>
+                    })
+                  }
+                />)}
+                </Form.Item>
+                {/*<ReadonlyField*/}
+                {/*  entityName={entityName}*/}
+                {/*  propertyName="projectExpert"*/}
+                {/*  form={this.props.form}*/}
+                {/*  disabled={isNotDraft}*/}
+                {/*  formItemOpts={{*/}
+                {/*    style: { minWidth: "25%", maxWidth: "25%", marginBottom: "12px" }, required:true*/}
+                {/*  }}*/}
+                {/*  optionsContainer={this.personGroupsDc}*/}
+                {/*  getFieldDecoratorOpts={{*/}
+                {/*    rules: [{ required: true, message: this.props.intl.formatMessage(*/}
+                {/*        { id: "form.validation.required" },*/}
+                {/*        { fieldName: messages[entityName + ".projectExpert"] }*/}
+                {/*      ) }],*/}
+                {/*    getValueFromEvent: (personGroupId, val) => {*/}
+                {/*      if (personGroupId) {*/}
+                {/*        this.getExpertUserRecordById(personGroupId);*/}
 
-                        return personGroupId;
-                      } else {
-                        this.props.form.setFieldsValue({
-                          expertCompany: "",
-                          expertPosition: ""
-                        });
-                        return undefined;
-                      }
-                    }
-                  }}
-                />
+                {/*        return personGroupId;*/}
+                {/*      } else {*/}
+                {/*        this.props.form.setFieldsValue({*/}
+                {/*          expertCompany: "",*/}
+                {/*          expertPosition: ""*/}
+                {/*        });*/}
+                {/*        return undefined;*/}
+                {/*      }*/}
+                {/*    }*/}
+                {/*  }}*/}
+                {/*/>*/}
 
                 <ReadonlyField
                   entityName={entityName}
@@ -1074,6 +1135,112 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     this.requestAttachmentssDc = requestAttachmentsNew;
   }
 
+  onSearchManager = (value: string) => {
+    console.log(value, this.dicLangValue)
+    this.personManagerDc.items = [];
+    let val = value.split(" ")
+    if (value && (val.length===1 || val.length===0)){
+      if (value.length > 2) {
+        this.personManagerDc.filter = {
+          conditions: [
+            {
+              property: "lastName",
+              operator: "contains",
+              value: value.toString(),
+            }
+          ],
+        };
+        this.personManagerDc.load();
+      }
+    }
+    else if(value && val.length>1){
+      if (value.length >= 2 && val[1].length>0) {
+        this.personManagerDc.filter = {
+          conditions: [
+            {
+              property: "lastName",
+              operator: "contains",
+              value: val[0].toString(),
+            },
+            {
+              property: "firstName",
+              operator: "contains",
+              value: val[1].toString(),
+            }
+          ],
+        };
+        this.personManagerDc.load();
+      }
+      if (value.length >= 2 && val[1].length===0) {
+        this.personManagerDc.filter = {
+          conditions: [
+            {
+              property: "lastName",
+              operator: "contains",
+              value: val[0].toString(),
+            }
+          ],
+        };
+
+        this.personManagerDc.load();
+      }
+
+    }
+
+  };
+
+  onSearchExpert = (value: string) => {
+    this.personExpertDc.items = [];
+    let val = value.split(" ")
+    if (value && (val.length===1 || val.length===0)){
+      if (value.length > 2) {
+        this.personExpertDc.filter = {
+          conditions: [
+            {
+              property: "lastName",
+              operator: "contains",
+              value: value.toString(),
+            }
+          ],
+        };
+        this.personExpertDc.load();
+      }
+    }
+    else if(value && val.length>1){
+      if (value.length >= 2 && val[1].length>0) {
+        this.personExpertDc.filter = {
+          conditions: [
+            {
+              property: "lastName",
+              operator: "contains",
+              value: val[0].toString(),
+            },
+            {
+              property: "firstName",
+              operator: "contains",
+              value: val[1].toString(),
+            }
+          ],
+        };
+
+        this.personExpertDc.load();
+      }
+      if (value.length >= 2 && val[1].length===0) {
+        this.personExpertDc.filter = {
+          conditions: [
+            {
+              property: "lastName",
+              operator: "contains",
+              value: val[0].toString(),
+            }
+          ],
+        };
+        this.personExpertDc.load();
+      }
+
+    }
+  };
+
   @action
   refreshDs = () => {
     // this.calcTotalAmount();
@@ -1133,15 +1300,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       this.dataInstance.setItem(new ConcourseRequest());
     }
 
-    this.loadData();
-    this.loadBpmProcessData();
+
 
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
       (item: ConcourseRequest | undefined) => {
-        this.loadPersonGroupDc()
+        // this.loadPersonGroupDc()
         this.reqNumber = item
           ? item.requestNumber
           : this.props.form.getFieldValue("requestNumber");
@@ -1223,8 +1389,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       }
     );
 
+    this.loadData();
+    this.loadBpmProcessData();
 
   }
+
+
 
   protected initItem(request: ConcourseRequest): void {
     super.initItem(request);
@@ -1234,13 +1404,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     this.reactionDisposer();
   }
 
-  loadPersonGroupDc = () => {
-    this.personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-      view: "_minimal",
-      loadImmediately: false
-    });
-    this.personGroupsDc.load();
-  };
+  // loadPersonGroupDc = () => {
+  //   this.personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
+  //     view: "_minimal",
+  //     loadImmediately: false
+  //   });
+  //   this.personGroupsDc.load();
+  // };
 
 }
 
