@@ -1627,6 +1627,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   }
 
 
+  componentWillUnmount() {
+    this.reactionDisposer();
+  }
+
 }
 
 export default injectIntl(
