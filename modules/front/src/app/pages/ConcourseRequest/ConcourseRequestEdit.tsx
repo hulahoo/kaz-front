@@ -1351,9 +1351,19 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         this.personManagerDc.filter = {
           conditions: [
             {
-              property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
-              operator: "contains",
-              value: value.toString()
+              group: "OR",
+              conditions:[
+                {
+                  property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
+                  operator: "startsWith",
+                  value: value.toString()
+                },{
+                  property: this.isLocaleEn?"relevantPerson.firstNameLatin":"relevantPerson.firstName",
+                  operator: "startsWith",
+                  value: value.toString()
+                },
+
+              ]
             }
           ]
         };
@@ -1365,12 +1375,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           conditions: [
             {
               property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
-              operator: "contains",
+              operator: "startsWith",
               value: val[0].toString()
             },
             {
               property: this.isLocaleEn?"relevantPerson.firstNameLatin":"relevantPerson.firstName",
-              operator: "contains",
+              operator: "startsWith",
               value: val[1].toString()
             }
           ]
@@ -1382,7 +1392,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           conditions: [
             {
               property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
-              operator: "contains",
+              operator: "startsWith",
               value: val[0].toString()
             }
           ]
@@ -1402,9 +1412,19 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         this.personExpertDc.filter = {
           conditions: [
             {
-              property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
-              operator: "contains",
-              value: value.toString()
+              group: "OR",
+              conditions:[
+                {
+                  property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
+                  operator: "startsWith",
+                  value: value.toString()
+                },{
+                  property: this.isLocaleEn?"relevantPerson.firstNameLatin":"relevantPerson.firstName",
+                  operator: "startsWith",
+                  value: value.toString()
+                },
+
+              ]
             }
           ]
         };
@@ -1416,12 +1436,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           conditions: [
             {
               property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
-              operator: "contains",
+              operator: "startsWith",
               value: val[0].toString()
             },
             {
               property: this.isLocaleEn?"relevantPerson.firstNameLatin":"relevantPerson.firstName",
-              operator: "contains",
+              operator: "startsWith",
               value: val[1].toString()
             }
           ]
@@ -1434,7 +1454,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           conditions: [
             {
               property: this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName",
-              operator: "contains",
+              operator: "startsWith",
               value: val[0].toString()
             }
           ]
