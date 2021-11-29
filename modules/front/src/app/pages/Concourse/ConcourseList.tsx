@@ -78,11 +78,23 @@ class ConcourseListComponent extends React.Component<
     }
   });
 
+  concourseCollection = collection<Concourse>(Concourse.NAME, {
+    view: "concourse-view",
+  });
+
   dataCollectionConcourse = collection<ConcourseRequest>(
     ConcourseRequest.NAME,
     {
       view: "concourseRequest-edit",
       sort: "-updateTs"
+    }
+  );
+
+  bestConcourseRequests = collection<ConcourseRequest>(
+    ConcourseRequest.NAME,
+    {
+      view: "concourseRequest-edit",
+      loadImmediately: false
     }
   );
 
@@ -305,13 +317,78 @@ class ConcourseListComponent extends React.Component<
 
   handleChangeCategory = (name: string, value: string) => {
     this.filterCategoryValue = value;
+    this.bestConcourseRequestListUpdater();
   };
   handleChangeYear = (name: string, value: string) => {
     this.filterYearValue = value;
   };
 
 
+  @action
+  bestConcourseRequestListUpdater = () => {
+    this.bestConcourseRequests.items = []
+    if (this.filterYearValue && !this.filterCategoryValue){
+      this.bestConcourseRequests.filter = {
+        conditions: [
+          {
+            property: "concourse.year",
+            operator: "=",
+            value: this.filterYearValue
+          },
+          {
+            property: "place",
+            operator:">=",
+            value: "1"
+          }
+        ]
+      }
+      this.bestConcourseRequests.load()
+    }
+    if (!this.filterYearValue && this.filterCategoryValue){
+      this.bestConcourseRequests.filter = {
+        conditions: [
+          {
+            property: "category",
+            operator: "=",
+            value: this.filterCategoryValue
+          },
+          {
+            property: "place",
+            operator:">=",
+            value: "1"
+          }
+        ]
+      }
+      this.bestConcourseRequests.load()
+    }
+    if (this.filterYearValue && this.filterCategoryValue){
+      this.bestConcourseRequests.filter = {
+        conditions: [
+          {
+            property: "category",
+            operator: "=",
+            value: this.filterCategoryValue
+          },
+          {
+            property: "concourse.year",
+            operator: "=",
+            value: this.filterYearValue
+          },
+          {
+            property: "place",
+            operator:">=",
+            value: "1"
+          }
+        ]
+      }
+      this.bestConcourseRequests.load()
+    }
+    else{
+      this.bestConcourseRequests.items = []
+    }
 
+
+  }
 
 
   render() {
@@ -339,7 +416,6 @@ class ConcourseListComponent extends React.Component<
     const { activeTab } = this.props.match.params;
     const defaultActiveKey = activeTab ? activeTab : "1";
 
-    console.log("Active tab:", activeTab)
 
     if (this.dataCollectionConcourseRequestGrade.status==="DONE"){
       this.dataUpdater()
@@ -347,10 +423,11 @@ class ConcourseListComponent extends React.Component<
 
     const { status } = this.dataCollection;
 
-    let dates = this.bestConcoursesList.items.map(
-      el => el.requestDate.split("-")[0]
+    let dates = this.concourseCollection.items.map(
+      el => el.year
     );
     let uniqueYears = [...new Set(dates)];
+    uniqueYears.sort((a, b)=>b!-a!)
 
     const isRus = this.props.mainStore!.locale == "ru";
 
@@ -374,6 +451,9 @@ class ConcourseListComponent extends React.Component<
                   this.dataUpdater()
                   this.pageName = "concourseMarks"
                   return 'concourseMarks'
+                case "5":
+                  this.pageName = "bestConcourse"
+                  return 'bestConcourse'
                 default:
                   this.pageName = "concourseRequest"
                   return 'concourseRequest'
@@ -426,15 +506,11 @@ class ConcourseListComponent extends React.Component<
                       }
                       style={{ width: "100%" }}
                     >
-                      {uniqueYears.map((el, id) => (
+                      {uniqueYears.map((el, id) => el&& (
                         <Option value={el} key={el + id}>
                           {el}
                         </Option>
                       ))}
-                      {/*<Option value={"2018"}>2018</Option>*/}
-                      {/*<Option value={"2019"}>2019</Option>*/}
-                      {/*<Option value={"2020"}>2020</Option>*/}
-                      {/*<Option value={"2021"}>2021</Option>*/}
                     </Select>
                   </Col>
                 </div>
@@ -484,8 +560,8 @@ class ConcourseListComponent extends React.Component<
                   .sort((a, b)=> a.place! - b.place! ).map((el, index) => {
                     if (this.filterYearValue && this.filterCategoryValue) {
                       return (
-                        el.requestDate!.toString().split("-")[0] ===
-                          this.filterYearValue &&
+                        el.concourse!.year!.toString() ===
+                          this.filterYearValue.toString() &&
                         el.category!.toString() === this.filterCategoryValue &&
                         this.bestConcourseComponent(
                           this.props.mainStore!.locale == "ru"
@@ -503,8 +579,8 @@ class ConcourseListComponent extends React.Component<
                       !this.filterCategoryValue
                     ) {
                       return (
-                        el.requestDate!.toString().split("-")[0] ===
-                          this.filterYearValue &&
+                        el.concourse!.year!.toString() ===
+                          this.filterYearValue.toString() &&
                         this.bestConcourseComponent(
                           isRus ? el!.requestNameRu : el!.requestNameEn,
                           el.place!,
@@ -531,14 +607,7 @@ class ConcourseListComponent extends React.Component<
                         )
                       );
                     }
-                    return this.bestConcourseComponent(
-                      isRus ? el!.requestNameRu : el!.requestNameEn,
-                      el.place!,
-                      isRus
-                        ? el!.personGroup!.company!.langValue2
-                        : el!.personGroup!.company!.langValue1,
-                      el.id!
-                    );
+                    return null
                   })}
               </div>
             </TabPane>
@@ -637,6 +706,7 @@ class ConcourseListComponent extends React.Component<
                 />
               </TabPane>
             }
+
           </Tabs>
         </Section>
       </Page>
@@ -667,7 +737,6 @@ class ConcourseListComponent extends React.Component<
               this.props.rootStore!.userInfo.personGroupId
             )
               if (!this.newData.items.includes(item)) {
-                console.log(item)
                 this.newData.items.push(item);
               }
           });
