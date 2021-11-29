@@ -103,6 +103,15 @@ class ConcourseListComponent extends React.Component<
     }
   );
 
+  newData = collection<ConcourseRequest>(
+    ConcourseRequest.NAME,
+    {
+      view: "concourseRequest-edit",
+      sort: "-updateTs",
+      loadImmediately: false
+    }
+  );
+
   dataCollectionConcourseRequestGrade = collection<ConcourseRequest>(
     ConcourseRequest.NAME,
     {
@@ -141,7 +150,7 @@ class ConcourseListComponent extends React.Component<
     "requestNumber",
     "requestDate",
     "status",
-    "concourse"
+    this.props.mainStore!.locale == "ru" ? "requestNameRu" : "requestNameEn"
   ];
 
   concourseGradeFields = [
@@ -283,9 +292,6 @@ class ConcourseListComponent extends React.Component<
   };
 
   @observable
-  newData : DataCollectionStore<ConcourseRequest>;
-
-  @observable
   concourseYear: number;
 
   @observable
@@ -310,8 +316,6 @@ class ConcourseListComponent extends React.Component<
 
   render() {
 
-    this.dataUpdater();
-
     const btns = [
       <Link
         to={
@@ -335,6 +339,12 @@ class ConcourseListComponent extends React.Component<
     const { activeTab } = this.props.match.params;
     const defaultActiveKey = activeTab ? activeTab : "1";
 
+    console.log("Active tab:", activeTab)
+
+    if (this.dataCollectionConcourseRequestGrade.status==="DONE"){
+      this.dataUpdater()
+    }
+
     const { status } = this.dataCollection;
 
     let dates = this.bestConcoursesList.items.map(
@@ -349,9 +359,27 @@ class ConcourseListComponent extends React.Component<
         <Section size="large">
           <Tabs
             defaultActiveKey={defaultActiveKey}
-            onChange={activeKey =>
-              (this.pageName =
-                "concourse" + (activeKey === "1" ? "" : "Request"))
+            onChange={activeKey => {
+              switch(activeKey){
+                case "1":
+                  this.pageName = "concourseRequest"
+                  return 'concourseRequest'
+                case "2":
+                  this.pageName = "bestConcourse"
+                  return 'bestConcourse'
+                case "3":
+                  this.pageName = "concourseRequest"
+                  return 'concourseRequest'
+                case "4":
+                  this.dataUpdater()
+                  this.pageName = "concourseMarks"
+                  return 'concourseMarks'
+                default:
+                  this.pageName = "concourseRequest"
+                  return 'concourseRequest'
+              }
+            }
+
             }
           >
             <TabPane
@@ -538,17 +566,9 @@ class ConcourseListComponent extends React.Component<
                       </Link>
                     )
                   },
-                  {
-                    column: this.concourseRequestFields[3],
-                    render: (text, record) =>
-                      record && isRus
-                        ? (record!.concourse! as Concourse).name_ru
-                        : (record!.concourse! as Concourse).name_en
-                  }
                 ]}
               />
             </TabPane>
-
             {
               <TabPane
                 tab={this.props.intl.formatMessage({ id: "concourseMarks" })}
@@ -623,36 +643,40 @@ class ConcourseListComponent extends React.Component<
     );
   }
 
+  componentDidMount() {
+    this.dataUpdater();
+  }
+
+  componentWillUpdate() {
+    this.dataUpdater();
+  }
 
   componentWillMount() {
     this.loadConcourseRequest();
   }
 
-  componentDidMount(){
-
-    this.dataUpdater();
-  }
-
-  componentWillUpdate(nextProps: Readonly<ActiveTabProps & MainStoreInjected & WrappedComponentProps & RootStoreProp & RouteComponentProps<any>>, nextState: Readonly<IState>, nextContext: any) {
-    this.dataUpdater()
-  }
-
-
   @action
   dataUpdater = () => {
-    this.dataCollectionConcourseRequestGrade.items.map(
-      item => {
-        item.concourse!.judges!.map(judge => {
-          if (
-            judge.id! ===
-            this.props.rootStore!.userInfo.personGroupId
-          )
-            if (!this.newData.items.includes(item)) {
-              this.newData.items.push(item);
-            }
-        });
-      }
-    );
+    this.newData.items = [];
+    if (this.dataCollectionConcourseRequestGrade.status === "DONE"){
+      this.dataCollectionConcourseRequestGrade.items.map(
+        item => {
+          item.concourse!.judges!.map(judge => {
+            if (
+              judge.id! ===
+              this.props.rootStore!.userInfo.personGroupId
+            )
+              if (!this.newData.items.includes(item)) {
+                console.log(item)
+                this.newData.items.push(item);
+              }
+          });
+        }
+      );
+      this.newData.load()
+    }
+
+
   };
 
   getRecordById(id: string): SerializedEntity<Concourse> {
@@ -687,6 +711,8 @@ class ConcourseListComponent extends React.Component<
     });
     this.newData.load();
   }
+
+
 
   handleRowSelectionChange = (selectedRowKeys: string[]) => {
     this.selectedRowKey = selectedRowKeys[0];

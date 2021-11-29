@@ -1,13 +1,25 @@
 import * as React from "react";
-import {FormEvent, FunctionComponent} from "react";
-import {Alert, Button, Card, Form, message, Row, Tabs, Layout, Select, Checkbox} from "antd";
+import { FormEvent, FunctionComponent } from "react";
+import {
+  Alert,
+  Button,
+  Card,
+  Form,
+  message,
+  Row,
+  Tabs,
+  Layout,
+  Select,
+  Checkbox,
+  Spin
+} from "antd";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
-import {inject, observer} from "mobx-react";
-import {ConcourseManagement} from "./ConcourseManagement";
-import {FormComponentProps} from "antd/lib/form";
-import {Link, Redirect, RouteComponentProps} from "react-router-dom";
-import {IReactionDisposer, observable, reaction, toJS} from "mobx";
+import { inject, observer } from "mobx-react";
+import { ConcourseManagement } from "./ConcourseManagement";
+import { FormComponentProps } from "antd/lib/form";
+import { Link, Redirect, RouteComponentProps } from "react-router-dom";
+import { IReactionDisposer, observable, reaction, toJS } from "mobx";
 import {
   FormattedMessage,
   injectIntl,
@@ -20,38 +32,43 @@ import {
   withLocalizedForm,
   extractServerValidationErrors,
   constructFieldsWithErrors,
-  clearFieldErrors, collection,
-  MultilineText, injectMainStore, MainStoreInjected, Msg, Instance
+  clearFieldErrors,
+  collection,
+  MultilineText,
+  injectMainStore,
+  MainStoreInjected,
+  Msg,
+  Instance
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
-import {Concourse} from "../../../cuba/entities/base/tsadv_Concourse";
-import {RootStoreProp} from "../../store";
-import {ReadonlyField} from "../../components/ReadonlyField";
-import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
+import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
+import { RootStoreProp } from "../../store";
+import { ReadonlyField } from "../../components/ReadonlyField";
+import { MarkCriteria } from "../../../cuba/entities/base/tsadv_MarkCriteria";
 import TextArea from "antd/es/input/TextArea";
-import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
-import {DataInstanceStore} from "@cuba-platform/react/dist/data/Instance";
-import {PersonGroupExt} from "../../../cuba/entities/base/base$PersonGroupExt";
-import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
+import { GradeDetail } from "../../../cuba/entities/base/tsadv_GradeDetail";
+import { DataInstanceStore } from "@cuba-platform/react/dist/data/Instance";
+import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt";
+import { ConcourseRequestManagement } from "../ConcourseRequest/ConcourseRequestManagement";
 import moment from "moment";
-import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
-import {Indicator} from "../../../cuba/entities/base/tsadv_Indicator";
-import {RatingScale} from "../../../cuba/entities/base/tsadv_RatingScale";
+import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseRequest";
+import { Indicator } from "../../../cuba/entities/base/tsadv_Indicator";
+import { RatingScale } from "../../../cuba/entities/base/tsadv_RatingScale";
 
-const {Footer, Content, Sider} = Layout;
-const {Option} = Select;
-const {TabPane} = Tabs;
+const { Footer, Content, Sider } = Layout;
+const { Option } = Select;
+const { TabPane } = Tabs;
 
 type Props = FormComponentProps & EditorProps;
 
 type EditorProps = {
-  markCriteria: MarkCriteria[] | null | undefined,
-  setTotalGrade: Function,
-  dataInstance: DataInstanceStore<ConcourseRequest>,
-  personGroupId?: any,
-  updated: boolean
+  markCriteria: MarkCriteria[] | null | undefined;
+  setTotalGrade: Function;
+  dataInstance: DataInstanceStore<ConcourseRequest>;
+  personGroupId?: any;
+  updated: boolean;
 };
 
 type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
@@ -60,26 +77,28 @@ interface IState {
   data: number;
 }
 
-
 @injectMainStore
 @inject("rootStore")
 @observer
-class GradeFormComponent extends React.Component<Props & WrappedComponentProps & ActiveTabProps &
-  MainStoreInjected &
-  RootStoreProp &
-  RouteComponentProps<any>, IState> {
-
-  dataInstance = this.props.dataInstance
+class GradeFormComponent extends React.Component<
+  Props &
+    WrappedComponentProps &
+    ActiveTabProps &
+    MainStoreInjected &
+    RootStoreProp &
+    RouteComponentProps<any>,
+  IState
+> {
+  dataInstance = this.props.dataInstance;
 
   gradeInstance = instance<GradeDetail>(GradeDetail.NAME, {
     view: "gradeDetail-view",
     loadImmediately: false
-  })
+  });
 
   indicatorsDsc = collection<Indicator>(Indicator.NAME, {
-    view: "_base",
-  })
-
+    view: "_base"
+  });
 
   concoursesDsc = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
@@ -92,7 +111,7 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
         }
       ]
     }
-  })
+  });
 
   concourseRequestsDsc = collection<ConcourseRequest>(ConcourseRequest.NAME, {
     view: "concourseRequest-edit",
@@ -105,7 +124,7 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
         }
       ]
     }
-  })
+  });
 
   personGroupDsc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "personGroup-view",
@@ -118,7 +137,7 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
         }
       ]
     }
-  })
+  });
 
   gradeDataCollection = collection<GradeDetail>(GradeDetail.NAME, {
     view: "gradeDetail-view",
@@ -128,15 +147,15 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
           value: this.props.personGroupId,
           operator: "=",
           property: "personGroup.id"
-        }, {
+        },
+        {
           value: this.dataInstance.item!.id,
           operator: "=",
           property: "concourseRequest.id"
         }
-
       ]
     }
-  })
+  });
 
   totalGradeDataCollection = collection<GradeDetail>(GradeDetail.NAME, {
     view: "gradeDetail-view",
@@ -149,7 +168,7 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
         }
       ]
     }
-  })
+  });
   @observable
   updated = this.props.updated;
   reactionDisposer: IReactionDisposer;
@@ -162,43 +181,38 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
   @observable
   globalErrors: string[] = [];
 
-  pageName: string = "concourseManagement"
+  pageName: string = "concourseManagement";
 
   @observable
-  optionValue: object = {}
+  optionValue: object = {};
 
   @observable
-  checkboxValue: object = {}
+  checkboxValue: object = {};
 
   @observable
-  personGroupId: any = this.props.personGroupId
+  personGroupId: any = this.props.personGroupId;
 
   @observable
-  comment: string = ""
+  comment: string = "";
   isDisabled: boolean = false;
 
   handleChangeOption = (name: string, val: any) => {
-
-    let [item, value] = val.split("$")
+    let [item, value] = val.split("$");
     this.optionValue[name] = {
       [item]: value
-    }
-
-  }
+    };
+  };
 
   handleChangeCheckbox = (item: string, name: string, value: any) => {
-
     this.checkboxValue[item] = {
       ...this.checkboxValue[item],
-      [name]: value ? value : false,
-    }
-
-
-  }
+      [name]: value ? value : false
+    };
+  };
 
   handleChangeComment = (e: any) => {
-    this.comment = e.target.value
-  }
+    this.comment = e.target.value;
+  };
 
   totalGradeHandler = (localSum: number) => {
     let sum = 0;
@@ -207,60 +221,58 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
       if (el.grade) {
         sum += el.grade;
       }
-    })
-    this.props.setTotalGrade(sum)
-  }
+    });
+    this.props.setTotalGrade(sum);
+  };
 
   @observable
-  innerHtml:string = ""
+  innerHtml: string = "";
 
   submitForm(values1: object, values2: object) {
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
-    let sum = 0
+    let sum = 0;
     if (values1) {
       for (const property in values1) {
-        if (values1.hasOwnProperty(property)){
-          for (const val in values1[property]){
+        if (values1.hasOwnProperty(property)) {
+          for (const val in values1[property]) {
             if (values1[property].hasOwnProperty(val))
-              sum += +values1[property][val]
+              sum += +values1[property][val];
           }
         }
       }
     }
     if (values2) {
       for (const property in values2) {
-        if (values2.hasOwnProperty(property)){
-          for (const val in values2[property]){
+        if (values2.hasOwnProperty(property)) {
+          for (const val in values2[property]) {
             if (values2[property].hasOwnProperty(val))
-              if ( values2[property][val] )
-                sum++
+              if (values2[property][val]) sum++;
           }
         }
       }
     }
 
-
-    let grade = this.gradeDataCollection.items
-    const indicators = (checkboxValue: any, optionValue:any) => {
+    let grade = this.gradeDataCollection.items;
+    const indicators = (checkboxValue: any, optionValue: any) => {
       let html = `
           <form class="ant-form ant-form-horizontal" style="width: 100%;">
                     <div class="ant-card generalInfo ant-card-bordered ant-card-small" style="padding: 5px 20px 20px;">
                         <div class="ant-card-body">
-      `
+      `;
       if (checkboxValue)
         for (let key in checkboxValue) {
           if (checkboxValue.hasOwnProperty(key)) {
-            html +=`
+            html += `
               <div class="ant-row ant-form-item" style="margin-top: 24px;">
                   <div class="ant-col ant-form-item-label">
                       <label class="ant-form-item-required" title="">${key}</label>
                   </div>
-              `
+              `;
             for (let values in checkboxValue[key])
               if (checkboxValue[key].hasOwnProperty(values))
                 html += `
                   <span class="ant-form-item-children">
-                      <div class="ant-row ant-form-item" style="display: flex; align-items: center; margin: 0px 0px 0px 16px; justify-content: flex-start;">
+                      <div class="ant-row ant-form-item default-form-item" style="display: flex; align-items: center; margin: 0px 0px 0px 0px; width: 80%;">
                           <div class="ant-col ant-form-item-label">
                               <label class="" title="">${values}</label>
                           </div>
@@ -268,7 +280,11 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
                               <div class="ant-form-item-control">
                                   <span class="ant-form-item-children">
                                       <label class="ant-checkbox-wrapper">
-                                          <span  class="ant-checkbox ${checkboxValue[key][values] ? "ant-checkbox-checked" : ""}">
+                                          <span  class="ant-checkbox ${
+                                            checkboxValue[key][values]
+                                              ? "ant-checkbox-checked"
+                                              : ""
+                                          }">
                                               <input disabled type="checkbox" class="ant-checkbox-input" value="">
                                               <span class="ant-checkbox-inner"></span>
                                           </span>
@@ -277,22 +293,21 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
                               </div>
                           </div>
                       </div>
-                  </span>`
+                  </span>`;
           }
-          html+=`</div>`
-
+          html += `</div>`;
         }
 
-      if (optionValue){
+      if (optionValue) {
         for (let key in optionValue) {
           if (optionValue.hasOwnProperty(key)) {
-            html +=`
+            html += `
               <div class="ant-row ant-form-item" style="margin-top: 24px;">
                   <div class="ant-col ant-form-item-label">
                       <label class="ant-form-item-required" title="">${key}</label>
                   </div>
-              `
-            for (let values in optionValue[key]){
+              `;
+            for (let values in optionValue[key]) {
               if (optionValue[key].hasOwnProperty(values))
                 html += `
                           <div class="ant-col ant-form-item-control-wrapper">
@@ -309,308 +324,446 @@ class GradeFormComponent extends React.Component<Props & WrappedComponentProps &
                                       </div>
                                   </span>
                               </div>
-                          </div>`
+                          </div>`;
             }
           }
-          html+=`</div>`
-
+          html += `</div>`;
         }
       }
 
-      html+=`
+      html += `
       <div class="ant-row ant-form-item" style="width: 80%;">
           <div class="ant-col ant-form-item-label">
               <label for="Comments" class="ant-form-item-required" title="">
-                  ${this.props.mainStore!.locale === "ru"?"Комментарии":"Comment"}
+                  ${
+                    this.props.mainStore!.locale === "ru"
+                      ? "Комментарии"
+                      : "Comment"
+                  }
               </label>
           </div>
           <div class="ant-col ant-form-item-control-wrapper">
               <div class="ant-form-item-control">
                   <span class="ant-form-item-children">
-                      <textarea disabled rows="6" id="Comments" data-__meta="[object Object]" data-__field="[object Object]" class="ant-input">${this.comment}</textarea>
+                      <textarea disabled rows="6" id="Comments" data-__meta="[object Object]" data-__field="[object Object]" class="ant-input">${
+                        this.comment
+                      }</textarea>
                   </span>
               </div>
           </div>
       </div>
       
-      `
+      `;
 
-      html+=`</div> </div> </form> `
+      html += `</div> </div> </form> `;
 
       return html;
-    }
+    };
 
     if (grade.length) {
 
-      this.gradeInstance.update({
-        id: grade[0].id,
-        personGroup: this.personGroupDsc.items[0],
-        concourseRequest: this.concourseRequestsDsc.items[0],
-        comment: this.comment,
-        grade: sum,
-        indicatorsList: indicators(this.checkboxValue, this.optionValue)
-      }).then(data => {
-        message.success(
-          this.props.intl.formatMessage({id: "management.editor.success"})
-        );
-
-        // this.totalGradeHandler(sum)
-        // this.updated = true
-
-      }).catch((e: any) => {
-        if (e.response && typeof e.response.json === "function") {
-          e.response.json().then((response: any) => {
-            clearFieldErrors(this.props.form);
-            const {
-              globalErrors,
-              fieldErrors
-            } = extractServerValidationErrors(response);
-            this.globalErrors = globalErrors;
-            if (fieldErrors.size > 0) {
-              this.props.form.setFields(
-                constructFieldsWithErrors(fieldErrors, this.props.form)
-              );
-            }
-
-            if (fieldErrors.size > 0 || globalErrors.length > 0) {
-              message.error(
-                this.props.intl.formatMessage({
-                  id: "management.editor.validationError"
-                })
-              );
-            } else {
-              message.error(
-                this.props.intl.formatMessage({
-                  id: "management.editor.error"
-                })
-              );
-            }
-          });
-        } else {
-          message.error(
-            this.props.intl.formatMessage({id: "management.editor.error"})
+      this.gradeInstance
+        .update({
+          id: grade[0].id,
+          personGroup: this.personGroupDsc.items[0],
+          concourseRequest: this.concourseRequestsDsc.items[0],
+          comment: this.comment,
+          grade: sum,
+          indicatorsList: indicators(this.checkboxValue, this.optionValue)
+        })
+        .then(data => {
+          message.success(
+            this.props.intl.formatMessage({ id: "management.editor.success" })
           );
-        }
-      });
 
+          // this.totalGradeHandler(sum)
+          // this.updated = true
+        })
+        .catch((e: any) => {
+          if (e.response && typeof e.response.json === "function") {
+            e.response.json().then((response: any) => {
+              clearFieldErrors(this.props.form);
+              const {
+                globalErrors,
+                fieldErrors
+              } = extractServerValidationErrors(response);
+              this.globalErrors = globalErrors;
+              if (fieldErrors.size > 0) {
+                this.props.form.setFields(
+                  constructFieldsWithErrors(fieldErrors, this.props.form)
+                );
+              }
+
+              if (fieldErrors.size > 0 || globalErrors.length > 0) {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.validationError"
+                  })
+                );
+              } else {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.error"
+                  })
+                );
+              }
+            });
+          } else {
+            message.error(
+              this.props.intl.formatMessage({ id: "management.editor.error" })
+            );
+          }
+        });
     } else {
+      this.innerHtml = indicators(this.checkboxValue, this.optionValue);
 
-      this.innerHtml = indicators(this.checkboxValue, this.optionValue)
-
-      this.gradeInstance.update({
-        personGroup: this.personGroupDsc.items[0],
-        concourseRequest: this.concourseRequestsDsc.items[0],
-        comment: this.comment,
-        grade: sum,
-        indicatorsList: indicators(this.checkboxValue, this.optionValue)
-      }).then(data => {
-        message.success(
-          this.props.intl.formatMessage({id: "management.editor.success"})
-        );
-        this.totalGradeHandler(sum)
-        // this.updated = true
-      }).catch((e: any) => {
-        if (e.response && typeof e.response.json === "function") {
-          e.response.json().then((response: any) => {
-            clearFieldErrors(this.props.form);
-            const {
-              globalErrors,
-              fieldErrors
-            } = extractServerValidationErrors(response);
-            this.globalErrors = globalErrors;
-            if (fieldErrors.size > 0) {
-              this.props.form.setFields(
-                constructFieldsWithErrors(fieldErrors, this.props.form)
-              );
-            }
-
-            if (fieldErrors.size > 0 || globalErrors.length > 0) {
-              message.error(
-                this.props.intl.formatMessage({
-                  id: "management.editor.validationError"
-                })
-              );
-            } else {
-              message.error(
-                this.props.intl.formatMessage({
-                  id: "management.editor.error"
-                })
-              );
-            }
-          });
-        } else {
-          message.error(
-            this.props.intl.formatMessage({id: "management.editor.error"})
+      this.gradeInstance
+        .update({
+          personGroup: this.personGroupDsc.items[0],
+          concourseRequest: this.concourseRequestsDsc.items[0],
+          comment: this.comment,
+          grade: sum,
+          indicatorsList: indicators(this.checkboxValue, this.optionValue)
+        })
+        .then(data => {
+          message.success(
+            this.props.intl.formatMessage({ id: "management.editor.success" })
           );
-        }
-      });
+          this.totalGradeHandler(sum);
+          // this.updated = true
+        })
+        .catch((e: any) => {
+          if (e.response && typeof e.response.json === "function") {
+            e.response.json().then((response: any) => {
+              clearFieldErrors(this.props.form);
+              const {
+                globalErrors,
+                fieldErrors
+              } = extractServerValidationErrors(response);
+              this.globalErrors = globalErrors;
+              if (fieldErrors.size > 0) {
+                this.props.form.setFields(
+                  constructFieldsWithErrors(fieldErrors, this.props.form)
+                );
+              }
+
+              if (fieldErrors.size > 0 || globalErrors.length > 0) {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.validationError"
+                  })
+                );
+              } else {
+                message.error(
+                  this.props.intl.formatMessage({
+                    id: "management.editor.error"
+                  })
+                );
+              }
+            });
+          } else {
+            message.error(
+              this.props.intl.formatMessage({ id: "management.editor.error" })
+            );
+          }
+        });
     }
-
-
   }
 
   handleSubmit = (e: FormEvent) => {
-    this.submitForm(this.optionValue, this.checkboxValue)
+    this.dataInstance.status = "LOADING";
+    this.submitForm(this.optionValue, this.checkboxValue);
     e.preventDefault();
-  }
+  };
 
   checkDates = () => {
     if (this.concoursesDsc.items[0]) {
       let dateNow = moment(Date.now());
-      let requestDate = moment(this.concoursesDsc.items[0]!.endVoting)
+      let requestDate = moment(this.concoursesDsc.items[0]!.endVoting);
 
       if (dateNow.isAfter(requestDate)) {
-        this.isDisabled = true
-
+        this.isDisabled = true;
       }
-
     }
-  }
+  };
 
   checkGradeExists = () => {
-    let grade = this.gradeDataCollection.items
+    let grade = this.gradeDataCollection.items;
     if (grade.length) {
-      this.isDisabled = true
+      this.isDisabled = true;
     }
-  }
+  };
 
   render() {
-
     if (this.updated) {
-      return <Redirect exact={true} to={"/concourse/4"}/>;
+      return <Redirect exact={true} to={"/concourse/4"} />;
     }
 
     if (this.goBack) {
-      return <Redirect exact={true} to={"/concourse/4"}/>;
+      return <Redirect exact={true} to={"/concourse/4"} />;
     }
 
     const activeTab = "1";
     const defaultActiveKey = activeTab ? activeTab : "1";
 
-    const isRu = this.props.mainStore!.locale === "ru"
+    const isRu = this.props.mainStore!.locale === "ru";
 
+    const { status } = this.dataInstance;
 
+    this.checkDates();
+    this.checkGradeExists();
 
-    this.checkDates()
-    this.checkGradeExists()
+    const data = `
+    
+          <form class="ant-form ant-form-horizontal" style="width: 100%;">
+                    <div class="ant-card generalInfo ant-card-bordered ant-card-small" style="padding: 5px 20px 20px;">
+                        <div class="ant-card-body">
+      
+              <div class="ant-row ant-form-item" style="margin-top: 24px;">
+                  <div class="ant-col ant-form-item-label">
+                      <label class="ant-form-item-required" title="">привет</label>
+                  </div>
+              
+                  <span class="ant-form-item-children">
+                      <div class="ant-row ant-form-item" style="display: flex; align-items: center; margin: 0px 0px 0px 16px; justify-content: flex-start;">
+                          <div class="ant-col ant-form-item-label">
+                              <label class="" title="">2-уровень</label>
+                          </div>
+                          <div class="ant-col ant-form-item-control-wrapper">
+                              <div class="ant-form-item-control">
+                                  <span class="ant-form-item-children">
+                                      <label class="ant-checkbox-wrapper">
+                                          <span  class="ant-checkbox ant-checkbox-checked">
+                                              <input disabled type="checkbox" class="ant-checkbox-input" value="">
+                                              <span class="ant-checkbox-inner"></span>
+                                          </span>
+                                      </label>
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                  </span>
+                  <span class="ant-form-item-children">
+                      <div class="ant-row ant-form-item" style="display: flex; align-items: center; margin: 0px 0px 0px 16px; justify-content: flex-start;">
+                          <div class="ant-col ant-form-item-label">
+                              <label class="" title="">3ий уровень</label>
+                          </div>
+                          <div class="ant-col ant-form-item-control-wrapper">
+                              <div class="ant-form-item-control">
+                                  <span class="ant-form-item-children">
+                                      <label class="ant-checkbox-wrapper">
+                                          <span  class="ant-checkbox ant-checkbox-checked">
+                                              <input disabled type="checkbox" class="ant-checkbox-input" value="">
+                                              <span class="ant-checkbox-inner"></span>
+                                          </span>
+                                      </label>
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                  </span></div>
+              <div class="ant-row ant-form-item" style="margin-top: 24px;">
+                  <div class="ant-col ant-form-item-label">
+                      <label class="ant-form-item-required" title="">Привет Мир</label>
+                  </div>
+              
+                          <div class="ant-col ant-form-item-control-wrapper">
+                              <div class="ant-form-item-control">
+                                  <span class="ant-form-item-children">
+                                      <div class="ant-select ant-select-enabled ant-select-allow-clear" style="width: 80%;">
+                                          <div class="ant-select-selection ant-select-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-controls="80c4bf7f-823b-44a5-93fe-83b3d92a612b" aria-expanded="false" tabindex="0">
+                                            <div class="ant-select-selection__rendered">
+                                                <div disabled class="ant-select-selection-selected-value" title="привет" style="display: block; opacity: 1;">
+                                                  привет
+                                                </div>
+                                            </div>
+                                          </div>
+                                      </div>
+                                  </span>
+                              </div>
+                          </div></div>
+      <div class="ant-row ant-form-item" style="width: 80%;">
+          <div class="ant-col ant-form-item-label">
+              <label for="Comments" class="ant-form-item-required" title="">
+                  Комментарии
+              </label>
+          </div>
+          <div class="ant-col ant-form-item-control-wrapper">
+              <div class="ant-form-item-control">
+                  <span class="ant-form-item-children">
+                      <textarea disabled rows="6" id="Comments" data-__meta="[object Object]" data-__field="[object Object]" class="ant-input">Hello WORLD!</textarea>
+                  </span>
+              </div>
+          </div>
+      </div>
+      
+      </div> </div> </form> 
+    `
 
+    console.log(data)
 
-    return (this.isDisabled && this.gradeDataCollection.items[0]) ? ([
-      <span dangerouslySetInnerHTML={{__html:this.gradeDataCollection.items![0].indicatorsList!}}>
-
-      </span>,
+    return this.isDisabled && this.gradeDataCollection.items[0] ? (
+      [
+        <span
+          dangerouslySetInnerHTML={{
+            __html: this.gradeDataCollection.items![0].indicatorsList!
+          }}
+        />,
         <Button
           htmlType="button"
-          onClick={() => this.goBack = true}
-          style={{marginTop: 24}}
+          onClick={() => (this.goBack = true)}
+          style={{ marginTop: 24, textTransform: "capitalize" }}
         >
-          <FormattedMessage id="back"/>
+          <FormattedMessage id="back" />
         </Button>
       ]
-      ) : (
-      <Form style={{width: "100%"}} onSubmit={this.handleSubmit}>
-        <Card size="small" className="generalInfo" style={{padding: "5px 20px 20px"}}>
-          {
-            this.props.markCriteria && this.props.markCriteria.map((el: MarkCriteria) => (
-              [
-                el.indicator && el.indicator_relation && <Form.Item key={isRu ? el.name_ru : el.name_en} style={{marginTop: "24px", width: "80%"}}
-                           required={true} label={this.createElement(Msg, {
-                  entityName: "tsadv_markCriteria",
-                  propertyName: isRu ? el.name_ru : el.name_en
-                })}>
-                  {
-                    el.indicator_relation!.map(chk => (
-                      <Form.Item key={chk.id} style={{
-                        display: "flex",
-                        alignItems: "center",
-                        margin: "0",
-                        marginLeft: "16px",
-                        justifyContent: "flex-start"
-                      }}
-                                 label={this.createElement(Msg, {
-                                   entityName: "tsadv_markCriteria",
-                                   propertyName: isRu ? chk.name_ru : chk.name_en
-                                 })}>
-                        <Checkbox disabled={this.isDisabled}
-                                  onChange={value => this.handleChangeCheckbox(isRu ? el.name_ru! : el.name_en!, isRu ? chk.name_ru! : chk.name_en!, value.target.checked)}/>
-                      </Form.Item>
-                    ))
-                  }
-                </Form.Item>,
-
-                !el.indicator && el.ratingScale &&
-                <Form.Item key={isRu ? el.ratingScale!.name_ru : el.ratingScale!.name_en} style={{marginTop: "24px"}}
-                           required={true} label={this.createElement(Msg, {
-                  entityName: "tsadv_markCriteria",
-                  propertyName: isRu ? el.ratingScale!.name_ru : el.ratingScale!.name_en
-                })}>
-                  <Select disabled={this.isDisabled}
-                          // value={this.optionValue[isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!]}
-                          onChange={ (value) => this.handleChangeOption(isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!, value)}
-                          allowClear={true} placeholder={"....."} style={{width: "80%"}}>
-                    {
-                      el.ratingScale.level_relation!.map((lvl, idx) => (
-                        lvl && <Option key={lvl.id ? lvl.id : idx + "option-" + el.ratingScale!.name_en}
-                                       value={`${isRu ? lvl.name_ru!+"$"+lvl.number! : lvl.name_en!+"$"+lvl.number!}`}>{isRu ? lvl.name_ru : lvl.name_en!}</Option>
-
-                      ))
-                    }
-                  </Select>
-                </Form.Item>
-
-
-              ]))
-          }
-          <Form.Item
-            style={{width: "80%"}}
-            label={this.createElement(Msg, {
-              entityName: "tsadv_markCriteria",
-              propertyName: isRu ? "Комментарии" : "Comments"
-            })}
-            required={true}
+    ) : (
+      <Form style={{ width: "100%" }} onSubmit={this.handleSubmit}>
+        <Spin spinning={status == "LOADING"}>
+          <Card
+            size="small"
+            className="generalInfo"
+            style={{ padding: "5px 20px 20px" }}
           >
-            {
-              this.props.form.getFieldDecorator("Comments")
-              (<TextArea disabled={this.isDisabled} value={this.comment} onChange={this.handleChangeComment} rows={6}/>)
-            }
-          </Form.Item>
-          <Form.Item style={{textAlign: "left", marginTop: "36px"}}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={this.isDisabled}
-              style={{marginRight: "8px"}}
+            {this.props.markCriteria &&
+              this.props.markCriteria.map((el: MarkCriteria) => [
+                el.indicator && el.indicator_relation && (
+                  <Form.Item
+                    key={isRu ? el.name_ru : el.name_en}
+                    style={{ marginTop: "24px", width: "80%" }}
+                    required={true}
+                    label={this.createElement(Msg, {
+                      entityName: "tsadv_markCriteria",
+                      propertyName: isRu ? el.name_ru : el.name_en
+                    })}
+
+                  >
+                    {el.indicator_relation!.map(chk => ( chk &&
+                      <Form.Item
+                        key={chk.id}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          margin: "0",
+                          marginLeft: "8px"
+                        }}
+                        className={"default-form-item"}
+                        label={this.createElement(Msg, {
+                          entityName: "tsadv_markCriteria",
+                          propertyName: isRu ? chk.name_ru : chk.name_en
+                        })}
+                      >
+
+                        <Checkbox
+
+                          disabled={this.isDisabled}
+                          onChange={value =>
+                            this.handleChangeCheckbox(
+                              isRu ? el.name_ru! : el.name_en!,
+                              isRu ? chk.name_ru! : chk.name_en!,
+                              value.target.checked
+                            )
+                          }
+                        />
+                      </Form.Item>
+                    ))}
+                  </Form.Item>
+                ),
+
+                !el.indicator && el.ratingScale && (
+                  <Form.Item
+                    key={isRu ? el.name_ru : el.name_en}
+                    style={{ marginTop: "24px" }}
+                    required={true}
+                    label={this.createElement(Msg, {
+                      entityName: "tsadv_markCriteria",
+                      propertyName: isRu ? el.name_ru : el.name_en
+                    })}
+                  >
+                    <Select
+                      disabled={this.isDisabled}
+                      // value={this.optionValue[isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!]}
+                      onChange={value =>
+                        this.handleChangeOption(
+                          isRu ? el.name_ru! : el.name_en!,
+                          value
+                        )
+                      }
+                      allowClear={true}
+                      placeholder={"....."}
+                      style={{ width: "80%" }}
+                    >
+                      {el.ratingScale.level_relation!.map(
+                        (lvl, idx) =>
+                          lvl && (
+                            <Option
+                              key={
+                                lvl.id ? lvl.id : idx + "option-" + el.name_en!
+                              }
+                              value={`${
+                                isRu
+                                  ? lvl.name_ru! + "$" + lvl.number!
+                                  : lvl.name_en! + "$" + lvl.number!
+                              }`}
+                            >
+                              {isRu ? lvl.name_ru : lvl.name_en!}
+                            </Option>
+                          )
+                      )}
+                    </Select>
+                  </Form.Item>
+                )
+              ])}
+            <Form.Item
+              style={{ width: "80%" }}
+              label={this.createElement(Msg, {
+                entityName: "tsadv_markCriteria",
+                propertyName: isRu ? "Комментарии" : "Comments"
+              })}
+              required={true}
             >
-              <FormattedMessage id="management.editor.submit"/>
-            </Button>
+              {this.props.form.getFieldDecorator("Comments")(
+                <TextArea
+                  disabled={this.isDisabled}
+                  value={this.comment}
+                  onChange={this.handleChangeComment}
+                  rows={6}
+                />
+              )}
+            </Form.Item>
+            <Form.Item style={{ textAlign: "left", marginTop: "36px" }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={this.isDisabled}
+                style={{ marginRight: "8px" }}
+              >
+                <FormattedMessage id="management.editor.submit" />
+              </Button>
 
-            <Button
-              htmlType="button"
-              onClick={() => this.goBack = true}
-            >
-              <FormattedMessage id="management.editor.cancel"/>
-            </Button>
-
-
-
-          </Form.Item>
-          {/*{*/}
-          {/*  this.innerHtml.length &&  <span dangerouslySetInnerHTML={{__html:this.innerHtml}}>*/}
-          {/*  </span>*/}
-          {/*}*/}
-        </Card>
-
+              <Button
+                htmlType="button"
+                onClick={() => (this.goBack = true)}
+                style={{ textTransform: "capitalize" }}
+              >
+                <FormattedMessage id="management.editor.cancel" />
+              </Button>
+            </Form.Item>
+            {/*{*/}
+            {/*  this.innerHtml.length &&  <span dangerouslySetInnerHTML={{__html:this.innerHtml}}>*/}
+            {/*  </span>*/}
+            {/*}*/}
+          </Card>
+        </Spin>
       </Form>
     );
   }
 
   componentDidMount() {
-    this.gradeInstance.setItem(new GradeDetail())
-
+    this.gradeInstance.setItem(new GradeDetail());
   }
 
-  componentWillUnmount() {
-  }
+  componentWillUnmount() {}
 }
 
 export default injectIntl(
