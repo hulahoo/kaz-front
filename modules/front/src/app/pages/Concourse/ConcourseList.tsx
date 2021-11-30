@@ -120,7 +120,16 @@ class ConcourseListComponent extends React.Component<
     {
       view: "concourseRequest-edit",
       sort: "-updateTs",
-      loadImmediately: false
+      loadImmediately: false,
+      filter: {
+        conditions: [
+          {
+            value: "APPROVED",
+            operator: "=",
+            property: "status.code"
+          }
+        ]
+      }
     }
   );
 
@@ -644,7 +653,7 @@ class ConcourseListComponent extends React.Component<
                 key="4"
               >
                 <DataTableFormat
-                  dataCollection={this.newData}
+                  dataCollection={this.newData && this.newData}
                   fields={this.concourseGradeFields}
                   hideSelectionColumn={true}
                   render={[
@@ -721,30 +730,30 @@ class ConcourseListComponent extends React.Component<
     this.dataUpdater();
   }
 
-  componentWillMount() {
-    this.loadConcourseRequest();
-  }
+  // componentWillMount() {
+  //   this.dataUpdater();
+  // }
 
   @action
   dataUpdater = () => {
     this.newData.items = [];
     if (this.dataCollectionConcourseRequestGrade.status === "DONE"){
+      let data;
       this.dataCollectionConcourseRequestGrade.items.map(
         item => {
-          item.concourse!.judges!.map(judge => {
+          item!.concourse!.judges!.map(judge => {
             if (
               judge.id! ===
-              this.props.rootStore!.userInfo.personGroupId
-            )
-              if (!this.newData.items.includes(item)) {
-                this.newData.items.push(item);
-              }
+              this.props.rootStore!.userInfo!.personGroupId && !this.newData.items.includes(item)
+            ){
+              this.newData.items.push(item);
+            }
           });
         }
       );
-      this.newData.load()
-    }
 
+      // this.newData.load()
+    }
 
   };
 
@@ -759,27 +768,27 @@ class ConcourseListComponent extends React.Component<
     return record;
   }
 
-  loadConcourseRequest = () =>{
-    this.newData = collection<ConcourseRequest>(ConcourseRequest.NAME, {
-      view: "concourse-view",
-      sort: "-updateTs",
-      filter: {
-        conditions: [
-          {
-            value: this.props.rootStore!.userInfo!.personGroupId!,
-            operator: "=",
-            property: "id"
-          },
-          {
-            value: "APPROVED",
-            operator: "=",
-            property: "status.code"
-          }
-        ]
-      }
-    });
-    this.newData.load();
-  }
+  // loadConcourseRequest = () =>{
+  //   this.newData = collection<ConcourseRequest>(ConcourseRequest.NAME, {
+  //     view: "concourse-view",
+  //     sort: "-updateTs",
+  //     filter: {
+  //       conditions: [
+  //         {
+  //           value: this.props.rootStore!.userInfo!.personGroupId!,
+  //           operator: "=",
+  //           property: "id"
+  //         },
+  //         {
+  //           value: "APPROVED",
+  //           operator: "=",
+  //           property: "status.code"
+  //         }
+  //       ]
+  //     }
+  //   });
+  //   this.newData.load();
+  // }
 
 
 

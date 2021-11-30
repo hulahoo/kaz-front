@@ -174,6 +174,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
   personGroupId: string;
 
+  @observable
+  currentUser: string
+
   expertId:string
 
   managerId:string
@@ -290,6 +293,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   isCreateMember: boolean = false;
 
   update = (): Promise<boolean> => {
+
     let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
     this.props.form.validateFields((err, values) => {
       if (err) {
@@ -358,8 +362,15 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   };
 
   @action
-  onCategoryUpdate = (): void => {
-    this.update().then(data => {});
+  onCategoryUpdate = (id:string): void => {
+    this.props.form.setFieldsValue({
+      category: id
+    });
+    // this.update().then(data => {
+    //   this.currentUser = this.props.rootStore!.userInfo!.id!
+    //   this.categoryChecker()
+    // });
+
   };
 
   isUpdateBeforeOutcome = true;
@@ -372,12 +383,23 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
   getUpdateEntityData(): any {
     if (this.isNotDraft()) return super.getUpdateEntityData();
+    this.currentUser = this.props.rootStore!.userInfo!.id!
     return {
       personGroup: this.personGroupId,
-      projectManager: this.projectManagerId,
-      projectExpert: this.projectExpertId,
+      projectManager: this.getStatusCode()==="TO_BE_REVISED" ? this.managerId:this.projectManagerId,
+      projectExpert: this.getStatusCode()==="TO_BE_REVISED" ? this.expertId :this.projectExpertId,
       ...super.getUpdateEntityData()
     };
+  }
+
+  showCategory:boolean = false
+
+  categoryView:boolean = false
+
+  categoryChecker=()=>{
+    if (this.takCard().props!.tasks && this.props.rootStore!.userInfo!.id && this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].name === "administrator_task"){
+      this.showCategory = this.props.rootStore!.userInfo!.id === this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].assignee && this.getStatusCode() === "APPROVING"
+    }
   }
 
   render() {
@@ -451,10 +473,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       return <LoadingPage />;
     }
 
-    let is_admin =
-      this.takCard().props!.tasks &&
-      this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1]
-        .name === "administrator_task";
+
+    this.categoryChecker()
+
+    this.categoryView = this.takCard().props!.tasks && (this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].name === "administrator_task")
 
     return (
       <div className="cardWrapper" id="concourseRequest">
@@ -690,22 +712,21 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     propertyName="category"
                     form={this.props.form}
                     disabled={
-                      this.props.rootStore!.userInfo!.personGroupId ===
-                      this.personGroupId
+                      !this.showCategory
                     }
                     formItemOpts={{
                       style: {
                         minWidth: "30%",
                         maxWidth: "30%",
                         marginBottom: "12px",
-                        visibility: is_admin ? "visible" : "hidden"
+                        visibility: this.categoryView ? "visible" : "hidden"
                       },
                       required: true
                     }}
                     getFieldDecoratorOpts={{
                       rules: [
                         {
-                          required: is_admin,
+                          required: this.showCategory,
                           message: this.props.intl.formatMessage(
                             { id: "form.validation.required" },
                             { fieldName: messages[entityName + ".category"] }
@@ -714,10 +735,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       ],
                       getValueFromEvent: (id, val) => {
                         if (id) {
-                          this.props.form.setFieldsValue({
-                            category: id
-                          });
-                          this.onCategoryUpdate();
+                          this.onCategoryUpdate(id);
+
                           return id;
                         }
                       }
@@ -726,7 +745,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
                   <span
                     style={{
-                      visibility: is_admin ? "hidden" : "visible",
+                      visibility: this.categoryView ? "hidden" : "visible",
                       minWidth: "30%"
                     }}
                   >
@@ -835,7 +854,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   }}
                 >
                   {
-                    this.managerFullName ? <Form.Item
+                    (this.managerFullName || this.getStatusCode()==="TO_BE_REVISED")  ? <Form.Item
                       style={{
                         minWidth: "25%",
                         maxWidth: "25%",
@@ -848,7 +867,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     >
                       <Input
                         value={
-                          this.managerFullName && this.managerFullName
+                          this.dataInstance.item!.projectManager ? this.dataInstance.item!.projectManager["_instanceName"] || "" : ""
                         }
                         disabled
                       />
@@ -883,7 +902,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                           getValueFromEvent: (personGroupId, val) => {
                             if (
                               this.props.entityId ===
-                              ConcourseRequestManagement.NEW_SUBPATH
+                              ConcourseRequestManagement.NEW_SUBPATH || this.getStatusCode()==="TO_BE_REVISED"
                             ) {
                               if (personGroupId) {
                                 this.projectManagerId = personGroupId
@@ -897,6 +916,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                                 return undefined;
                               }
                             }
+
+                            return personGroupId
+
                           }
                         })(
                           <SearchSelect
@@ -906,14 +928,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                             options={
                               this.personManagerDc &&
                               this.personManagerDc.items.map(d => {
-                                console.log(d.id);
                                 return (
                                   <Select.Option key={d.id}>
-                                    {this.isLocaleEn? d.relevantPerson!.lastNameLatin +
-                                      " " +
-                                      d.relevantPerson!.firstNameLatin :d.relevantPerson!.lastName +
-                                      " " +
-                                      d.relevantPerson!.firstName}
+                                    {d._instanceName}
                                   </Select.Option>
                                 );
                               })
@@ -1014,7 +1031,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                 </Row>
                 <Row type="flex" align="middle" justify={"space-between"}>
                   {
-                    this.expertFullName ? <Form.Item
+                    (this.expertFullName || this.getStatusCode()==="TO_BE_REVISED") ? <Form.Item
                       style={{
                         minWidth: "25%",
                         maxWidth: "25%",
@@ -1027,7 +1044,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     >
                       <Input
                         value={
-                          this.expertFullName && this.expertFullName
+                          this.dataInstance.item!.projectExpert && this.dataInstance.item!.projectExpert ? this.dataInstance.item!.projectExpert["_instanceName"] || "" : ""
                         }
                         disabled
                       />
@@ -1059,7 +1076,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                             }
                           ],
                           getValueFromEvent: (personGroupId, val) => {
-                            console.log(personGroupId, val);
+
                             if (personGroupId) {
                               this.projectExpertId = personGroupId
                               this.getExpertUserRecordById(personGroupId);
@@ -1081,7 +1098,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                             options={
                               this.personExpertDc &&
                               this.personExpertDc.items.map(d => {
-                                console.log(d.id);
                                 return (
                                   <Select.Option key={d.id}>
                                     {this.isLocaleEn? d.relevantPerson!.lastNameLatin +
@@ -1274,11 +1290,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     id: "concourseRequestDownloadMessage"
                   })}
                 </p>
-                {this.concoursesDc!.items[0] && (
-                  <ConcourseFile
+                {
+                  this.concoursesDc!.items[0] && <ConcourseFile
                     FileId={this.concoursesDc!.items[0]!.requestTemplate!.id}
                   />
-                )}
+                }
               </Card>
 
               <Card
@@ -1342,7 +1358,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   }
 
   onSearchManager = (value: string) => {
-    console.log(value, this.dicLangValue);
     this.personManagerDc.items = [];
     this.personManagerDc.sort = this.isLocaleEn?"relevantPerson.lastNameLatin":"relevantPerson.lastName"
     let val = value.split(" ");
@@ -1566,9 +1581,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           .then(value => value[0])
           .then(value => (this.person = value));
 
+        this.currentUser = this.props.rootStore!.userInfo!.id!
+
         let values: any;
         if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH) {
-          // this.personGroupId = this.props.rootStore!.userInfo!.personGroupId!;
           restServices.employeeService
             .personProfile(this.personGroupId)
             .then(data => {
@@ -1581,12 +1597,52 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             });
         }
 
+
         if (item && this.isNotDraft()) {
           this.initDataCollection();
-          // this.personGroupId =
-          //   item && item.personGroup
-          //     ? item.personGroup.id
-          //     : this.props.form.getFieldValue("personGroup").id;
+
+          restServices.employeeService
+          .personProfile(this.personGroupId)
+          .then(data => {
+            values = {
+              personGroup: this.personGroupId,
+              initiatorCompany: data.companyCode,
+              initiatorPosition: data.positionName
+            };
+            this.props.form.setFieldsValue(values);
+          });
+
+          this.managerId = this.dataInstance.item!.projectManager!.id;
+          this.expertId = this.dataInstance.item!.projectExpert!.id;
+          console.log("Manager:", this.managerId)
+          console.log("Expert:", this.expertId)
+          restServices.employeeService.personProfile(this.managerId).then(data => {
+            this.managerFullName = data.firstLastName
+            values = {
+              projectManager: this.managerId,
+              managerCompany: data.companyCode,
+              managerPosition: data.positionName
+            };
+            this.props.form.setFieldsValue(values);
+          });
+
+          restServices.employeeService.personProfile(this.expertId).then(data => {
+            this.expertFullName = data.firstLastName
+            values = {
+              projectExpert: this.expertId,
+              expertCompany: data.companyCode,
+              expertPosition: data.positionName
+            };
+            this.props.form.setFieldsValue(values);
+          });
+
+
+
+        }
+
+        if (this.getStatusCode()==="TO_BE_REVISED" && this.dataInstance.item){
+          this.initDataCollection();
+
           restServices.employeeService
             .personProfile(this.personGroupId)
             .then(data => {
@@ -1597,8 +1653,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
               };
               this.props.form.setFieldsValue(values);
             });
-          console.log("ITEM", item)
+
           this.managerId = this.dataInstance.item!.projectManager!.id;
+          console.log("Manager:", this.managerId)
           let values: any;
           restServices.employeeService.personProfile(this.managerId).then(data => {
             this.managerFullName = data.firstLastName
@@ -1610,8 +1667,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             this.props.form.setFieldsValue(values);
           });
           this.expertId = this.dataInstance.item!.projectExpert!.id;
+          console.log("Expert:", this.expertId)
           restServices.employeeService.personProfile(this.expertId).then(data => {
-            console.log("EXPERT ID", data);
             this.expertFullName = data.firstLastName
             values = {
               projectExpert: this.expertId,
@@ -1620,6 +1677,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             };
             this.props.form.setFieldsValue(values);
           });
+
         }
 
         this.dataInstance.item!.concourse = this.dataInstance.item!.concourse
@@ -1630,9 +1688,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
       }
     );
-
     this.loadData();
     this.loadBpmProcessData();
+    this.currentUser = this.props.rootStore!.userInfo!.id!
+
   }
 
   // onReactionDisposerEffect = (item: ConcourseRequest | undefined) => {
@@ -1645,7 +1704,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   protected initItem(request: ConcourseRequest): void {
     super.initItem(request);
   }
-
 
   componentWillUnmount() {
     this.reactionDisposer();
