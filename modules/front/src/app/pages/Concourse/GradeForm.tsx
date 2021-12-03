@@ -56,6 +56,7 @@ import moment from "moment";
 import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseRequest";
 import { Indicator } from "../../../cuba/entities/base/tsadv_Indicator";
 import { RatingScale } from "../../../cuba/entities/base/tsadv_RatingScale";
+import {Levels} from "../../../cuba/entities/base/tsadv_Levels";
 
 const { Footer, Content, Sider } = Layout;
 const { Option } = Select;
@@ -198,9 +199,11 @@ class GradeFormComponent extends React.Component<
 
   handleChangeOption = (name: string, val: any) => {
     let [item, value] = val.split("$");
+    console.log(val)
     this.optionValue[name] = {
       [item]: value
     };
+    console.log("SCALE CHANGE: ",this.optionValue[name])
   };
 
   handleChangeCheckbox = (item: string, name: string, value: any) => {
@@ -208,6 +211,7 @@ class GradeFormComponent extends React.Component<
       ...this.checkboxValue[item],
       [name]: value ? value : false
     };
+    console.log("CHECKBOX CHANGE:",this.checkboxValue[item])
   };
 
   handleChangeComment = (e: any) => {
@@ -240,6 +244,7 @@ class GradeFormComponent extends React.Component<
           }
         }
       }
+      console.log("Scale", sum)
     }
     if (values2) {
       for (const property in values2) {
@@ -250,6 +255,7 @@ class GradeFormComponent extends React.Component<
           }
         }
       }
+      console.log("Check", sum)
     }
 
     let grade = this.gradeDataCollection.items;
@@ -513,95 +519,6 @@ class GradeFormComponent extends React.Component<
     this.checkDates();
     this.checkGradeExists();
 
-    const data = `
-    
-          <form class="ant-form ant-form-horizontal" style="width: 100%;">
-                    <div class="ant-card generalInfo ant-card-bordered ant-card-small" style="padding: 5px 20px 20px;">
-                        <div class="ant-card-body">
-      
-              <div class="ant-row ant-form-item" style="margin-top: 24px;">
-                  <div class="ant-col ant-form-item-label">
-                      <label class="ant-form-item-required" title="">привет</label>
-                  </div>
-              
-                  <span class="ant-form-item-children">
-                      <div class="ant-row ant-form-item" style="display: flex; align-items: center; margin: 0px 0px 0px 16px; justify-content: flex-start;">
-                          <div class="ant-col ant-form-item-label">
-                              <label class="" title="">2-уровень</label>
-                          </div>
-                          <div class="ant-col ant-form-item-control-wrapper">
-                              <div class="ant-form-item-control">
-                                  <span class="ant-form-item-children">
-                                      <label class="ant-checkbox-wrapper">
-                                          <span  class="ant-checkbox ant-checkbox-checked">
-                                              <input disabled type="checkbox" class="ant-checkbox-input" value="">
-                                              <span class="ant-checkbox-inner"></span>
-                                          </span>
-                                      </label>
-                                  </span>
-                              </div>
-                          </div>
-                      </div>
-                  </span>
-                  <span class="ant-form-item-children">
-                      <div class="ant-row ant-form-item" style="display: flex; align-items: center; margin: 0px 0px 0px 16px; justify-content: flex-start;">
-                          <div class="ant-col ant-form-item-label">
-                              <label class="" title="">3ий уровень</label>
-                          </div>
-                          <div class="ant-col ant-form-item-control-wrapper">
-                              <div class="ant-form-item-control">
-                                  <span class="ant-form-item-children">
-                                      <label class="ant-checkbox-wrapper">
-                                          <span  class="ant-checkbox ant-checkbox-checked">
-                                              <input disabled type="checkbox" class="ant-checkbox-input" value="">
-                                              <span class="ant-checkbox-inner"></span>
-                                          </span>
-                                      </label>
-                                  </span>
-                              </div>
-                          </div>
-                      </div>
-                  </span></div>
-              <div class="ant-row ant-form-item" style="margin-top: 24px;">
-                  <div class="ant-col ant-form-item-label">
-                      <label class="ant-form-item-required" title="">Привет Мир</label>
-                  </div>
-              
-                          <div class="ant-col ant-form-item-control-wrapper">
-                              <div class="ant-form-item-control">
-                                  <span class="ant-form-item-children">
-                                      <div class="ant-select ant-select-enabled ant-select-allow-clear" style="width: 80%;">
-                                          <div class="ant-select-selection ant-select-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-controls="80c4bf7f-823b-44a5-93fe-83b3d92a612b" aria-expanded="false" tabindex="0">
-                                            <div class="ant-select-selection__rendered">
-                                                <div disabled class="ant-select-selection-selected-value" title="привет" style="display: block; opacity: 1;">
-                                                  привет
-                                                </div>
-                                            </div>
-                                          </div>
-                                      </div>
-                                  </span>
-                              </div>
-                          </div></div>
-      <div class="ant-row ant-form-item" style="width: 80%;">
-          <div class="ant-col ant-form-item-label">
-              <label for="Comments" class="ant-form-item-required" title="">
-                  Комментарии
-              </label>
-          </div>
-          <div class="ant-col ant-form-item-control-wrapper">
-              <div class="ant-form-item-control">
-                  <span class="ant-form-item-children">
-                      <textarea disabled rows="6" id="Comments" data-__meta="[object Object]" data-__field="[object Object]" class="ant-input">Hello WORLD!</textarea>
-                  </span>
-              </div>
-          </div>
-      </div>
-      
-      </div> </div> </form> 
-    `
-
-    console.log(data)
-
     return this.isDisabled && this.gradeDataCollection.items[0] ? (
       [
         <span
@@ -693,9 +610,10 @@ class GradeFormComponent extends React.Component<
                       placeholder={"....."}
                       style={{ width: "80%" }}
                     >
-                      {el.ratingScale.level_relation!.map(
-                        (lvl, idx) =>
-                          lvl && (
+                      {el.ratingScale!.level_relation!.map(
+                        (lvl:Levels, idx) =>{
+                          console.log(el)
+                          return lvl && (
                             <Option
                               key={
                                 lvl.id ? lvl.id : idx + "option-" + el.name_en!
@@ -709,6 +627,7 @@ class GradeFormComponent extends React.Component<
                               {isRu ? lvl.name_ru : lvl.name_en!}
                             </Option>
                           )
+                        }
                       )}
                     </Select>
                   </Form.Item>

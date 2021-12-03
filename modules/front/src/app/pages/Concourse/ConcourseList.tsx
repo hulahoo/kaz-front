@@ -242,7 +242,7 @@ class ConcourseListComponent extends React.Component<
             >
               <Button buttonType={ButtonType.PRIMARY} block>
                 <span>
-                  <FormattedMessage id="management.browser.create" />
+                  <FormattedMessage id="concourse.request.create" />
                 </span>
               </Button>
             </Link>
@@ -416,7 +416,7 @@ class ConcourseListComponent extends React.Component<
           style={{ margin: "0 12px 12px 0" }}
         >
           <span>
-            <FormattedMessage id="management.browser.create" />
+            <FormattedMessage id="concourse.request.create" />
           </span>
         </Button>
       </Link>
