@@ -110,15 +110,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
   concoursesDc = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
-    filter: {
-      conditions: [
-        {
-          value: this.props.location.search.split("=")[1],
-          operator: "=",
-          property: "id"
-        }
-      ]
-    }
+    loadImmediately: false
   });
 
   requestAttachmentssDc = collection<ConcourseRequestAttachments>(
@@ -400,6 +392,22 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     if (this.takCard().props!.tasks && this.props.rootStore!.userInfo!.id && this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].name === "administrator_task"){
       this.showCategory = this.props.rootStore!.userInfo!.id === this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].assignee && this.getStatusCode() === "APPROVING"
     }
+  }
+
+  dateValidator = (fieldName: string) => {
+    const dateFrom = this.props.form.getFieldValue("startDate");
+    const dateTo = this.props.form.getFieldValue("endDate");
+
+    return (dateFrom && dateTo && (dateFrom <= dateTo || dateFrom.clone().startOf('day') <= dateTo.clone().startOf('day'))) === true;
+  }
+
+  dateFromValidator = (rule: any, value: any, callback: any) => {
+    const requestDate = this.props.form.getFieldValue('requestDate');
+    if (requestDate && requestDate > value) {
+      return callback(this.props.intl.formatMessage({id: 'validation.concourseRequest.startDate.start'}));
+    } else if (!this.dateValidator('startDate') || !value) {
+      return callback(this.props.intl.formatMessage({id: "validation.concourseRequest.startDate"}));
+    } else return callback();
   }
 
   render() {
@@ -771,10 +779,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       rules: [
                         {
                           required: true,
-                          message: this.props.intl.formatMessage(
-                            { id: "form.validation.required" },
-                            { fieldName: messages[entityName + ".startDate"] }
-                          )
+                          // message: this.props.intl.formatMessage(
+                          //   { id: "form.validation.required" },
+                          //   { fieldName: messages[entityName + ".startDate"] }
+                          // ),
+                          validator: this.dateFromValidator
                         }
                       ]
                     }}
@@ -797,10 +806,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       rules: [
                         {
                           required: true,
-                          message: this.props.intl.formatMessage(
-                            { id: "form.validation.required" },
-                            { fieldName: messages[entityName + ".endDate"] }
-                          )
+                          // message: this.props.intl.formatMessage(
+                          //   { id: "form.validation.required" },
+                          //   { fieldName: messages[entityName + ".endDate"] }
+                          // ),
+                          message: this.props.intl.formatMessage({id: "validation.concourseRequest.endDate"}),
+                          validator: this.dateFromValidator
                         }
                       ]
                     }}
@@ -1541,6 +1552,18 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         return this.dataInstance.item;
       },
       (item: ConcourseRequest | undefined) => {
+
+        this.concoursesDc.filter = {
+          conditions: [
+            {
+              value: item && item.concourse ? item.concourse.id : this.props.location.search.split("=")[1],
+              operator: "=",
+              property: "id"
+            }
+          ]
+        }
+        this.concoursesDc.load()
+
         this.personGroupId =
           item && item.personGroup
             ? item.personGroup.id!

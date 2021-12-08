@@ -1,5 +1,6 @@
 import { getCubaREST } from "@cuba-platform/react";
 import * as React from "react";
+import { FormattedMessage } from "react-intl";
 
 type FileProps= {
   FileId:string,
@@ -15,13 +16,13 @@ export class ConcourseFile extends React.Component<FileProps, FileState> {
   }
 
   render(){
-    return(<a href={this.state.FileUrl} target={"_blank"} rel={"noreferrer noopener"} >Download template</a>)
+    return(<a href={this.state.FileUrl} target={"_blank"} rel={"noreferrer noopener"} ><FormattedMessage id={"download"}/></a>)
   }
 
   componentDidMount(){
     const getUrl = async (FileId:string) => {
 
-      let urlPromise = getCubaREST()!.getFile(this.props.FileId)
+      let urlPromise = getCubaREST()!.getFile(FileId)
         .then(function(blob:Blob){
           return(URL.createObjectURL(blob))
         });

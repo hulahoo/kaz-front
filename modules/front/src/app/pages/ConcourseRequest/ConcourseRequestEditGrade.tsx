@@ -1252,6 +1252,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                 />
               </Card>
             </>
+            <Button
+              buttonType={ButtonType.FOLLOW}
+              htmlType={"button"}
+              onClick={() => goBackOrHomePage(this.props.history!)}
+            >
+              {this.props.intl.formatMessage({ id: "close" })}
+            </Button>
           </Spin>
 
           <ConcourseRequestAttachmentsEdit

@@ -446,6 +446,7 @@ class ConcourseListComponent extends React.Component<
           <Tabs
             defaultActiveKey={defaultActiveKey}
             onChange={activeKey => {
+              this.props.history.push(`/concourse/${activeKey}`)
               switch(activeKey){
                 case "1":
                   this.pageName = "concourseRequest"
