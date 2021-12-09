@@ -69,6 +69,7 @@ import {
 } from "../../util/ServiceDataCollectionStore";
 import { SearchSelect } from "../../components/SearchSelect";
 import { queryCollection } from "../../util/QueryDataCollectionStore";
+import {TsadvUser} from "../../../cuba/entities/base/tsadv$UserExt";
 // import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
 // import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
 // import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
@@ -399,7 +400,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
   categoryChecker=()=>{
     if (this.takCard().props!.tasks && this.props.rootStore!.userInfo!.id && this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].name === "administrator_task"){
-      this.showCategory = this.props.rootStore!.userInfo!.id === this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].assignee && this.getStatusCode() === "APPROVING"
+      this.showCategory = this.takCard().props!.tasks![this.takCard().props!.tasks.length - 1].assigneeOrCandidates!.find((el:TsadvUser)=>el.id===this.props.rootStore!.userInfo!.id)!==undefined && this.getStatusCode() === "APPROVING"
     }
   }
 
@@ -491,6 +492,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       return <LoadingPage />;
     }
 
+
+    console.log(this.takCard())
 
     this.categoryChecker()
 
