@@ -727,7 +727,7 @@ class ConcourseListComponent extends React.Component<
   }
 
   componentWillUpdate() {
-    // this.dataUpdater();
+    this.dataUpdater();
   }
 
   // componentWillMount() {
