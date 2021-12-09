@@ -742,7 +742,7 @@ class ConcourseListComponent extends React.Component<
       let data;
       this.dataCollectionConcourseRequestGrade.items.map(
         item => {
-          item!.concourse!.judges!.map(judge => {
+          item && item!.concourse! && item!.concourse!.judges! && item!.concourse!.judges!.map(judge => {
             if (
               judge.id! ===
               this.props.rootStore!.userInfo!.personGroupId && !this.newData.items.includes(item)
