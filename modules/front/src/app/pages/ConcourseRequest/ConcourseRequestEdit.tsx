@@ -46,7 +46,7 @@ import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt"
 import { FileDescriptor } from "../../../cuba/entities/base/sys$FileDescriptor";
 import { DicRequestStatus } from "../../../cuba/entities/base/tsadv$DicRequestStatus";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import { withRouter } from "react-router";
+import {RouteComponentProps, withRouter} from "react-router";
 import { ReadonlyField } from "../../components/ReadonlyField";
 import "antd/dist/antd.css";
 import { PersonExt } from "../../../cuba/entities/base/base$PersonExt";
@@ -77,7 +77,7 @@ type EditorProps = {
   entityId: string;
 };
 
-type Props = FormComponentProps & EditorProps;
+type Props = FormComponentProps & EditorProps & RouteComponentProps;
 
 @injectMainStore
 @inject("rootStore")
@@ -152,6 +152,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   });
 
   processDefinitionKey = "concourseRequest";
+
+  concourseId:string
+
+  @observable
+  oldConcourseId:string
+
+  @observable
+  requestTemplateId: string | null
 
   @observable
   readonly: boolean = true;
@@ -380,6 +388,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       personGroup: this.personGroupId,
       projectManager: this.getStatusCode()==="TO_BE_REVISED" ? this.managerId:this.projectManagerId,
       projectExpert: this.getStatusCode()==="TO_BE_REVISED" ? this.expertId :this.projectExpertId,
+      concourse: this.getStatusCode()==="TO_BE_REVISED" ? this.oldConcourseId : this.concourseId,
       ...super.getUpdateEntityData()
     };
   }
@@ -395,14 +404,15 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   }
 
   dateValidator = (fieldName: string) => {
-    const dateFrom = this.props.form.getFieldValue("startDate");
-    const dateTo = this.props.form.getFieldValue("endDate");
+    let dateFrom = this.props.form.getFieldValue("startDate");
+    let dateTo = this.props.form.getFieldValue("endDate");
+    console.log(dateFrom, dateTo)
 
     return (dateFrom && dateTo && (dateFrom <= dateTo || dateFrom.clone().startOf('day') <= dateTo.clone().startOf('day'))) === true;
   }
 
   dateFromValidator = (rule: any, value: any, callback: any) => {
-    const requestDate = this.props.form.getFieldValue('requestDate');
+    let requestDate = this.props.form.getFieldValue('requestDate');
     if (requestDate && requestDate > value) {
       return callback(this.props.intl.formatMessage({id: 'validation.concourseRequest.startDate.start'}));
     } else if (!this.dateValidator('startDate') || !value) {
@@ -806,14 +816,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                       rules: [
                         {
                           required: true,
-                          // message: this.props.intl.formatMessage(
-                          //   { id: "form.validation.required" },
-                          //   { fieldName: messages[entityName + ".endDate"] }
-                          // ),
                           message: this.props.intl.formatMessage({id: "validation.concourseRequest.endDate"}),
-                          validator: this.dateFromValidator
+                          validator: this.dateValidator,
                         }
-                      ]
+                      ],
+                      getValueFromEvent: args => {
+                        return args
+                      }
                     }}
                   />
 
@@ -1302,9 +1311,11 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                   })}
                 </p>
                 {
-                  this.concoursesDc!.items[0] && <ConcourseFile
-                    FileId={this.concoursesDc!.items[0]!.requestTemplate!.id}
-                  />
+                  this.requestTemplateId ? <ConcourseFile
+                    FileId={this.requestTemplateId}
+                  />  : (this.concoursesDc && this.concoursesDc.items.length) ? <ConcourseFile
+                    FileId={this.concoursesDc.items[0].requestTemplate!.id}
+                  />:""
                 }
               </Card>
 
@@ -1366,6 +1377,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     );
     this.requestAttachmentssDc.clear();
     this.requestAttachmentssDc = requestAttachmentsNew;
+
   }
 
   onSearchManager = (value: string) => {
@@ -1553,16 +1565,21 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
       },
       (item: ConcourseRequest | undefined) => {
 
-        this.concoursesDc.filter = {
-          conditions: [
-            {
-              value: item && item.concourse ? item.concourse.id : this.props.location.search.split("=")[1],
-              operator: "=",
-              property: "id"
+        if (this.props.location.search){
+          const concourseId = this.props.location.search.split("=")[1]
+          if (concourseId){
+            this.concourseId = concourseId
+            this.concoursesDc.filter= {
+              conditions: [{
+                value: concourseId,
+                operator: "=",
+                property: "id"
+              }]
             }
-          ]
+            this.concoursesDc.load()
+          }
+          console.log(this.concoursesDc)
         }
-        this.concoursesDc.load()
 
         this.personGroupId =
           item && item.personGroup
@@ -1574,6 +1591,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         this.reqNumber = item
           ? item.requestNumber
           : this.props.form.getFieldValue("requestNumber");
+
 
         getCubaREST()!
           .searchEntities<PersonExt>(
@@ -1604,7 +1622,12 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           .then(value => value[0])
           .then(value => (this.person = value));
 
+
+
         this.currentUser = this.props.rootStore!.userInfo!.id!
+
+
+
 
         let values: any;
         if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH) {
@@ -1637,8 +1660,9 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
           this.managerId = this.dataInstance.item!.projectManager!.id;
           this.expertId = this.dataInstance.item!.projectExpert!.id;
-          console.log("Manager:", this.managerId)
-          console.log("Expert:", this.expertId)
+
+
+
           restServices.employeeService.personProfile(this.managerId).then(data => {
             this.managerFullName = data.firstLastName
             values = {
@@ -1661,10 +1685,17 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
 
 
+
+
+
+
+
         }
 
         if (this.getStatusCode()==="TO_BE_REVISED" && this.dataInstance.item){
           this.initDataCollection();
+
+          this.oldConcourseId = this.dataInstance.item!.concourse!.id;
 
           restServices.employeeService
             .personProfile(this.personGroupId)
@@ -1678,7 +1709,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             });
 
           this.managerId = this.dataInstance.item!.projectManager!.id;
-          console.log("Manager:", this.managerId)
+
           let values: any;
           restServices.employeeService.personProfile(this.managerId).then(data => {
             this.managerFullName = data.firstLastName
@@ -1690,7 +1721,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             this.props.form.setFieldsValue(values);
           });
           this.expertId = this.dataInstance.item!.projectExpert!.id;
-          console.log("Expert:", this.expertId)
+
           restServices.employeeService.personProfile(this.expertId).then(data => {
             this.expertFullName = data.firstLastName
             values = {
@@ -1701,11 +1732,30 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             this.props.form.setFieldsValue(values);
           });
 
+          console.log("concourse Id", this.concourseId)
+
+          getCubaREST()!.searchEntities<Concourse>(Concourse.NAME, {
+            conditions:[
+              {
+                property: "id",
+                operator: "=",
+                value: this.oldConcourseId
+              },
+            ],
+          },{
+            view: "concourse-view"
+          }).then(value => value[0])
+            .then(val=>{
+              this.concoursesDc.items.push(val)
+              this.requestTemplateId = val.requestTemplate!.id
+            })
+
         }
 
         this.dataInstance.item!.concourse = this.dataInstance.item!.concourse
           ? this.dataInstance.item!.concourse
           : this.concoursesDc.items[0];
+
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );
@@ -1713,16 +1763,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     );
     this.loadData();
     this.loadBpmProcessData();
+
     this.currentUser = this.props.rootStore!.userInfo!.id!
 
   }
-
-  // onReactionDisposerEffect = (item: ConcourseRequest | undefined) => {
-  //
-  //
-  //
-  //
-  // };
 
   protected initItem(request: ConcourseRequest): void {
     super.initItem(request);
@@ -1745,6 +1789,8 @@ export default injectIntl(
           }
         });
       });
+      if (changedValues["endDate"] != null) props.form.validateFields(['startDate'], {force: true});
+      if (changedValues["startDate"] != null) props.form.validateFields(['endDate'], {force: true});
     }
   })(withRouter(ConcourseRequestEditComponent))
 );

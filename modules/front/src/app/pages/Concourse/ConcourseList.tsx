@@ -236,8 +236,7 @@ class ConcourseListComponent extends React.Component<
                 "/" +
                 ConcourseRequestManagement.NEW_SUBPATH +
                 "?concourseId=" +
-                btnLink
-              }
+                btnLink}
               key="createConcourseRequest"
             >
               <Button buttonType={ButtonType.PRIMARY} block>
@@ -432,7 +431,7 @@ class ConcourseListComponent extends React.Component<
 
     const { status } = this.dataCollection;
 
-    let dates = this.concourseCollection.items.map(
+    let dates = this.concourseCollection && this.concourseCollection.items.map(
       el => el.year
     );
     let uniqueYears = [...new Set(dates)];
@@ -478,7 +477,7 @@ class ConcourseListComponent extends React.Component<
             >
               <div style={{ paddingTop: 12, paddingBottom: 12 }}>
                 <Spin spinning={status == "LOADING"}>
-                  {this.dataCollection.items.map(
+                  {this.dataCollection && this.dataCollection.items && this.dataCollection.items.map(
                     el =>
                       el &&
                       this.concourseComponent(
@@ -559,7 +558,7 @@ class ConcourseListComponent extends React.Component<
                 </div>
               </div>
               <div>
-                {this.bestConcoursesList.items
+                {this.bestConcoursesList && this.bestConcoursesList.items && this.bestConcoursesList.items
                   .filter(
                     el =>
                       el.place &&
@@ -728,7 +727,7 @@ class ConcourseListComponent extends React.Component<
   }
 
   componentWillUpdate() {
-    this.dataUpdater();
+    // this.dataUpdater();
   }
 
   // componentWillMount() {
@@ -742,10 +741,10 @@ class ConcourseListComponent extends React.Component<
       let data;
       this.dataCollectionConcourseRequestGrade.items.map(
         item => {
-          item!.concourse!.judges!.map(judge => {
+          item.concourse && item.concourse.judges && item.concourse.judges.map(judge => {
             if (
-              judge.id! ===
-              this.props.rootStore!.userInfo!.personGroupId && !this.newData.items.includes(item)
+              judge && (judge.id! ===
+              this.props.rootStore!.userInfo!.personGroupId && !this.newData.items.includes(item))
             ){
               this.newData.items.push(item);
             }
