@@ -1,25 +1,20 @@
 import * as React from "react";
 import { FormEvent, FunctionComponent } from "react";
 import {
-  Alert,
   Button,
   Card,
   Form,
   message,
-  Row,
-  Tabs,
-  Layout,
   Select,
   Checkbox,
   Spin
 } from "antd";
-import Page from "../../hoc/PageContentHoc";
-import Section from "../../hoc/Section";
+
 import { inject, observer } from "mobx-react";
-import { ConcourseManagement } from "./ConcourseManagement";
+
 import { FormComponentProps } from "antd/lib/form";
-import { Link, Redirect, RouteComponentProps } from "react-router-dom";
-import { IReactionDisposer, observable, reaction, toJS } from "mobx";
+import { Redirect, RouteComponentProps } from "react-router-dom";
+import { IReactionDisposer, observable } from "mobx";
 import {
   FormattedMessage,
   injectIntl,
@@ -27,14 +22,12 @@ import {
 } from "react-intl";
 
 import {
-  Field,
   instance,
   withLocalizedForm,
   extractServerValidationErrors,
   constructFieldsWithErrors,
   clearFieldErrors,
   collection,
-  MultilineText,
   injectMainStore,
   MainStoreInjected,
   Msg,
@@ -45,22 +38,19 @@ import "../../../app/App.css";
 
 import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
 import { RootStoreProp } from "../../store";
-import { ReadonlyField } from "../../components/ReadonlyField";
+
 import { MarkCriteria } from "../../../cuba/entities/base/tsadv_MarkCriteria";
 import TextArea from "antd/es/input/TextArea";
 import { GradeDetail } from "../../../cuba/entities/base/tsadv_GradeDetail";
 import { DataInstanceStore } from "@cuba-platform/react/dist/data/Instance";
-import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt";
-import { ConcourseRequestManagement } from "../ConcourseRequest/ConcourseRequestManagement";
+
+
 import moment from "moment";
 import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseRequest";
-import { Indicator } from "../../../cuba/entities/base/tsadv_Indicator";
-import { RatingScale } from "../../../cuba/entities/base/tsadv_RatingScale";
+
 import {Levels} from "../../../cuba/entities/base/tsadv_Levels";
 
-const { Footer, Content, Sider } = Layout;
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 type Props = FormComponentProps & EditorProps;
 
@@ -97,9 +87,6 @@ class GradeFormComponent extends React.Component<
     loadImmediately: false
   });
 
-  indicatorsDsc = collection<Indicator>(Indicator.NAME, {
-    view: "_base"
-  });
 
   concoursesDsc = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
@@ -107,32 +94,6 @@ class GradeFormComponent extends React.Component<
       conditions: [
         {
           value: this.dataInstance.item!.concourse!.id,
-          operator: "=",
-          property: "id"
-        }
-      ]
-    }
-  });
-
-  concourseRequestsDsc = collection<ConcourseRequest>(ConcourseRequest.NAME, {
-    view: "concourseRequest-edit",
-    filter: {
-      conditions: [
-        {
-          value: this.dataInstance.item!.id,
-          operator: "=",
-          property: "id"
-        }
-      ]
-    }
-  });
-
-  personGroupDsc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-    view: "personGroup-view",
-    filter: {
-      conditions: [
-        {
-          value: this.props.personGroupId,
           operator: "=",
           property: "id"
         }
@@ -158,18 +119,7 @@ class GradeFormComponent extends React.Component<
     }
   });
 
-  totalGradeDataCollection = collection<GradeDetail>(GradeDetail.NAME, {
-    view: "gradeDetail-view",
-    filter: {
-      conditions: [
-        {
-          value: this.dataInstance.item!.id,
-          operator: "=",
-          property: "concourseRequest.id"
-        }
-      ]
-    }
-  });
+
   @observable
   updated = this.props.updated;
   reactionDisposer: IReactionDisposer;
@@ -197,6 +147,9 @@ class GradeFormComponent extends React.Component<
   comment: string = "";
   isDisabled: boolean = false;
 
+  @observable
+  mainStore = this.props.mainStore!
+
   handleChangeOption = (name: string, val: any) => {
     let [item, value] = val.split("$");
     console.log(val)
@@ -221,11 +174,6 @@ class GradeFormComponent extends React.Component<
   totalGradeHandler = (localSum: number) => {
     let sum = 0;
     sum += localSum;
-    this.totalGradeDataCollection.items.map(el => {
-      if (el.grade) {
-        sum += el.grade;
-      }
-    });
     this.props.setTotalGrade(sum);
   };
 
@@ -371,8 +319,8 @@ class GradeFormComponent extends React.Component<
       this.gradeInstance
         .update({
           id: grade[0].id,
-          personGroup: this.personGroupDsc.items[0],
-          concourseRequest: this.concourseRequestsDsc.items[0],
+          personGroup: this.props.personGroupId,
+          concourseRequest: this.dataInstance.item!.id,
           comment: this.comment,
           grade: sum,
           indicatorsList: indicators(this.checkboxValue, this.optionValue)
@@ -425,8 +373,8 @@ class GradeFormComponent extends React.Component<
 
       this.gradeInstance
         .update({
-          personGroup: this.personGroupDsc.items[0],
-          concourseRequest: this.concourseRequestsDsc.items[0],
+          personGroup: this.props.personGroupId,
+          concourseRequest: this.dataInstance.item!.id,
           comment: this.comment,
           grade: sum,
           indicatorsList: indicators(this.checkboxValue, this.optionValue)
@@ -477,9 +425,10 @@ class GradeFormComponent extends React.Component<
   }
 
   handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
     this.dataInstance.status = "LOADING";
     this.submitForm(this.optionValue, this.checkboxValue);
-    e.preventDefault();
+
   };
 
   checkDates = () => {
@@ -511,6 +460,7 @@ class GradeFormComponent extends React.Component<
 
     const activeTab = "1";
     const defaultActiveKey = activeTab ? activeTab : "1";
+    const messages = this.mainStore.messages!;
 
     const isRu = this.props.mainStore!.locale === "ru";
 
@@ -570,16 +520,17 @@ class GradeFormComponent extends React.Component<
                           propertyName: isRu ? chk.name_ru : chk.name_en
                         })}
                       >
-
                         <Checkbox
-
                           disabled={this.isDisabled}
-                          onChange={value =>
-                            this.handleChangeCheckbox(
-                              isRu ? el.name_ru! : el.name_en!,
-                              isRu ? chk.name_ru! : chk.name_en!,
-                              value.target.checked
-                            )
+                          onChange={value => {
+                            if (value) {
+                              this.handleChangeCheckbox(
+                                isRu ? el.name_ru! : el.name_en!,
+                                isRu ? chk.name_ru! : chk.name_en!,
+                                value.target.checked
+                              )
+                            }
+                          }
                           }
                         />
                       </Form.Item>
@@ -596,23 +547,37 @@ class GradeFormComponent extends React.Component<
                       entityName: "tsadv_markCriteria",
                       propertyName: isRu ? el.name_ru : el.name_en
                     })}
-                  >
-                    <Select
-                      disabled={this.isDisabled}
-                      // value={this.optionValue[isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!]}
-                      onChange={value =>
-                        this.handleChangeOption(
-                          isRu ? el.name_ru! : el.name_en!,
-                          value
+                  >{this.props.form.getFieldDecorator("ratingScale", {
+                    rules: [
+                      {
+                        required: true,
+                        message: this.props.intl.formatMessage(
+                          { id: "form.validation.required" },
+                          {
+                            fieldName:
+                              messages["tsadv_markCriteria" + ".ratingScale"]
+                          }
                         )
                       }
+                    ],
+                  })
+                  (<Select
+                      disabled={this.isDisabled}
+                      // value={this.optionValue[isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!]}
+                      onChange={value =>{
+                        if (value){
+                          this.handleChangeOption(
+                            isRu ? el.name_ru! : el.name_en!,
+                            value
+                          )
+                        }
+                      }}
                       allowClear={true}
                       placeholder={"....."}
                       style={{ width: "80%" }}
                     >
                       {el.ratingScale!.level_relation!.map(
                         (lvl:Levels, idx) =>{
-                          console.log(el)
                           return lvl && (
                             <Option
                               key={
@@ -630,6 +595,7 @@ class GradeFormComponent extends React.Component<
                         }
                       )}
                     </Select>
+                  )}
                   </Form.Item>
                 )
               ])}
@@ -641,11 +607,25 @@ class GradeFormComponent extends React.Component<
               })}
               required={true}
             >
-              {this.props.form.getFieldDecorator("Comments")(
+              {this.props.form.getFieldDecorator("comments", {
+                rules: [
+                  {
+                    required: true,
+                    message: this.props.intl.formatMessage(
+                      { id: "form.validation.required" },
+                      {
+                        fieldName:
+                          messages["tsadv_markCriteria" + ".comments"]
+                      }
+                    )
+                  }
+                ],
+              })(
                 <TextArea
                   disabled={this.isDisabled}
                   value={this.comment}
                   onChange={this.handleChangeComment}
+                  required={true}
                   rows={6}
                 />
               )}
@@ -696,6 +676,7 @@ export default injectIntl(
           }
         });
       });
+      if (changedValues["comments"]!==null) props.form.validateFields(['comments'], {force: true});
     }
   })(GradeFormComponent)
 );

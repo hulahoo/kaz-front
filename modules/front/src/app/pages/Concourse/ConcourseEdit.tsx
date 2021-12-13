@@ -1,10 +1,9 @@
 import * as React from "react";
-import { FormEvent } from "react";
-import { Alert, Button, Card, Form, message, Row, Tabs, Layout, Select } from "antd";
+
+import {  Tabs } from "antd";
 import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import {inject, observer} from "mobx-react";
-import { ConcourseManagement } from "./ConcourseManagement";
 import { FormComponentProps } from "antd/lib/form";
 import {Link, Redirect, RouteComponentProps} from "react-router-dom";
 import { IReactionDisposer, observable, reaction, toJS } from "mobx";
@@ -26,21 +25,15 @@ import {
 
 import "../../../app/App.css";
 
-import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
 import {RootStoreProp} from "../../store";
-import {ReadonlyField} from "../../components/ReadonlyField";
-import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
-import TextArea from "antd/es/input/TextArea";
-import GradeFormComponent from "./GradeForm";
-import {GradeDetail} from "../../../cuba/entities/base/tsadv_GradeDetail";
-import {BaseUuidEntity} from "../../../cuba/entities/base/sys$BaseUuidEntity";
-import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
-import ConcourseRequestEdit from "../ConcourseRequest/ConcourseRequestEdit";
-import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
-import ConcourseRequestEditGrade from "../ConcourseRequest/ConcourseRequestEditGrade";
 
-const { Footer, Content, Sider } = Layout;
-const {Option} = Select;
+import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
+
+import GradeFormComponent from "./GradeForm";
+import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
+import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
+import ConcourseRequestEditGrade from "./ConcourseRequestEditGrade";
+
 const { TabPane } = Tabs;
 
 type Props = FormComponentProps & EditorProps;
@@ -68,10 +61,6 @@ class ConcourseEditComponent extends React.Component<
     view: "concourseRequest-edit",
     loadImmediately: false
   });
-
-  dataCollection = collection<MarkCriteria>(MarkCriteria.NAME, {
-    view: "markCriteria-view",
-  })
 
   @observable
   saved = false
@@ -110,7 +99,6 @@ class ConcourseEditComponent extends React.Component<
   @observable
   personGroupId:any
 
-  createElement = React.createElement;
 
   @observable
   globalErrors: string[] = [];
@@ -118,8 +106,9 @@ class ConcourseEditComponent extends React.Component<
   pageName: string = "concourseManagement"
 
   setTotalGrade=(sum:number)=>{
-    this.dataInstance.item!.totalGrade = sum;
-    this.dataInstance.commit().then((data)=>{
+    // this.dataInstance.item!.totalGrade = sum;
+    this.dataInstance.update({totalGrade: sum}).then((data)=>{
+      this.updated = true
       this.saved = true
     }).catch(err=>{console.log(err)})
   }
@@ -127,41 +116,40 @@ class ConcourseEditComponent extends React.Component<
 
   render() {
     if (this.updated) {
-      return <Redirect to={ConcourseManagement.PATH} />;
+      return <Redirect exact={true} to={"/concourse/4"} />;
     }
 
     const activeTab = "1";
     const defaultActiveKey = activeTab ? activeTab : "1";
 
-    const { status } = this.dataInstance;
-
     return (
       <Page>
         <Section size="large">
-          <Tabs
-            defaultActiveKey={defaultActiveKey}
-            onChange={activeKey =>
-              (this.pageName =
-                "concourseManagement" + (activeKey === "1" ? "" : "Оценки"))
-            }
-          >
-            <TabPane
-              tab={this.props.intl.formatMessage({id: "concourseGeneralInfoTab"})}
-              key="1"
+            <Tabs
+              defaultActiveKey={defaultActiveKey}
+              onChange={activeKey =>
+                (this.pageName =
+                  "concourseManagement" + (activeKey === "1" ? "" : "Оценки"))
+              }
             >
-              <ConcourseRequestEditGrade entityId={this.props.entityId}/>
-            </TabPane>
-            <TabPane
-              tab={this.props.intl.formatMessage({id: "concourseMarksTab"})}
-              key="2"
-            >
-              <GradeFormComponent updated={this.saved} setTotalGrade={this.setTotalGrade}
-                                  dataInstance={this.dataInstance && this.dataInstance}
-                                  personGroupId={this.personGroupId && this.personGroupId}
-                                  markCriteria={this.dataInstance.item! && this.dataInstance.item!.concourse!.markCriteria}/>
-            </TabPane>
+              <TabPane
+                tab={this.props.intl.formatMessage({id: "concourseGeneralInfoTab"})}
+                key="1"
+              >
+                <ConcourseRequestEditGrade entityId={this.props.entityId}/>
+              </TabPane>
+              <TabPane
+                tab={this.props.intl.formatMessage({id: "concourseMarksTab"})}
+                key="2"
+              >
+                <GradeFormComponent updated={this.saved} setTotalGrade={this.setTotalGrade}
+                                    dataInstance={this.dataInstance && this.dataInstance}
+                                    personGroupId={this.personGroupId && this.personGroupId}
+                                    markCriteria={this.dataInstance.item! && this.dataInstance.item!.concourse!.markCriteria}/>
+              </TabPane>
 
-          </Tabs>
+            </Tabs>
+
         </Section>
       </Page>
     );

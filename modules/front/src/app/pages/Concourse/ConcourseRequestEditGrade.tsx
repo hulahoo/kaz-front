@@ -1,45 +1,35 @@
 import * as React from "react";
-import { createElement, FormEvent } from "react";
+import { createElement } from "react";
 import {
-  Alert,
   Card,
   Form,
   Input,
-  message,
   Modal,
   Row,
-  Table,
   Spin,
   Select
 } from "antd";
 import Button, { ButtonType } from "../../components/Button/Button";
 
 import { inject, observer } from "mobx-react";
-import { ConcourseRequestManagement } from "./ConcourseRequestManagement";
+import { ConcourseRequestManagement } from "../ConcourseRequest/ConcourseRequestManagement";
 import { FormComponentProps } from "antd/lib/form";
 import { Redirect } from "react-router-dom";
 import { IReactionDisposer, observable, reaction, toJS, action } from "mobx";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { DEFAULT_DATE_PATTERN } from "../../util/Date/Date";
 import TextArea from "antd/es/input/TextArea";
-import Column from "antd/lib/table/Column";
 
 import {
-  clearFieldErrors,
   collection,
-  constructFieldsWithErrors,
-  DataTable,
-  extractServerValidationErrors,
-  Field,
   getCubaREST,
   injectMainStore,
   instance,
   Msg,
-  MultilineText,
   withLocalizedForm
 } from "@cuba-platform/react";
 
-import "../../../app/App.css";
+import "../../App.css";
 import { restServices } from "../../../cuba/services";
 import { ConcourseRequest } from "../../../cuba/entities/base/tsadv_ConcourseRequest";
 import { PersonGroupExt } from "../../../cuba/entities/base/base$PersonGroupExt";
@@ -48,30 +38,20 @@ import { DicRequestStatus } from "../../../cuba/entities/base/tsadv$DicRequestSt
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
 import { withRouter } from "react-router";
 import { ReadonlyField } from "../../components/ReadonlyField";
-import "antd/dist/antd.css";
 import { PersonExt } from "../../../cuba/entities/base/base$PersonExt";
 import { goBackOrHomePage } from "../../util/util";
 import LoadingPage from "../LoadingPage";
 import { SerializedEntity } from "@cuba-platform/rest";
 import { ConcourseRequestAttachments } from "../../../cuba/entities/base/tsadv_ConcourseRequestAttachments";
-import ConcourseRequestAttachmentsList from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsList";
 import DataTableFormat from "../../components/DataTable/intex";
-import ConcourseRequestAttachmentsEdit from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsEdit";
-import { ConcourseRequestAttachmentsManagement } from "./ConcourseRequestAttachments/ConcourseRequestAttachmentsManagement";
+import ConcourseRequestAttachmentsEdit from "../ConcourseRequest/ConcourseRequestAttachments/ConcourseRequestAttachmentsEdit";
+import { ConcourseRequestAttachmentsManagement } from "../ConcourseRequest/ConcourseRequestAttachments/ConcourseRequestAttachmentsManagement";
 import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
-import { ConcourseFile } from "./ConcourseTemplateFile";
+
 import moment from "moment";
-import { DataCollectionStore } from "@cuba-platform/react/dist/data/Collection";
-import { DataCollectionStoreWithAfterLoad } from "../../util/DataCollectionStoreWithAfterLoad";
-import {
-  serviceCollection,
-  ServiceDataCollectionStore
-} from "../../util/ServiceDataCollectionStore";
+
 import { SearchSelect } from "../../components/SearchSelect";
-import { queryCollection } from "../../util/QueryDataCollectionStore";
-// import ConcourseRequestDocumentList from "./ConcourseRequestDocument/ConcourseRequestDocumentList";
-// import ConcourseRequestDocumentEdit from "./ConcourseRequestDocument/ConcourseRequestDocumentEdit";
-// import {ConcourseRequestDocument} from "../../../cuba/entities/base/tsadv_ConcourseRequestDocument";
+
 
 type EditorProps = {
   entityId: string;
@@ -88,37 +68,14 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   > {
   dataInstance = instance<ConcourseRequest>(ConcourseRequest.NAME, {
     view: "concourseRequest-edit",
+    loadImmediately: false
   });
-  dicLangValue = "langValue" + this.props.rootStore!.userInfo!.localeIndex;
 
-  dataCollection = collection<ConcourseRequestAttachments>(
-    ConcourseRequestAttachments.NAME,
-    {
-      view: "concourseRequestAttachments-view",
-      sort: "-updateTs",
-      filter: {
-        conditions: [
-          {
-            value: this.props.form.getFieldValue("requestNumber"),
-            operator: "=",
-            property: "concourseRequestNumber"
-          }
-        ]
-      }
-    }
-  );
+  dicLangValue = "langValue" + this.props.rootStore!.userInfo!.localeIndex;
 
   concoursesDc = collection<Concourse>(Concourse.NAME, {
     view: "concourse-view",
-    filter: {
-      conditions: [
-        {
-          value: this.props.location.search.split("=")[1],
-          operator: "=",
-          property: "id"
-        }
-      ]
-    }
+    loadImmediately: false
   });
 
   requestAttachmentssDc = collection<ConcourseRequestAttachments>(
@@ -141,9 +98,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   @observable
   isLocaleEn = this.props.rootStore!.userInfo.locale === "en";
 
-  // personGroupsDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
-  //   view: "personGroup-relevantPerson-fullNameCyrillic",
-  // });
 
   personManagerDc = collection<PersonGroupExt>(PersonGroupExt.NAME, {
     view: "personGroup-relevantPerson-fullNameCyrillic",
@@ -262,91 +216,13 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     });
   };
 
-  // getUpdateEntityData(): any {
-  //   if (this.isNotDraft())
-  //     return super.getUpdateEntityData();
-  //   return {
-  //     personGroup: {
-  //       id: this.personGroupId
-  //     },
-  //     ...super.getUpdateEntityData()
-  //   };
-  // }
-
-  // update = () => {
-  //   const updateEntityData = this.getUpdateEntityData();
-  //   // if (this.approverHrRoleCode === 'MANAGER' && ((this.dataInstance.item && this.dataInstance.item.stage && this.dataInstance.item.stage.code) === 'ASSESSMENT')) {
-  //   //   updateEntityData['lineManager'] = this.props.rootStore!.userInfo!.personGroupId;
-  //   // }
-  //
-  //   return this.dataInstance.update({
-  //     personGroup: this.personGroupId,
-  //     ...updateEntityData});
-  // };
   @observable
   visible: boolean = false;
 
   @observable
   isCreateMember: boolean = false;
 
-  update = (): Promise<boolean> => {
-    let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
-    this.props.form.validateFields((err, values) => {
-      if (err) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
-        );
-        return;
-      }
 
-      promise = this.dataInstance
-        .update(this.props.form.getFieldsValue(this.fields))
-        .then(() => {
-          message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
-          );
-          return true;
-        })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
-
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                );
-              } else {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                );
-              }
-            });
-          } else {
-            message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
-            );
-          }
-        });
-    });
-    return promise;
-  };
 
   showModal = () => {
     this.onChangeVisible(true);
@@ -357,10 +233,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
     this.visible = value;
   };
 
-  @action
-  onCategoryUpdate = (): void => {
-    this.update().then(data => {});
-  };
+
 
   isUpdateBeforeOutcome = true;
 
@@ -370,15 +243,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
   @observable
   projectExpertId:string
 
-  getUpdateEntityData(): any {
-    if (this.isNotDraft()) return super.getUpdateEntityData();
-    return {
-      personGroup: this.personGroupId,
-      projectManager: this.projectManagerId,
-      projectExpert: this.projectExpertId,
-      ...super.getUpdateEntityData()
-    };
-  }
 
   render() {
     if (this.updated) {
@@ -387,14 +251,6 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
     let isNotDraft = this.isNotDraft();
 
-    if (this.concoursesDc.items[0]) {
-      let dateNow = moment(Date.now());
-      let requestDate = moment(this.concoursesDc.items[0]!.endVoting);
-
-      if (dateNow.isAfter(requestDate)) {
-        isNotDraft = true;
-      }
-    }
 
     const buttons = [
       <Button
@@ -810,77 +666,26 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                           disabled
                         />
                       </Form.Item>
-                      :
-                      <Form.Item
-                        style={{
-                          minWidth: "25%",
-                          maxWidth: "25%",
-                          marginBottom: "12px"
-                        }}
-                        label={
-                          <Msg
-                            entityName={entityName}
-                            propertyName={"projectManager"}
-                          />
-                        }
-                      >
-                        {this.props.form.getFieldDecorator("projectManager", {
-                          rules: [
-                            {
-                              required: true,
-                              message: this.props.intl.formatMessage(
-                                { id: "form.validation.required" },
-                                {
-                                  fieldName:
-                                    messages[entityName + ".projectManager"]
-                                }
-                              )
-                            }
-                          ],
-                          getValueFromEvent: (personGroupId, val) => {
-                            if (
-                              this.props.entityId ===
-                              ConcourseRequestManagement.NEW_SUBPATH
-                            ) {
-                              if (personGroupId) {
-                                this.projectManagerId = personGroupId
-                                return personGroupId;
-                              } else {
-                                this.props.form.setFieldsValue({
-                                  managerCompany: "",
-                                  managerPosition: ""
-                                });
-                                return undefined;
-                              }
-                            }
-                          }
-                        })(
-                          <SearchSelect
-                            disabled={isNotDraft}
-                            loading={this.personManagerDc.status === "LOADING"}
-                            options={
-                              this.personManagerDc &&
-                              this.personManagerDc.items.map(d => {
-                                console.log(d.id);
-                                return (
-                                  <Select.Option key={d.id}>
-                                    {this.isLocaleEn? d.relevantPerson!.lastNameLatin +
-                                      " " +
-                                      d.relevantPerson!.firstNameLatin :d.relevantPerson!.lastName +
-                                      " " +
-                                      d.relevantPerson!.firstName}
-                                  </Select.Option>
-                                );
-                              })
-                            }
-                          />
-                        )}
-                      </Form.Item>
-
-
+                    :
+                    <Form.Item
+                    style={{
+                    minWidth: "25%",
+                    maxWidth: "25%",
+                    marginBottom: "12px"
+                  }}
+                    label={createElement(Msg, {
+                    entityName: entityName,
+                    propertyName: "projectManager"
+                  })}
+                    >
+                    <Input
+                    value={
+                    "..."
                   }
-
-
+                    disabled
+                    />
+                    </Form.Item>
+                  }
                   <ReadonlyField
                     entityName={entityName}
                     propertyName="managerPosition"
@@ -994,61 +799,19 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                           maxWidth: "25%",
                           marginBottom: "12px"
                         }}
-                        label={
-                          <Msg
-                            entityName={entityName}
-                            propertyName={"projectExpert"}
-                          />
-                        }
-                      >
-                        {this.props.form.getFieldDecorator("projectExpert", {
-                          rules: [
-                            {
-                              required: true,
-                              message: this.props.intl.formatMessage(
-                                { id: "form.validation.required" },
-                                {
-                                  fieldName: messages[entityName + ".projectExpert"]
-                                }
-                              )
-                            }
-                          ],
-                          getValueFromEvent: (personGroupId, val) => {
-                            console.log(personGroupId, val);
-                            if (personGroupId) {
-                              this.projectExpertId = personGroupId
-
-                              return personGroupId;
-                            } else {
-                              this.props.form.setFieldsValue({
-                                expertCompany: "",
-                                expertPosition: ""
-                              });
-                              return undefined;
-                            }
+                        label={createElement(Msg, {
+                          entityName: entityName,
+                          propertyName: "projectExpert"
+                        })}
+                        >
+                        <Input
+                          value={
+                            "..."
                           }
-                        })(
-                          <SearchSelect
-                            disabled={isNotDraft}
-                            loading={this.personExpertDc.status === "LOADING"}
-                            options={
-                              this.personExpertDc &&
-                              this.personExpertDc.items.map(d => {
-                                console.log(d.id);
-                                return (
-                                  <Select.Option key={d.id}>
-                                    {this.isLocaleEn? d.relevantPerson!.lastNameLatin +
-                                      " " +
-                                      d.relevantPerson!.firstNameLatin :d.relevantPerson!.lastName +
-                                      " " +
-                                      d.relevantPerson!.firstName}
-                                  </Select.Option>
-                                );
-                              })
-                            }
-                          />
-                        )}
+                          disabled
+                        />
                       </Form.Item>
+
                   }
 
 
@@ -1227,11 +990,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                     id: "concourseRequestDownloadMessage"
                   })}
                 </p>
-                {this.concoursesDc!.items[0] && (
-                  <ConcourseFile
-                    FileId={this.concoursesDc!.items[0]!.requestTemplate!.id}
-                  />
-                )}
+
               </Card>
 
               <Card
@@ -1386,26 +1145,10 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
           .then(value => (this.person = value));
 
         let values: any;
-        if (this.props.entityId === ConcourseRequestManagement.NEW_SUBPATH) {
-          // this.personGroupId = this.props.rootStore!.userInfo!.personGroupId!;
-          restServices.employeeService
-            .personProfile(this.personGroupId)
-            .then(data => {
-              values = {
-                personGroup: this.personGroupId,
-                initiatorCompany: data.companyCode,
-                initiatorPosition: data.positionName
-              };
-              this.props.form.setFieldsValue(values);
-            });
-        }
 
         if (item && this.isNotDraft()) {
-          this.initDataCollection();
-          // this.personGroupId =
-          //   item && item.personGroup
-          //     ? item.personGroup.id
-          //     : this.props.form.getFieldValue("personGroup").id;
+
+
           restServices.employeeService
             .personProfile(this.personGroupId)
             .then(data => {
@@ -1439,6 +1182,7 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
             };
             this.props.form.setFieldsValue(values);
           });
+          this.initDataCollection();
         }
 
         this.dataInstance.item!.concourse = this.dataInstance.item!.concourse
@@ -1449,17 +1193,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
         );
       }
     );
-
     this.loadData();
-    this.loadBpmProcessData();
   }
-
-  // onReactionDisposerEffect = (item: ConcourseRequest | undefined) => {
-  //
-  //
-  //
-  //
-  // };
 
   protected initItem(request: ConcourseRequest): void {
     super.initItem(request);
