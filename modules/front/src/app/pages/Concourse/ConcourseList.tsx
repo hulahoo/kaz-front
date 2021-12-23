@@ -7,6 +7,7 @@ import Page from "../../hoc/PageContentHoc";
 import Section from "../../hoc/Section";
 import DataTableFormat from "../../components/DataTable/intex";
 import { link } from "../../util/util";
+import { restServices } from "../../../cuba/services";
 import {action, IReactionDisposer, observable, reaction} from "mobx";
 
 import { Modal, Tabs, Layout, Row, Col, Divider, Select, Spin } from "antd";
@@ -34,6 +35,7 @@ import { DataCollectionStore } from "@cuba-platform/react/dist/data/Collection";
 import { DataInstanceStore } from "@cuba-platform/react/dist/data/Instance";
 import { ICollection } from "@amcharts/amcharts4/.internal/fabric/fabric-impl";
 import { GradeDetail } from "../../../cuba/entities/base/tsadv_GradeDetail";
+import Text from "antd/es/typography/Text";
 const { Footer, Content, Sider } = Layout;
 const { Option } = Select;
 const { TabPane } = Tabs;
@@ -247,6 +249,12 @@ class ConcourseListComponent extends React.Component<
             {concourseDesc}
           </Col>
         </Row>
+        {
+          this.externalLink && this.externalLink.length && <Text style={{ marginTop: "30px" }} id="concourseDesc">
+              <a href={this.externalLink} target={"_blank"} rel={"nofollow noreferrer"}><FormattedMessage id="concourseExternalLink" /></a>
+            </Text>
+        }
+
         <Divider style={{ marginTop: "30px" }} />
       </Layout>
     );
@@ -639,8 +647,17 @@ class ConcourseListComponent extends React.Component<
     );
   }
 
+  @observable
+  externalLink:string
+
+
   componentDidMount() {
     this.dataUpdater();
+    restServices.portalHelperService.getConfig({classFQN:"kz.uco.tsadv.config.ConcourseExternalConfig", methodName:"getExternalUrl"})
+      .then(url=>{
+        if (url.length)
+          this.externalLink = url
+      })
   }
 
   componentWillUpdate() {
