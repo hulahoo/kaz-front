@@ -134,11 +134,11 @@ class GradeFormComponent extends React.Component<
 
   pageName: string = "concourseManagement";
 
-  @observable
   optionValue: object = {};
 
-  @observable
   checkboxValue: object = {};
+
+  checkBx: object = {};
 
   @observable
   personGroupId: any = this.props.personGroupId;
@@ -150,21 +150,28 @@ class GradeFormComponent extends React.Component<
   @observable
   mainStore = this.props.mainStore!
 
-  handleChangeOption = (name: string, val: any) => {
-    let [item, value] = val.split("$");
-    console.log(val)
-    this.optionValue[name] = {
-      [item]: value
-    };
-    console.log("SCALE CHANGE: ",this.optionValue[name])
+  // handleChangeOption = (name: string, val: any) => {
+  //   let [item, value] = val.split("$");
+  //   console.log("FROM SCALE CHANGE", name)
+  //   this.optionValue[name] = {
+  //     [item]: value
+  //   };
+  //   console.log("SCALE CHANGE: ",this.optionValue[name])
+  // };
+
+  handleChangeOption = (item: string, name:string, val: any) => {
+    // let [name, value] = val.split("$");
+    console.log("FROM SCALE CHANGE", name)
+    this.optionValue[item] = [name, val]
+    console.log("SCALE CHANGE: ",this.optionValue)
   };
 
-  handleChangeCheckbox = (item: string, name: string, value: any) => {
+  handleChangeCheckbox = (item: string, name: string, value: boolean, scale:any) => {
     this.checkboxValue[item] = {
       ...this.checkboxValue[item],
-      [name]: value ? value : false
+      [name]: [value?value:false, value ? scale : 0]
     };
-    console.log("CHECKBOX CHANGE:",this.checkboxValue[item])
+    console.log("CHECKBOX CHANGE:",this.checkboxValue)
   };
 
   handleChangeComment = (e: any) => {
@@ -181,15 +188,17 @@ class GradeFormComponent extends React.Component<
   innerHtml: string = "";
 
   submitForm(values1: object, values2: object) {
-    let promise: Promise<any> = new Promise<boolean>(resolve => resolve(false));
+
     let sum = 0;
     if (values1) {
       for (const property in values1) {
         if (values1.hasOwnProperty(property)) {
-          for (const val in values1[property]) {
-            if (values1[property].hasOwnProperty(val))
-              sum += +values1[property][val];
+
+          if (values1[property] && values1[property].length) {
+            console.log("scale", values1[property][0])
+            sum += +(values1[property][1]);
           }
+
         }
       }
       console.log("Scale", sum)
@@ -199,7 +208,9 @@ class GradeFormComponent extends React.Component<
         if (values2.hasOwnProperty(property)) {
           for (const val in values2[property]) {
             if (values2[property].hasOwnProperty(val))
-              if (values2[property][val]) sum++;
+              if (values2[property][val] && values2[property][val].length){
+                console.log("check",values2[property][val])
+                sum += +(values2[property][val][1]);}
           }
         }
       }
@@ -216,6 +227,7 @@ class GradeFormComponent extends React.Component<
       if (checkboxValue)
         for (let key in checkboxValue) {
           if (checkboxValue.hasOwnProperty(key)) {
+
             html += `
               <div class="ant-row ant-form-item" style="margin-top: 24px;">
                   <div class="ant-col ant-form-item-label">
@@ -235,7 +247,7 @@ class GradeFormComponent extends React.Component<
                                   <span class="ant-form-item-children">
                                       <label class="ant-checkbox-wrapper">
                                           <span  class="ant-checkbox ${
-                                            checkboxValue[key][values]
+                                  checkboxValue[key][values.toString()] && checkboxValue[key][values.toString()][0]
                                               ? "ant-checkbox-checked"
                                               : ""
                                           }">
@@ -261,25 +273,25 @@ class GradeFormComponent extends React.Component<
                       <label class="ant-form-item-required" title="">${key}</label>
                   </div>
               `;
-            for (let values in optionValue[key]) {
-              if (optionValue[key].hasOwnProperty(values))
+
+
                 html += `
-                          <div class="ant-col ant-form-item-control-wrapper">
-                              <div class="ant-form-item-control">
-                                  <span class="ant-form-item-children">
-                                      <div class="ant-select ant-select-enabled ant-select-allow-clear" style="width: 80%;">
-                                          <div class="ant-select-selection ant-select-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-controls="80c4bf7f-823b-44a5-93fe-83b3d92a612b" aria-expanded="false" tabindex="0">
-                                            <div class="ant-select-selection__rendered">
-                                                <div disabled class="ant-select-selection-selected-value" title="${values}" style="display: block; opacity: 1;">
-                                                  ${values}
-                                                </div>
-                                            </div>
+                        <div class="ant-col ant-form-item-control-wrapper">
+                            <div class="ant-form-item-control">
+                                <span class="ant-form-item-children">
+                                    <div class="ant-select ant-select-enabled ant-select-allow-clear" style="width: 80%;">
+                                        <div class="ant-select-selection ant-select-selection--single" role="combobox" aria-autocomplete="list" aria-haspopup="true" aria-controls="80c4bf7f-823b-44a5-93fe-83b3d92a612b" aria-expanded="false" tabindex="0">
+                                          <div class="ant-select-selection__rendered">
+                                              <div disabled class="ant-select-selection-selected-value" title="${optionValue[key] && optionValue[key][0]}" style="display: block; opacity: 1;">
+                                                ${optionValue[key][0]}
+                                              </div>
                                           </div>
-                                      </div>
-                                  </span>
-                              </div>
-                          </div>`;
-            }
+                                        </div>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>`;
+
           }
           html += `</div>`;
         }
@@ -323,14 +335,13 @@ class GradeFormComponent extends React.Component<
           concourseRequest: this.dataInstance.item!.id,
           comment: this.comment,
           grade: sum,
-          indicatorsList: indicators(this.checkboxValue, this.optionValue)
+          indicatorsList: indicators(this.checkBx, this.optionValue)
         })
         .then(data => {
           message.success(
             this.props.intl.formatMessage({ id: "management.editor.success" })
           );
-
-          // this.totalGradeHandler(sum)
+          this.totalGradeHandler(sum)
           // this.updated = true
         })
         .catch((e: any) => {
@@ -377,12 +388,15 @@ class GradeFormComponent extends React.Component<
           concourseRequest: this.dataInstance.item!.id,
           comment: this.comment,
           grade: sum,
-          indicatorsList: indicators(this.checkboxValue, this.optionValue)
+          indicatorsList: indicators(this.checkBx, this.optionValue)
         })
         .then(data => {
           message.success(
             this.props.intl.formatMessage({ id: "management.editor.success" })
           );
+          console.log("SUM", sum)
+          console.log(indicators(this.checkboxValue, this.optionValue))
+
           this.totalGradeHandler(sum);
           // this.updated = true
         })
@@ -425,10 +439,10 @@ class GradeFormComponent extends React.Component<
   }
 
   handleSubmit = (e: FormEvent) => {
+    this.checkBx= {...this.checkboxValue}
     e.preventDefault();
     this.dataInstance.status = "LOADING";
-    this.submitForm(this.optionValue, this.checkboxValue);
-
+    this.submitForm(this.optionValue, this.checkBx);
   };
 
   checkDates = () => {
@@ -468,7 +482,7 @@ class GradeFormComponent extends React.Component<
 
     this.checkDates();
     this.checkGradeExists();
-
+    console.log(this.checkboxValue)
     return this.isDisabled && this.gradeDataCollection.items[0] ? (
       [
         <span
@@ -493,11 +507,11 @@ class GradeFormComponent extends React.Component<
             style={{ padding: "5px 20px 20px" }}
           >
             {this.props.markCriteria &&
-              this.props.markCriteria.map((el: MarkCriteria) => [
-                el.indicator && el.indicator_relation && (
+              this.props.markCriteria.map((el: MarkCriteria, markIndex) => {
+                if (el.indicator && el.indicator_relation) return (
                   <Form.Item
                     key={isRu ? el.name_ru : el.name_en}
-                    style={{ marginTop: "24px", width: "80%" }}
+                    style={{marginTop: "24px", width: "80%"}}
                     required={true}
                     label={this.createElement(Msg, {
                       entityName: "tsadv_markCriteria",
@@ -505,7 +519,18 @@ class GradeFormComponent extends React.Component<
                     })}
 
                   >
-                    {el.indicator_relation!.map(chk => ( chk &&
+                    {el.indicator_relation!.map(chk =>{
+                      if (chk && isRu && this.checkboxValue[el.name_ru!] && this.checkboxValue[el.name_ru!][chk.name_ru!] && !this.checkboxValue[el.name_ru!][chk.name_ru!][0])
+                        this.checkboxValue[el.name_ru!] = {
+
+                          [chk.name_ru!]:[false, 0]
+                        }
+                      else if (chk && !isRu && this.checkboxValue[el.name_en!] && this.checkboxValue[el.name_en!][chk.name_en!] && !this.checkboxValue[el.name_en!][chk.name_en!][0] )
+                        this.checkboxValue[el.name_en!] = {
+
+                          [chk.name_en!]:[false, 0]
+                        }
+                      return (chk &&
                       <Form.Item
                         key={chk.id}
                         style={{
@@ -527,78 +552,79 @@ class GradeFormComponent extends React.Component<
                               this.handleChangeCheckbox(
                                 isRu ? el.name_ru! : el.name_en!,
                                 isRu ? chk.name_ru! : chk.name_en!,
-                                value.target.checked
+                                value.target.checked,
+                                chk.value
                               )
                             }
                           }
                           }
                         />
                       </Form.Item>
-                    ))}
+                    )})}
                   </Form.Item>
-                ),
+                )
 
-                !el.indicator && el.ratingScale && (
+                return !el.indicator && el.ratingScale && (
                   <Form.Item
-                    key={isRu ? el.name_ru : el.name_en}
-                    style={{ marginTop: "24px" }}
-                    required={true}
+                    key={isRu ? el.name_ru! : el.name_en!}
+                    style={{marginTop: "24px"}}
                     label={this.createElement(Msg, {
                       entityName: "tsadv_markCriteria",
                       propertyName: isRu ? el.name_ru : el.name_en
                     })}
-                  >{this.props.form.getFieldDecorator("ratingScale", {
+                  >{this.props.form.getFieldDecorator(el.name_en!, {
                     rules: [
                       {
                         required: true,
                         message: this.props.intl.formatMessage(
-                          { id: "form.validation.required" },
+                          {id: "form.validation.required"},
                           {
                             fieldName:
-                              messages["tsadv_markCriteria" + ".ratingScale"]
+                              messages["tsadv_markCriteria" + el.name_en!]
                           }
                         )
                       }
                     ],
                   })
-                  (<Select
+                  (
+                    <Select
                       disabled={this.isDisabled}
-                      // value={this.optionValue[isRu ? el.ratingScale!.name_ru! : el.ratingScale!.name_en!]}
-                      onChange={value =>{
-                        if (value){
-                          this.handleChangeOption(
-                            isRu ? el.name_ru! : el.name_en!,
-                            value
+                      id={el.ratingScale!.id}
+                      // value={this.optionValue[el.ratingScale!.id]}
+                      onSelect={ value => {
+                        if (value) {
+                          console.log("SELECTED", value)
+                          const lvl = el.ratingScale!.level_relation!.filter((el) => el.id === value)[0]
+                          const lvlName = isRu ? lvl.name_ru! : lvl.name_en!
+                          const scaleName = isRu ?el.name_ru:el.name_en
+                          // console.log(lvlName)
+                          if (scaleName)
+                          this.handleChangeOption(scaleName,
+                            lvlName,
+                            lvl.number
                           )
                         }
                       }}
                       allowClear={true}
                       placeholder={"....."}
-                      style={{ width: "80%" }}
+                      style={{width: "80%"}}
                     >
-                      {el.ratingScale!.level_relation!.map(
-                        (lvl:Levels, idx) =>{
-                          return lvl && (
-                            <Option
-                              key={
-                                lvl.id ? lvl.id : idx + "option-" + el.name_en!
-                              }
-                              value={`${
-                                isRu
-                                  ? lvl.name_ru! + "$" + lvl.number!
-                                  : lvl.name_en! + "$" + lvl.number!
-                              }`}
-                            >
-                              {isRu ? lvl.name_ru : lvl.name_en!}
-                            </Option>
-                          )
-                        }
+                      {/*TODO set value as ID of level and use it to search in array*/}
+                      {el.ratingScale!.level_relation!.map((lvl: Levels, idx) => (
+                          <Option
+                            key={
+                              lvl.id}
+                            value={lvl.id}
+                          >
+                            {isRu ? lvl.name_ru : lvl.name_en!}
+                          </Option>
+                        )
                       )}
                     </Select>
                   )}
                   </Form.Item>
                 )
-              ])}
+              })}
             <Form.Item
               style={{ width: "80%" }}
               label={this.createElement(Msg, {

@@ -317,6 +317,17 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
 
         <Form onSubmit={this.validate} layout="vertical">
           <Spin spinning={status == "LOADING"}>
+            {
+              this.dataInstance.item && this.dataInstance.item.concourse && this.dataInstance.item.concourse!.judgeInsturction && (
+
+                  <Card style={{marginTop:"8px", marginBottom:"20px"}} title={this.props.intl.formatMessage({
+                    id: "concourseJudgeInstruction"
+                  }).concat(": "+this.dataInstance.item.concourse!.judgeInsturction)}
+                        size="default">
+                  </Card>
+
+              )
+            }
             <>
               <Card
                 title={this.props.intl.formatMessage({
@@ -325,6 +336,8 @@ class ConcourseRequestEditComponent extends AbstractBprocEdit<
                 size="small"
                 className="generalInfo"
               >
+
+
                 <Row
                   type={"flex"}
                   align="middle"

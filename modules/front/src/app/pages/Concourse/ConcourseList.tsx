@@ -90,13 +90,6 @@ class ConcourseListComponent extends React.Component<
     }
   );
 
-  bestConcourseRequests = collection<ConcourseRequest>(
-    ConcourseRequest.NAME,
-    {
-      view: "concourseRequest-edit",
-      loadImmediately: false
-    }
-  );
 
   dataCollectionConcourseRequest = collection<ConcourseRequest>(
     ConcourseRequest.NAME,
@@ -121,15 +114,6 @@ class ConcourseListComponent extends React.Component<
       view: "concourseRequest-edit",
       sort: "-updateTs",
       loadImmediately: false,
-      filter: {
-        conditions: [
-          {
-            value: "APPROVED",
-            operator: "=",
-            property: "status.code"
-          }
-        ]
-      }
     }
   );
 
@@ -325,78 +309,11 @@ class ConcourseListComponent extends React.Component<
 
   handleChangeCategory = (name: string, value: string) => {
     this.filterCategoryValue = value;
-    this.bestConcourseRequestListUpdater();
   };
   handleChangeYear = (name: string, value: string) => {
     this.filterYearValue = value;
   };
 
-
-  @action
-  bestConcourseRequestListUpdater = () => {
-    this.bestConcourseRequests.items = []
-    if (this.filterYearValue && !this.filterCategoryValue){
-      this.bestConcourseRequests.filter = {
-        conditions: [
-          {
-            property: "concourse.year",
-            operator: "=",
-            value: this.filterYearValue
-          },
-          {
-            property: "place",
-            operator:">=",
-            value: "1"
-          }
-        ]
-      }
-      this.bestConcourseRequests.load()
-    }
-    if (!this.filterYearValue && this.filterCategoryValue){
-      this.bestConcourseRequests.filter = {
-        conditions: [
-          {
-            property: "category",
-            operator: "=",
-            value: this.filterCategoryValue
-          },
-          {
-            property: "place",
-            operator:">=",
-            value: "1"
-          }
-        ]
-      }
-      this.bestConcourseRequests.load()
-    }
-    if (this.filterYearValue && this.filterCategoryValue){
-      this.bestConcourseRequests.filter = {
-        conditions: [
-          {
-            property: "category",
-            operator: "=",
-            value: this.filterCategoryValue
-          },
-          {
-            property: "concourse.year",
-            operator: "=",
-            value: this.filterYearValue
-          },
-          {
-            property: "place",
-            operator:">=",
-            value: "1"
-          }
-        ]
-      }
-      this.bestConcourseRequests.load()
-    }
-    else{
-      this.bestConcourseRequests.items = []
-    }
-
-
-  }
 
 
   render() {
