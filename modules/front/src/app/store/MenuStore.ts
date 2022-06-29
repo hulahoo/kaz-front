@@ -27,7 +27,6 @@ export default class MenuStore {
 
   @action
   loadUserMenuCustomization = async () => {
-    debugger
     await this.root.cubaRest!.invokeService<string>(
       "tsadv_PortalHelperService",
       "getPortalMenu",
@@ -70,11 +69,31 @@ export default class MenuStore {
         component: null
       },
       {
-        id: "vacationSchedule",
-        caption: "vacationSchedule",
-        menuLink: "/vacationSchedule",
-        pathPattern: "/vacationSchedule",
-        component: null
+        id: "vacationScheduleMenu",
+        caption: "vacationScheduleMenu",
+        items: [
+          {
+            id: "vacationSchedule.my",
+            caption: "vacationSchedule.my",
+            menuLink: "/vacationSchedule/my",
+            pathPattern: "/vacationSchedule/my",
+            component: null
+          },
+          {
+            id: "vacationSchedule.manager",
+            caption: "vacationSchedule.manager",
+            menuLink: "/vacationSchedule/manager",
+            pathPattern: "/vacationSchedule/manager",
+            component: null
+          },
+          {
+            id: "vacationSchedule.assistant",
+            caption: "vacationSchedule.assistant",
+            menuLink: "/vacationSchedule/assistant",
+            pathPattern: "/vacationSchedule/assistant",
+            component: null
+          },
+        ],
       },
       {
         id: "dmc-my",
@@ -118,12 +137,7 @@ export default class MenuStore {
       {
         id: "concourse-menu",
         caption: "Конкурс проектов",
-        items: [{id: "concourseManagement", caption: "Конкурс проектов", menuLink: "/concourseManagement", pathPattern: "/concourseManagement", component: null}, {
-          id: "concourseRequest", caption: "Мои заявки",
-          menuLink: "/concourseRequest",
-          pathPattern: "/concourseRequest",
-          component: null
-        },]
+        items: [{id: "concourse", caption: "Конкурс проектов", menuLink: "/concourse", pathPattern: "/concourse", component: null}]
       },
 
       {

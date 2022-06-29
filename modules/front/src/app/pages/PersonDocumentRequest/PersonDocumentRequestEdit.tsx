@@ -1,42 +1,32 @@
 import * as React from "react";
-import { createElement } from "react";
-import { Card, Col, Form, Input, Row } from "antd";
-import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router-dom";
-import { observable } from "mobx";
-import { FormattedMessage, injectIntl } from "react-intl";
+import {createElement} from "react";
+import {Card, Col, Form, Input, Row} from "antd";
+import {inject, observer} from "mobx-react";
+import {withRouter} from "react-router-dom";
+import {observable} from "mobx";
+import {FormattedMessage, injectIntl} from "react-intl";
 
-import {
-  collection,
-  getCubaREST,
-  injectMainStore,
-  instance,
-  Msg,
-  withLocalizedForm
-} from "@cuba-platform/react";
+import {collection, getCubaREST, injectMainStore, instance, Msg, withLocalizedForm} from "@cuba-platform/react";
 
 import "../../../app/App.css";
-import { DicDocumentType } from "../../../cuba/entities/base/tsadv$DicDocumentType";
-import { DicIssuingAuthority } from "../../../cuba/entities/base/tsadv_DicIssuingAuthority";
+import {DicDocumentType} from "../../../cuba/entities/base/tsadv$DicDocumentType";
+import {DicIssuingAuthority} from "../../../cuba/entities/base/tsadv_DicIssuingAuthority";
 import Page from "../../hoc/PageContentHoc";
 import LoadingPage from "../LoadingPage";
 import AbstractBprocEdit from "../Bproc/abstract/AbstractBprocEdit";
-import { PersonDocumentRequest } from "../../../cuba/entities/base/tsadv_PersonDocumentRequest";
-import { DicRequestStatus } from "../../../cuba/entities/base/tsadv$DicRequestStatus";
-import { ReadonlyField } from "../../components/ReadonlyField";
-import {
-  dictionaryCollection,
-  DictionaryDataCollectionStore
-} from "../../util/DictionaryDataCollectionStore";
+import {PersonDocumentRequest} from "../../../cuba/entities/base/tsadv_PersonDocumentRequest";
+import {DicRequestStatus} from "../../../cuba/entities/base/tsadv$DicRequestStatus";
+import {ReadonlyField} from "../../components/ReadonlyField";
+import {dictionaryCollection, DictionaryDataCollectionStore} from "../../util/DictionaryDataCollectionStore";
 import Section from "../../hoc/Section";
-import Button, { ButtonType } from "../../components/Button/Button";
+import Button, {ButtonType} from "../../components/Button/Button";
 import MsgEntity from "../../components/MsgEntity";
-import { PersonDocument } from "../../../cuba/entities/base/tsadv$PersonDocument";
+import {PersonDocument} from "../../../cuba/entities/base/tsadv$PersonDocument";
 import DefaultDatePicker from "../../components/Datepicker";
 import moment from "moment";
-import { PersonDocumentRequestManagement } from "./PersonDocumentRequestManagement";
-import { goBackOrHomePage, isEquals } from "../../util/util";
-import { PersonExt } from "../../../cuba/entities/base/base$PersonExt";
+import {PersonDocumentRequestManagement} from "./PersonDocumentRequestManagement";
+import {goBackOrHomePage, isEquals} from "../../util/util";
+import {PersonExt} from "../../../cuba/entities/base/base$PersonExt";
 
 type EditorProps = {
   entityId: string;
@@ -46,10 +36,7 @@ type EditorProps = {
 @inject("rootStore")
 @injectMainStore
 @observer
-class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
-  PersonDocumentRequest,
-  EditorProps
-> {
+class PersonDocumentRequestEditComponent extends AbstractBprocEdit<PersonDocumentRequest, EditorProps> {
   processDefinitionKey = "personDocumentRequest";
 
   dataInstance = instance<PersonDocumentRequest>(PersonDocumentRequest.NAME, {
@@ -63,12 +50,9 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
     view: "_minimal"
   });
 
-  issuingAuthoritiesDc = collection<DicIssuingAuthority>(
-    DicIssuingAuthority.NAME,
-    {
-      view: "_minimal"
-    }
-  );
+  issuingAuthoritiesDc = collection<DicIssuingAuthority>(DicIssuingAuthority.NAME, {
+    view: "_minimal"
+  });
 
   @observable
   editDocument: PersonDocument;
@@ -90,6 +74,7 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
   personGroupId: string;
 
   fields = [
+
     "requestNumber",
 
     "requestDate",
@@ -116,225 +101,167 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
 
   isUpdateBeforeOutcome = true;
 
-  update = () => {
+  getUpdateEntityData(): any {
     if (this.isNotDraft())
-      return this.dataInstance.update(this.getUpdateEntityData());
-    return this.dataInstance.update({
+      return super.getUpdateEntityData();
+    return {
       personGroup: this.personGroupId,
-      editedPersonDocument: this.editDocument
-        ? this.editDocument.id
-        : undefined,
-      ...this.getUpdateEntityData()
-    });
-  };
+      editedPersonDocument: this.editDocument ? this.editDocument.id : undefined,
+      ...super.getUpdateEntityData()
+    };
+  }
 
   render() {
+
     if (!this.mainStore) {
-      return <LoadingPage />;
+      return <LoadingPage/>
     }
 
     const messages = this.mainStore.messages!;
     if (!messages) {
-      return <LoadingPage />;
+      return <LoadingPage/>
     }
 
     const entityName = this.dataInstance.entityName;
     const isNotDraft = this.isNotDraft();
 
-    return (
-      <Page pageName={<MsgEntity entityName={PersonDocumentRequest.NAME} />}>
-        <Section className="large">
-          <Card
-            className="narrow-layout card-actions-container"
-            bordered={false}
-            actions={[
-              <Button
-                buttonType={ButtonType.FOLLOW}
-                onClick={() => goBackOrHomePage(this.props.history!)}
-              >
-                {this.props.intl.formatMessage({ id: "close" })}
-              </Button>,
-              this.getOutcomeBtns()
-            ]}
-          >
-            <Form layout="vertical">
-              <ReadonlyField
-                entityName={entityName}
-                propertyName="requestNumber"
-                form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled
-              />
+    return <Page pageName={<MsgEntity entityName={PersonDocumentRequest.NAME}/>}>
+      <Section className='large'>
+        <Card className="narrow-layout card-actions-container"
+              bordered={false}
+              actions={[
+                <Button buttonType={ButtonType.FOLLOW}
+                        onClick={() => goBackOrHomePage(this.props.history!)}>{this.props.intl.formatMessage({id: "close"})}</Button>,
+                this.getOutcomeBtns()]}>
+          <Form layout="vertical">
 
-              <ReadonlyField
-                entityName={entityName}
-                propertyName="requestDate"
-                form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
-                disabled
-              />
+            <ReadonlyField
+              entityName={entityName}
+              propertyName="requestNumber"
+              form={this.props.form}
+              formItemOpts={{style: {marginBottom: "12px"}}}
+              disabled
+            />
 
-              <ReadonlyField
-                entityName={entityName}
-                propertyName="status"
-                form={this.props.form}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
-                optionsContainer={this.statusDc}
-                disabled
-              />
+            <ReadonlyField
+              entityName={entityName}
+              propertyName="requestDate"
+              form={this.props.form}
+              formItemOpts={{style: {marginBottom: "12px"}}}
+              disabled
+            />
 
-              <Form.Item
-                label={createElement(Msg, {
-                  entityName: this.dataInstance.entityName,
-                  propertyName: "personGroup"
-                })}
-              >
-                <Input
-                  value={this.person ? this.person["_instanceName"] || "" : ""}
-                  disabled
-                />
-              </Form.Item>
+            <ReadonlyField
+              entityName={entityName}
+              propertyName="status"
+              form={this.props.form}
+              formItemOpts={{style: {marginBottom: "12px"}}}
+              optionsContainer={this.statusDc}
+              disabled
+            />
 
-              {this.editDocument ? (
+            <Form.Item
+              label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "personGroup"})}>
+              <Input
+                value={this.person ? this.person['_instanceName'] || '' : ''}
+                disabled/>
+            </Form.Item>
+
+            {
+              this.editDocument ?
                 <Row type={"flex"} className={"data-form"}>
                   <Col md={24} sm={24} lg={12}>
-                    <div className={"section-header-container"}>
-                      <FormattedMessage id={"currentValue"} />
-                    </div>
+                    <div className={"section-header-container"}><FormattedMessage id={'currentValue'}/></div>
                     {this.renderDocumentFields()}
                   </Col>
                   <Col md={24} sm={24} lg={12}>
-                    <div className={"section-header-container"}>
-                      <FormattedMessage id={"newValue"} />
-                    </div>
+                    <div className={"section-header-container"}><FormattedMessage id={'newValue'}/></div>
                     {this.renderDocumentRequestFields()}
                   </Col>
                 </Row>
-              ) : (
-                this.renderDocumentRequestFields()
-              )}
+                : this.renderDocumentRequestFields()
+            }
 
-              <ReadonlyField
-                entityName={entityName}
-                propertyName="attachments"
-                form={this.props.form}
-                disabled={isNotDraft}
-                formItemOpts={{ style: { marginBottom: "12px" } }}
-                getFieldDecoratorOpts={{
-                  rules: [
-                    {
-                      required: true,
-                      message: this.props.intl.formatMessage(
-                        { id: "form.validation.required" },
-                        { fieldName: messages[entityName + ".attachments"] }
-                      )
-                    }
-                  ]
-                }}
-              />
-            </Form>
+            <ReadonlyField
+              entityName={entityName}
+              propertyName="attachments"
+              form={this.props.form}
+              disabled={isNotDraft}
+              formItemOpts={{style: {marginBottom: "12px"}}}
+              getFieldDecoratorOpts={{
+                rules: [{
+                  required: true,
+                  message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.attachments']})
+                }]
+              }}
+            />
 
-            {this.takCard()}
-          </Card>
-        </Section>
-      </Page>
-    );
+          </Form>
+
+          {this.takCard()}
+
+        </Card>
+      </Section>
+    </Page>;
   }
 
   renderDocumentFields = () => {
     return (
       <div>
         <Form.Item
-          label={createElement(Msg, {
-            entityName: this.dataInstance.entityName,
-            propertyName: "documentType"
-          })}
-        >
+          label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "documentType"})}>
           <Input
-            value={
-              this.editDocument && this.editDocument.documentType
-                ? this.editDocument.documentType["_instanceName"] || ""
-                : ""
-            }
-            disabled
-          />
+            value={this.editDocument && this.editDocument.documentType ? this.editDocument.documentType['_instanceName'] || '' : ''}
+            disabled/>
         </Form.Item>
 
         <Form.Item
-          label={createElement(Msg, {
-            entityName: this.dataInstance.entityName,
-            propertyName: "issuingAuthority"
-          })}
-        >
+          label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "issuingAuthority"})}>
           <Input
-            value={
-              this.editDocument && this.editDocument.issuingAuthority
-                ? this.editDocument.issuingAuthority["_instanceName"] || ""
-                : ""
-            }
-            disabled
-          />
+            value={this.editDocument && this.editDocument.issuingAuthority ? this.editDocument.issuingAuthority['_instanceName'] || '' : ''}
+            disabled/>
         </Form.Item>
 
         <Form.Item
-          label={createElement(Msg, {
-            entityName: this.dataInstance.entityName,
-            propertyName: "issuedBy"
-          })}
-        >
+          label={createElement(Msg, {entityName: this.dataInstance.entityName, propertyName: "issuedBy"})}>
           <Input
-            value={this.editDocument ? this.editDocument.issuedBy || "" : ""}
-            disabled
-          />
+            value={this.editDocument ? this.editDocument.issuedBy || '' : ''}
+            disabled/>
         </Form.Item>
 
         <Form.Item
           label={createElement(Msg, {
             entityName: this.dataInstance.entityName,
             propertyName: "issueDate"
-          })}
-        >
-          <DefaultDatePicker
-            value={
-              this.editDocument ? moment(this.editDocument.issueDate) : null
-            }
-            disabled
-          />
+          })}>
+          <DefaultDatePicker value={this.editDocument ? moment(this.editDocument.issueDate) : null}
+                             disabled/>
         </Form.Item>
 
         <Form.Item
           label={createElement(Msg, {
             entityName: this.dataInstance.entityName,
             propertyName: "expiredDate"
-          })}
-        >
-          <DefaultDatePicker
-            value={
-              this.editDocument ? moment(this.editDocument.expiredDate) : null
-            }
-            disabled
-          />
+          })}>
+          <DefaultDatePicker value={this.editDocument ? moment(this.editDocument.expiredDate) : null}
+                             disabled/>
         </Form.Item>
 
         <Form.Item
           label={createElement(Msg, {
             entityName: this.dataInstance.entityName,
             propertyName: "documentNumber"
-          })}
-        >
+          })}>
           <Input
-            value={
-              this.editDocument ? this.editDocument.documentNumber || "" : ""
-            }
-            disabled
-          />
+            value={this.editDocument ? this.editDocument.documentNumber || '' : ''}
+            disabled/>
         </Form.Item>
       </div>
-    );
-  };
+    )
+  }
 
   renderDocumentRequestFields = () => {
-    const { entityName } = this.dataInstance;
+    const {entityName} = this.dataInstance;
     const messages = this.mainStore.messages!;
     const isNotDraft = this.isNotDraft();
 
@@ -347,34 +274,22 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
           form={this.props.form}
           optionsContainer={this.documentTypesDc}
           getFieldDecoratorOpts={{
-            rules: [
-              {
-                required: true,
-                message: this.props.intl.formatMessage(
-                  { id: "form.validation.required" },
-                  { fieldName: messages[entityName + ".documentType"] }
-                )
-              }
-            ],
+            rules: [{
+              required: true,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.documentType']})
+            }],
             getValueFromEvent: args => {
-              const documentType = this.documentTypesDc.items.find(
-                value => value.id === args
-              );
+
+              const documentType = this.documentTypesDc.items.find(value => value.id === args);
               this.foreigner = !!(documentType && documentType.foreigner);
 
               if (this.editDocument)
-                this.changedMap.set(
-                  "documentType",
-                  args !==
-                    (this.editDocument.documentType
-                      ? this.editDocument.documentType.id
-                      : undefined)
-                );
+                this.changedMap.set('documentType', args !== (this.editDocument.documentType ? this.editDocument.documentType.id : undefined));
               return args;
             }
           }}
           formItemOpts={{
-            hasFeedback: this.changedMap.get("documentType")
+            hasFeedback: this.changedMap.get('documentType'),
           }}
         />
 
@@ -386,29 +301,18 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
           mainStore={this.mainStore}
           optionsContainer={this.issuingAuthoritiesDc}
           getFieldDecoratorOpts={{
-            rules: [
-              {
-                required: !this.foreigner && !isNotDraft,
-                message: this.props.intl.formatMessage(
-                  { id: "form.validation.required" },
-                  { fieldName: messages[entityName + ".issuingAuthority"] }
-                )
-              }
-            ],
+            rules: [{
+              required: !this.foreigner && !isNotDraft,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.issuingAuthority']})
+            }],
             getValueFromEvent: args => {
               if (this.editDocument)
-                this.changedMap.set(
-                  "issuingAuthority",
-                  args !==
-                    (this.editDocument.issuingAuthority
-                      ? this.editDocument.issuingAuthority.id
-                      : undefined)
-                );
+                this.changedMap.set('issuingAuthority', args !== (this.editDocument.issuingAuthority ? this.editDocument.issuingAuthority.id : undefined));
               return args;
             }
           }}
           formItemOpts={{
-            hasFeedback: this.changedMap.get("issuingAuthority")
+            hasFeedback: this.changedMap.get('issuingAuthority'),
           }}
         />
 
@@ -418,27 +322,19 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
           disabled={isNotDraft}
           form={this.props.form}
           getFieldDecoratorOpts={{
-            rules: [
-              {
-                required: this.foreigner && !isNotDraft,
-                message: this.props.intl.formatMessage(
-                  { id: "form.validation.required" },
-                  { fieldName: messages[entityName + ".issuedBy"] }
-                )
-              }
-            ],
+            rules: [{
+              required: this.foreigner && !isNotDraft,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.issuedBy']})
+            }],
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
               if (this.editDocument)
-                this.changedMap.set(
-                  "issuedBy",
-                  value !== this.editDocument.issuedBy
-                );
+                this.changedMap.set('issuedBy', value !== this.editDocument.issuedBy);
               return value;
             }
           }}
           formItemOpts={{
-            hasFeedback: this.changedMap.get("issuedBy")
+            hasFeedback: this.changedMap.get('issuedBy'),
           }}
         />
 
@@ -448,36 +344,23 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
           disabled={isNotDraft}
           form={this.props.form}
           getFieldDecoratorOpts={{
-            rules: [
-              {
-                required: true,
-                message: this.props.intl.formatMessage(
-                  { id: "form.validation.required" },
-                  { fieldName: messages[entityName + ".issueDate"] }
-                )
-              },
-              {
-                validator: (rule, value, callback) => {
-                  this.props.form.validateFields(["expiredDate"], {
-                    force: true
-                  });
-                  return callback();
-                }
+            rules: [{
+              required: true,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.issueDate']})
+            }, {
+              validator: (rule, value, callback) => {
+                this.props.form.validateFields(['expiredDate'], {force: true});
+                return callback();
               }
-            ],
+            }],
             getValueFromEvent: args => {
               if (this.editDocument)
-                this.changedMap.set(
-                  "issueDate",
-                  !(this.editDocument.issueDate && args
-                    ? moment(this.editDocument.issueDate).isSame(args, "day")
-                    : !this.editDocument.issueDate && !args)
-                );
+                this.changedMap.set('issueDate', !(this.editDocument.issueDate && args ? moment(this.editDocument.issueDate).isSame(args, 'day') : !this.editDocument.issueDate && !args));
               return args;
             }
           }}
           formItemOpts={{
-            hasFeedback: this.changedMap.get("issueDate")
+            hasFeedback: this.changedMap.get('issueDate'),
           }}
         />
 
@@ -487,57 +370,31 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
           disabled={isNotDraft}
           form={this.props.form}
           getFieldDecoratorOpts={{
-            rules: [
-              {
-                required: true,
-                message: this.props.intl.formatMessage(
-                  { id: "form.validation.required" },
-                  { fieldName: messages[entityName + ".expiredDate"] }
-                )
-              },
-              {
-                validator: (rule, value, callback) => {
-                  const issueDate = this.props.form.getFieldValue("issueDate");
-                  if (
-                    value &&
-                    issueDate &&
-                    (value as moment.Moment).isBefore(issueDate, "day")
-                  ) {
-                    return callback(
-                      this.props.intl.formatMessage(
-                        { id: "validation.compare.date" },
-                        {
-                          startDate:
-                            messages[
-                              this.dataInstance.entityName + ".issueDate"
-                            ],
-                          endDate:
-                            messages[
-                              this.dataInstance.entityName + ".expiredDate"
-                            ]
-                        }
-                      )
-                    );
-                  }
-
-                  return callback();
+            rules: [{
+              required: true,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.expiredDate']})
+            }, {
+              validator: (rule, value, callback) => {
+                const issueDate = this.props.form.getFieldValue('issueDate');
+                if (value && issueDate && (value as moment.Moment).isBefore(issueDate, 'day')) {
+                  return callback(this.props.intl.formatMessage({id: 'validation.compare.date'}, {
+                    startDate: messages[this.dataInstance.entityName + '.issueDate'],
+                    endDate: messages[this.dataInstance.entityName + '.expiredDate']
+                  }));
                 }
+
+                return callback();
               }
-            ],
+            }],
             getValueFromEvent: args => {
               if (this.editDocument) {
-                this.changedMap.set(
-                  "expiredDate",
-                  !(this.editDocument.expiredDate && args
-                    ? moment(this.editDocument.expiredDate).isSame(args, "day")
-                    : !this.editDocument.expiredDate && !args)
-                );
+                this.changedMap.set('expiredDate', !(this.editDocument.expiredDate && args ? moment(this.editDocument.expiredDate).isSame(args, 'day') : !this.editDocument.expiredDate && !args));
               }
               return args;
             }
           }}
           formItemOpts={{
-            hasFeedback: this.changedMap.get("expiredDate")
+            hasFeedback: this.changedMap.get('expiredDate'),
           }}
         />
 
@@ -547,129 +404,82 @@ class PersonDocumentRequestEditComponent extends AbstractBprocEdit<
           disabled={isNotDraft}
           form={this.props.form}
           getFieldDecoratorOpts={{
-            rules: [
-              {
-                required: true,
-                message: this.props.intl.formatMessage(
-                  { id: "form.validation.required" },
-                  { fieldName: messages[entityName + ".documentNumber"] }
-                )
-              }
-            ],
+            rules: [{
+              required: true,
+              message: this.props.intl.formatMessage({id: "form.validation.required"}, {fieldName: messages[entityName + '.documentNumber']})
+            }],
             getValueFromEvent: args => {
               const value = args.currentTarget.value;
               if (this.editDocument)
-                this.changedMap.set(
-                  "documentNumber",
-                  value !== this.editDocument.documentNumber
-                );
+                this.changedMap.set('documentNumber', value !== this.editDocument.documentNumber);
               return value;
             }
           }}
           formItemOpts={{
-            hasFeedback: this.changedMap.get("documentNumber")
+            hasFeedback: this.changedMap.get('documentNumber'),
           }}
         />
       </div>
-    );
-  };
+    )
+  }
 
   onReactionDisposerEffect = (item: PersonDocumentRequest | undefined) => {
-    this.personGroupId =
-      item && item.personGroup
-        ? item.personGroup.id!
-        : this.props.rootStore!.userInfo!.personGroupId!;
+    this.personGroupId = item && item.personGroup ? item.personGroup.id! : this.props.rootStore!.userInfo!.personGroupId!;
 
-    this.foreigner = !!(
-      item &&
-      item.documentType &&
-      item.documentType.foreigner
-    );
+    this.foreigner = !!(item && item.documentType && item.documentType.foreigner);
 
-    this.documentTypesDc = dictionaryCollection<DicDocumentType>(
-      DicDocumentType.NAME,
-      this.personGroupId,
-      {
+    this.documentTypesDc = dictionaryCollection<DicDocumentType>(DicDocumentType.NAME,
+      this.personGroupId, {
         view: "_local",
         filter: {
-          conditions: [
-            {
-              property: "isIdOrPassport",
-              operator: "=",
-              value: "TRUE"
-            }
-          ]
+          conditions: [{
+            property: 'isIdOrPassport',
+            operator: '=',
+            value: 'TRUE'
+          }]
         }
-      }
-    );
+      });
 
-    const requestDate =
-      item && item.requestDate ? item.requestDate : moment().toISOString();
+    const requestDate = item && item.requestDate ? item.requestDate : moment().toISOString();
 
-    getCubaREST()!
-      .searchEntities<PersonExt>(
-        PersonExt.NAME,
-        {
-          conditions: [
-            {
-              property: "group.id",
-              operator: "=",
-              value: this.personGroupId
-            },
-            {
-              property: "startDate",
-              operator: "<=",
-              value: requestDate
-            },
-            {
-              property: "endDate",
-              operator: ">=",
-              value: requestDate
-            }
-          ]
-        },
-        {
-          view: "person-edit"
-        }
-      )
-      .then(value => value[0])
-      .then(value => (this.person = value));
+    getCubaREST()!.searchEntities<PersonExt>(PersonExt.NAME, {
+      conditions: [{
+        property: "group.id",
+        operator: '=',
+        value: this.personGroupId
+      }, {
+        property: 'startDate',
+        operator: '<=',
+        value: requestDate,
+      }, {
+        property: 'endDate',
+        operator: '>=',
+        value: requestDate,
+      }]
+    }, {
+      view: 'person-edit'
+    }).then(value => value[0])
+      .then(value => this.person = value)
 
-    const documentId =
-      this.props.documentId ||
-      (item && item.editedPersonDocument
-        ? item.editedPersonDocument.id
-        : undefined);
+    const documentId = this.props.documentId || (item && item.editedPersonDocument ? item.editedPersonDocument.id : undefined)
 
     if (documentId)
-      getCubaREST()!
-        .loadEntity(PersonDocument.NAME, documentId, {
-          view: "portal.my-profile"
-        })
-        .then(value => (this.editDocument = value as PersonDocument))
+      getCubaREST()!.loadEntity(PersonDocument.NAME, documentId, {view: 'portal.my-profile'})
+        .then(value => this.editDocument = value as PersonDocument)
         .then(value => {
           this.instanceEditDocument.setItem(value);
           const properties = [
-            "documentType",
-            "documentNumber",
-            "issueDate",
-            "issuedBy",
-            "expiredDate",
-            "issuingAuthority"
+            "documentType", "documentNumber", "issueDate", "issuedBy", "expiredDate", "issuingAuthority",
           ];
-          if (
-            this.props.entityId === PersonDocumentRequestManagement.NEW_SUBPATH
-          ) {
-            this.props.form.setFieldsValue(
-              this.instanceEditDocument.getFieldValues(properties)
-            );
+          if (this.props.entityId === PersonDocumentRequestManagement.NEW_SUBPATH) {
+            this.props.form.setFieldsValue(this.instanceEditDocument.getFieldValues(properties));
           } else if (item) {
             properties.forEach(field => {
               this.changedMap.set(field, !isEquals(value[field], item[field]));
             });
           }
         });
-  };
+  }
 }
 
 export default injectIntl(

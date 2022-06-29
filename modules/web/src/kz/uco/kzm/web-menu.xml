@@ -6,4 +6,12 @@
 <!--        <item screen="mobile_PushNotification.browse"/>-->
 <!--        <item screen="mobile_FireUserInfo.browse"/>-->
 <!--    </menu>-->
+    <menu id="application-mobile" icon="font-icon:MOBILE_PHONE" insertBefore="administration">
+        <item screen="mobile_FirebaseConfig.browse"/>
+        <item screen="mobile_FirebaseAdminPanel"/>
+        <item screen="mobile_PushNotification.browse"/>
+        <item screen="mobile_FireUserInfo.browse"/>
+        <item insertBefore="reference" screen="kzm$DicPositionsOverlappingType.browse"
+              caption="mainMsg://menu_config.kzm$DicPositionsOverlappingType.browse"/>
+    </menu>
 </menu-config>

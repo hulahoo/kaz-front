@@ -13,4 +13,20 @@
         </property>
         <property name="order"/>
     </view>
+    <view entity="kzm$PositionOverlappingRequest" name="positionOverlappingRequest-edit" extends="_local">
+        <property name="type" view="_minimal"/>
+        <property name="department" view="_minimal"/>
+        <property name="status" view="_minimal"/>
+        <property name="positionGroup" view="_minimal"/>
+        <property name="attachment" view="_minimal"/>
+        <property name="personGroup" view="_minimal"/>
+    </view>
+    <view entity="kzm$PositionOverlappingRequest" name="positionOverlappingRequest-view" extends="_local">
+        <property name="personGroup" view="_minimal"/>
+        <property name="positionGroup" view="_minimal"/>
+        <property name="department" view="_minimal"/>
+        <property name="type" view="_minimal"/>
+        <property name="attachment" view="_minimal"/>
+        <property name="status" view="_minimal"/>
+    </view>
 </views>

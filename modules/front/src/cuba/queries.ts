@@ -15,6 +15,7 @@ import {StandardSchedule} from "./entities/base/tsadv$StandardSchedule";
 import {AbsenceRvdRequest} from "./entities/base/tsadv_AbsenceRvdRequest";
 import {DicAbsenceType} from "./entities/base/tsadv$DicAbsenceType";
 import {AbsPurposeSetting} from "./entities/base/tsadv_AbsPurposeSetting";
+import {OrganizationGroupExt} from "./entities/base/base$OrganizationGroupExt";
 
 export var restQueries = {
   myKpiList: (userId: string) => {
@@ -91,6 +92,11 @@ export var restQueries = {
   myTeamRvdAbsenceType: (companyId: any): Promise<SerializedEntity<AbsPurposeSetting>[]> => {
     return getCubaREST()!.query<AbsPurposeSetting>(AbsPurposeSetting.NAME, "myTeamRvdAbsenceType", {
       companyId: companyId
+    })
+  },
+  organizationGroupByPositionId: (positionId: any): Promise<SerializedEntity<OrganizationGroupExt>[]> => {
+    return getCubaREST()!.query<OrganizationGroupExt>(OrganizationGroupExt.NAME, "organizationGroupByPositionId",{
+      positionId: positionId
     })
   }
 };

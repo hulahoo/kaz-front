@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<queries xmlns="http://schemas.haulmont.com/cuba/rest-queries.xsd">
+    <query name="organizationGroupByPositionId" entity="base$OrganizationGroupExt" view="_local">
+        <jpql>
+            select o
+            from base$OrganizationGroupExt o
+            where o.id in (select p.organizationGroupExt.id
+            from base$PositionExt p where p.group.id=:positionId )
+        </jpql>
+        <params>
+            <param name="positionId" type="java.util.UUID"/>
+        </params>
+    </query>
+    <query name="personGroupByFullName" entity="base$PersonGroupExt" view="_base">
+        <jpql>
+            select o
+            from base$PersonGroupExt o
+            where o.fullName=:fullName )
+        </jpql>
+        <params>
+            <param name="fullName" type="java.util.String"/>
+        </params>
+    </query>
+</queries>

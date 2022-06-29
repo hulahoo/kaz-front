@@ -10,7 +10,7 @@ import {ProcessDefinitionData} from "./entities/base/bproc_ProcessDefinitionData
 import {BpmRolesDefiner} from "./entities/base/tsadv$BpmRolesDefiner";
 import {NotPersisitBprocActors} from "./entities/base/tsadv_NotPersisitBprocActors";
 import {CourseSection} from "./entities/base/tsadv$CourseSection";
-import {AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
+import {AnsweredQuestion, AnsweredTest, TestModel} from "../app/components/Test/TestComponent";
 import {Comment} from '../app/pages/Material/MaterialReviews'
 import {SecurityState} from "../app/util/EntitySecurityState";
 import {OrgStructureRequest} from "./entities/base/tsadv_OrgStructureRequest";
@@ -40,6 +40,16 @@ import {VacationScheduleRequest} from "./entities/base/tsadv_VacationScheduleReq
 import {Menu} from "../app/pages/UserSettings/UserSettingMainSection";
 import {BpmUserSubstitution} from "./entities/base/tsadv$BpmUserSubstitution";
 import {PositionHierarchy} from "./entities/base/tsadv_PositionHierarchy";
+import {AbstractBprocRequest} from "./entities/base/AbstractBprocRequest";
+import {toJS} from "mobx";
+import {DicAbsenceType} from "./entities/base/tsadv$DicAbsenceType";
+import {AssignmentSchedule} from "./entities/base/tsadv$AssignmentSchedule";
+import {PersonGroupExt} from "./entities/base/base$PersonGroupExt";
+import {VacationPojo} from "../app/pages/VacationScheduleRequest/VacationScheduleRequestEdit";
+import {EntitiesResult, QuerySettings} from "../app/components/querySettings";
+import {OrganizationGroupExt} from "./entities/base/base$OrganizationGroupExt";
+import {DismissalRequest} from "./entities/base/tsadv_DismissalRequest";
+import {Punishment} from "./entities/base/tsadv$Punishment";
 
 export const DEFAULT_DATE_PARSE_FORMAT = "YYYY-MM-DD hh:mm:ss";
 
@@ -412,11 +422,12 @@ export const restServices = {
       employeePersonGroupId: string,
       bpmRolesDefiner: BpmRolesDefiner,
       isAssistant: boolean,
+      request: AbstractBprocRequest
     }): Promise<Array<SerializedEntity<NotPersisitBprocActors>>> => {
       return getCubaREST()!.invokeService(
         "tsadv_StartBprocService",
         "getNotPersisitBprocActors",
-        {...param}
+        {...param, request: toJS(param.request)}
       ).then((value: string) => {
         return JSON.parse(value);
       })
@@ -463,6 +474,13 @@ export const restServices = {
     }
   },
   absenceService: {
+    getLaborLeave: (view = '_local'): Promise<DicAbsenceType> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AbsenceService",
+        "getLaborLeave",
+        {view: view}
+      ).then(value => JSON.parse(value));
+    },
     vacationDurationType: (param: { personGroupId: string, absenceTypeId: string, dateFrom: Date | null }): Promise<string> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_AbsenceService",
@@ -846,6 +864,20 @@ export const restServices = {
     }
   },
   vacationScheduleRequestService: {
+    approveVacationRequest: (params: { vacations: string[] }): Promise<void> => {
+      return getCubaREST()!.invokeService<void>(
+        "tsadv_VacationScheduleRequestService",
+        "approveVacationRequest",
+        params
+      );
+    },
+    getVacationScheduleBalanceDays: (params: { vacation: VacationPojo }): Promise<number> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "getVacationScheduleBalanceDays",
+        params
+      ).then(value => JSON.parse(value));
+    },
     ganttChart: (startDate: string, endDate: string): Promise<Array<GanttChartVacationScheduleData>> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_VacationScheduleRequestService",
@@ -856,11 +888,11 @@ export const restServices = {
         }
       ).then(value => JSON.parse(value));
     },
-    getChildVacationSchedule: (pagination: ServicePagination): Promise<EntitiesPaginationResult<VacationScheduleRequest>> => {
+    getChildVacationSchedule: (querySettings: QuerySettings): Promise<EntitiesResult<VacationScheduleRequest>> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_VacationScheduleRequestService",
         "getChildVacationSchedule", {
-          paginationPojo: pagination
+          querySettings: querySettings
         })
         .then(value => {
           const parse = JSON.parse(value);
@@ -869,15 +901,51 @@ export const restServices = {
             count: parse.count
           }
         });
-    }
+    },
+    getPositionChildVacationSchedule: (querySettings: QuerySettings, positionGroupId: string): Promise<EntitiesResult<VacationScheduleRequest>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "getChildVacationSchedule", {
+          querySettings: querySettings,
+          positionGroupId: positionGroupId
+        })
+        .then(value => {
+          const parse = JSON.parse(value);
+          return {
+            entities: JSON.parse(parse.entities),
+            count: parse.count
+          }
+        });
+    },
+    filterEmployees: (param: { positionGroupId: string, date: string, view: string, isAssistant: boolean }): Promise<Array<SerializedEntity<PersonGroupExt>>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "filterEmployees",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    filterPositions: (param: { positionGroupId: string, date: string, view: string, isAssistant: boolean }): Promise<Array<SerializedEntity<PositionGroupExt>>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "filterPositions",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    filterOrganizations: (param: { positionGroupId: string, date: string, view: string, isAssistant: boolean }): Promise<Array<SerializedEntity<OrganizationGroupExt>>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_VacationScheduleRequestService",
+        "filterOrganizations",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
   },
   incentiveService: {
-    getIncentiveList: (pagination: ServicePagination): Promise<EntitiesPaginationResult<GanttChartVacationScheduleData>> => {
+    getIncentiveList: (pagination: QuerySettings): Promise<EntitiesResult<GanttChartVacationScheduleData>> => {
       return getCubaREST()!.invokeService<string>(
         "tsadv_IncentiveService",
         "getIncentiveList",
         {
-          paginationPojo: pagination
+          querySettings: pagination
         }
       ).then(value => {
         const parse = JSON.parse(value);
@@ -925,18 +993,89 @@ export const restServices = {
         {...param}
       ).then(r => JSON.parse(r));
     },
+  },
+  punishmentService: {
+    getPunishmentByPersonGroup: (param: { personGroupId: string }): Promise<Array<Punishment>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_PunishmentService",
+        "getPunishmentByPersonGroup",
+        {...param}
+      ).then(r => JSON.parse(r))
+    }
+  },
+  assignmentScheduleService: {
+    getAssignmentSchedule: (param: { personGroupId: string, date: string, view: string }): Promise<SerializedEntity<AssignmentSchedule>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_AssignmentScheduleService",
+        "getAssignmentSchedule",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+  },
+  employeeHierarchyService: {
+    getChildEmployees: (param: { positionGroupId: string, date: string, view: string }): Promise<Array<SerializedEntity<PersonGroupExt>>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeHierarchyService",
+        "getChildEmployees",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    getChildPositions: (param: { positionGroupId: string, date: string, view: string }): Promise<Array<SerializedEntity<PositionGroupExt>>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeHierarchyService",
+        "getChildPositions",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+    getChildPositionOrganizations: (param: { positionGroupId: string, date: string, view: string }): Promise<Array<SerializedEntity<OrganizationGroupExt>>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_EmployeeHierarchyService",
+        "getChildPositionOrganizations",
+        {...param}
+      ).then(r => JSON.parse(r));
+    },
+  },
+  hrService: {
+    getEmployers: (): Promise<SerializedEntity<PersonGroupExt>> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_HrService",
+        "getEmployers",
+        {}
+      ).then(r => JSON.parse(r));
+    },
+    isHr: (): Promise<boolean> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_HrService",
+        "isHr",
+        {}
+      ).then(r => JSON.parse(r));
+    },
+  },
+  dismissalService: {
+    saveUserFeedback: (params: { templateId: string, personGroupId: string, questionsAndAnswers: AnsweredQuestion[] }, fetchOpts?: FetchOptions) => {
+      return getCubaREST()!.invokeService(
+        "tsadv_DismissalService",
+        "saveUserFeedback",
+        {...params},
+        fetchOpts
+      );
+    },
+    getDismissalRequest: (params: {personGroupId: string}): Promise<DismissalRequest> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_DismissalService",
+        "getDismissalRequest",
+        {...params}
+        ).then(r => JSON.parse(r));
+    },
+    existExitInterview: (params: {personGroupId: string}): Promise<string> => {
+      return getCubaREST()!.invokeService<string>(
+        "tsadv_DismissalService",
+        "existExitInterview",
+        {...params}
+        ).then((r: string) => r);
+    },
   }
 };
-
-export type EntitiesPaginationResult<T> = {
-  entities: Array<SerializedEntity<T>>
-  count: number
-}
-
-export type ServicePagination = {
-  limit: number;
-  offset: number
-}
 
 export type CourseInfo = {
   name: string

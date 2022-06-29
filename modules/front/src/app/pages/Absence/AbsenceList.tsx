@@ -3,7 +3,7 @@ import {inject, observer} from "mobx-react";
 import {Link, RouteComponentProps} from "react-router-dom";
 import {observable} from "mobx";
 import {Tabs} from "antd";
-import {collection,injectMainStore, MainStoreInjected} from "@cuba-platform/react";
+import {collection, injectMainStore, MainStoreInjected} from "@cuba-platform/react";
 import {SerializedEntity} from "@cuba-platform/rest";
 import {FormattedMessage, injectIntl, WrappedComponentProps} from "react-intl";
 import {RootStoreProp} from "../../store";
@@ -15,16 +15,11 @@ import {Absence} from "../../../cuba/entities/base/tsadv$Absence";
 import {LeavingVacationRequestManagement} from "../LeavingVacationRequest/LeavingVacationRequestManagement";
 import {AllAbsenceRequest} from "../../../cuba/entities/base/tsadv_AllAbsenceRequest";
 import {link} from "../../util/util";
-import {VacationScheduleRequestManagement} from "../VacationScheduleRequest/VacationScheduleRequestManagement";
-import {VacationScheduleRequest} from "../../../cuba/entities/base/tsadv_VacationScheduleRequest";
 import DataTableFormat from "../../components/DataTable/intex";
 import {AbsenceBalance} from "../../../cuba/entities/base/tsadv$AbsenceBalance";
 import {restServices} from "../../../cuba/services";
 //@ts-ignore
 import ReactHTMLTableToExcel from 'react-html-table-to-excel'
-
-
-
 
 const {TabPane} = Tabs;
 
@@ -45,15 +40,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
     }
   });
 
-  dataCollectionVacationSchedule = collection<VacationScheduleRequest>(VacationScheduleRequest.NAME, {
-      view: "_local",
-      sort: "-requestNumber",
-      filter: {
-        conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
-      }
-    }
-  );
-
   dataCollectionAbsence = collection<Absence>(Absence.NAME, {
     view: "absence.view",
     sort: "-dateFrom",
@@ -61,6 +47,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
   });
+
   dataCollectionAbsenceBalance = collection<AbsenceBalance>(AbsenceBalance.NAME, {
     view: "_local",
     sort: "-dateFrom",
@@ -68,6 +55,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
       conditions: [{property: "personGroup.id", operator: "=", value: this.props.rootStore!.userInfo.personGroupId!}]
     }
   });
+
   absenceFields = [
     "type",
 
@@ -78,16 +66,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
     "projectStartDate",
 
     "projectEndDate",
-
-    "absenceDays"
-  ];
-
-  vacationScheduleFields = [
-    "requestNumber",
-
-    "startDate",
-
-    "endDate",
 
     "absenceDays"
   ];
@@ -186,33 +164,6 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
                 />
               </div>
             </TabPane>
-            <TabPane tab={this.props.intl.formatMessage({id: "vacationScheduleRequest"})} key="2">
-              <div>
-                <div style={{marginBottom: 16}}>
-                  <Link
-                    to={VacationScheduleRequestManagement.PATH + "/" + VacationScheduleRequestManagement.NEW_SUBPATH}>
-                    <Button type={ButtonType.PRIMARY}
-                            key="vacationScheduleRequestCreateBtn"
-                            style={{margin: "0 12px 12px 0"}}>
-                      <span><FormattedMessage id="new.request"/></span>
-                    </Button>
-                  </Link>
-                </div>
-                <DataTableFormat
-                  dataCollection={this.dataCollectionVacationSchedule}
-                  fields={this.vacationScheduleFields}
-                  hideSelectionColumn={true}
-                  render={[{
-                    column: this.vacationScheduleFields[0],
-                    render: (text, record) => {
-                      return <Link to={VacationScheduleRequestManagement.PATH + "/" + record.id}>
-                        {text}
-                      </Link>
-                    }
-                  }]}
-                />
-              </div>
-            </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "absenceRequest"})} key="3">
               <div>
                 <DataTableFormat
@@ -228,7 +179,7 @@ class AbsenceListComponent extends React.Component<ActiveTabProps & MainStoreInj
             </TabPane>
             <TabPane tab={this.props.intl.formatMessage({id: "absenceBalance"})} key="4">
               <h2 style={{color:"deepskyblue"}}>{this.props.intl.formatMessage({id: "currentAbsenceBalance"}) +" " + this.state.data}</h2>
-              <div >
+              <div>
                 <ReactHTMLTableToExcel id="test-table-xls-button"
                                        className="ant-btn ant-btn-lg"
                                        table="table-to-xls"

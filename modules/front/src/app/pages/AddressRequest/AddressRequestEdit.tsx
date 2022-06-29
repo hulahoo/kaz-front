@@ -163,15 +163,15 @@ class AddressRequestEditComponent extends AbstractBprocEdit<
     "attachments"
   ];
 
-  update = () => {
+  getUpdateEntityData(): any {
     if (this.isNotDraft())
-      return this.dataInstance.update(this.getUpdateEntityData());
-    return this.dataInstance.update({
+      return super.getUpdateEntityData();
+    return {
       personGroup: this.personGroupId,
       baseAddress: this.editAddress ? this.editAddress.id : undefined,
-      ...this.getUpdateEntityData()
-    });
-  };
+      ...super.getUpdateEntityData()
+    };
+  }
 
   render() {
     if (!this.mainStore) return <LoadingPage />;

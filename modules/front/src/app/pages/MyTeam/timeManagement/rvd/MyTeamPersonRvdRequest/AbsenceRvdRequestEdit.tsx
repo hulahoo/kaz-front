@@ -232,7 +232,7 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
     else this.reportCode = undefined;
   }
 
-  getUpdateEntityData = (): any => {
+  getUpdateEntityData(): any {
     if (this.isNotDraft()) return {
       ...this.props.form.getFieldsValue(this.fields),
       timeOfStarting: (this.props.form.getFieldValue('timeOfStarting') as moment.Moment).format(JSON_DATE_TIME_FORMAT),
@@ -487,7 +487,6 @@ class AbsenceRvdRequestEditComponent extends AbstractBprocEdit<AbsenceRvdRequest
                         initialValue: this.dataInstance.item && this.dataInstance.item.timeOfStarting ? moment(this.dataInstance.item.timeOfStarting) : undefined,
                         getValueFromEvent: time => {
                           if (time) {
-                            console.log('time',time)
                             const timeOfStarting = this.props.form.getFieldValue('timeOfStarting') as moment.Moment;
                             this.timeStarting = time;
 

@@ -1,10 +1,11 @@
 import * as React from "react";
-import { FormEvent } from "react";
-import { Alert, Button, Card, Form, message } from "antd";
-import { observer } from "mobx-react";
-import { ConcourseManagement } from "./ConcourseManagement";
+
+import {  Tabs } from "antd";
+import Page from "../../hoc/PageContentHoc";
+import Section from "../../hoc/Section";
+import {inject, observer} from "mobx-react";
 import { FormComponentProps } from "antd/lib/form";
-import { Link, Redirect } from "react-router-dom";
+import {Link, Redirect, RouteComponentProps} from "react-router-dom";
 import { IReactionDisposer, observable, reaction, toJS } from "mobx";
 import {
   FormattedMessage,
@@ -18,13 +19,22 @@ import {
   withLocalizedForm,
   extractServerValidationErrors,
   constructFieldsWithErrors,
-  clearFieldErrors,
-  MultilineText
+  clearFieldErrors, collection,
+  MultilineText, injectMainStore, MainStoreInjected, Msg
 } from "@cuba-platform/react";
 
 import "../../../app/App.css";
 
-import { Concourse } from "../../../cuba/entities/base/tsadv_Concourse";
+import {RootStoreProp} from "../../store";
+
+import {MarkCriteria} from "../../../cuba/entities/base/tsadv_MarkCriteria";
+
+import GradeFormComponent from "./GradeForm";
+import {ConcourseRequest} from "../../../cuba/entities/base/tsadv_ConcourseRequest";
+import {ConcourseRequestManagement} from "../ConcourseRequest/ConcourseRequestManagement";
+import ConcourseRequestEditGrade from "./ConcourseRequestEditGrade";
+
+const { TabPane } = Tabs;
 
 type Props = FormComponentProps & EditorProps;
 
@@ -32,14 +42,28 @@ type EditorProps = {
   entityId: string;
 };
 
+type ActiveTabProps = RouteComponentProps<{ activeTab?: string }>;
+interface IState {
+  data: number;
+}
+
+
+@injectMainStore
+@inject("rootStore")
 @observer
 class ConcourseEditComponent extends React.Component<
-  Props & WrappedComponentProps
+  Props & WrappedComponentProps & ActiveTabProps &
+  MainStoreInjected  &
+  RootStoreProp &
+  RouteComponentProps<any>, IState
 > {
-  dataInstance = instance<Concourse>(Concourse.NAME, {
-    view: "_base",
+  dataInstance = instance<ConcourseRequest>(ConcourseRequest.NAME, {
+    view: "concourseRequest-edit",
     loadImmediately: false
   });
+
+  @observable
+  saved = false
 
   @observable
   updated = false;
@@ -66,235 +90,83 @@ class ConcourseEditComponent extends React.Component<
 
     "legacyId",
 
-    "organizationBin",
+    "banner",
 
-    "integrationUserLogin"
+    "requestTemplate"
+
   ];
+
+  @observable
+  personGroupId:any
+
 
   @observable
   globalErrors: string[] = [];
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (err) {
-        message.error(
-          this.props.intl.formatMessage({
-            id: "management.editor.validationError"
-          })
-        );
-        return;
-      }
-      this.dataInstance
-        .update(this.props.form.getFieldsValue(this.fields))
-        .then(() => {
-          message.success(
-            this.props.intl.formatMessage({ id: "management.editor.success" })
-          );
-          this.updated = true;
-        })
-        .catch((e: any) => {
-          if (e.response && typeof e.response.json === "function") {
-            e.response.json().then((response: any) => {
-              clearFieldErrors(this.props.form);
-              const {
-                globalErrors,
-                fieldErrors
-              } = extractServerValidationErrors(response);
-              this.globalErrors = globalErrors;
-              if (fieldErrors.size > 0) {
-                this.props.form.setFields(
-                  constructFieldsWithErrors(fieldErrors, this.props.form)
-                );
-              }
+  pageName: string = "concourseManagement"
 
-              if (fieldErrors.size > 0 || globalErrors.length > 0) {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.validationError"
-                  })
-                );
-              } else {
-                message.error(
-                  this.props.intl.formatMessage({
-                    id: "management.editor.error"
-                  })
-                );
-              }
-            });
-          } else {
-            message.error(
-              this.props.intl.formatMessage({ id: "management.editor.error" })
-            );
-          }
-        });
-    });
-  };
+  setTotalGrade=(sum:number)=>{
+    // this.dataInstance.item!.totalGrade = sum;
+    this.dataInstance.update({totalGrade: sum}).then((data)=>{
+      this.updated = true
+      this.saved = true
+    }).catch(err=>{console.log(err)})
+  }
+
 
   render() {
     if (this.updated) {
-      return <Redirect to={ConcourseManagement.PATH} />;
+      return <Redirect exact={true} to={"/concourse/4"} />;
     }
 
-    const { status } = this.dataInstance;
+    const activeTab = "1";
+    const defaultActiveKey = activeTab ? activeTab : "1";
 
     return (
-      <Card className="narrow-layout">
-        <Form onSubmit={this.handleSubmit} layout="vertical">
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="description"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="name_ru"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="concourseStatus"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="category"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="judgeInsturction"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="name_en"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="year"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="startVoting"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="endVoting"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{
-              rules: [{ required: true }]
-            }}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="legacyId"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="organizationBin"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
-
-          <Field
-            entityName={Concourse.NAME}
-            propertyName="integrationUserLogin"
-            form={this.props.form}
-            formItemOpts={{ style: { marginBottom: "12px" } }}
-            getFieldDecoratorOpts={{}}
-          />
-
-          {this.globalErrors.length > 0 && (
-            <Alert
-              message={<MultilineText lines={toJS(this.globalErrors)} />}
-              type="error"
-              style={{ marginBottom: "24px" }}
-            />
-          )}
-
-          <Form.Item style={{ textAlign: "center" }}>
-            <Link to={ConcourseManagement.PATH}>
-              <Button htmlType="button">
-                <FormattedMessage id="management.editor.cancel" />
-              </Button>
-            </Link>
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={status !== "DONE" && status !== "ERROR"}
-              loading={status === "LOADING"}
-              style={{ marginLeft: "8px" }}
+      <Page>
+        <Section size="large">
+            <Tabs
+              defaultActiveKey={defaultActiveKey}
+              onChange={activeKey =>
+                (this.pageName =
+                  "concourseManagement" + (activeKey === "1" ? "" : "Оценки"))
+              }
             >
-              <FormattedMessage id="management.editor.submit" />
-            </Button>
-          </Form.Item>
-        </Form>
-      </Card>
+              <TabPane
+                tab={this.props.intl.formatMessage({id: "concourseGeneralInfoTab"})}
+                key="1"
+              >
+                <ConcourseRequestEditGrade entityId={this.props.entityId}/>
+              </TabPane>
+              <TabPane
+                tab={this.props.intl.formatMessage({id: "concourseMarksTab"})}
+                key="2"
+              >
+                <GradeFormComponent updated={this.saved} setTotalGrade={this.setTotalGrade}
+                                    dataInstance={this.dataInstance && this.dataInstance}
+                                    personGroupId={this.personGroupId && this.personGroupId}
+                                    markCriteria={this.dataInstance.item! && this.dataInstance.item!.concourse!.markCriteria}/>
+              </TabPane>
+
+            </Tabs>
+
+        </Section>
+      </Page>
     );
   }
 
   componentDidMount() {
-    if (this.props.entityId !== ConcourseManagement.NEW_SUBPATH) {
+    if (this.props.entityId !== ConcourseRequestManagement.NEW_SUBPATH) {
       this.dataInstance.load(this.props.entityId);
     } else {
-      this.dataInstance.setItem(new Concourse());
+      this.dataInstance.setItem(new ConcourseRequest());
     }
     this.reactionDisposer = reaction(
       () => {
         return this.dataInstance.item;
       },
       () => {
+        this.personGroupId = this.props.rootStore!.userInfo!.personGroupId
         this.props.form.setFieldsValue(
           this.dataInstance.getFieldValues(this.fields)
         );

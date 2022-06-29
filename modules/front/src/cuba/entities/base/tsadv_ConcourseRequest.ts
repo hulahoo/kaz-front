@@ -1,9 +1,12 @@
 import { AbstractBprocRequest } from "./AbstractBprocRequest";
+import { Concourse } from "./tsadv_Concourse";
 import { PersonGroupExt } from "./base$PersonGroupExt";
-import { FileDescriptor } from "./sys$FileDescriptor";
 export class ConcourseRequest extends AbstractBprocRequest {
   static NAME = "tsadv_ConcourseRequest";
   endDate?: any | null;
+  place?: number | null;
+  totalGrade?: any | null;
+  concourse?: Concourse | null;
   scaleOfDistrubution?: any | null;
   projectManager?: PersonGroupExt | null;
   managerContactInfo?: string | null;
@@ -15,19 +18,19 @@ export class ConcourseRequest extends AbstractBprocRequest {
   expertContanctInfo?: string | null;
   shortProjectDescriptionRu?: string | null;
   shortProjectDescriptionEn?: string | null;
-  requestTemplate?: FileDescriptor | null;
-  requestAttachments?: FileDescriptor[] | null;
   personGroup?: PersonGroupExt | null;
   initiatorCompany?: string | null;
   initiatorPosition?: string | null;
   requestNameRu?: string | null;
   requestNameEn?: string | null;
   startDate?: any | null;
+  category?: any | null;
 }
 export type ConcourseRequestViewName =
   | "_base"
   | "_local"
   | "_minimal"
+  | "concourseRequest-edit"
   | "concourseRequest-view";
 export type ConcourseRequestView<
   V extends ConcourseRequestViewName
@@ -37,6 +40,8 @@ export type ConcourseRequestView<
       | "id"
       | "requestNumber"
       | "endDate"
+      | "place"
+      | "totalGrade"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -51,6 +56,7 @@ export type ConcourseRequestView<
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
+      | "category"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -62,6 +68,8 @@ export type ConcourseRequestView<
       ConcourseRequest,
       | "id"
       | "endDate"
+      | "place"
+      | "totalGrade"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -76,6 +84,7 @@ export type ConcourseRequestView<
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
+      | "category"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -85,11 +94,13 @@ export type ConcourseRequestView<
     >
   : V extends "_minimal"
   ? Pick<ConcourseRequest, "id" | "requestNumber">
-  : V extends "concourseRequest-view"
+  : V extends "concourseRequest-edit"
   ? Pick<
       ConcourseRequest,
       | "id"
       | "endDate"
+      | "place"
+      | "totalGrade"
       | "scaleOfDistrubution"
       | "managerContactInfo"
       | "managerPosition"
@@ -104,6 +115,7 @@ export type ConcourseRequestView<
       | "requestNameRu"
       | "requestNameEn"
       | "startDate"
+      | "category"
       | "legacyId"
       | "organizationBin"
       | "integrationUserLogin"
@@ -112,9 +124,42 @@ export type ConcourseRequestView<
       | "comment"
       | "projectManager"
       | "projectExpert"
-      | "requestTemplate"
-      | "requestAttachments"
       | "personGroup"
       | "status"
+      | "concourse"
+    >
+  : V extends "concourseRequest-view"
+  ? Pick<
+      ConcourseRequest,
+      | "id"
+      | "endDate"
+      | "place"
+      | "totalGrade"
+      | "scaleOfDistrubution"
+      | "managerContactInfo"
+      | "managerPosition"
+      | "managerCompany"
+      | "expertPosition"
+      | "expertCompany"
+      | "expertContanctInfo"
+      | "shortProjectDescriptionRu"
+      | "shortProjectDescriptionEn"
+      | "initiatorCompany"
+      | "initiatorPosition"
+      | "requestNameRu"
+      | "requestNameEn"
+      | "startDate"
+      | "category"
+      | "legacyId"
+      | "organizationBin"
+      | "integrationUserLogin"
+      | "requestNumber"
+      | "requestDate"
+      | "comment"
+      | "projectManager"
+      | "projectExpert"
+      | "status"
+      | "personGroup"
+      | "concourse"
     >
   : never;
